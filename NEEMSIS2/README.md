@@ -15,10 +15,9 @@ Dans un même dossier, doivent apparaitre les sous dossiers :
 
 Dans chaque dossiers, hormis APPEND, se trouve les .do de Survey CTO ainsi que les .csv.
 Dans APPEND, il faut créer les dossiers :
-    - _temp
-    - agri_raw
-    - CLEAN
-    - do_not_drop
-    - raw
-    - rename
-
+  - _temp
+  - agri_raw
+  - CLEAN
+  - do_not_drop
+  - raw
+  - rename
