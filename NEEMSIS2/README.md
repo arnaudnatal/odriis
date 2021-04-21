@@ -1,5 +1,5 @@
 Pour que tous les automatismes fonctionnent, il faut respecter une arborescence particulière dans les données.
-Dans un même dossier, doivent apparaitre les sous dossiers :
+Dans un même dossier (que nous appellerons DATA), doivent apparaitre les sous dossiers :
   - APPEND
   - NEEMSIS2_Agriculture
   - NEEMSIS2_DEC
