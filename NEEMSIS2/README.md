@@ -21,3 +21,5 @@ Dans APPEND, il faut créer les dossiers :
   - do_not_drop
   - raw
   - rename
+
+Les fichiers du sous-dossier "do_not_drop" sont disponibles dans le dossier "do_not_drop" ici.
