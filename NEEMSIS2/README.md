@@ -1,8 +1,24 @@
 # Description
-Les différents `.do` permettent un nettoyage relativement complet de NEEMSIS2.
+Les différents `.do` permettent un nettoyage relativement complet de [NEEMSIS](https://neemsis.hypotheses.org/) 2.
 Je vais reprendre rapidement les différents fichiers pour expliquer ce qu'ils font, mais avant petit point pour comprendre la structure brute sortie de Survey CTO.
 
-(principe avec *setof* et *key*)
+---
+
+Lorsque nous compilons les `.do` de Survey CTO, il en ressort une centaine de `.dta`. 
+L'un des `.dta` est la base maître (je l'appelle *master*) qui contient le questionnaire ménage.
+Les autres fichiers (*long*) sont les différentes boucles du questionnaire. 
+Dans le fichier *master*, nous trouvons un identifiant unique **key**, ainsi qu'une centaine de variables commençant par **setof** et finissant par le nom d'une boucle.
+Dans les fichiers *long* nous trouvons une seule variable **setof** (sauf quand la boucle en ouvre une autre, alors nous aurons autant de **setof** que de boucle), une variable **key** unique par ligne ainsi que **parent_key** qui est égale à **key** de la base *master*.
+
+<ins>Exemple :</ins>
+ - *Master* :
+  - **key** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4</span>
+  - **setoffamilymembers** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers</span>
+ - *Long* familymembers :
+  - **parent_key** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4</span>
+  - **setoffamilymembers** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers</span>
+  - **key** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers[1]</span>
+---
 
 ## Longfiles
 **différence blankHH**
