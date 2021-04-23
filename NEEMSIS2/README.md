@@ -17,3 +17,17 @@ Les deux .do suivants ("NEEMSIS2-2_Master.do" & "NEEMSIS2-2_Master_blankHH.do") 
 
 Le .do suivant ("NEEMSIS2-3_Append.do") permet de regrouper les différentes version du questionnaire, de labéliser les variables et de merger certaines listes que nous trouvons dans la base ménage de 2016 comme les chitfunds, l'épargne et les insurances. Concrétement, j'ai pris les bases de details avec la liste des comptes épargnes, des chitfunds et des assurances, reshape pour avoir une ligne par individu et merge avec la base ménage. Dans la mesure où il y a relativement peu de questions par chitfund/saving/insurance et qu'il y a peu de compte par individus, ça n'ajoute pas énormément de variables. 
 Les prêts ne sont pas ici car il y a beaucoup de questions par prêt et beaucoup de prêt par individu. Un reshape+merge ajouterait énormément de variable pour rien car il est beaucoup plus pratiques de les avoir en ligne (et non en colonne si nous faisions un reshape+merge).
+
+"NEEMSIS2-4_Marriage.do" permet d'identifier les "Someone else" des mariages et de changer l'id associé pour merger la base long des mariages.
+
+Ensuite, "NEEMSIS2-5_Agriculture.do" merge les sous modules long de la base agriculture avec la base agriculture maître, regroupe les différentes version, labelise et merge avec la base ménage.
+Finalement, elle fait comme les trois premiers .do ("NEEMSIS2-1_Longfiles", "NEEMISIS2-2_Master" & "NEEMSIS2-3_Append").
+
+"NEEMSIS2-6_Cleaning.do" est un .do dans le nettoyage. Il ne s'agit pas de rendre les données utilisable ici, mais d'ajouter des variables pour plus de clarté et de facilité.
+  - Création des variables de main occupation for individuals (en tenant compte de dummymainoccupation2 et othermainoccupation2 for egos) and households et de totalincome (total annual income) for individuals and households. Je merge avec la base ménage.
+  - Merge une base "preload 2016" (que j'ai déjà fait) avec toutes les caractéristiques personnelles (notamment le genre qui n'apparait pas dans la base preload 2016 de Survey CTO).
+  - Cleaning des caractéristiques personnelles :  
+    - différenciation caste - jatis; 
+    - variable name, sex, age unique;
+    - création d'une variable education level ("edulevel") à partir des codes fournis par Anne pour le module cognition : Below primary (no education); Primary completed; High school (8th-10th); HSC/Diploma (11th-12th); Bachelors (13th-15th); Post graduate (15th and more).
+  - Nettoyage des assets et création de la variable au passage (qui sera amené à changer lorsque j'aurai les valeurs manquantes que Venkat doit fournir à Isabelle). Nettoyage car je rends les variables identiques à 2016 (en remplacant les codes des assets par leurs noms: livestock_1 to livestock_cow, etc.). J'ai aussi jeté un coup d'oeil aux "others" assets et j'ai modifié les questions de bases lorsqu'un "other" pouvait entrer dans une catégorie proposée (ce qui doit arriver quand les enquêteurs ont un doute je suppose). J'ai aussi créer un assets "TV" car dans other c'est très souvent ce qui revient. Peut-être qu'il ne faut pas le faire, dans le doute je l'ai fait, quite à l'enlever.
