@@ -299,22 +299,18 @@ bysort parent_key INDID: gen n=_n
 keep if n==1
 keep mainoccupation_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv mainoccupation_HH totalincome_HH nboccupation_HH parent_key INDID
 save"NEEMSIS_APPEND-occupations_v3.dta", replace
+*1135 indiv
 
 **********Merge dans la base HH
 use"NEEMSIS_APPEND_v7.dta", clear
+tab dummyworkedpastyear
+/*
+1140 indiv
+Why this difference of five?
+*/
 
 merge m:1 parent_key INDID_total using "NEEMSIS_APPEND-occupations_v3.dta"
 drop _merge
-
-foreach x in totalincome_indiv totalincome_HH{
-gen `x'1000=`x'/1000
-recode `x'1000 `x' (.=0)
-}
-
-foreach x in totalincome_indiv totalincome_HH totalincome_indiv1000 totalincome_HH1000{
-gen `x'_b10=`x'*0.918905
-recode `x'_b10 (.=0)
-}
 
 recode mainoccupation_indiv mainoccupation_HH (.=0)
 
