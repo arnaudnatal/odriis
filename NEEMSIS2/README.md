@@ -1,7 +1,14 @@
-# Description
-Les différents `.do` permettent un nettoyage relativement complet de [NEEMSIS](https://neemsis.hypotheses.org/) 2.
-Je vais reprendre rapidement les différents fichiers pour expliquer ce qu'ils font, mais avant petit point pour comprendre la structure brute sortie de Survey CTO.
+# NEEMSIS 2 : création et nettoyages
+Les différents `.do` permettent d'utiliser les données [NEEMSIS](https://neemsis.hypotheses.org/) 2.
+Il y a deux types de `.do` :
+ - Ceux qui permettent la création et l'exploitation des données et;
+ - Ceux qui permettent un nettoyage des données.
 
+La première partie de ce descriptif permet de comprendre les premiers `.do` (création des données) et la seconde partie permet d'entrer en détail dans le nettoyage.
+
+## Création des données NEEMSIS 2
+
+### Sortie de Survey CTO
 Lorsque nous compilons les `.do` de Survey CTO, il en ressort une centaine de `.dta`. 
 L'un des `.dta` est la base maître (je l'appelle *master*) qui contient le questionnaire ménage.
 Les autres fichiers (*long*) sont les différentes boucles du questionnaire. 
@@ -24,55 +31,100 @@ Le matching se faisant à partir d'une information unique pour les individus, no
 
 Pour cela, nous allons procéder ainsi :
  1. Dans les bases *long* nous inversons les variables **setof** et **key**.
- 2. Dans la base *master* nous renommons **key** en **parent_key** puis nous ajoutons à la fin de la variable **setof** le code individuelle.
+ 2. Dans la base *master* nous renommons **key** en **parent_key** puis nous ajoutons à la fin de la variable **setof** le code individuel.
 Ainsi, nous pourrons merger les bases *long* avec la base *master*.
 
 Le bricolage des fichiers *long* peut directement se faire, pas celui de la base *master*.
-En effet, la base sortie de Survey CTO est à l'échelle du ménage, il faut donc la reshaper avant d'attribuer les codes individuelles et de faire les merging.
+En effet, la base sortie de Survey CTO est à l'échelle du ménage, il faut donc la reshaper avant d'attribuer les codes individuels et de faire les merging.
+
+### Longfiles`.do`
+Nous retrouvons deux fichiers `.do` : l'un pour les versions du questionnaire avec preload et l'autre pour les versions sans (le `.do` terminant alors par "\_blankHH").
+Il s'agit d'une grosse boucle qui inverse **setof** et **key**.
 
 
-## Longfiles
-**différence blankHH**
-Inversion de *setof* et de *key* pour faciliter le merging plus tard.
+### Master`.do`
+La première chose à faire est de reshaper la base afin d'avoir en ligne les individus et non les ménages (à la sortie de Survey CTO, la base ménage est en wide individus).
+Pour que le reshape fonctionne, il faut que la base soit en vrai wide : toutes les variables aient le même nom en wide.
+Ce n'est pas le cas, notamment à cause des variables égos qui sont nommées `_2varname` pour égo 2, `_3varname` pour égo 3 puis `varname`pour égo 1.
+Il faut donc retrouver la\les position\s des égos afin de recréer les variables.
+J'emploie le pluriel car il y a différentes positions selon les boucles que Survey CTO utilise.
 
-## Master
-### Reshaping 
-Les deux .do suivants ("NEEMSIS2-2_Master.do" & "NEEMSIS2-2_Master_blankHH.do") permettent de créer l'identifiant unique dans la base ménage. Comme je l'ai dit juste avant, dans la base ménage il y a tout un tas de variable "setof[...]". Le problème est quelles sont génériques au ménage. Dans ces deux .do (comme précédemment d'ailleurs : blankHH pour les donées sans preload et l'autre pour avec preload) je vais donc :
-Préparer le reshape en créant les code INDID et en identifiant les égos (un peu fastidieux). Il y en aura plusieurs car selon les fichiers long, Survey CTO pioche dans différentes listes :
-- INDID
-- INDID_total
-- INDID_left
-- INDID_new
-- INDID_former
-Procéder au reshape
- 
-### seof
-Rendre les différents "setof[...]" uniques pour pouvoir merger facilement.
+La première partie de ce\s (comme pour les *long* il y en a deux selon que nous soyons dans une version avec ou sans preload) `.do` permettent donc de recréer les variables des égos en wide et de créer les différents identifiants individuels.
+Pour être précis, il y en a cinq :
+ 1. `INDID` qui tient compte de tout le monde : présents, absents, nouveaux, etc. C'est l'identifiant "panel" dans la mesure où les anciens membres ont la même valeur qu'en 2016
+ et les nouveaux membres débutent à "16".
+ 2. `INDID_total` qui ne tient compte que des membres présents en 2020. 
+ 3. `INDID_former` qui liste uniquement les membres présents ET qui étaient là en 2016.
+ 4. `INDID_new` qui liste les nouveaux membres de 2020.
+ 5. `INDID_left` qui liste les membres présents en 2016 et qui ont quitté le ménage.
 
-### Merging
-Puis merger les fichiers long au niveau des individus afin de compléter la base (lefthome, individualid, familymembers, education, employment, migration, remittances, loans, lending, recommendation, chitfund, saving, gold, insurance, scheme). Je ne merge pas les listes intérieures (par exemple la liste des prêts), juste les listes à l'échelle des individus.
+Schématiquement : 
+ - `INDID_former` et `INDID_new` constituent `INDID_total`.
+ - `INDID_total` et `INDID_left` constituent `INDID`.
 
-## Append
-Le .do suivant ("NEEMSIS2-3_Append.do") permet de regrouper les différentes version du questionnaire, de labéliser les variables et de merger certaines listes que nous trouvons dans la base ménage de 2016 comme les chitfunds, l'épargne et les insurances. Concrétement, j'ai pris les bases de details avec la liste des comptes épargnes, des chitfunds et des assurances, reshape pour avoir une ligne par individu et merge avec la base ménage. Dans la mesure où il y a relativement peu de questions par chitfund/saving/insurance et qu'il y a peu de compte par individus, ça n'ajoute pas énormément de variables. 
-Les prêts ne sont pas ici car il y a beaucoup de questions par prêt et beaucoup de prêt par individu. Un reshape+merge ajouterait énormément de variable pour rien car il est beaucoup plus pratiques de les avoir en ligne (et non en colonne si nous faisions un reshape+merge).
+`INDID` est donc le seul identifiant commun à tous.
 
-## Marriage (someone else issue)
-"NEEMSIS2-4_Marriage.do" permet d'identifier les "Someone else" des mariages et de changer l'id associé pour merger la base long des mariages.
+Une fois que nous avons toutes nos positions individuelles et les variables égos en vrai wide, nous procédons au reshaping.
 
-## Agriculture
-Ensuite, "NEEMSIS2-5_Agriculture.do" merge les sous modules long de la base agriculture avec la base agriculture maître, regroupe les différentes version, labelise et merge avec la base ménage.
-Finalement, elle fait comme les trois premiers .do ("NEEMSIS2-1_Longfiles", "NEEMISIS2-2_Master" & "NEEMSIS2-3_Append").
+Nous obtenons ainsi une ligne par individu où pour chaque individu nous avons ses différentes valeurs aux codes individuelles.
 
-## Cleaning
-"NEEMSIS2-6_Cleaning.do" est un .do dans le nettoyage. Il ne s'agit pas de rendre les données utilisable ici, mais d'ajouter des variables pour plus de clarté et de facilité.
-  - Création des variables de main occupation for individuals (en tenant compte de dummymainoccupation2 et othermainoccupation2 for egos) and households et de totalincome (total annual income) for individuals and households. Je merge avec la base ménage.
-  - Merge une base "preload 2016" (que j'ai déjà fait) avec toutes les caractéristiques personnelles (notamment le genre qui n'apparait pas dans la base preload 2016 de Survey CTO).
-  - Cleaning des caractéristiques personnelles :  
-    - différenciation caste - jatis; 
-    - variable name, sex, age unique;
-    - création d'une variable education level ("edulevel") à partir des codes fournis par Anne pour le module cognition : Below primary (no education); Primary completed; High school (8th-10th); HSC/Diploma (11th-12th); Bachelors (13th-15th); Post graduate (15th and more).
-  - Nettoyage des assets et création de la variable au passage (qui sera amené à changer lorsque j'aurai les valeurs manquantes que Venkat doit fournir à Isabelle). Nettoyage car je rends les variables identiques à 2016 (en remplacant les codes des assets par leurs noms: livestock_1 to livestock_cow, etc.). J'ai aussi jeté un coup d'oeil aux "others" assets et j'ai modifié les questions de bases lorsqu'un "other" pouvait entrer dans une catégorie proposée (ce qui doit arriver quand les enquêteurs ont un doute je suppose). J'ai aussi créer un assets "TV" car dans other c'est très souvent ce qui revient. Peut-être qu'il ne faut pas le faire, dans le doute je l'ai fait, quite à l'enlever.
-  - Création des variables de cognition (Big Five; literacy; numeracy; raven) et imputation des missings de personnalité pour ne pas perdre d'individus lors des analyses factorielles. Idem, c'est de la préparation de base pour analyses, donc je laisse les codes ici, mais on peut enlever de la base ménage classique.
-  - Cleaning des variables du preload précédents maintenant qu'il a servi à créer la variable de genre par exemple, des dummy associées aux catégorielles.
+Ces différents codes individuels vont nous permettre de reconstituer les variables **setof** comme dans les bases *long*.
+En partant du questionnaire form de Cécile, j'ajoute à la fin des variables **setof** le code individuel correspondant à la bonne liste de choix de la boucle :
+Si la boucle ne s'ouvre que pour les nouveaux membres je complète **setof** avec `INDID_new`, si elle ne s'ouvre que pour les membres partis alors je complète avec `INDID_left`, etc.
+
+Nous obtenons ainsi entre les *long* et la base *master*, les variables **setof** uniques.
+
+Nous pouvons donc merger les bases *long* à l'échelle individuelle avec la base ménage reshape. 
+Plus précisément :
+ - lefthome;
+ - individualid;
+ - familymembers;
+ - education;
+ - employment;
+ - migration;
+ - remittances;
+ - loans;
+ - lending;
+ - recommendation;
+ - chitfund;
+ - saving;
+ - gold;
+ - insurance;
+ - scheme. 
+
+Je ne merge pas les listes qui sont dans les boucles *long*.
+Loans ici correspond aux individus du ménage qui empruntent de l'argent, dans cette boucle qui s'applique aux individus du ménage, s'ouvre une autre boucle pour lister tous les prêts.
+Cette nouvelle liste (de prêts) n'est pas merge ici, seulement la liste à l'échelle individuelle.
+
+### Append
+Nous pouvons maintenant regrouper les différentes versions du questionnaire pour avoir une seule base ménage.
+C'est ici que s'appliquent les labels.
+J'en profite aussi pour reshaper sous listes présentes en 2016.
+Dans les données 2016, les variables relatives aux chitfunds, aux assurances et à l'épargne sont reshaper pour être à l'échelle individuelle (alors qu'un individu peut avoir plusieurs comptes épargne) et sont donc en wide dans la base ménage.
+Dans la mesure où il y a peu de questions et un faible nombre par individu, ça n'est pas dérangeant de les merger dans la base ménage comme 2016 ici.
+Je ne le fais pas pour les occupations et les prêts dans la mesure où il y a beaucoup de questions pour une seule occupation ou un seul prêt et beaucoup d'occupations ou prêts par individus (en wide cela rajouterait énormément de variables).
+
+### Marriage (someone else issue)
+Étant donné la structure du questionnaire, ce `.do` permet d'identifier les "Someone else" du module mariage pour changer le code individuel du *long* associé.
+Je le merge avec la base ménage une fois le bon code individuel retrouvé (et non garder le "31").
+
+### Agriculture
+Création complète de la base agriculture avec merging des sous modules associés (après reshape pour qu'ils soient wide).
+Merging avec la base ménage.
 
 
+## Nettoyage des données
+
+### Gender, caste
+
+### Education
+Création d'une variable education level ("edulevel") à partir des codes fournis par Anne pour le module cognition : Below primary (no education); Primary completed; High school (8th-10th); HSC/Diploma (11th-12th); Bachelors (13th-15th); Post graduate (15th and more).
+
+### Main occupation
+Création des variables de main occupation for individuals (en tenant compte de dummymainoccupation2 et othermainoccupation2 for egos) and households et de totalincome (total annual income) for individuals and households. Je merge avec la base ménage.
+
+### Cognition
+Création des variables de cognition (Big Five; literacy; numeracy; raven) et imputation des missings de personnalité pour ne pas perdre d'individus lors des analyses factorielles. Idem, c'est de la préparation de base pour analyses, donc je laisse les codes ici, mais on peut enlever de la base ménage classique.
+
+### Assets
+Nettoyage des assets et création de la variable au passage (qui sera amené à changer lorsque j'aurai les valeurs manquantes que Venkat doit fournir à Isabelle). Nettoyage car je rends les variables identiques à 2016 (en remplaçant les codes des assets par leurs noms: livestock_1 to livestock_cow, etc.). J'ai aussi jeté un coup d'oeil aux "others" assets et j'ai modifié les questions de bases lorsqu'un "other" pouvait entrer dans une catégorie proposée (ce qui doit arriver quand les enquêteurs ont un doute je suppose). J'ai aussi créé un assets "TV" car dans other c'est très souvent ce qui revient. Peut-être qu'il ne faut pas le faire, dans le doute je l'ai fait, quitte à l'enlever.
