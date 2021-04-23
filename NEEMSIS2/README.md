@@ -2,23 +2,34 @@
 Les différents `.do` permettent un nettoyage relativement complet de [NEEMSIS](https://neemsis.hypotheses.org/) 2.
 Je vais reprendre rapidement les différents fichiers pour expliquer ce qu'ils font, mais avant petit point pour comprendre la structure brute sortie de Survey CTO.
 
----
-
 Lorsque nous compilons les `.do` de Survey CTO, il en ressort une centaine de `.dta`. 
 L'un des `.dta` est la base maître (je l'appelle *master*) qui contient le questionnaire ménage.
 Les autres fichiers (*long*) sont les différentes boucles du questionnaire. 
 Dans le fichier *master*, nous trouvons un identifiant unique **key**, ainsi qu'une centaine de variables commençant par **setof** et finissant par le nom d'une boucle.
 Dans les fichiers *long* nous trouvons une seule variable **setof** (sauf quand la boucle en ouvre une autre, alors nous aurons autant de **setof** que de boucle), une variable **key** unique par ligne ainsi que **parent_key** qui est égale à **key** de la base *master*.
 
+***
 <ins>Exemple :</ins>
  - *Master* :
-  - **key** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4</span>
-  - **setoffamilymembers** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers</span>
+   - **key** contient `<uuid:a5864c62-bf01-4313-a7b4-47985821c1e4>`
+   - **setoffamilymembers** contient `<uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers>`
  - *Long* familymembers :
-  - **parent_key** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4</span>
-  - **setoffamilymembers** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers</span>
-  - **key** contient <span style="color:blue">uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers[1]</span>
----
+   - **parent_key** contient `<uuid:a5864c62-bf01-4313-a7b4-47985821c1e4>`
+   - **setoffamilymembers** contient `<uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers>`
+   - **key** contient `<uuid:a5864c62-bf01-4313-a7b4-47985821c1e4/householdquestionnaireold-hhquestionnaire-familymembers[1]>`
+***
+
+L'objectif est de faire matcher les variables entre la base *master* et les bases *long* pour pouvoir merger les bases de données.
+Le matching se faisant à partir d'une information unique pour les individus, nous devons utiliser le contenu de la variable **key** car il contient ET la clé ménage individuelle (**key** du *master* ou **parent_key** des *long*) ET la clé individuelle (entre crochets).
+
+Pour cela, nous allons procéder ainsi :
+ 1. Dans les bases *long* nous inversons les variables **setof** et **key**.
+ 2. Dans la base *master* nous renommons **key** en **parent_key** puis nous ajoutons à la fin de la variable **setof** le code individuelle.
+Ainsi, nous pourrons merger les bases *long* avec la base *master*.
+
+Le bricolage des fichiers *long* peut directement se faire, pas celui de la base *master*.
+En effet, la base sortie de Survey CTO est à l'échelle du ménage, il faut donc la reshaper avant d'attribuer les codes individuelles et de faire les merging.
+
 
 ## Longfiles
 **différence blankHH**
