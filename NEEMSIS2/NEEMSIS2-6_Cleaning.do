@@ -115,11 +115,123 @@ keep parent_key occupationnumber INDID_total othermainoccupation2 occupationname
 order parent_key INDID_total occupationnumber occupationname kindofwork othermainoccupation2
 export excel using "NEEMSIS_APPEND-occupations_v2", nolab replace firstrow(var)
 restore
-*À partir du fichier Excek
-/*
-replace mainoccup= if parent_key=="" & INDID_total== & occupationnumber==
-replace mainoccupname= if parent_key=="" & INDID_total== & occupationnumber==
-*/
+*À partir du fichier Excel
+replace mainoccup=3 if parent_key=="uuid:11d432e5-b567-4279-9729-36fe097f4cb4" & INDID_total==2 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==1 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==3 & occupationnumber==2
+*replace mainoccup=4 if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==2
+*replace mainoccup=3 if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:4adf3c67-9056-4e27-ac96-b21b04458534" & INDID_total==1 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:4e56a1a6-6cde-4dbd-881f-d2d0c958ef2b" & INDID_total==1 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:5672b71a-0908-47a7-bad7-a2d698f59343" & INDID_total==2 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:5a18379c-0a47-4f7d-8b1f-c531563200cb" & INDID_total==2 & occupationnumber==2
+replace mainoccup=4 if parent_key=="uuid:5b0b3cb1-c758-499a-8126-2aa9a0348795" & INDID_total==1 & occupationnumber==2
+replace mainoccup=4 if parent_key=="uuid:60bb2e46-283a-4d26-935b-d541da45193f" & INDID_total==1 & occupationnumber==2
+*replace mainoccup=2 if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==2
+*replace mainoccup=4 if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==3
+replace mainoccup=1 if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==2 & occupationnumber==2
+*replace mainoccup=1 if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==2
+*replace mainoccup=4 if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:6eac903a-6982-4424-9d2f-72e59de029e7" & INDID_total==1 & occupationnumber==2
+*replace mainoccup=3 if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==1
+*replace mainoccup=7 if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:7dcd5a01-7a25-47c3-b6c6-74836281cf4b" & INDID_total==2 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==1 & occupationnumber==1
+*replace mainoccup=3 if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==1
+*replace mainoccup=4 if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==3
+replace mainoccup=2 if parent_key=="uuid:831ac2d3-8b2f-4936-9c96-515eb3940233" & INDID_total==1 & occupationnumber==2
+replace mainoccup=4 if parent_key=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID_total==3 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==1 & occupationnumber==2
+replace mainoccup=7 if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==2 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==1 & occupationnumber==2
+replace mainoccup=7 if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==2 & occupationnumber==2
+*replace mainoccup=3 if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==3
+*replace mainoccup=5 if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==2
+replace mainoccup=4 if parent_key=="uuid:a01b1cb0-bc31-420c-a1e7-f46d3011c81b" & INDID_total==1 & occupationnumber==1
+replace mainoccup=7 if parent_key=="uuid:a5864c62-bf01-4313-a7b4-47985821c1e4" & INDID_total==2 & occupationnumber==1
+replace mainoccup=2 if parent_key=="uuid:a7b4d739-b69d-4efb-b34a-0b175dd933fe" & INDID_total==1 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==1 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==2 & occupationnumber==2
+replace mainoccup=7 if parent_key=="uuid:b3e4fe70-f2aa-4e0f-bb6e-8fb57bb6f409" & INDID_total==2 & occupationnumber==1
+replace mainoccup=4 if parent_key=="uuid:b3f4653f-719d-4f7a-a0e4-82d8bc04659c" & INDID_total==2 & occupationnumber==3
+replace mainoccup=4 if parent_key=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID_total==5 & occupationnumber==1
+*replace mainoccup=1 if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==2
+*replace mainoccup=4 if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==4
+*replace mainoccup=3 if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==3
+replace mainoccup=4 if parent_key=="uuid:c97950f1-4a81-4b10-9f91-be004d7f01c9" & INDID_total==1 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:caff5415-5d5c-4932-aff5-903c30c0bc79" & INDID_total==1 & occupationnumber==2
+replace mainoccup=2 if parent_key=="uuid:d4a5192d-74e4-4cb8-8b48-1d971f68cb54" & INDID_total==1 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==1 & occupationnumber==2
+replace mainoccup=7 if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==2 & occupationnumber==1
+replace mainoccup=4 if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==1 & occupationnumber==1
+replace mainoccup=3 if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==2 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:e3ff8654-5079-4cb1-ab14-ce83b63d894a" & INDID_total==2 & occupationnumber==1
+replace mainoccup=4 if parent_key=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID_total==3 & occupationnumber==1
+replace mainoccup=2 if parent_key=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID_total==3 & occupationnumber==2
+replace mainoccup=3 if parent_key=="uuid:f9af2892-dbd1-4027-adcf-8271a87cdc44" & INDID_total==1 & occupationnumber==1
+*replace mainoccup=3 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==2
+*replace mainoccup=4 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==3
+*replace mainoccup=3 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==1
+*replace mainoccup=4 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==4
+
+replace mainoccupname="Agriculture weeding" if parent_key=="uuid:11d432e5-b567-4279-9729-36fe097f4cb4" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agriculture activities in own farm unpaid" if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==3 & occupationnumber==2
+*replace mainoccupname="Chamber" if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==2
+*replace mainoccupname="Chamber" if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Agriculture activities in own farm unpaid" if parent_key=="uuid:4adf3c67-9056-4e27-ac96-b21b04458534" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:4e56a1a6-6cde-4dbd-881f-d2d0c958ef2b" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="NREGA" if parent_key=="uuid:5672b71a-0908-47a7-bad7-a2d698f59343" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:5a18379c-0a47-4f7d-8b1f-c531563200cb" & INDID_total==2 & occupationnumber==2
+replace mainoccupname="Agricultural cooli" if parent_key=="uuid:5b0b3cb1-c758-499a-8126-2aa9a0348795" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Road contract supervisor" if parent_key=="uuid:60bb2e46-283a-4d26-935b-d541da45193f" & INDID_total==1 & occupationnumber==2
+*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==2
+*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==3
+replace mainoccupname="Agricultural cooli" if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==2 & occupationnumber==2
+*replace mainoccupname="Housewife" if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==2
+*replace mainoccupname="Housewife" if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Coolie" if parent_key=="uuid:6eac903a-6982-4424-9d2f-72e59de029e7" & INDID_total==1 & occupationnumber==2
+*replace mainoccupname="Samosa seller" if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==1
+**replace mainoccupname="Samosa seller" if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agricultural cooli" if parent_key=="uuid:7dcd5a01-7a25-47c3-b6c6-74836281cf4b" & INDID_total==2 & occupationnumber==2
+replace mainoccupname="Agriculture activities in own land" if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==1 & occupationnumber==1
+*replace mainoccupname="Agriculture activities in own land unpaid" if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==1
+*replace mainoccupname="Agriculture activities in own land unpaid" if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==3
+replace mainoccupname="Agriculture work in own farm" if parent_key=="uuid:831ac2d3-8b2f-4936-9c96-515eb3940233" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agricultural cooli" if parent_key=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID_total==3 & occupationnumber==1
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agriculture coolie" if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==2 & occupationnumber==2
+*replace mainoccupname="Agriculture coolie" if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==3
+*replace mainoccupname="Agriculture coolie" if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="NREGA" if parent_key=="uuid:a01b1cb0-bc31-420c-a1e7-f46d3011c81b" & INDID_total==1 & occupationnumber==1
+replace mainoccupname="Unpaid worker in own land" if parent_key=="uuid:a5864c62-bf01-4313-a7b4-47985821c1e4" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Electrician" if parent_key=="uuid:a7b4d739-b69d-4efb-b34a-0b175dd933fe" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agriculture activities in own land" if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==1 & occupationnumber==1
+replace mainoccupname="Agriculture activities in own land unpaid" if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==2 & occupationnumber==2
+replace mainoccupname="Agriculture coolie" if parent_key=="uuid:b3e4fe70-f2aa-4e0f-bb6e-8fb57bb6f409" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Agriculture coolie" if parent_key=="uuid:b3f4653f-719d-4f7a-a0e4-82d8bc04659c" & INDID_total==2 & occupationnumber==3
+replace mainoccupname="Agricultural cooli" if parent_key=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID_total==5 & occupationnumber==1
+*replace mainoccupname="NREGA" if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==2
+*replace mainoccupname="NREGA" if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==4
+*replace mainoccupname="NREGA" if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==3
+replace mainoccupname="Agriculture own land working" if parent_key=="uuid:c97950f1-4a81-4b10-9f91-be004d7f01c9" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:caff5415-5d5c-4932-aff5-903c30c0bc79" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Gouva selling" if parent_key=="uuid:d4a5192d-74e4-4cb8-8b48-1d971f68cb54" & INDID_total==1 & occupationnumber==1
+replace mainoccupname="Agriculture own land" if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==1 & occupationnumber==2
+replace mainoccupname="Agriculture own land unpaid works" if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Agriculture coolie" if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==1 & occupationnumber==1
+replace mainoccupname="Coolie" if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==2 & occupationnumber==2
+replace mainoccupname="Agricultural cooli" if parent_key=="uuid:e3ff8654-5079-4cb1-ab14-ce83b63d894a" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="Agri coolie" if parent_key=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID_total==3 & occupationnumber==1
+replace mainoccupname="Driver (Tata ace own vehicle)" if parent_key=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID_total==3 & occupationnumber==2
+replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:f9af2892-dbd1-4027-adcf-8271a87cdc44" & INDID_total==1 & occupationnumber==1
+*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==2
+*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==3
+*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==1
+*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==4
+
 
 
 **********Indiv
