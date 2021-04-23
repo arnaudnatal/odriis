@@ -128,3 +128,6 @@ Création des variables de cognition (Big Five; literacy; numeracy; raven) et im
 
 ### Assets
 Nettoyage des assets et création de la variable au passage (qui sera amené à changer lorsque j'aurai les valeurs manquantes que Venkat doit fournir à Isabelle). Nettoyage car je rends les variables identiques à 2016 (en remplaçant les codes des assets par leurs noms: livestock_1 to livestock_cow, etc.). J'ai aussi jeté un coup d'oeil aux "others" assets et j'ai modifié les questions de bases lorsqu'un "other" pouvait entrer dans une catégorie proposée (ce qui doit arriver quand les enquêteurs ont un doute je suppose). J'ai aussi créé un assets "TV" car dans other c'est très souvent ce qui revient. Peut-être qu'il ne faut pas le faire, dans le doute je l'ai fait, quitte à l'enlever.
+
+### Loans
+Regrouper tous les prêts dans une seule et même base.
