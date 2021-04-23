@@ -31,3 +31,7 @@ Finalement, elle fait comme les trois premiers .do ("NEEMSIS2-1_Longfiles", "NEE
     - variable name, sex, age unique;
     - création d'une variable education level ("edulevel") à partir des codes fournis par Anne pour le module cognition : Below primary (no education); Primary completed; High school (8th-10th); HSC/Diploma (11th-12th); Bachelors (13th-15th); Post graduate (15th and more).
   - Nettoyage des assets et création de la variable au passage (qui sera amené à changer lorsque j'aurai les valeurs manquantes que Venkat doit fournir à Isabelle). Nettoyage car je rends les variables identiques à 2016 (en remplacant les codes des assets par leurs noms: livestock_1 to livestock_cow, etc.). J'ai aussi jeté un coup d'oeil aux "others" assets et j'ai modifié les questions de bases lorsqu'un "other" pouvait entrer dans une catégorie proposée (ce qui doit arriver quand les enquêteurs ont un doute je suppose). J'ai aussi créer un assets "TV" car dans other c'est très souvent ce qui revient. Peut-être qu'il ne faut pas le faire, dans le doute je l'ai fait, quite à l'enlever.
+  - Création des variables de cognition (Big Five; literacy; numeracy; raven) et imputation des missings de personnalité pour ne pas perdre d'individus lors des analyses factorielles. Idem, c'est de la préparation de base pour analyses, donc je laisse les codes ici, mais on peut enlever de la base ménage classique.
+  - Cleaning des variables du preload précédents maintenant qu'il a servi à créer la variable de genre par exemple, des dummy associées aux catégorielles.
+
+
