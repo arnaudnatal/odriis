@@ -26,7 +26,7 @@ drop _merge
 *ego
 merge 1:1 HHID INDID using "NEEMSIS-ego_tomerge_panel.dta"
 drop _merge
-drop HHID HHID2016
+rename HHID parent_key
 recode dummydemonetisation (.=0)
 
 *panel unique id
@@ -34,7 +34,7 @@ merge m:m HHID2010 using "unique_identifier_panel.dta", keepusing(HHID_panel)
 keep if _merge==3
 drop _merge
 
-save"NEEMSIS-HH_v2.dta", replace
+save"NEEMSIS1-HH_v2.dta", replace
 ****************************************
 * END
 
@@ -49,12 +49,122 @@ use"NEEMSIS-occupation_alllong.dta", clear
 drop HHID
 destring hoursayear, replace
 
+
+
+**********EGO
+/*
+      egoid |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      1,743       64.65       64.65
+          1 |        489       18.14       82.79
+          2 |        464       17.21      100.00
+------------+-----------------------------------
+      Total |      2,696      100.00
+*/
+merge m:1 HHID2010 INDID using "NEEMSIS1-HH_v2.dta", keepusing(egoid dummymainoccup mainoccuptype othermainoccup maxhoursayear_ego dummyworkedpastyear workedpastyear_ego)
+keep if _merge==3
+drop _merge
+rename maxhoursayear_ego maxhoursayear
+
+*Ego moc
+destring hoursayear maxhoursayear, replace
+gen mainoccup=kindofwork if hoursayear==maxhoursayear & dummymainoccup==1
+gen mainoccupname=occupationname if hoursayear==maxhoursayear & dummymainoccup==1
+
+*If it is not?
+tab dummymainoccup
+gen _tempmocego=1 if othermainoccup==occupationname & dummymainoccup==0
+replace mainoccup=kindofwork if _tempmocego==1
+replace mainoccupname=occupationname if _tempmocego==1
+*Checking
+preserve
+bysort HHID2010 INDID: gen n=_n
+keep if n==1
+tab mainoccup ego, m
+restore
+*For the rest? mainoccuptype
+bysort HHID2010 INDID: egen mainok=max(mainoccup)
+tab mainok, m
+replace mainoccup=kindofwork if mainoccuptype==kindofwork & mainok==.
+replace mainoccupname=occupationname if mainoccuptype==kindofwork & mainok==.
+drop mainok
+bysort HHID2010 INDID: egen mainok=max(mainoccup)
+tab mainok ego, m
+*For the rest rest? Alamano
+sort HHID2010 INDID
+list HHID2010 INDID occupationid occupationname kindofwork othermainoccup if dummymainoccup==0 & mainoccupname=="", clean noobs
+preserve
+keep if ego!=0 & mainok==. & othermainoccup!=""
+keep HHID2010 occupationid INDID othermainoccup occupationname kindofwork mainoccuptype
+order HHID2010 INDID occupationid occupationname kindofwork mainoccuptype othermainoccup
+sort HHID2010 INDID occupationid
+*export excel using "NEEMSIS-occupations.xlsx", nolab replace firstrow(var)
+restore
+*À partir du fichier Excel
+replace mainoccup=4 if HHID2010=="ANDNAT365" & INDID==3 & occupationid==1
+replace mainoccupname="Nrega" if HHID2010=="ANDNAT365" & INDID==3 & occupationid==1
+
+drop mainok
+bysort HHID2010 INDID: egen mainok=max(mainoccup)
+tab mainok ego, m
+
+
+
+
+
 **********Indiv
 *max income or hours (income only for 2010)
 bysort HHID2010 INDID : egen maxhours_indiv=max(hoursayear)
 *occup name and occup type with the max
-gen mainoccup=kindofwork if maxhours_indiv==hoursayear
-gen mainoccupname=occupationname if maxhours_indiv==hoursayear
+replace mainoccup=kindofwork if maxhours_indiv==hoursayear
+replace mainoccupname=occupationname if maxhours_indiv==hoursayear
+drop mainok
+bysort HHID2010 INDID: egen mainok=max(mainoccup)
+tab mainok ego, m
+gen dummymoc=0
+replace dummymoc=1 if mainoccup!=.
+tab dummymoc // 1324 normalement
+	*Check duplicates
+	duplicates tag HHID2010 INDID egoid if dummymoc==1, gen(tag)
+	tab tag
+	sort tag HHID2010 INDID occupationid
+		*apply max income
+		bysort HHID2010 INDID: egen maxincome=max(annualincome) if tag>0
+		replace mainoccup=. if maxincome!=annualincome & tag>0
+		replace mainoccupname="" if maxincome!=annualincome & tag>0
+		drop mainok
+		drop dummymoc
+		drop tag
+		bysort HHID2010 INDID: egen mainok=max(mainoccup)
+		tab mainok ego, m
+		gen dummymoc=0
+		replace dummymoc=1 if mainoccup!=.
+		tab dummymoc // 1135 normalement
+		*Check duplicates
+		duplicates tag HHID2010 INDID ego if dummymoc==1, gen(tag)
+		tab tag
+		sort tag HHID2010 INDID occupationid
+			*apply occupation order
+			bysort HHID2010 INDID: egen minnumber=min(occupationid) if tag>0
+			replace mainoccup=. if minnumber!=occupationid & tag>0
+			replace mainoccupname="" if minnumber!=occupationid & tag>0
+			drop mainok
+			drop dummymoc
+			drop tag
+			bysort HHID2010 INDID: egen mainok=max(mainoccup)
+			tab mainok ego, m
+			gen dummymoc=0
+			replace dummymoc=1 if mainoccup!=.
+			tab dummymoc // 1135 normalement
+			drop mainok minnumber maxincome maxhours_indiv _tempmocego
+
+*hours and income of main
+gen mainoccup_hours=.
+gen mainoccup_income=.
+replace mainoccup_hours=hoursayear if dummymoc==1
+replace mainoccup_income=annualincome if dummymoc==1
+
+
 *encode name to simplify the procedure
 encode mainoccupname, gen(mainoccupnamenumeric)
 *put main occupation at indiv level
@@ -76,7 +186,9 @@ bysort HHID2010 INDID: egen nboccupation_indiv=sum(countoccupation)
 *cleaning
 rename mainoccupation mainoccupation_indiv
 rename mainoccupationname mainoccupationname_indiv
-drop maxhours_indiv mainoccup mainoccupname mainoccupnamenumeric countoccupation
+rename mainoccup_hours mainoccupation_hours_indiv
+rename mainoccup_income mainoccupation_income_indiv
+drop mainoccup mainoccupname mainoccupnamenumeric countoccupation
 
 
 **********HH
@@ -113,23 +225,17 @@ drop countoccupation
 **********Indiv base
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv mainoccupation_HH totalincome_HH nboccupation_HH HHID2010 INDID
+keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv mainoccupation_HH totalincome_HH nboccupation_HH HHID2010 INDID
 save"NEEMSIS-occupation_alllong_v2.dta", replace
 
 **********Merge dans la base HH
-use"NEEMSIS-HH_v2.dta", clear
+use"NEEMSIS1-HH_v2.dta", clear
 
 merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta"
 drop _merge
 
-foreach x in totalincome_indiv totalincome_HH{
-gen `x'1000=`x'/1000
-recode `x'1000 `x' (.=0)
-}
-
-foreach x in totalincome_indiv totalincome_HH totalincome_indiv1000 totalincome_HH1000{
+foreach x in mainoccupation_income_indiv totalincome_indiv totalincome_HH{
 gen `x'_b10=`x'*0.918905
-recode `x'_b10 (.=0)
 }
 
 recode mainoccupation_indiv mainoccupation_HH (.=0)
@@ -140,7 +246,7 @@ keep if n==1
 fre mainoccupation_HH
 restore
 
-save"NEEMSIS-HH_v3.dta", replace
+save"NEEMSIS1-HH_v3.dta", replace
 ****************************************
 * END
 
@@ -160,7 +266,7 @@ save"NEEMSIS-HH_v3.dta", replace
 ****************************************
 * Education & caste
 ****************************************
-use"NEEMSIS-HH_v3.dta", clear
+use"NEEMSIS1-HH_v3.dta", clear
 
 *Education
 gen edulevel=.
@@ -204,7 +310,7 @@ rename caste_group caste
 tab jatis caste
 
 
-save"NEEMSIS-HH_v4.dta", replace
+save"NEEMSIS1-HH_v4.dta", replace
 ****************************************
 * END
 
@@ -217,7 +323,7 @@ save"NEEMSIS-HH_v4.dta", replace
 ****************************************
 * Assets
 ****************************************
-use"NEEMSIS-HH_v4.dta", clear
+use"NEEMSIS1-HH_v4.dta", clear
 
 **********Gold
 gen goldquantityamount=goldquantity*2700
@@ -347,21 +453,14 @@ egen goodtotalamount=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodto
 recode goodtotalamount (.=0)
 
 egen assets=rowtotal(amountownland livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount)
-gen assets1000=assets/1000
 
 egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount)
-gen assets_noland1000=assets_noland/1000
 
-foreach x in assets assets1000 assets_noland assets_noland1000{
+foreach x in assets assets_noland{
 gen `x'_b10=`x'*0.918905
 }
 
 
-preserve
-bysort HHID2010: gen n=_n
-keep if n==1
-tabstat assets1000_b10 totalincome_HH1000_b10, stat(n mean sd p50) by(caste)
-restore
 
 
 gen year=2016
@@ -372,6 +471,6 @@ merge m:1 HHID2010 using "panel_comp.dta"
 keep if _merge==3
 drop _merge
 
-save"NEEMSIS-HH_v5.dta", replace
+save"NEEMSIS1-HH_v5.dta", replace
 ****************************************
 * END
