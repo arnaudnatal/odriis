@@ -30,7 +30,7 @@ set graph off
 ****************************************
 * PREPA COGNITIVE
 ****************************************
-use"NEEMSIS-HH_v5.dta", clear
+use"NEEMSIS1-HH_v5.dta", clear
 
 ***Raven
 /*
@@ -195,6 +195,9 @@ workwithother  understandotherfeeling trustingofother rudetoother toleratefaults
 managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm ///
 tryhard  stickwithg~s   goaftergoal finishwhat~n finishtasks  keepworking
 
+foreach x in $big5{
+recode `x' (99=.)
+}
 
 mdesc $big5 
 
@@ -291,6 +294,90 @@ alpha cr_managestress  cr_nervous  cr_changemood cr_feeldepres~d cr_easilyupset 
 alpha tryhard  stickwithg~s   goaftergoal finishwhat~n finishtasks  keepworking	
 alpha cr_tryhard  cr_stickwithg~s   cr_goaftergoal cr_finishwhat~n cr_finishtasks  cr_keepworking
 
-save"NEEMSIS-HH_v6.dta", replace
+save"NEEMSIS1-HH_v6.dta", replace
+****************************************
+* END
+
+
+
+
+/*
+****************************************
+* EFA
+****************************************
+global directory = "C:\Users\Arnaud\Desktop\NEEMSIS2\DATA\APPEND\CLEAN"
+cd"$directory"
+clear all
+use"NEEMSIS_APPEND_v8.dta", clear
+
+global big5  ///
+	cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts ///
+	cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers /// 
+	cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm ///
+	cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination ///
+	cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties ///
+	cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking
+
+global big5questionsnogrit curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
+organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties ///
+enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts ///
+workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother ///
+helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm
+	
+*1. Vérif des missings
+gen nmiss=0
+foreach x in $big5{
+replace nmiss=nmiss+1 if `x'==.
+}
+tab nmiss
+*2. Imputation avec les moyennes par sexe pour ne pas perdre des individus
+foreach x in $big5{
+gen im`x'=`x'
+}
+global big5i imcr_curious imcr_interestedbyart imcr_repetitivetasks imcr_inventive imcr_liketothink imcr_newideas imcr_activeimagination ///
+imcr_organized imcr_makeplans imcr_workhard imcr_appointmentontime imcr_putoffduties imcr_easilydistracted imcr_completeduties ///
+imcr_enjoypeople imcr_sharefeelings imcr_shywithpeople imcr_enthusiastic imcr_talktomanypeople imcr_talkative imcr_expressingthoughts ///
+imcr_workwithother imcr_understandotherfeeling imcr_trustingofother imcr_rudetoother imcr_toleratefaults imcr_forgiveother ///
+imcr_helpfulwithothers imcr_managestress imcr_nervous imcr_changemood imcr_feeldepressed imcr_easilyupset imcr_worryalot imcr_staycalm
+forvalues i=1(1)2{
+foreach x in $big5i{
+sum `x' if sex==`i'
+replace `x'=r(mean) if `x'==. & sex==`i' & egoid!=0 & egoid!=.
+}
+}
+*3. Check imputations
+replace nmiss=0 if egoid!=0 & egoid!=.
+foreach x in $big5i{
+replace nmiss=nmiss+1 if `x'==.
+}
+tab nmiss
+drop nmiss
+*3. EFA
+factor $big5i, pcf fa(5)
+rotate, promax 
+putexcel set "C:\Users\Arnaud\Desktop\PANEL_NEEMSIS\EFA.xlsx", modify sheet(2020res)
+putexcel (E2)=matrix(e(r_L)) 
+
+factor $big5questionsnogrit, pcf fa(5)
+rotate, promax 
+putexcel set "C:\Users\Arnaud\Desktop\PANEL_NEEMSIS\EFA.xlsx", modify sheet(2020resnogritnocr)
+putexcel (E2)=matrix(e(r_L)) 
+
+*4. Graph
+/*
+screeplot, neigen(10) yline(1) ylabel(1[1]10) xlabel(1[1]10) 
+loadingplot, legend(off) xline(0) yline(0) scale(.8)
+scoreplot
+*/
+*5. Predict
+predict f1 f2 f3 f4 f5
+global factor f1 f2 f3 f4 f5
+sum $factor
+sum $big5, sep(50)
+sum $big5i, sep(50)
+*global naivebig5 EGOcrOP EGOcrEX EGOcrES EGOcrCO EGOcrAG
+*pwcorr $naivebig5 $factor, star(.01)
+
+save"NEEMSIS_APPEND_v9.dta", replace
 ****************************************
 * END
