@@ -335,7 +335,7 @@ save"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v2.dta", replace
 ****************************************
 * MERGING AGRI WITH HH
 ****************************************
-use"$directory\CLEAN\NEEMSIS_APPEND_v6.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v6.dta", clear
 *drop if preload2016==2
 tostring castepreload2016, replace
 rename version version_HH
@@ -354,6 +354,6 @@ rename version version_agri
 erase"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v2.dta"
 erase"$directory\CLEAN\NEEMSIS_Agriculture_APPEND.dta"
 
-save"$directory\CLEAN\NEEMSIS_APPEND_v7.dta", replace
+save"$directory\CLEAN\NEEMSIS2-HH_v7.dta", replace
 ****************************************
 * END
