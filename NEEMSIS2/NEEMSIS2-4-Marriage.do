@@ -43,11 +43,11 @@ cd"$directory"
 ****************************************
 
 ********** TEMPORARY PANEL DATA BASE TO HAVE ALL INDIVIDUALS
-use"$directory\CLEAN\NEEMSIS_APPEND_v5.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v5.dta", clear
 merge m:1 INDIDpanel using "$directory\do_not_drop\NEEMSIS_preload2016"
 drop if _merge==1
 *
-save"$directory\CLEAN\NEEMSIS_APPEND_v6.dta", replace
+save"$directory\CLEAN\NEEMSIS2-HH_v6.dta", replace
 
 
 
@@ -74,7 +74,7 @@ save"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v2.d
 * LIST OF SOMEONE ELSE HH
 keep if marriagedate!=.
 sort HHID2010 marriagesomeoneelse
-list HHID2010 if (marriedid=="31" | marriedid=="32" | marriedid=="133") & marriagesomeoneelse=="", clean noobs
+list HHID2010 HHID_panel if (marriedid=="31" | marriedid=="32" | marriedid=="133") & marriagesomeoneelse=="", clean noobs
 list HHID2010 marriedname if marriagesomeoneelse!="" & (marriedid=="31" | marriedid=="32" | marriedid=="33"), clean noobs
 /*
     HHID2010  
@@ -133,7 +133,7 @@ list HHID2010 marriedname if marriagesomeoneelse!="" & (marriedid=="31" | marrie
 /*
 Someone else without indications
 */
-use"$directory\CLEAN\NEEMSIS_APPEND_v6.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v6.dta", clear
 gen mar=0
 
 replace mar=1 if HHID2010=="103"  
@@ -223,7 +223,7 @@ RAMTP298 deux filles parties pour mariage, pourquoi en avoir déclaré qu'un ?
 /*
 Someone else with indications
 */
-use"$directory\CLEAN\NEEMSIS_APPEND_v6.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v6.dta", clear
 gen mar=0
 
 replace mar=1 if HHID2010=="21"  
@@ -399,7 +399,7 @@ save"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.d
 
 
 *********** MERGE MARRIAGE WITH HOUSEHOLD DATA BASE
-use"$directory\CLEAN\NEEMSIS_APPEND_v5.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v5.dta", clear
 drop INDID2010 INDIDpanel
 egen INDID2010=concat(HHID2010 INDID), p(/)
 egen INDIDpanel=concat(HHID_panel INDID), p(/)
@@ -417,9 +417,8 @@ egen INDIDpanel=concat(HHID_panel INDID), p(/)
 replace INDID2010="" if INDID_new!="."
 replace INDIDpanel="" if INDID_new!="."
 * INTERMEDIATE SAVING
-save"$directory\CLEAN\NEEMSIS_APPEND_v6.dta", replace
+save"$directory\CLEAN\NEEMSIS2-HH_v6.dta", replace
 * BIG CLEAN
 erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup.dta"
 erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v2.dta"
-*erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta"
 
