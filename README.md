@@ -5,7 +5,7 @@ Vous trouverez dans les différents dossiers, les `.do` permettant de nettoyer l
 ---
 ## ANNONCES
   - [ ] Partager Dropbox avec les bases RUME, NEEMSIS 1 et NEEMSIS 2 créé.
-  - [ ] Isoler les ménages "Someone else" étranges.
+  - [x] Isoler les ménages "Someone else" étranges.
   - [ ] Terminer panel RUME - NEEMSIS 1
 ---
 
