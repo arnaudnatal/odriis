@@ -87,14 +87,15 @@ use"NEEMSIS_APPEND-occupations_v2.dta", clear
 ------------+-----------------------------------
       Total |      2,486      100.00
 */
-merge m:m parent_key INDID_total using "NEEMSIS_APPEND_v7.dta", keepusing(ego maxhoursayear selected_occupposition_ selected_occupname_ dummymainoccupation2 othermainoccupation2 workedpastyearfromearlier dummyworkedpastyear dummyego)
+merge m:m parent_key INDID_total using "NEEMSIS2-HH_v7.dta", keepusing(ego mainoccuptype maxhoursayear selected_occupposition_ selected_occupname_ dummymainoccupation2 othermainoccupation2 workedpastyearfromearlier dummyworkedpastyear dummyego)
 keep if _merge==3
 drop _merge
 
 *Ego moc
-destring hoursayear maxhoursayear, replace
-gen mainoccup=kindofwork if maxhoursayear==hoursayear & dummymainoccupation2==1
-gen mainoccupname=occupationname if maxhoursayear==hoursayear & dummymainoccupation2==1
+destring hoursayear maxhoursayear selected_occupposition_, replace
+gen mainoccup=kindofwork if selected_occupposition_==occupationnumber & dummymainoccupation2==1
+gen mainoccupname=occupationname if selected_occupposition_==occupationnumber & dummymainoccupation2==1
+
 *If it is not?
 tab dummymainoccupation2
 gen _tempmocego=1 if othermainoccupation2==occupationname & dummymainoccupation2==0
@@ -106,140 +107,93 @@ bysort parent_key INDID_total: gen n=_n
 keep if n==1
 tab mainoccup dummyego, m
 restore
-*For the rest? Alamano
+*For the rest? mainoccuptype
+bysort parent_key INDID_total: egen mainok=max(mainoccup)
+tab mainok, m
+replace mainoccup=kindofwork if mainoccuptype==kindofwork & mainok==.
+replace mainoccupname=occupationname if mainoccuptype==kindofwork & mainok==.
+drop mainok
+bysort parent_key INDID_total: egen mainok=max(mainoccup)
+tab mainok ego, m
+*For the rest rest? Alamano
 sort parent_key INDID_total
 list parent_key INDID_total occupationnumber occupationname kindofwork othermainoccupation2 if dummymainoccupation2==0 & mainoccupname=="", clean noobs
 preserve
-keep if dummymainoccupation2==0 & mainoccupname==""
-keep parent_key occupationnumber INDID_total othermainoccupation2 occupationname kindofwork
-order parent_key INDID_total occupationnumber occupationname kindofwork othermainoccupation2
-export excel using "NEEMSIS_APPEND-occupations_v2", nolab replace firstrow(var)
+keep if ego!=0 & mainok==. & othermainoccupation2!=""
+keep parent_key occupationnumber INDID_total othermainoccupation2 occupationname kindofwork mainoccuptype
+order parent_key INDID_total occupationnumber occupationname kindofwork mainoccuptype othermainoccupation2
+sort parent_key INDID_total occupationnumber
+*export excel using "NEEMSIS_APPEND-occupations_v2.xlsx", nolab replace firstrow(var)
 restore
 *À partir du fichier Excel
-replace mainoccup=3 if parent_key=="uuid:11d432e5-b567-4279-9729-36fe097f4cb4" & INDID_total==2 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==1 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==3 & occupationnumber==2
-*replace mainoccup=4 if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==2
-*replace mainoccup=3 if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:4adf3c67-9056-4e27-ac96-b21b04458534" & INDID_total==1 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:4e56a1a6-6cde-4dbd-881f-d2d0c958ef2b" & INDID_total==1 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:5672b71a-0908-47a7-bad7-a2d698f59343" & INDID_total==2 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:5a18379c-0a47-4f7d-8b1f-c531563200cb" & INDID_total==2 & occupationnumber==2
-replace mainoccup=4 if parent_key=="uuid:5b0b3cb1-c758-499a-8126-2aa9a0348795" & INDID_total==1 & occupationnumber==2
-replace mainoccup=4 if parent_key=="uuid:60bb2e46-283a-4d26-935b-d541da45193f" & INDID_total==1 & occupationnumber==2
-*replace mainoccup=2 if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==2
-*replace mainoccup=4 if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==3
-replace mainoccup=1 if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==2 & occupationnumber==2
-*replace mainoccup=1 if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==2
-*replace mainoccup=4 if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:6eac903a-6982-4424-9d2f-72e59de029e7" & INDID_total==1 & occupationnumber==2
-*replace mainoccup=3 if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==1
-*replace mainoccup=7 if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:7dcd5a01-7a25-47c3-b6c6-74836281cf4b" & INDID_total==2 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==1 & occupationnumber==1
-*replace mainoccup=3 if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==1
-*replace mainoccup=4 if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==3
-replace mainoccup=2 if parent_key=="uuid:831ac2d3-8b2f-4936-9c96-515eb3940233" & INDID_total==1 & occupationnumber==2
 replace mainoccup=4 if parent_key=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID_total==3 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==1 & occupationnumber==2
 replace mainoccup=7 if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==2 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==1 & occupationnumber==2
-replace mainoccup=7 if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==2 & occupationnumber==2
-*replace mainoccup=3 if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==3
-*replace mainoccup=5 if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==2
-replace mainoccup=4 if parent_key=="uuid:a01b1cb0-bc31-420c-a1e7-f46d3011c81b" & INDID_total==1 & occupationnumber==1
-replace mainoccup=7 if parent_key=="uuid:a5864c62-bf01-4313-a7b4-47985821c1e4" & INDID_total==2 & occupationnumber==1
-replace mainoccup=2 if parent_key=="uuid:a7b4d739-b69d-4efb-b34a-0b175dd933fe" & INDID_total==1 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==1 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==2 & occupationnumber==2
-replace mainoccup=7 if parent_key=="uuid:b3e4fe70-f2aa-4e0f-bb6e-8fb57bb6f409" & INDID_total==2 & occupationnumber==1
-replace mainoccup=4 if parent_key=="uuid:b3f4653f-719d-4f7a-a0e4-82d8bc04659c" & INDID_total==2 & occupationnumber==3
 replace mainoccup=4 if parent_key=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID_total==5 & occupationnumber==1
-*replace mainoccup=1 if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==2
-*replace mainoccup=4 if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==4
-*replace mainoccup=3 if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==3
-replace mainoccup=4 if parent_key=="uuid:c97950f1-4a81-4b10-9f91-be004d7f01c9" & INDID_total==1 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:caff5415-5d5c-4932-aff5-903c30c0bc79" & INDID_total==1 & occupationnumber==2
-replace mainoccup=2 if parent_key=="uuid:d4a5192d-74e4-4cb8-8b48-1d971f68cb54" & INDID_total==1 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==1 & occupationnumber==2
-replace mainoccup=7 if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==2 & occupationnumber==1
-replace mainoccup=4 if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==1 & occupationnumber==1
-replace mainoccup=3 if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==2 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:e3ff8654-5079-4cb1-ab14-ce83b63d894a" & INDID_total==2 & occupationnumber==1
 replace mainoccup=4 if parent_key=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID_total==3 & occupationnumber==1
 replace mainoccup=2 if parent_key=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID_total==3 & occupationnumber==2
-replace mainoccup=3 if parent_key=="uuid:f9af2892-dbd1-4027-adcf-8271a87cdc44" & INDID_total==1 & occupationnumber==1
-*replace mainoccup=3 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==2
-*replace mainoccup=4 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==3
-*replace mainoccup=3 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==1
-*replace mainoccup=4 if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==4
 
-replace mainoccupname="Agriculture weeding" if parent_key=="uuid:11d432e5-b567-4279-9729-36fe097f4cb4" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agriculture activities in own farm unpaid" if parent_key=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID_total==3 & occupationnumber==2
-*replace mainoccupname="Chamber" if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==2
-*replace mainoccupname="Chamber" if parent_key=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Agriculture activities in own farm unpaid" if parent_key=="uuid:4adf3c67-9056-4e27-ac96-b21b04458534" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:4e56a1a6-6cde-4dbd-881f-d2d0c958ef2b" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="NREGA" if parent_key=="uuid:5672b71a-0908-47a7-bad7-a2d698f59343" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:5a18379c-0a47-4f7d-8b1f-c531563200cb" & INDID_total==2 & occupationnumber==2
-replace mainoccupname="Agricultural cooli" if parent_key=="uuid:5b0b3cb1-c758-499a-8126-2aa9a0348795" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Road contract supervisor" if parent_key=="uuid:60bb2e46-283a-4d26-935b-d541da45193f" & INDID_total==1 & occupationnumber==2
-*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==2
-*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==1 & occupationnumber==3
-replace mainoccupname="Agricultural cooli" if parent_key=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID_total==2 & occupationnumber==2
-*replace mainoccupname="Housewife" if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==2
-*replace mainoccupname="Housewife" if parent_key=="uuid:69694844-ee5e-450a-80cb-81d85c7d7e7e" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Coolie" if parent_key=="uuid:6eac903a-6982-4424-9d2f-72e59de029e7" & INDID_total==1 & occupationnumber==2
-*replace mainoccupname="Samosa seller" if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==1
-**replace mainoccupname="Samosa seller" if parent_key=="uuid:752d1e9e-f217-465d-9de1-c30298fae3b5" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agricultural cooli" if parent_key=="uuid:7dcd5a01-7a25-47c3-b6c6-74836281cf4b" & INDID_total==2 & occupationnumber==2
-replace mainoccupname="Agriculture activities in own land" if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==1 & occupationnumber==1
-*replace mainoccupname="Agriculture activities in own land unpaid" if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==1
-*replace mainoccupname="Agriculture activities in own land unpaid" if parent_key=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID_total==2 & occupationnumber==3
-replace mainoccupname="Agriculture work in own farm" if parent_key=="uuid:831ac2d3-8b2f-4936-9c96-515eb3940233" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agricultural cooli" if parent_key=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID_total==3 & occupationnumber==1
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agriculture coolie" if parent_key=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID_total==2 & occupationnumber==2
-*replace mainoccupname="Agriculture coolie" if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==3
-*replace mainoccupname="Agriculture coolie" if parent_key=="uuid:995ac354-9b49-4d48-b138-014ac3c62ad1" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="NREGA" if parent_key=="uuid:a01b1cb0-bc31-420c-a1e7-f46d3011c81b" & INDID_total==1 & occupationnumber==1
-replace mainoccupname="Unpaid worker in own land" if parent_key=="uuid:a5864c62-bf01-4313-a7b4-47985821c1e4" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Electrician" if parent_key=="uuid:a7b4d739-b69d-4efb-b34a-0b175dd933fe" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agriculture activities in own land" if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==1 & occupationnumber==1
-replace mainoccupname="Agriculture activities in own land unpaid" if parent_key=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID_total==2 & occupationnumber==2
-replace mainoccupname="Agriculture coolie" if parent_key=="uuid:b3e4fe70-f2aa-4e0f-bb6e-8fb57bb6f409" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Agriculture coolie" if parent_key=="uuid:b3f4653f-719d-4f7a-a0e4-82d8bc04659c" & INDID_total==2 & occupationnumber==3
-replace mainoccupname="Agricultural cooli" if parent_key=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID_total==5 & occupationnumber==1
-*replace mainoccupname="NREGA" if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==2
-*replace mainoccupname="NREGA" if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==4
-*replace mainoccupname="NREGA" if parent_key=="uuid:c3b80850-9377-4893-b778-d0300231eede" & INDID_total==1 & occupationnumber==3
-replace mainoccupname="Agriculture own land working" if parent_key=="uuid:c97950f1-4a81-4b10-9f91-be004d7f01c9" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:caff5415-5d5c-4932-aff5-903c30c0bc79" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Gouva selling" if parent_key=="uuid:d4a5192d-74e4-4cb8-8b48-1d971f68cb54" & INDID_total==1 & occupationnumber==1
-replace mainoccupname="Agriculture own land" if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==1 & occupationnumber==2
-replace mainoccupname="Agriculture own land unpaid works" if parent_key=="uuid:dc69d4b1-2609-4936-890f-3a5ca8bc0ed1" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Agriculture coolie" if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==1 & occupationnumber==1
-replace mainoccupname="Coolie" if parent_key=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID_total==2 & occupationnumber==2
-replace mainoccupname="Agricultural cooli" if parent_key=="uuid:e3ff8654-5079-4cb1-ab14-ce83b63d894a" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="Agri coolie" if parent_key=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID_total==3 & occupationnumber==1
-replace mainoccupname="Driver (Tata ace own vehicle)" if parent_key=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID_total==3 & occupationnumber==2
-replace mainoccupname="Agriculture activities in own farm" if parent_key=="uuid:f9af2892-dbd1-4027-adcf-8271a87cdc44" & INDID_total==1 & occupationnumber==1
-*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==2
-*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==3
-*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==1
-*replace mainoccupname="Agricultural cooli" if parent_key=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID_total==1 & occupationnumber==4
-
+replace mainoccupname="Car driver" if parent_key=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID_total==3 & occupationnumber==1
+replace mainoccupname="Agriculture activities in own farm unpaid" if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==2 & occupationnumber==1
+replace mainoccupname="NREGA" if parent_key=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID_total==5 & occupationnumber==1
+replace mainoccupname="NREGs work as coolie" if parent_key=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID_total==3 & occupationnumber==1
+replace mainoccupname="Tata ace driver (own vehicle)" if parent_key=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID_total==3 & occupationnumber==2
+drop mainok
+bysort parent_key INDID_total: egen mainok=max(mainoccup)
+tab mainok ego, m
 
 
 **********Indiv
 *max income or hours (income only for 2010)
 bysort parent_key INDID : egen maxhours_indiv=max(hoursayear)
 *occup name and occup type with the max
-replace mainoccup=kindofwork if maxhours_indiv==hoursayear & mainoccup==.
-replace mainoccupname=occupationname if maxhours_indiv==hoursayear & mainoccupname==""
+replace mainoccup=kindofwork if maxhours_indiv==hoursayear & mainok==.
+replace mainoccupname=occupationname if maxhours_indiv==hoursayear & mainok==.
+drop mainok
+bysort parent_key INDID_total: egen mainok=max(mainoccup)
+tab mainok ego, m
+gen dummymoc=0
+replace dummymoc=1 if mainoccup!=.
+tab dummymoc // 1135 normalement
+	*Check duplicates
+	duplicates tag parent_key INDID_total ego if dummymoc==1, gen(tag)
+	tab tag
+	sort tag parent_key INDID_total occupationnumber
+		*apply max income
+		bysort parent_key INDID_total: egen maxincome=max(annualincome) if tag>0
+		replace mainoccup=. if maxincome!=annualincome & tag>0
+		replace mainoccupname="" if maxincome!=annualincome & tag>0
+		drop mainok
+		drop dummymoc
+		drop tag
+		bysort parent_key INDID_total: egen mainok=max(mainoccup)
+		tab mainok ego, m
+		gen dummymoc=0
+		replace dummymoc=1 if mainoccup!=.
+		tab dummymoc // 1135 normalement
+		*Check duplicates
+		duplicates tag parent_key INDID_total ego if dummymoc==1, gen(tag)
+		tab tag
+		sort tag parent_key INDID_total occupationnumber
+			*apply occupation order
+			bysort parent_key INDID_total: egen minnumber=min(occupationnumber) if tag>0
+			replace mainoccup=. if minnumber!=occupationnumber & tag>0
+			replace mainoccupname="" if minnumber!=occupationnumber & tag>0
+			drop mainok
+			drop dummymoc
+			drop tag
+			bysort parent_key INDID_total: egen mainok=max(mainoccup)
+			tab mainok ego, m
+			gen dummymoc=0
+			replace dummymoc=1 if mainoccup!=.
+			tab dummymoc // 1135 normalement
+			drop mainok minnumber maxincome maxhours_indiv _tempmocego
+
+*hours and income of main
+gen mainoccup_hours=.
+gen mainoccup_income=.
+replace mainoccup_hours=hoursayear if dummymoc==1
+replace mainoccup_income=annualincome if dummymoc==1
+	
 *encode name to simplify the procedure
 encode mainoccupname, gen(mainoccupnamenumeric)
 *put main occupation at indiv level
@@ -257,10 +211,13 @@ bysort parent_key INDID: egen totalincome_indiv=sum(annualincome)
 *nb of income sources
 fre kindofwork
 bysort parent_key INDID: egen nboccupation_indiv=sum(countoccupation)
+
 *cleaning
 rename mainoccupation mainoccupation_indiv
 rename mainoccupationname mainoccupationname_indiv
-drop maxhours_indiv mainoccup mainoccupname mainoccupnamenumeric countoccupation
+rename mainoccup_hours mainoccupation_hours_indiv
+rename mainoccup_income mainoccupation_income_indiv
+drop mainoccup mainoccupname mainoccupnamenumeric countoccupation
 
 
 **********HH
@@ -297,17 +254,14 @@ drop countoccupation
 **********Indiv base
 bysort parent_key INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv mainoccupation_HH totalincome_HH nboccupation_HH parent_key INDID
+keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv mainoccupation_HH totalincome_HH nboccupation_HH parent_key INDID
 save"NEEMSIS_APPEND-occupations_v3.dta", replace
 *1135 indiv
 
 **********Merge dans la base HH
-use"NEEMSIS_APPEND_v7.dta", clear
+use"NEEMSIS2-HH_v7.dta", clear
 tab dummyworkedpastyear
-/*
-1140 indiv
-Why this difference of five?
-*/
+*1140 indiv ?
 
 merge m:1 parent_key INDID_total using "NEEMSIS_APPEND-occupations_v3.dta"
 drop _merge
@@ -320,7 +274,7 @@ keep if n==1
 fre mainoccupation_HH
 restore
 
-save"NEEMSIS_APPEND_v8.dta", replace
+save"NEEMSIS2-HH_v8.dta", replace
 ****************************************
 * END
 
@@ -338,7 +292,7 @@ save"NEEMSIS_APPEND_v8.dta", replace
 ****************************************
 * 2016 DATA PRELOAD for sex, etc.
 ****************************************
-use"NEEMSIS_APPEND_v8.dta", clear
+use"NEEMSIS2-HH_v8.dta", clear
 merge m:1 INDIDpanel using "$directory\do_not_drop\NEEMSIS_preload2016"
 drop if _merge==2
 drop HHID
@@ -350,9 +304,7 @@ label values preload2016 yesno
 tab preload2016
 rename preload2016 dummy_preload2016
 
-save"NEEMSIS_APPEND_v9.dta", replace
-
-
+save"NEEMSIS2-HH_v9.dta", replace
 ****************************************
 * END
 
@@ -374,7 +326,7 @@ save"NEEMSIS_APPEND_v9.dta", replace
 ****************************************
 * SEX CASTE EDUCATION
 ****************************************
-use"NEEMSIS_APPEND_v9.dta", clear
+use"NEEMSIS2-HH_v9.dta", clear
 
 ********** HOW MUCH PRESENT ON NEEMSIS2 survey?
 gen respondent2020=.
@@ -534,20 +486,9 @@ gen year=2020
 
 
 **********Cleaning
-rename marriedid_o old_marriedid
-rename egoid_p16 egoid_panel
-drop*_p16
-drop loandetails* loanlender* threemainloans_* 
-drop *_o
-drop selected_index1 selected_index2 selected_index3 selected_name1 selected_name2 selected_name3 selected_index1_2 selected_index2_2 selected_index3_2 selected_name1_2 selected_name2_2 selected_name3_2 selected_index1_3 selected_index2_3 selected_index3_3 selected_name1_3 selected_name2_3 selected_name3_3 _3selected_index1 _3selected_index2 _3selected_index3 _3selected_name1 _3selected_name2 _3selected_name3 _3selected_index1_2 _3selected_index2_2 _3selected_index3_2 _3selected_name1_2 _3selected_name2_2 _3selected_name3_2 _3ego2random_3_2 _3selected_index1_3 _3selected_index2_3 _3selected_index3_3 _3selected_name1_3 _3selected_name2_3 _3selected_name3_3 _3ego2random_1_3 _3ego2random_2_3 _3ego2random_3_3
-drop joinnamehhmemberego1 joinnamehhmember join_1825 join_2635 join_36 _3join_1825 _3join_2635 _3join_36
-drop setofrandom_draws_3 setofrandom_draws_2 setofrandom_draws setof_3random_draws_3 setof_3random_draws_2 setof_3random_draws random_draws_count random_draws_3_count random_draws_2_count ego2random_3_3 ego2random_3_2 ego2random_3 ego2random_2_3 ego2random_2_2 ego2random_2 ego2random_1_3 ego2random_1_2 ego2random_1 _3random_draws_count _3random_draws_3_count _3random_draws_2_count _3ego2random_3 _3ego2random_2_2 _3ego2random_2 _3ego2random_1_2 _3ego2random_1
-drop uniquelistego2 uniquelistego1 unique_draws_3 unique_draws_2 unique_draws _3unique_draws_3 _3unique_draws_2 _3unique_draws
-
-drop _2businessloandetails_count _2contactgroup_count _2covsntypehelpgivengroup_count _2covsntypehelpreceivedgroup_cou _2formalsocialcapital_count _2indoccupmonths_count _3businessloandetails_count _3contactgroup_count _3count_eligible_1825 _3count_eligible_2635 _3count_eligible_36 _3covsntypehelpgivengroup_count _3covsntypehelpreceivedgroup_cou _3ego2index_1825 _3ego2index_2635 _3ego2index_36 _3formalsocialcapital_count _3indoccupmonths_count _3show_draws_2_count _3show_draws_3_count _3show_draws_count
 
 
-save"NEEMSIS_APPEND_v10.dta", replace
+save"NEEMSIS2-HH_v10.dta", replace
 ****************************************
 * END
 
@@ -574,7 +515,7 @@ save"NEEMSIS_APPEND_v10.dta", replace
 ****************************************
 * Assets
 ****************************************
-use"NEEMSIS_APPEND_v10.dta", clear
+use"NEEMSIS2-HH_v10.dta", clear
 
 **********Equipment
 fre equipmentlist
@@ -754,7 +695,7 @@ egen assets=rowtotal(amountownland livestockamount_cow livestockamount_goat live
 egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount)
 
 
-save"NEEMSIS_APPEND_v11.dta", replace
+save"NEEMSIS2-HH_v11.dta", replace
 ****************************************
 * END
 
@@ -771,7 +712,7 @@ save"NEEMSIS_APPEND_v11.dta", replace
 ****************************************
 * Cognition
 ****************************************
-use"NEEMSIS_APPEND_v11.dta", clear
+use"NEEMSIS2-HH_v11.dta", clear
 
 ***Raven
 *right answers
@@ -974,7 +915,7 @@ alpha tryhard  stickwithg~s   goaftergoal finishwhat~n finishtasks  keepworking
 alpha cr_tryhard  cr_stickwithg~s   cr_goaftergoal cr_finishwhat~n cr_finishtasks  cr_keepworking
 
 
-save"NEEMSIS_APPEND_v12.dta", replace
+save"NEEMSIS2-HH_v12.dta", replace
 ****************************************
 * END
 
@@ -988,7 +929,7 @@ save"NEEMSIS_APPEND_v12.dta", replace
 ****************************************
 * Cognition imputations for missings
 ****************************************
-use"NEEMSIS_APPEND_v12.dta", clear
+use"NEEMSIS2-HH_v12.dta", clear
 
 
 global big5  ///
@@ -1037,7 +978,7 @@ tab nmiss egoid, m
 drop nmiss
 
 
-save"NEEMSIS_APPEND_v13.dta", replace
+save"NEEMSIS2-HH_v13.dta", replace
 ****************************************
 * END
 
@@ -1049,7 +990,21 @@ save"NEEMSIS_APPEND_v13.dta", replace
 ****************************************
 * CLEANING
 ****************************************
-use"NEEMSIS_APPEND_v13.dta", clear
+use"NEEMSIS2-HH_v13.dta", clear
+
+rename marriedid_o old_marriedid
+rename egoid_p16 egoid_panel
+drop*_p16
+drop loandetails* loanlender* threemainloans_* 
+drop *_o
+drop selected_index1 selected_index2 selected_index3 selected_name1 selected_name2 selected_name3 selected_index1_2 selected_index2_2 selected_index3_2 selected_name1_2 selected_name2_2 selected_name3_2 selected_index1_3 selected_index2_3 selected_index3_3 selected_name1_3 selected_name2_3 selected_name3_3 _3selected_index1 _3selected_index2 _3selected_index3 _3selected_name1 _3selected_name2 _3selected_name3 _3selected_index1_2 _3selected_index2_2 _3selected_index3_2 _3selected_name1_2 _3selected_name2_2 _3selected_name3_2 _3ego2random_3_2 _3selected_index1_3 _3selected_index2_3 _3selected_index3_3 _3selected_name1_3 _3selected_name2_3 _3selected_name3_3 _3ego2random_1_3 _3ego2random_2_3 _3ego2random_3_3
+drop joinnamehhmemberego1 joinnamehhmember join_1825 join_2635 join_36 _3join_1825 _3join_2635 _3join_36
+drop setofrandom_draws_3 setofrandom_draws_2 setofrandom_draws setof_3random_draws_3 setof_3random_draws_2 setof_3random_draws random_draws_count random_draws_3_count random_draws_2_count ego2random_3_3 ego2random_3_2 ego2random_3 ego2random_2_3 ego2random_2_2 ego2random_2 ego2random_1_3 ego2random_1_2 ego2random_1 _3random_draws_count _3random_draws_3_count _3random_draws_2_count _3ego2random_3 _3ego2random_2_2 _3ego2random_2 _3ego2random_1_2 _3ego2random_1
+drop uniquelistego2 uniquelistego1 unique_draws_3 unique_draws_2 unique_draws _3unique_draws_3 _3unique_draws_2 _3unique_draws
+
+drop _2businessloandetails_count _2contactgroup_count _2covsntypehelpgivengroup_count _2covsntypehelpreceivedgroup_cou _2formalsocialcapital_count _2indoccupmonths_count _3businessloandetails_count _3contactgroup_count _3count_eligible_1825 _3count_eligible_2635 _3count_eligible_36 _3covsntypehelpgivengroup_count _3covsntypehelpreceivedgroup_cou _3ego2index_1825 _3ego2index_2635 _3ego2index_36 _3formalsocialcapital_count _3indoccupmonths_count _3show_draws_2_count _3show_draws_3_count _3show_draws_count
+
+
 drop reasonnoinsurance_1 reasonnoinsurance_2 reasonnoinsurance_3
 drop usemobilefinancetype_1 usemobilefinancetype_4 usemobilefinancetype_3 usemobilefinancetype_2 usemobilefinancetype_77
 drop reservationgrade_12 reservationgrade_10 reservationgrade_7 reservationgrade_9 reservationgrade_8 reservationgrade_6 reservationgrade_11 reservationgrade_3 reservationgrade_16 reservationgrade_15 reservationgrade_5 reservationgrade_4 reservationgrade_1 reservationgrade_2 reservationkind_3 reservationkind_1 reservationkind_2 reservationkind_5 reservationkind_77 reasonneverattendedschool_13 reasonneverattendedschool_1 reasonneverattendedschool_7 reasonneverattendedschool_11 reasondropping_1 reasondropping_11 reasondropping_7 reasondropping_2 reasondropping_5 reasondropping_15 reasondropping_9 reasondropping_77 reasondropping_12 kindofworkinactive_1 kindofworkinactive_2 kindofworkinactive_3 kindofworkinactive_4 kindofworkinactive_5 kindofworkinactive_6 kindofworkinactive_7 kindofworkinactive_8 migrationjoblist_1 migrationjoblist_2 migrationjoblist_3 migrationjoblist_4 migrationjoblist_5 migrationjoblist_6 migrationjoblist_7 migrationjoblist_8 migrationjoblist_9
@@ -1061,6 +1016,6 @@ drop covexpensesdecrease_1 covexpensesdecrease_4 covexpensesdecrease_3 covexpens
 drop howbuyhouse_2 howbuyhouse_7 howbuyhouse_5 howbuyhouse_4 howbuyhouse_1 schemeslist_2 schemeslist_3 schemeslist_4 schemeslist_5 schemeslist_6 schemeslist_7 schemeslist_8 schemeslist_9 schemeslist_18 schemeslist_19 schemeslist_21 schemeslist_23 covrationcarduse_2 covrationcarduse_1 covrationcarduse_3 waterfromownland_1 waterfromownland_2 waterfromownland_4 waterfromleaseland_2 waterfromleaseland_1 landpurchasedhowbuy_2 landpurchasedhowbuy_4 landpurchasedhowbuy_1 landpurchasedhowbuy_3 landleaserrelation_2 landleaserrelation_1 landleaserrelation_10 landleaserrelation_5 landleasingrelation_10 landleasingrelation_2 landleasingrelation_1 landleasingrelation_8 productlist_15 covsubsistencereason_1 covsubsistencereason_2 covsubsistencereason_3 covsubsistencereason_77 covexpensesincrease_5 covexpensesstable_1 covexpensesstable_7 covexpensesstable_2 howbuyhouse_3 howbuyhouse_6 rationcardreasonnouse_6 rationcardreasonnouse_2 rationcardreasonnouse_1
 dropmiss, force
 
-save"NEEMSIS_APPEND_v14.dta", replace
+save"NEEMSIS2-HH_v14.dta", replace
 ****************************************
 * END
