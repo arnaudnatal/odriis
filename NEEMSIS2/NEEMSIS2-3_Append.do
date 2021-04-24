@@ -507,7 +507,7 @@ replace name=namefrompreload if name=="" & namefrompreload!=""
 
 
 ********** INTERMEDIATE SAVING
-save"$directory\CLEAN\NEEMSIS_APPEND_v4.dta", replace
+save"$directory\CLEAN\NEEMSIS2-HH_v4.dta", replace
 ****************************************
 * END
 
@@ -596,7 +596,7 @@ save"$directory\CLEAN\NEEMSIS_APPEND-detailsinsurance_wide.dta", replace
 
 
 **********Merge with 
-use"$directory\CLEAN\NEEMSIS_APPEND_v4.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v4.dta", clear
 
 merge m:1 setofchitfund using "$directory\CLEAN\NEEMSIS_APPEND-detailschitfunds_wide.dta"
 drop if _merge==2
@@ -611,7 +611,7 @@ drop if _merge==2
 drop _merge
 
 ********** INTERMEDIATE SAVING
-save"$directory\CLEAN\NEEMSIS_APPEND_v5.dta", replace
+save"$directory\CLEAN\NEEMSIS2-HH_v5.dta", replace
 
 
 
