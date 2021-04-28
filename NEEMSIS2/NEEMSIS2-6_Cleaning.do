@@ -256,14 +256,22 @@ bysort parent_key INDID: gen n=_n
 keep if n==1
 keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv mainoccupation_HH totalincome_HH nboccupation_HH parent_key INDID
 save"NEEMSIS_APPEND-occupations_v3.dta", replace
-*1135 indiv
+
+bysort parent_key: gen n=_n 
+keep if n==1
+keep mainoccupation_HH totalincome_HH nboccupation_HH parent_key INDID
+save"NEEMSIS_APPEND-occupations_v4.dta", replace
+
 
 **********Merge dans la base HH
 use"NEEMSIS2-HH_v7.dta", clear
 tab dummyworkedpastyear
 *1140 indiv ?
 
-merge m:1 parent_key INDID_total using "NEEMSIS_APPEND-occupations_v3.dta"
+merge m:1 parent_key INDID_total using "NEEMSIS_APPEND-occupations_v3.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv)
+drop _merge
+
+merge m:1 parent_key using "NEEMSIS_APPEND-occupations_v4.dta", keepusing(mainoccupation_HH totalincome_HH nboccupation_HH)
 drop _merge
 
 recode mainoccupation_indiv mainoccupation_HH (.=0)
