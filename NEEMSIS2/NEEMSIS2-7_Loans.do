@@ -526,61 +526,6 @@ save"NEEMSIS2-loans_v6.dta", replace
 
 
 
-****************************************
-* INDIV & HH level
-****************************************
-use"NEEMSIS2-loans_v6.dta", clear
-
-egen INDID2010=concat(HHID2010 INDID), p(/)
-
-tab loan_database loansettled
-*Conditions
-drop if loansettled==1
-
-*Total loan amount
-bysort INDID2010: egen totalloanamount_indiv=sum(loanamount)
-
-*Number of loans
-gen nbloans=1
-bysort INDID2010: egen totalnumberloans_indiv=sum(nbloans)
-drop nbloans
-
-*Total loan balance
-bysort INDID2010: egen totalloanbalance_indiv=sum(loanbalance)
-
-*Keep HH level variables
-bysort INDID2010: gen n=_n
-keep if n==1
-keep INDID2010 totalloanamount_indiv totalnumberloans_indiv totalloanbalance_indiv
-
-save"NEEMSIS2-loans_v6_indiv.dta", replace
-
-
-*Merge with HH base
-use"NEEMSIS2-HH_v14.dta", clear
-
-drop INDID2010
-egen INDID2010=concat(HHID2010 INDID), p(/)
-
-
-merge m:1 INDID2010 using "NEEMSIS2-loans_v6_indiv.dta"
-drop _merge
-
-*HH level
-bysort HHID2010: egen totalloanamount=sum(totalloanamount_indiv)
-bysort HHID2010: egen totalnumberloans=sum(totalnumberloans_indiv)
-bysort HHID2010: egen totalloanbalance=sum(totalloanbalance_indiv)
-
-
-save"NEEMSIS2-HH_v14_loans.dta", replace
-****************************************
-* END
-
-
-
-
-
-
 
 
 
@@ -591,8 +536,7 @@ save"NEEMSIS2-HH_v14_loans.dta", replace
 * CLEANING 2
 ****************************************
 use"NEEMSIS2-loans_v6.dta", clear
-fre loansettled
-drop if loansettled==1  // 440 + 18 gold
+
 
 *Change date format of submissiondate
 rename submissiondate submissiondate_o
@@ -821,7 +765,6 @@ replace loanbalance=0 if loansettled==1
 *update loanbalance with principalpaid for microcredits (interest checked, plausible)
 replace loanbalance=loanamount-principalpaid if lender4==8 & loanbalance>loanamount & loanbalance!=.
 replace loanbalance=loanamount if loanbalance>loanamount & loanbalance!=. & principalpaid==. 
-
 *verif balance
 gen test=loanamount-principalpaid - loanbalance
 tab test
@@ -832,10 +775,8 @@ tab test2
 tab lender4 if test!=0 & test!=.
 *1/3 de microcredit dans ceux qui ne matchent pas
 drop test
-
 *** loans with pb "identified" + POSITIVE AMOUNTS of principal paid different selon principal paid et loanbalance:
 *apres check: on ne peut pas faire grand chose. considere que principalpaid prevaut sur loanbalance.
-
 gen test=loanamount-principalpaid - loanbalance
 tab test
 replace loanbalance=loanamount - principalpaid if test!=0 & test!=. &
@@ -843,7 +784,6 @@ drop test
 gen test=loanamount-principalpaid - loanbalance
 tab test
 drop test
-
 tab loanbalance
 */
 save "NEEMSIS2-loans_v10.dta", replace
@@ -885,8 +825,8 @@ drop _loanamount _yratepaid
 
 tab yratepaid
 sort yratepaid
-tab loanamount if loanamount<1000
-drop if loanamount<1000
+*tab loanamount if loanamount<1000
+*drop if loanamount<1000
 
 tabstat yratepaid if interestpaid2>0 & interestpaid2!=., by(lender4) stat(n mean p50 min max)
 drop yratepaid
@@ -894,19 +834,18 @@ drop yratepaid
 /*
      lender4 |         N      mean       p50       min       max
 -------------+--------------------------------------------------
-         WKP |       200   42.3452  30.83333  .8333333       600
-   Relatives |        16  29.14617  23.33333         3  72.00001
+         WKP |       220  40.71003        30  .8333333       600
+   Relatives |        19  26.59677  23.33333         3        72
       Labour |        71  23.31925        20       2.4       108
- Shop keeper |         5  29.38424        30  .9212121  70.00001
-Moneylenders |        21  12.91653  11.11111  .7272727        40
-     Friends |       260  20.51602      14.5  .0057143       120
- Microcredit |        50  18.88545        10   .007875        80
-        Bank |        88  16.28453  12.83333       .21  86.66666
-     Thandal |        70   10.8256        10         2        60
+ Shop keeper |         5  29.38424        30  .9212121        70
+Moneylenders |        25  17.43122     13.32  .7272727  73.77333
+     Friends |       303  21.09797        14  .0057143       122
+ Microcredit |        72  18.66582        10   .007875        80
+        Bank |        99  17.50534  14.16667       .21     122.4
+     Thandal |        75   10.7839        10         1        60
 -------------+--------------------------------------------------
-       Total |       781  24.94044      15.5  .0057143       600
+       Total |       889  24.72256        15  .0057143       600
 ----------------------------------------------------------------
-
 */
 
 save"NEEMSIS2-loans_v11.dta", replace
@@ -936,6 +875,7 @@ save"NEEMSIS2-loans_v11.dta", replace
 ****************************************
 use"NEEMSIS2-loans_v11.dta", clear
 merge m:m HHID2010 INDID using "NEEMSIS2-HH_v14.dta", keepusing(totalincome_indiv totalincome_HH) keep(3) nogen
+drop if loansettled==1
 
 *Debt service pour ML
 gen debt_service=.
@@ -957,10 +897,10 @@ replace imp_principal=(loanamount-loanbalance)*365/loanduration if loanduration>
 
 *Imputation interest for moneylenders and microcredit
 gen imp1_interest=.
-replace imp1_interest=0.129*loanamount if lender4==6 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.129*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
-replace imp1_interest=0.189*loanamount if lender4==8 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.189*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
+replace imp1_interest=0.174*loanamount if lender4==6 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.174*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
+replace imp1_interest=0.187*loanamount if lender4==8 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.187*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
 replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
 
 *Imputation total
@@ -975,48 +915,18 @@ gen imp1_interest_service=interest_service
 replace imp1_interest_service=imp1_interest if debt_service==.
 
 *INDIV
-bysort HHID2010 INDID: egen imp1_ds_tot=sum(imp1_debt_service)
-bysort HHID2010 INDID: egen imp1_is_tot=sum(imp1_interest_service)
-bysort HHID2010 INDID: egen loanamount_indiv=sum(loanamount)
-
-gen IDR=imp1_is_tot*100/loanamount_indiv
-gen DSDR=imp1_ds_tot*100/loanamount_indiv
-gen DSR=imp1_ds_tot*100/totalincome_indiv
-gen ISR=imp1_is_tot*100/totalincome_indiv
+bysort HHID2010 INDID: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
+bysort HHID2010 INDID: egen imp1_is_tot_indiv=sum(imp1_interest_service)
 
 *HH
 bysort HHID2010: egen imp1_ds_tot_HH=sum(imp1_debt_service)
 bysort HHID2010: egen imp1_is_tot_HH=sum(imp1_interest_service)
-bysort HHID2010: egen loanamount_HH=sum(loanamount)
-
-gen DSR_HH=imp1_ds_tot_HH*100/totalincome_HH
-gen ISR_HH=imp1_is_tot_HH*100/totalincome_HH
-gen IDHDR=loanamount_indiv*100/loanamount_HH
-
-
-*INDIV
-preserve
-bysort HHID2010 INDID: gen n=_n
-keep if n==1
-drop n
-tabstat IDHDR IDR DSDR DSR ISR, stat(n mean sd q) long
-restore
-/*
-   stats |     IDHDR       IDR      DSDR       DSR       ISR
----------+--------------------------------------------------
-       N |       816       816       816       741       741
-    mean |  50.73529  6.590457  17.17377  190.7965  66.21291
-      sd |  32.43795  8.075231  16.05805  524.7983  329.5351
-     p25 |  21.92382         0  4.731352  5.391846         0
-     p50 |  48.79501  4.017708  14.39649  32.54378  7.172533
-     p75 |  80.07936  10.37299  24.16565  161.0716  33.84861
-------------------------------------------------------------
-*/
-
 
 
 *HH
 preserve
+gen DSR_HH=imp1_ds_tot_HH*100/totalincome_HH
+gen ISR_HH=imp1_is_tot_HH*100/totalincome_HH
 bysort HHID2010: gen n=_n
 keep if n==1
 drop n
@@ -1025,14 +935,14 @@ restore
 /*
    stats |    DSR_HH    ISR_HH
 ---------+--------------------
-       N |       392       392
-    mean |  64.54962  22.63208
-      sd |  124.2718  55.02093
-     p25 |  10.92517  2.245014
-     p50 |  24.32352  7.590003
-     p75 |  64.17494  18.36802
+       N |       412       412
+    mean |  66.31883   24.2714
+      sd |  125.7751  58.28527
+     p25 |  11.13318  2.241818
+     p50 |  24.44779  7.882982
+     p75 |  66.72478  19.44322
      min |         0         0
-     max |  1147.561  581.3826
+     max |   1144.61   581.085
 ------------------------------
 */
 
@@ -1060,53 +970,39 @@ use"NEEMSIS2-loans_v12.dta", clear
 
 rename HHID2010 HHID
 
-*Informal debt ratio
-bysort HHID INDID: egen _temp1=sum(informal_amount)
-bysort HHID INDID: egen _temp2=sum(semiformal_amount)
-gen InfoDR=(_temp1+_temp2)*100/loanamount_indiv
-drop _temp1 _temp2
+*Focusing on marriage
+gen marriageloan=1 if loanreasongiven==8
+gen marriageloanamount=loanamount if marriageloan==1
 
-*Formal debt ratio
-bysort HHID INDID: egen _temp=sum(formal_amount)
-gen FoDR=_temp*100/loanamount_indiv
-drop _temp
+*Total loan
+gen loans=1
 
-*Income gen debt ratio
-bysort HHID INDID: egen _temp=sum(incomegen_amount)
-gen IncDR=_temp*100/loanamount_indiv
-drop _temp
-
-*Non income gen debt ratio
-bysort HHID INDID: egen _temp=sum(noincomegen_amount)
-gen NoincDR=_temp*100/loanamount_indiv
-drop _temp
-
-*Problem to repay loan
-bysort HHID INDID: egen _temp=sum(dummyproblemtorepay)
-tab _temp
-recode _temp (2=1) (3=1)
-rename _temp PRdummy
-
-*Help to settle loan
-bysort HHID INDID: egen _temp=sum(dummyhelptosettleloan)
-tab _temp
-recode _temp (2=1) (3=1)
-rename _temp HSdummy
-
-*Interest
-bysort HHID INDID: egen _temp=sum(dummyinterest)
-tab _temp
-forvalues i=1(1)11{
-recode _temp (`i'=1)
+*Details at higher scale
+foreach x in informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount marriageloan marriageloanamount dummyproblemtorepay dummyhelptosettleloan dummyinterest loans loanamount loanbalance {
+bysort HHID INDID: egen `x'_indiv=sum(`x')
+bysort HHID: egen `x'_HH=sum(`x')
 }
-tab _temp
-rename _temp ILdummy
+
+
 
 rename HHID HHID2010
 
 save"NEEMSIS2-loans_v13.dta", replace
 *************************************
-*** END
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1115,16 +1011,28 @@ save"NEEMSIS2-loans_v13.dta", replace
 ****************************************
 use"NEEMSIS2-loans_v13.dta", clear
 
+*Indiv
 bysort HHID2010 INDID: gen n=_n
 keep if n==1
-drop n
-keep HHID2010 householdid2020 INDID imp1_ds_tot imp1_is_tot loanamount_indiv IDR DSDR DSR ISR IDHDR InfoDR FoDR IncDR NoincDR PRdummy HSdummy ILdummy DSR_HH ISR_HH
+keep HHID2010 householdid2020 INDID imp1_ds_tot_indiv imp1_is_tot_indiv imp1_ds_tot_HH imp1_is_tot_HH informal_indiv informal_HH semiformal_indiv semiformal_HH formal_indiv formal_HH economic_indiv economic_HH current_indiv current_HH humancap_indiv humancap_HH social_indiv social_HH house_indiv house_HH incomegen_indiv incomegen_HH noincomegen_indiv noincomegen_HH economic_amount_indiv economic_amount_HH current_amount_indiv current_amount_HH humancap_amount_indiv humancap_amount_HH social_amount_indiv social_amount_HH house_amount_indiv house_amount_HH incomegen_amount_indiv incomegen_amount_HH noincomegen_amount_indiv noincomegen_amount_HH informal_amount_indiv informal_amount_HH formal_amount_indiv formal_amount_HH semiformal_amount_indiv semiformal_amount_HH marriageloan_indiv marriageloan_HH marriageloanamount_indiv marriageloanamount_HH dummyproblemtorepay_indiv dummyproblemtorepay_HH dummyhelptosettleloan_indiv dummyhelptosettleloan_HH dummyinterest_indiv dummyinterest_HH loans_indiv loans_HH loanamount_indiv loanamount_HH loanbalance_indiv loanbalance_HH
 
 save"NEEMSIS2-loans_v13_indiv.dta", replace
 
-use"NEEMSIS2-HH_v14_loans.dta", clear
+*HH
+bysort HHID2010: gen n=_n
+keep if n==1
+keep HHID2010 householdid2020 imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH
 
-merge 1:1 HHID2010 INDID using "NEEMSIS2-loans_v13_indiv.dta"
+save"NEEMSIS2-loans_v13_HH.dta", replace
+
+*********** Merge
+use"NEEMSIS2-HH_v14.dta", clear
+
+merge 1:1 HHID2010 INDID using "NEEMSIS2-loans_v13_indiv.dta", keepusing(imp1_ds_tot_indiv imp1_is_tot_indiv informal_indiv semiformal_indiv formal_indiv economic_indiv current_indiv humancap_indiv social_indiv house_indiv incomegen_indiv noincomegen_indiv economic_amount_indiv current_amount_indiv humancap_amount_indiv social_amount_indiv house_amount_indiv incomegen_amount_indiv noincomegen_amount_indiv informal_amount_indiv formal_amount_indiv semiformal_amount_indiv marriageloan_indiv marriageloanamount_indiv dummyproblemtorepay_indiv dummyhelptosettleloan_indiv dummyinterest_indiv loans_indiv loanamount_indiv loanbalance_indiv)
+drop _merge
+
+merge m:1 HHID2010 using "NEEMSIS2-loans_v13_HH.dta", keepusing(imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH)
+drop _merge
 
 save"NEEMSIS2-HH_v15.dta", replace
 *************************************
