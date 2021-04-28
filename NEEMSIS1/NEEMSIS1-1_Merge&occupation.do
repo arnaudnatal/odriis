@@ -228,11 +228,21 @@ keep if n==1
 keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv mainoccupation_HH totalincome_HH nboccupation_HH HHID2010 INDID
 save"NEEMSIS-occupation_alllong_v2.dta", replace
 
+bysort HHID2010: gen n=_n 
+keep if n==1
+keep mainoccupation_HH totalincome_HH nboccupation_HH HHID2010
+save"NEEMSIS-occupation_alllong_v3.dta", replace
+
+
 **********Merge dans la base HH
 use"NEEMSIS1-HH_v2.dta", clear
 
-merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta"
+merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv totalincome_indiv nboccupation_indiv)
 drop _merge
+
+merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH totalincome_HH nboccupation_HH)
+drop _merge
+
 
 foreach x in mainoccupation_income_indiv totalincome_indiv totalincome_HH{
 gen `x'_b10=`x'*0.918905
