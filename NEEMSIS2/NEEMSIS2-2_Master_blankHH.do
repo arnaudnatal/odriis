@@ -29,7 +29,7 @@ global preamble "NEEMSIS2_NEW_APRIL"
 
 ********** SSC to install
 *ssc install dropmiss, replace
-ssc install fre, replace
+*ssc install fre, replace
 
 ****************************************
 * END
@@ -610,6 +610,7 @@ rename setoflefthome_n setoflefthome
 replace setoflefthome="" if substr(setoflefthome,strlen(setoflefthome)-2,3)=="[.]"
 */
 *INDID = TOUT LE MONDE
+tostring INDID, replace
 foreach v in setofremreceivedgroup setofremsentgroup setofmigrationgroup  setofloansbyborrower setoflendingmoney setofrecommendationgiven setofchitfund setofsavings setofgold setofinsurance setofmarriagegroup setofschemenregaind setofcashassistancemarriage setofgoldmarriagegroup setofschemepension1group setofschemepension2group setofschemepension3group setofschemepension4group setofschemepension5group setofschemepension6group setofschemepension7group   {
 tostring `v', replace
 gen `v'_n = `v' + "[" + INDID + "]" if `v'!=""
