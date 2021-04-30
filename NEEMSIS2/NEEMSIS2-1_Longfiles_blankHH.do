@@ -22,10 +22,10 @@ Longiles
 * INITIALIZATION
 ****************************************
 ********** Path to folder "data" folder.
-global directory = "C:\Users\Arnaud\Desktop\NEEMSIS2\DATA"
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
-global preamble "NEEMSIS2_NEW_APRIL"
+global preamble "NEEMSIS2_NEW_"
 ****************************************
 * END
 
@@ -85,7 +85,18 @@ use "$preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob
 save"$preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgrou.dta", replace
 erase $preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgroup.dta
 }
-
+capture confirm file "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta"
+if _rc==0 {
+use "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta", clear
+save"$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgrou.dta", replace
+erase $preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta
+}
+capture confirm file "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta"
+if _rc==0 {
+use "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta", clear
+save"$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgrou.dta", replace
+erase $preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta
+}
 
 
 
