@@ -43,7 +43,7 @@ global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 
 
 ****************************************
-* AUTOCALCULATION DO NOT CHANGE /!\
+* AUTOCALCULATION DO NOT CHANGE /!\*
 ****************************************
 global preamble "NEEMSIS2_LAST"
 global nbcharact "15"
@@ -159,6 +159,8 @@ save"$directory/_temp/NEEMSIS2_DEC`k'", replace
 save"$directory/_temp/NEEMSIS2_FEB`k'", replace
 save"$directory/_temp/NEEMSIS2_FEBRUARY`k'", replace
 save"$directory/_temp/NEEMSIS2_NEW_APRIL`k'", replace
+save"$directory/_temp/NEEMSIS2_APRIL`k'", replace
+
 }
 
 
@@ -199,6 +201,7 @@ append using "$directory\rename\NEEMSIS2_DEC`k'", force
 append using "$directory\rename\NEEMSIS2_FEB`k'", force
 append using "$directory\rename\NEEMSIS2_FEBRUARY`k'", force
 append using "$directory\rename\NEEMSIS2_NEW_APRIL`k'", force
+append using "$directory\rename\NEEMSIS2_APRIL`k'", force
 do "$directory\do_not_drop\_1-3-datachoicelist_v2"
 save "$directory/CLEAN/NEEMSIS_APPEND`k'", replace
 }
@@ -230,7 +233,7 @@ save "$directory/CLEAN/NEEMSIS_APPEND`k'", replace
 APPEND la base HH de survey cto (celle avec les HH en lignes)
 */
 
-foreach x in NEEMSIS2_LAST NEEMSIS2_DECEMBER NEEMSIS2_DEC NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_NEW_APRIL{
+foreach x in NEEMSIS2_LAST NEEMSIS2_DECEMBER NEEMSIS2_DEC NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_NEW_APRIL NEEMSIS2_APRIL{
 use"$directory\rename\\`x'.dta", clear
 gen version="`x'"
 save"$directory\rename\\`x'.dta", replace
@@ -241,6 +244,7 @@ append using "$directory\rename\NEEMSIS2_DEC.dta", force
 append using "$directory\rename\NEEMSIS2_FEB.dta", force
 append using "$directory\rename\NEEMSIS2_FEBRUARY.dta", force
 append using "$directory\rename\NEEMSIS2_NEW_APRIL.dta", force
+append using "$directory\rename\NEEMSIS2_APRIL.dta", force
 
 
 
@@ -252,7 +256,7 @@ drop if householdid=="343" & key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
 drop if householdid=="348" & key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
 drop if householdid=="361" & key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
 drop if householdid=="246" & key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
-
+drop if householdid=="391" & key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 
 
 
@@ -359,10 +363,19 @@ append using "$directory\rename\NEEMSIS2_DEC~_v4.dta", force
 append using "$directory\rename\NEEMSIS2_FEB~_v4.dta", force
 append using "$directory\rename\NEEMSIS2_FEBRUARY~_v4.dta", force
 append using "$directory\rename\NEEMSIS2_NEW_APRIL~_v4.dta", force
+append using "$directory\rename\NEEMSIS2_APRIL~_v4.dta", force
 duplicates tag parent_key name, gen(tag)
 tab tag
 drop tag
 
+********** DROP DUPLICATES (AGREE WITH CECILE)
+drop if householdid=="67" & key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+drop if householdid=="124" & key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+drop if householdid=="343" & key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+drop if householdid=="348" & key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+drop if householdid=="361" & key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+drop if householdid=="246" & key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+drop if householdid=="391" & key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 
 
 
