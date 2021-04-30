@@ -25,7 +25,7 @@ cls
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
-global preamble "NEEMSIS2_DECEMBER"
+global preamble "NEEMSIS2_FEBRUARY"
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -86,6 +86,9 @@ drop if householdid_int==348 & key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
 drop if householdid_int==361 & key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
 drop if householdid_int==67 & key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
 drop if householdid_int==246 & key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+
+drop if householdid_int==391 & key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+
 
 *tab indexego1final
 *tab ego2position
