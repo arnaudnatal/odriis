@@ -315,7 +315,7 @@ drop if householdid==246 & parent_key=="uuid:953d8941-5338-4a82-a5d7-2f6e25947e5
 drop if householdid==343 & parent_key=="uuid:f52b0fb0-064b-4133-a78d-83edcd80b3e1"
 drop if householdid==348 & parent_key=="uuid:08b045f7-ca13-429c-b25b-604ed8786a32"
 drop if householdid==361 & parent_key=="uuid:332b0700-6bdb-4e66-92ee-7f1e892dae6a"
-
+drop if householdid==391 & parent_key=="uuid:6854d50b-0b75-4b24-a3b8-ee031aa78668"
 
 drop parent_key
 
