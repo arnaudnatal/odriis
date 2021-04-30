@@ -46,6 +46,7 @@ cd"$directory"
 use"$directory\CLEAN\NEEMSIS2-HH_v5.dta", clear
 merge m:1 INDIDpanel using "$directory\do_not_drop\NEEMSIS_preload2016"
 drop if _merge==1
+tab HHID2010 if (version=="NEEMSIS2_APRIL" | version=="NEEMSIS2_FEBRUARY" | version=="NEEMSIS2_NEW_APRIL") & dummymarriage==1
 *
 save"$directory\CLEAN\NEEMSIS2-HH_v6.dta", replace
 
@@ -64,7 +65,7 @@ drop marriagegiftsource_1 marriagegiftsource_2 marriagegiftsource_3 marriagegift
 replace marriedname=marriagesomeoneelse if marriedname=="Someone else 1" & marriagesomeoneelse!=""
 replace marriedname=marriagesomeoneelse if marriedname=="Someone else 2" & marriagesomeoneelse!=""
 
-merge m:1 parent_key using "$directory\CLEAN\NEEMSIS_APPEND.dta", keepusing(householdid2020 HHID2010 HHID_panel startquestionnaire)
+merge m:1 parent_key using "$directory\CLEAN\NEEMSIS_APPEND.dta", keepusing(householdid2020 HHID2010 HHID_panel startquestionnaire version)
 keep if _merge==3
 drop _merge
 
@@ -75,7 +76,7 @@ save"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v2.d
 keep if marriagedate!=.
 sort HHID2010 marriagesomeoneelse
 list HHID2010 HHID_panel if (marriedid=="31" | marriedid=="32" | marriedid=="133") & marriagesomeoneelse=="", clean noobs
-list HHID2010 marriedname if marriagesomeoneelse!="" & (marriedid=="31" | marriedid=="32" | marriedid=="33"), clean noobs
+list HHID2010 marriedname if marriagesomeoneelse!="" & (marriedid=="31" | marriedid=="32" | marriedid=="33"), clean noobs // & (version=="NEEMSIS2_APRIL" | version=="NEEMSIS2_NEW_APRIL" | version=="NEEMSIS2_FEBRUARY") , clean noobs
 /*
     HHID2010  
          103  
@@ -103,22 +104,32 @@ list HHID2010 marriedname if marriagesomeoneelse!="" & (marriedid=="31" | marrie
             78   Santhosh kumarie  
             82     Santhosh Kumar  
       ADKOR227        Porcheselvi  
+       ADMPO12        Manimegalai  
      ANDMTP325          Kalaivani  
      ANDMTP329           Vasantha  
+      ANTGP162        Udhayakumar  
     ANTKARU278        Sivashakthi  
+       ANTMP37           Santhiya  
+        RAEP67            Lakshmi  
+        RAEP67            Lakshmi  
+        RAEP69              Selvi  
      RAKARU257            Kavitha  
      RAKARU257            Savitha  
      RAKARU258            Nagamma  
      RAKARU259         Mahalashmi  
+       RAKU141        Mahalakshmi  
+       RAKU141       Mangalakshmi  
        RAMPO27               Vasu  
       RAMTP301              Kuppu  
       RAMTP305            Lakshmi  
        RAOR379         Ajithkumar  
+        SIEP61           Anbarasi  
        SIGP190          Govinthan  
       SINAT333       Thamizhselvi  
       SISEM101         Sagunthala  
       VENGP177      Bhuvaneshwari  
       VENGP179            Thamizh  
+      VENGP180            Revathy  
      VENKOR219       Bakyalakshmi  
 */
 
@@ -226,31 +237,40 @@ Someone else with indications
 use"$directory\CLEAN\NEEMSIS2-HH_v6.dta", clear
 gen mar=0
 
-replace mar=1 if HHID2010=="21"  
-replace mar=1 if HHID2010=="26"  
-replace mar=1 if HHID2010=="62"  
-replace mar=1 if HHID2010=="82"   
-replace mar=1 if HHID2010=="ADKOR227"  
-replace mar=1 if HHID2010=="ANDMTP329"  
-replace mar=1 if HHID2010=="ANTKARU278" 
-replace mar=1 if HHID2010=="RAKARU257" 
-replace mar=1 if HHID2010=="RAKARU257" 
-replace mar=1 if HHID2010=="RAKARU258" 
-replace mar=1 if HHID2010=="RAKARU259" 
-replace mar=1 if HHID2010=="RAMPO27"  
-replace mar=1 if HHID2010=="RAMTP301" 
-replace mar=1 if HHID2010=="RAOR379"  
-replace mar=1 if HHID2010=="SIGP190"  
-replace mar=1 if HHID2010=="SINAT333" 
-replace mar=1 if HHID2010=="VENGP177" 
-replace mar=1 if HHID2010=="VENGP179" 
-
-replace mar=1 if HHID2010=="78" 
+replace mar=1 if HHID2010=="21"
+replace mar=1 if HHID2010=="26"
+replace mar=1 if HHID2010=="62"
 replace mar=1 if HHID2010=="78"
+replace mar=1 if HHID2010=="78"
+replace mar=1 if HHID2010=="82"
+replace mar=1 if HHID2010=="ADKOR227"
+replace mar=1 if HHID2010=="ADMPO12"
 replace mar=1 if HHID2010=="ANDMTP325"
+replace mar=1 if HHID2010=="ANDMTP329"
+replace mar=1 if HHID2010=="ANTGP162"
+replace mar=1 if HHID2010=="ANTKARU278"
+replace mar=1 if HHID2010=="ANTMP37"
+replace mar=1 if HHID2010=="RAEP67"
+replace mar=1 if HHID2010=="RAEP67"
+replace mar=1 if HHID2010=="RAEP69"
+replace mar=1 if HHID2010=="RAKARU257"
+replace mar=1 if HHID2010=="RAKARU257"
+replace mar=1 if HHID2010=="RAKARU258"
+replace mar=1 if HHID2010=="RAKARU259"
+replace mar=1 if HHID2010=="RAKU141"
+replace mar=1 if HHID2010=="RAKU141"
+replace mar=1 if HHID2010=="RAMPO27"
+replace mar=1 if HHID2010=="RAMTP301"
 replace mar=1 if HHID2010=="RAMTP305"
+replace mar=1 if HHID2010=="RAOR379"
+replace mar=1 if HHID2010=="SIEP61"
+replace mar=1 if HHID2010=="SIGP190"
+replace mar=1 if HHID2010=="SINAT333"
 replace mar=1 if HHID2010=="SISEM101"
-replace mar=1 if HHID2010=="VENKOR219"     
+replace mar=1 if HHID2010=="VENGP177"
+replace mar=1 if HHID2010=="VENGP179"
+replace mar=1 if HHID2010=="VENGP180"
+replace mar=1 if HHID2010=="VENKOR219"
 *
 preserve
 keep if mar==1
@@ -259,28 +279,39 @@ list INDID2010 reasonlefthome name maritalstatus maritalstatus_p16 sex_p16, clea
 restore
 /*
       HHID2010        marriedname  
+            21              Deepa  
             26             Sarasu  
             62        Mahalakshmi  
             78          Banumathy  
             78   Santhosh kumarie  
             82     Santhosh Kumar  
       ADKOR227        Porcheselvi  
+       ADMPO12        Manimegalai  
      ANDMTP325          Kalaivani  
      ANDMTP329           Vasantha  
+      ANTGP162        Udhayakumar  
     ANTKARU278        Sivashakthi  
+       ANTMP37           Santhiya  
+        RAEP67            Lakshmi  
+        RAEP67            Lakshmi  
+        RAEP69              Selvi  
      RAKARU257            Kavitha  
      RAKARU257            Savitha  
      RAKARU258            Nagamma  
      RAKARU259         Mahalashmi  
+       RAKU141        Mahalakshmi  
+       RAKU141       Mangalakshmi  
        RAMPO27               Vasu  
       RAMTP301              Kuppu  
       RAMTP305            Lakshmi  
        RAOR379         Ajithkumar  
+        SIEP61           Anbarasi  
        SIGP190          Govinthan  
       SINAT333       Thamizhselvi  
       SISEM101         Sagunthala  
       VENGP177      Bhuvaneshwari  
       VENGP179            Thamizh  
+      VENGP180            Revathy  
      VENKOR219       Bakyalakshmi  
 
 
@@ -309,6 +340,18 @@ restore
       VENGP177/3                               Get married                Buvaneshwari                      .   Unmarried (above 10)    Female 
       VENGP179/4                                         .                     Thamizh                Married   Unmarried (above 10)      Male  ?
      VENKOR219/2                               Get married               Bhakiyalashmi                      .                Married    Female  ?
+	 
+	 
+       ADMPO12/5                               Get married                 Manimegalai                      .                Married    Female  
+      ANTGP162/3                               Get married                  Udayakumar                      .   Unmarried (above 10)      Male  
+       ANTMP37/3                               Get married                    Santhiya                      .                Married    Female  
+        RAEP67/4                               Get married                    Latchumi                      .                Married    Female  
+        RAEP67/4                               Get married                    Latchumi                      .                Married    Female  
+        RAEP69/4                               Get married                       Selvi                      .                Married    Female  
+       RAKU141/3                               Get married                Mangalakshmi                      .                Married    Female  
+       RAKU141/4                               Get married                 Mahalakshmi                      .                Married    Female  
+        SIEP61/5                               Get married                    Anbarasi                      .                Married    Female  
+      VENGP180/4                               Get married                     Revathy                      .   Unmarried (above 10)    Female  
 */	  
 
 
@@ -336,17 +379,17 @@ replace marriedid="2" if marriedid_o=="31" & HHID2010=="`x'"
 }
 
 *INDID 3
-foreach x in 103 55 64 71 PSSEM93 RAMTP298 RANAT340 VENEP48 VENEP54 21 26 RAKARU258 RAMPO27 RAMTP301 SINAT333 VENGP177 ANDMTP325 SISEM101 {
+foreach x in 103 55 64 71 PSSEM93 RAMTP298 RANAT340 VENEP48 VENEP54 21 26 RAKARU258 RAMPO27 RAMTP301 SINAT333 VENGP177 ANDMTP325 SISEM101 ANTGP162 ANTMP37 {
 replace marriedid="3" if marriedid_o=="31" & HHID2010=="`x'"
 }
 
 *INDID 4
-foreach x in 7 99 ADSEM123 ANDMTP329 RAOR379 VENGP179 RAMTP305{
+foreach x in 7 99 ADSEM123 ANDMTP329 RAOR379 VENGP179 RAMTP305 RAEP67 RAEP69 VENGP180{
 replace marriedid="4" if marriedid_o=="31" & HHID2010=="`x'"
 }
 
 *INDID 5
-foreach x in RAEP71 62 ANTKARU278{
+foreach x in RAEP71 62 ANTKARU278 ADMPO12 SIEP61{
 replace marriedid="5" if marriedid_o=="31" & HHID2010=="`x'"
 }
 
@@ -368,6 +411,8 @@ replace marriedid="3" if marriedname=="Savitha" & HHID2010=="RAKARU257"
 replace marriedid="4" if marriedname=="Banumathy" & HHID2010=="78"
 replace marriedid="5" if marriedname=="Santhosh kumarie" & HHID2010=="78"
 
+replace marriedid="3" if marriedname=="Mangalakshmi" & HHID2010=="RAKU141"
+replace marriedid="4" if marriedname=="Mahalakshmi" & HHID2010=="RAKU141"
 
 
 ********** INTERMEDIATE CHECKING
@@ -381,6 +426,10 @@ drop verif
 *INDID2010
 egen INDID2010=concat(HHID2010 marriedid), p(/)
 
+
+*Duplicates
+duplicates list HHID_panel marriedid
+drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 
 ********** INTERMEDIATE SAVING
 save"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta", replace
