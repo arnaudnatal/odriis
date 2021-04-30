@@ -25,10 +25,10 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "C:\Users\Arnaud\Desktop\NEEMSIS2\DATA"
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
-global preamble "NEEMSIS2_DEC"
+global preamble "NEEMSIS2_FEBRUARY"
 ****************************************
 * END
 
@@ -87,12 +87,19 @@ if _rc==0 {
 use "$preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgroup.dta", clear
 save"$preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgrou.dta", replace
 erase $preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgroup.dta
-
-
-
-
-
-
+}
+capture confirm file "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta"
+if _rc==0 {
+use "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta", clear
+save"$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgrou.dta", replace
+erase $preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta
+}
+capture confirm file "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta"
+if _rc==0 {
+use "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta", clear
+save"$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgrou.dta", replace
+erase $preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta
+}
 
 
 
@@ -126,7 +133,7 @@ tempfile myfiles
 save "`myfiles'"
 local obs=_N
 forvalues i=1/`obs' {
-	set trace on
+	*set trace on
 	use "`myfiles'" in `i', clear
 	local f = dirname + "\" + filename
 	local k = varname1
@@ -143,7 +150,6 @@ forvalues i=1/`obs' {
 	tempfile save`i'
 	save "DETAI_`s'", replace
 }
-
 
 
 
@@ -324,6 +330,7 @@ forvalues i=1/`obs' {
 	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
 	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
 	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 	tempfile save`i'
 	save "`s'", replace
 }
@@ -394,3 +401,4 @@ rename setofremsentgroup setofremsentidgroup
 save"$preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentidgroup", replace
 erase $preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentgroup.dta
 }
+
