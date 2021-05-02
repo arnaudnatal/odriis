@@ -18,6 +18,16 @@ USE Longfiles_blankHH
 */
 
 
+
+/*
+foreach x in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST NEEMSIS2_NEW_APRIL {
+cd"$directory\\`x'"
+do "import_`x'"
+}
+*/
+
+
+
 ****************************************
 * INITIALIZATION
 ****************************************
@@ -28,10 +38,9 @@ cls
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
-global preamble "NEEMSIS2_FEBRUARY"
+global preamble "NEEMSIS2_NEW_APRIL"
 ****************************************
 * END
-
 
 
 
@@ -59,7 +68,7 @@ drop _nbchar
 dis $nbcharact
 
 global subdirectory ="$preamble"
-global subpath= "$directory" + "\" + "$subdirectory"
+global subpath= "$directory" + "\" + "$preamble"
 
 
 
@@ -68,46 +77,125 @@ global subpath= "$directory" + "\" + "$subdirectory"
 
 
 
-********** RENAME FILES WITH A TOO LONG NAME
-cd "$subpath"
-capture confirm file "$preamble-_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsntypehelpreceivedgroup.dta"
-if _rc==0 {
-use "$preamble-_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsntypehelpreceivedgroup.dta", clear
-save"$preamble-_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsntypehelpreceivedgrou.dta", replace
-erase $preamble-_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsntypehelpreceivedgroup.dta
+********** Ego cleaning
+cd"$directory"
+clear all
+filelist, dir("$subdirectory") pattern(*.dta)
+split filename, p(-)
+forvalues i=1(1)50{
+capture confirm v filename`i'
+if !_rc {
+global filenamemax "`i'"
 }
-capture confirm file "$preamble-ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta"
-if _rc==0 {
-use "$preamble-ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta", clear
-save"$preamble-ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgrou.dta", replace
-erase $preamble-ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta
 }
-capture confirm file "$preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgroup.dta"
-if _rc==0 {
-use "$preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgroup.dta", clear
-save"$preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgrou.dta", replace
-erase $preamble-ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgroup.dta
+gen ok=0
+replace ok=1 if substr(filename2,1,5)=="_3ego"
+replace ok=1 if substr(filename2,1,3)=="ego"
+keep if ok==1
+*Virer bis or full
+clonevar filename33=filename3
+replace filename3=filename4 if filename33=="_2ego2questionnairebis"
+replace filename4=filename5 if filename33=="_2ego2questionnairebis"
+replace filename5=filename6 if filename33=="_2ego2questionnairebis"
+capture confirme v filename7
+if _rc==0{
+replace filename6=filename7 if filename33=="_2ego2questionnairebis"
+replace filename7="" if filename33=="_2ego2questionnairebis"
 }
-capture confirm file "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta"
-if _rc==0 {
-use "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta", clear
-save"$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgrou.dta", replace
-erase $preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta
+
+replace filename3=filename4 if filename33=="ego2questionnairefull"
+replace filename4=filename5 if filename33=="ego2questionnairefull"
+replace filename5=filename6 if filename33=="ego2questionnairefull"
+capture confirme v filename7
+if _rc==0{
+replace filename6=filename7 if filename33=="ego2questionnairefull"
+replace filename7="" if filename33=="ego2questionnairefull"
 }
-capture confirm file "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta"
-if _rc==0 {
-use "$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta", clear
-save"$preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgrou.dta", replace
-erase $preamble-ego2questionnaire-_2ego2questionnairebis-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta
+*Name
+gen name=""
+forvalues i=1(1)$filenamemax{
+replace name=filename`i' if substr(filename`i',strlen(filename`i')-3,4)==".dta"
+}
+*Egoid
+sort name
+gen egoid=1
+replace egoid=2 if substr(name,1,2)=="_2"
+replace egoid=3 if substr(name,1,2)=="_3"
+tab egoid
+*Construction du nouveau nom de la bdd
+egen newname=concat(filename1 filename2 filename3 filename4 filename5 filename6), p(-)
+replace newname=substr(newname,1,strlen(newname)-1) if substr(newname,strlen(newname),1)=="-"
+replace newname=substr(newname,1,strlen(newname)-1) if substr(newname,strlen(newname),1)=="-"
+replace newname=substr(newname,1,strlen(newname)-1) if substr(newname,strlen(newname),1)=="-"
+
+*Implement
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local fold = dirname + "\" + filename
+	local fnew = newname
+	local e = egoid	
+	use "`fold'", clear
+	gen egoid=`e'
+	foreach x of varlist _all {
+	local varnewname=substr("`x'",3,strlen("`x'"))
+	if substr("`x'",1,2)=="_2" rename `x' `varnewname'
+	if substr("`x'",1,2)=="_3" rename `x' `varnewname'
+	}
+	drop setof* key
+	order parent_key egoid, first
+	drop if parent_key==""
+	tempfile save`i'
+	save "$directory\APPEND\raw\\`fnew'.dta", replace
+}
+
+
+
+
+
+********* Erase file
+cd"$directory"
+clear all
+filelist, dir("$subdirectory") pattern(*.dta)
+split filename, p(-)
+gen name=""
+forvalues i=1(1)$filenamemax{
+replace name=filename`i' if substr(filename`i',strlen(filename`i')-3,4)==".dta"
+}
+
+replace name=substr(name,3,strlen(name)) if substr(name,1,2)=="_2"
+replace name=substr(name,3,strlen(name)) if substr(name,1,2)=="_3"
+sort name
+
+cd"$directory\\$preamble"
+foreach x in  ///
+NEEMSIS2_NEW_APRIL-ego2questionnaire-randomizationego2-randomizationego2full-random_1825-show_draws.dta ///
+NEEMSIS2_NEW_APRIL-_3random_1825-_3show_draws.dta ///
+NEEMSIS2_NEW_APRIL-ego2questionnaire-randomizationego2-randomizationego2full-random_2635-show_draws_2.dta ///
+NEEMSIS2_NEW_APRIL-_3random_2635-_3show_draws_2.dta ///
+NEEMSIS2_NEW_APRIL-ego2questionnaire-randomizationego2-randomizationego2full-random_36-show_draws_3.dta ///
+NEEMSIS2_NEW_APRIL-_3random_36-_3show_draws_3.dta ///
+NEEMSIS2_NEW_APRIL-_3random_1825-_3random_draws.dta ///
+NEEMSIS2_NEW_APRIL-ego2questionnaire-randomizationego2-randomizationego2full-random_1825-random_draws.dta ///
+NEEMSIS2_NEW_APRIL-_3random_2635-_3random_draws_2.dta ///
+NEEMSIS2_NEW_APRIL-ego2questionnaire-randomizationego2-randomizationego2full-random_2635-random_draws_2.dta ///
+NEEMSIS2_NEW_APRIL-ego2questionnaire-randomizationego2-randomizationego2full-random_36-random_draws_3.dta ///
+NEEMSIS2_NEW_APRIL-_3random_36-_3random_draws_3.dta{
+capture confirm file "`x'
+if _rc==0{
+erase "`x'"
+}
 }
 
 
 
 
 *********** NEW FILES WITH KEY AND SETOF INVERSE (SAVE IN "DIRECTORY" FOLDER)
-cd"$directory"
 clear all
-filelist, dir("$subdirectory") pattern(*.dta)
+filelist, dir("$directory\\$preamble") pattern(*.dta)
 split filename, p(-)
 gen varname=""
 forvalues i=1(1)50{
@@ -124,31 +212,97 @@ rename filename`v' filename_`v'
 split varname, p(.)
 sort filename
 drop if filename=="$preamble.dta"
-drop if filename=="$preamble~_v2.dta"
-drop if filename=="$preamble~_v3.dta"
-drop if filename=="$preamble~_v4.dta"
 drop if filename=="$preamble-hhquestionnaire-employment.dta"
-*drop if filename=="$preamble-householdquestionnaireold-hhquestionnaire-familymembers_v2.dta"
+drop if filename_2=="_3ego1questionnaire"
+drop if filename_2=="ego1questionnaire"
+drop if filename_2=="ego2questionnaire"
+*keep if filename=="NEEMSIS2_NEW_APRIL-hhquestionnaire-familymembers.dta"
+*keep if filename_2=="NEEMSIS2_NEW_APRIL-detailsloanbyborrower.dta"
+
 tempfile myfiles
 save "`myfiles'"
 local obs=_N
 forvalues i=1/`obs' {
 	*set trace on
 	use "`myfiles'" in `i', clear
-	local f = dirname + "\" + filename
 	local k = varname1
 	local s = filename
-	use "`f'" if substr("`k'", 1, 7)!="details", clear
+	if substr("`k'", 1, 7)!="details"{
+	use "$directory\\$preamble\\`s'", clear
 	rename key key_O
 	rename setof`k' key
 	rename key_O setof`k'
-	save "OTHER_`s'", replace
-	use "`f'" if substr("`k'", 1, 7)=="details", clear
-	rename parent_key parent_key_O
-	rename setof`k' parent_key
-	rename parent_key_O setof`k'
+	save "$directory\APPEND\raw\\`s'", replace
+	}
+	else{
+	use "$directory\\$preamble\\`s'", clear
+	drop setof`k'
+	rename parent_key setof`k'
+	split key, p(/)
+	rename key1 parent_key
+	save "$directory\APPEND\raw\\`s'", replace
+	}
 	tempfile save`i'
-	save "DETAI_`s'", replace
+}
+
+
+
+
+
+********** MANUAL CLEANING FOR IDGROUP
+*For preload HH
+cd"$subpath"
+capture confirm file "$preamble-hhquestionnaireold-hhquestionnaire-migration-migrationgroup.dta"
+if _rc==0 {
+use "$preamble-hhquestionnaireold-hhquestionnaire-migration-migrationgroup", clear
+rename setofmigrationgroup setofmigrationidgroup
+save"$preamble-hhquestionnaireold-hhquestionnaire-migration-migrationidgroup.dta", replace
+erase $preamble-hhquestionnaireold-hhquestionnaire-migration-migrationgroup.dta
+}
+
+capture confirm file "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedgroup.dta"
+if _rc==0 {
+use "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedgroup", clear
+rename setofremreceivedgroup setofremreceivedidgroup
+save"$preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedidgroup", replace
+erase $preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedgroup.dta
+}
+
+capture confirm file "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentgroup.dta"
+if _rc==0 {
+use "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentgroup", clear
+rename setofremsentidgroup setofremsentidgroup_old
+rename setofremsentgroup setofremsentidgroup
+save"$preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentidgroup", replace
+erase $preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentgroup.dta
+}
+
+
+
+********** For new HH
+capture confirm file "$preamble-hhquestionnaire-migration-migrationgroup.dta"
+if _rc==0 {
+use "$preamble-hhquestionnaire-migration-migrationgroup", clear
+rename setofmigrationgroup setofmigrationidgroup
+save"$preamble-hhquestionnaire-migration-migrationidgroup.dta", replace
+erase $preamble-hhquestionnaire-migration-migrationgroup.dta
+}
+
+capture confirm file "$preamble-hhquestionnaire-remittances-remreceived-remreceivedgroup.dta"
+if _rc==0 {
+use "$preamble-hhquestionnaire-remittances-remreceived-remreceivedgroup", clear
+rename setofremreceivedgroup setofremreceivedidgroup
+save"$preamble-hhquestionnaire-remittances-remreceived-remreceivedidgroup", replace
+erase $preamble-hhquestionnaire-remittances-remreceived-remreceivedgroup.dta
+}
+
+capture confirm file "$preamble-hhquestionnaire-remittances-remsent-remsentgroup.dta"
+if _rc==0 {
+use "$preamble-hhquestionnaire-remittances-remsent-remsentgroup", clear
+rename setofremsentidgroup setofremsentidgroup_old
+rename setofremsentgroup setofremsentidgroup
+save"$preamble-hhquestionnaire-remittances-remsent-remsentidgroup", replace
+erase $preamble-hhquestionnaire-remittances-remsent-remsentgroup.dta
 }
 
 
@@ -158,6 +312,26 @@ forvalues i=1/`obs' {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 ********** DROP THE OLD FILES (WHICH IS IN THE "SUBDIRECTORY") (details files)
 cd "$directory"
 clear all
@@ -185,6 +359,7 @@ forvalues i=1/`obs' {
     erase `f'
 	}
 	}
+*/	
 	
 	
 	
@@ -192,8 +367,7 @@ forvalues i=1/`obs' {
 	
 	
 	
-	
-	
+/*	
 ********** DROP THE OLD FILES (WHICH IS IN THE "SUBDIRECTORY") (others files)
 cd "$directory"
 clear all
@@ -221,6 +395,7 @@ forvalues i=1/`obs' {
 	}
 	}
 
+*/
 
 
 
@@ -228,8 +403,7 @@ forvalues i=1/`obs' {
 
 
 
-
-
+/*
 ********** RENAME THE NEW FILES (DETAI and OTHER) WITH NORMAL NAME (without DETAI of OTHER)
 cd "$directory"
 clear all
@@ -256,6 +430,7 @@ forvalues i=1/`obs' {
 	tempfile save`i'
 	save "`nf'", replace
 }
+*/
 
 
 
@@ -264,8 +439,7 @@ forvalues i=1/`obs' {
 
 
 
-
-
+/*
 ********** DROP TEMPORARY FILE
 cd "$directory"
 clear all
@@ -290,6 +464,7 @@ forvalues i=1/`obs' {
 	local f = filename
     erase `f'
 	}
+*/	
 	
 	
 	
@@ -299,8 +474,7 @@ forvalues i=1/`obs' {
 	
 	
 	
-	
-	
+/*	
 ********** COPY NEW RENAME FILES INTO SUBDIRECTORY FOLDER
 cd "$subpath"
 clear all
@@ -332,7 +506,7 @@ forvalues i=1/`obs' {
 	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
 	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 	tempfile save`i'
-	save "`s'", replace
+	save "$directory\APPEND\raw\`s'", replace
 }
 
 
@@ -366,39 +540,10 @@ forvalues i=1/`obs' {
 	erase `s'
 	*tempfile save`i'
 }
+*/
 
 
 
 
 
-
-
-
-
-********** MANUAL CLEANING FOR IDGROUP
-cd"$subpath"
-capture confirm file "$preamble-hhquestionnaireold-hhquestionnaire-migration-migrationgroup.dta"
-if _rc==0 {
-use "$preamble-hhquestionnaireold-hhquestionnaire-migration-migrationgroup", clear
-rename setofmigrationgroup setofmigrationidgroup
-save"$preamble-hhquestionnaireold-hhquestionnaire-migration-migrationidgroup.dta", replace
-erase $preamble-hhquestionnaireold-hhquestionnaire-migration-migrationgroup.dta
-}
-
-capture confirm file "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedgroup.dta"
-if _rc==0 {
-use "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedgroup", clear
-rename setofremreceivedgroup setofremreceivedidgroup
-save"$preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedidgroup", replace
-erase $preamble-hhquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedgroup.dta
-}
-
-capture confirm file "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentgroup.dta"
-if _rc==0 {
-use "$preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentgroup", clear
-rename setofremsentidgroup setofremsentidgroup_old
-rename setofremsentgroup setofremsentidgroup
-save"$preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentidgroup", replace
-erase $preamble-hhquestionnaireold-hhquestionnaire-remittances-remsent-remsentgroup.dta
-}
 
