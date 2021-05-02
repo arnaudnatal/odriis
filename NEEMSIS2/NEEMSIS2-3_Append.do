@@ -80,8 +80,8 @@ clear all
 filelist, dir("$directory\raw") pattern(*.dta)
 split filename, p(-)
 *
-egen filename_new=concat(filename1 filename2 filename3 filename4 filename5 filename6 filename7) if filename2!="householdquestionnaireold", p(-)
-egen filename_new2=concat(filename1 filename3 filename4 filename5 filename6 filename7) if filename2=="householdquestionnaireold", p(-)
+egen filename_new=concat(filename1 filename2 filename3 filename4 filename5 filename6) if filename2!="householdquestionnaireold", p(-)
+egen filename_new2=concat(filename1 filename3 filename4 filename5 filename6) if filename2=="householdquestionnaireold", p(-)
 gen filename_new3=""
 replace filename_new3=filename_new if filename_new!=""
 replace filename_new3=filename_new2 if filename_new2!=""
@@ -97,7 +97,7 @@ replace filename_new=substr(filename_new,1,strlen(filename_new)-1) if substr(fil
 replace filename_new=substr(filename_new,1,strlen(filename_new)-1) if substr(filename_new,strlen(filename_new),1)=="-"
 replace filename_new=substr(filename_new,1,strlen(filename_new)-1) if substr(filename_new,strlen(filename_new),1)=="-"
 replace filename_new=substr(filename_new,1,strlen(filename_new)-1) if substr(filename_new,strlen(filename_new),1)=="-"
-drop filename1 filename2 filename3 filename4 filename5 filename6 filename7
+drop filename1 filename2 filename3 filename4 filename5 filename6
 
 tab filename
 tab filename_new
@@ -128,7 +128,7 @@ clear all
 filelist, dir("$directory\rename") pattern(*.dta)
 split filename, p(-)
 
-egen genericname=concat( filename2 filename3 filename4 filename5 filename6 filename7) if substr(filename1,strlen(filename1)-4,4)!=".dta", p(-)
+egen genericname=concat( filename2 filename3 filename4 filename5 filename6) if substr(filename1,strlen(filename1)-4,4)!=".dta", p(-)
 replace genericname=substr(genericname,1,strlen(genericname)-1) if substr(genericname,strlen(genericname),1)=="-"
 replace genericname=substr(genericname,1,strlen(genericname)-1) if substr(genericname,strlen(genericname),1)=="-"
 replace genericname=substr(genericname,1,strlen(genericname)-1) if substr(genericname,strlen(genericname),1)=="-"
@@ -233,11 +233,13 @@ save "$directory/CLEAN/NEEMSIS_APPEND`k'", replace
 APPEND la base HH de survey cto (celle avec les HH en lignes)
 */
 
+/*
 foreach x in NEEMSIS2_LAST NEEMSIS2_DECEMBER NEEMSIS2_DEC NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_NEW_APRIL NEEMSIS2_APRIL{
 use"$directory\rename\\`x'.dta", clear
 gen version="`x'"
 save"$directory\rename\\`x'.dta", replace
 }
+*/
 use"$directory\rename\NEEMSIS2_LAST.dta", clear
 append using "$directory\rename\NEEMSIS2_DECEMBER.dta", force
 append using "$directory\rename\NEEMSIS2_DEC.dta", force
@@ -576,7 +578,7 @@ erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-schemes-schemepension`i'-s
 
 **********Chitfund
 use"$directory\CLEAN\NEEMSIS_APPEND-detailschitfunds.dta", clear
-drop parent_key forauto key
+drop parent_key forauto key key2 key3
 destring chitfundgroupid, replace
 drop if chitfundgroupid==.
 reshape wide chitfundtype durationchit nbermemberchit chitfundpayment chitfundpaymentamount chitfundamount covchitfundstop covchitfundreturn, i(setofdetailschitfunds) j(chitfundgroupid)
@@ -591,7 +593,7 @@ drop savingspurpose_1 savingspurpose_3 savingspurpose_6 savingspurpose_2 savings
 drop usedebitcard_2 usedebitcard_5 usedebitcard_4 usedebitcard_6 usedebitcard_3
 drop usecreditcard_2 usecreditcard_4
 drop usedebitcard_77 usedebitcard_1 reasonnotusedebitcard_2 usecreditcard_3 usecreditcard_5 savingsjointaccount_33 savingsjointaccount_34 reasonnotusedebitcard_1
-drop parent_key key
+drop parent_key key key2 key3
 destring savingaccountid, replace
 reshape wide savingsaccounttype savingsjointaccount banktype savingsbankname savingsbankplace savingsamount savingspurpose covsavinguse dummydebitcard dummycreditcard covsavinguseamount usedebitcard usedebitcardother reasonnotusedebitcard reasonnotusedebitcardother usecreditcard usecreditcardother reasonnotusedcreditcard reasonnotusedcreditcardother savingsaccountdate datedebitcard datecreditcard, i(setofdetailssavingaccounts ) j(savingaccountid)
 rename setofdetailssavingaccounts setofsavings
@@ -599,7 +601,7 @@ save"$directory\CLEAN\NEEMSIS_APPEND-detailssavingaccounts_wide.dta", replace
 
 **********Insurance
 use"$directory\CLEAN\NEEMSIS_APPEND-detailsinsurance.dta", clear
-drop parent_key key
+drop parent_key key key2 key3
 destring insuranceid, replace
 rename insurancetype2 insurancetypetwo
 reshape wide insurancetype insurancename insurancetypetwo insurancepaymentfrequency insuranceamount insurancebenefit insurancebenefitamount insurancejoineddate, i(setofdetailsinsurance) j(insuranceid)
