@@ -25,11 +25,11 @@ cls
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
-global preamble "NEEMSIS2_FEBRUARY"
+global preamble "NEEMSIS2_LAST"
 
 ********** SSC to install
 *ssc install dropmiss, replace
-ssc install fre, replace
+*ssc install fre, replace
 
 ****************************************
 * END
@@ -523,7 +523,7 @@ order parent_key name namefrompreload INDID INDID_total INDID_former INDID_new I
 
 
 ********** INTERMEDIATE SAVING
-save"$preamble~_v2.dta", replace
+save"$directory\APPEND\raw\\$preamble~_v2.dta", replace
 
 
 
@@ -745,7 +745,7 @@ drop if INDID_total=="." & INDID_left=="."
 
 
 ********** INTERMEDIATE SAVING
-save"$preamble~_v3.dta", replace
+save"$directory\APPEND\raw\\$preamble~_v3.dta", replace
 
 
 
@@ -756,153 +756,153 @@ save"$preamble~_v3.dta", replace
 
 ********** MERGING
 *LEFT HOME
-capture confirm file "$preamble-householdquestionnaireold-generalinformation-lefthome.dta" 
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-generalinformation-lefthome.dta" 
 if _rc==0 {
-merge m:1 setoflefthome using "$preamble-householdquestionnaireold-generalinformation-lefthome.dta" 
+merge m:1 setoflefthome using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-generalinformation-lefthome.dta" 
 drop if _merge==2
 drop _merge
 }
 
 *INDIVIDUALID
 rename name name_mb
-capture confirm file "$preamble-householdquestionnaireold-individualid.dta" 
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-individualid.dta" 
 if _rc==0 {
-merge m:1 setofindividualid using "$preamble-householdquestionnaireold-individualid.dta"
+merge m:1 setofindividualid using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-individualid.dta"
 drop _merge
 }
 
 *FAMILY MEMBERS
-merge m:1 setoffamilymembers using "$preamble-householdquestionnaireold-hhquestionnaire-familymembers.dta"
+merge m:1 setoffamilymembers using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-familymembers.dta"
 drop _merge
 
 *EDUCATION
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-education.dta" 
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-education.dta" 
 if _rc==0{
-merge m:1 setofeducation using "$preamble-householdquestionnaireold-hhquestionnaire-education.dta"
+merge m:1 setofeducation using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-education.dta"
 drop if _merge==2
 drop _merge
 }
 
 *EMPLOYMENT
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-employment.dta" 
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-employment.dta" 
 if _rc==0{
-merge m:1 setofemployment using "$preamble-householdquestionnaireold-hhquestionnaire-employment.dta"
+merge m:1 setofemployment using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-employment.dta"
 drop if _merge==2
 drop _merge
 }
 
 *MIGRATION
 rename setofmigrationgroup setofmigrationidgroup
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-migration-migrationidgroup.dta" 
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-migration-migrationidgroup.dta" 
 if _rc==0{
-merge m:1 setofmigrationidgroup using "$preamble-householdquestionnaireold-hhquestionnaire-migration-migrationidgroup.dta"
+merge m:1 setofmigrationidgroup using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-migration-migrationidgroup.dta"
 drop if _merge==2
 drop _merge
 }
 
 *REMITTANCES RECEIVED
 rename setofremreceivedgroup setofremreceivedidgroup
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedidgroup.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedidgroup.dta"
 if _rc==0{
-merge m:1 setofremreceivedidgroup using "$preamble-householdquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedidgroup.dta"
+merge m:1 setofremreceivedidgroup using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-remittances-remreceived-remreceivedidgroup.dta"
 drop if _merge==2
 drop _merge
 }
 
 *REMITTANCES SENT
 rename setofremsentgroup setofremsentidgroup
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-remittances-remsent-remsentidgroup.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-remittances-remsent-remsentidgroup.dta"
 if _rc==0{
-merge m:1 setofremsentidgroup using "$preamble-householdquestionnaireold-hhquestionnaire-remittances-remsent-remsentidgroup.dta"
+merge m:1 setofremsentidgroup using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-remittances-remsent-remsentidgroup.dta"
 drop if _merge==2
 drop _merge
 }
 
 *LOANS
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-loans-loansbyborrower.dta" 
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-loans-loansbyborrower.dta" 
 if _rc==0{
-merge m:1 setofloansbyborrower using "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-loans-loansbyborrower.dta" 
+merge m:1 setofloansbyborrower using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-loans-loansbyborrower.dta" 
 drop if _merge==2
 drop _merge
 }
 
 *LENDING MONEY
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-lendingmoneygroup-lendingmoney.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-lendingmoneygroup-lendingmoney.dta"
 if _rc==0{
-merge m:1 setoflendingmoney using "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-lendingmoneygroup-lendingmoney.dta"
+merge m:1 setoflendingmoney using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-lendingmoneygroup-lendingmoney.dta"
 drop if _merge==2
 drop _merge
 }
 
 *RECOMM
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-guaranteeandrecommendation-recommendationgiven.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-guaranteeandrecommendation-recommendationgiven.dta"
 if _rc==0{
-merge m:1 setofrecommendationgiven using "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-guaranteeandrecommendation-recommendationgiven.dta"
+merge m:1 setofrecommendationgiven using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-guaranteeandrecommendation-recommendationgiven.dta"
 drop if _merge==2
 drop _merge
 }
 
 *CHITFUND
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-chitfundgroup-chitfund.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-chitfundgroup-chitfund.dta"
 if _rc==0{
-merge m:1 setofchitfund using "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-chitfundgroup-chitfund.dta"
+merge m:1 setofchitfund using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-chitfundgroup-chitfund.dta"
 drop if _merge==2
 drop _merge
 }
 
 *SAVING
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-savingsgroup-savings.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-savingsgroup-savings.dta"
 if _rc==0{
-merge m:1 setofsavings using "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-savingsgroup-savings.dta"
+merge m:1 setofsavings using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-savingsgroup-savings.dta"
 drop if _merge==2
 drop _merge
 }
 
 *GOLD
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-goldgroup-gold.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-goldgroup-gold.dta"
 if _rc==0{
-merge m:1 setofgold using "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-goldgroup-gold.dta"
+merge m:1 setofgold using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-goldgroup-gold.dta"
 drop if _merge==2
 drop _merge
 }
 
 *INSURANCE
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-insurancegroup-insurance.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-insurancegroup-insurance.dta"
 if _rc==0{
-merge m:1 setofinsurance using "$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-insurancegroup-insurance.dta"
+merge m:1 setofinsurance using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-financialpracticesgroup-insurancegroup-insurance.dta"
 drop if _merge==2
 drop _merge
 }
 
 *SCHEME NREGA
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemenrega-schemenregaind.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemenrega-schemenregaind.dta"
 if _rc==0{
-merge m:1 setofschemenregaind using "$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemenrega-schemenregaind.dta"
+merge m:1 setofschemenregaind using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemenrega-schemenregaind.dta"
 drop if _merge==2
 drop _merge
 }
 
 *CASH ASSISTANCE
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-schemes-cashassistancemarriage-cashassistancemarriagegroup.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-cashassistancemarriage-cashassistancemarriagegroup.dta"
 if _rc==0{
-merge m:1 setofcashassistancemarriagegroup using "$preamble-householdquestionnaireold-hhquestionnaire-schemes-cashassistancemarriage-cashassistancemarriagegroup.dta"
+merge m:1 setofcashassistancemarriagegroup using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-cashassistancemarriage-cashassistancemarriagegroup.dta"
 drop if _merge==2
 drop _merge
 }
 
 *GOLD MARRIAGE
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-schemes-goldmarriage-goldmarriagegroup.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-goldmarriage-goldmarriagegroup.dta"
 if _rc==0{
-merge m:1 setofgoldmarriagegroup using "$preamble-householdquestionnaireold-hhquestionnaire-schemes-goldmarriage-goldmarriagegroup.dta"
+merge m:1 setofgoldmarriagegroup using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-goldmarriage-goldmarriagegroup.dta"
 drop if _merge==2
 drop _merge
 }
 
 *SCHEME PENSION 1 2 3 4 5 6 7
 forvalues i=1(1)7{
-capture confirm file "$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemepension`i'-schemepension`i'group.dta"
+capture confirm file "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemepension`i'-schemepension`i'group.dta"
 if _rc==0{
-merge m:1 setofschemepension`i'group using "$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemepension`i'-schemepension`i'group.dta"
+merge m:1 setofschemepension`i'group using "$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-schemes-schemepension`i'-schemepension`i'group.dta"
 drop if _merge==2
 drop _merge
 }
@@ -914,4 +914,4 @@ drop _merge
 
 
 ********** INTERMEDIATE SAVING
-save"$preamble~_v4.dta", replace
+save"$directory\APPEND\raw\\$preamble~_v4.dta", replace
