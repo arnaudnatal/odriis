@@ -14,18 +14,24 @@ USE Master_blankHH
 -------------------------
 */
 
+*foreach dbv in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST{
+
+*LAST
+*APRIL
 
 ****************************************
 * INITIALIZATION
 ****************************************
 clear all
 macro drop _all
-cls
+
 ********** Path to folder "data" folder.
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
-global preamble "NEEMSIS2_LAST"
+global preamble "NEEMSIS2_FEBRUARY"
+*global preamble ""
+
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -915,3 +921,5 @@ drop _merge
 
 ********** INTERMEDIATE SAVING
 save"$directory\APPEND\raw\\$preamble~_v4.dta", replace
+
+*}
