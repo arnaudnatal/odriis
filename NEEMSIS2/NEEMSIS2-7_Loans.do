@@ -43,25 +43,17 @@ cd "$directory\CLEAN"
 ****************************************
 *1. Nettoyage de la base prêts
 use "NEEMSIS_APPEND-detailsloanbyborrower.dta", clear
-split parent_key, p(/)
-drop parent_key parent_key2 parent_key3
-rename parent_key1 parent_key
-	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
-	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
-	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
-	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
-	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
-	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+egen setofloansbyborrower=concat(parent_key key2), p(/)
 save"NEEMSIS2-loans.dta", replace
 
 
 *2. Merge: borrower with loan to have indiv details with loan
-use "NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-loans-loansbyborrower.dta", clear
+use "NEEMSIS2-HH_v14.dta", clear
 keep if nbloansbyborrower!=.
-rename setofdetailsloanbyborrower setofdetailsloanbyborrower_o
-rename setofloansbyborrower setofdetailsloanbyborrower
+keep parent_key HHID2010 INDID INDID_total INDID_former INDID_new INDID_left setofloansbyborrower setofdetailsloanbyborrower borrowerid borrowername nbloansbyborrower detailsloanbyborrower_count
+
 sort parent_key borrowerid
-merge 1:m setofdetailsloanbyborrower using "NEEMSIS2-loans.dta"
+merge 1:m setofloansbyborrower using "NEEMSIS2-loans.dta"
 sort _merge
 drop _merge
 fre loansettled  // 428
@@ -158,9 +150,10 @@ replace	mainloanid =	79	if 	borrowerid ==	17	&	loanid ==	7
 replace	mainloanid =	80	if 	borrowerid ==	17	&	loanid ==	8
 tostring mainloanid, replace
 tab loanbalance, m
-merge m:1 parent_key mainloanid using "NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-loans-mainloans.dta"
+merge m:m parent_key mainloanid using "NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-loans-mainloans.dta"
+drop if _merge==2
 rename _merge merge_mainloans
-rename borrowerid INDID
+*rename borrowerid INDID
 fre loansettled  // 428
 *drop if loansettled==1
 *drop if loanamount==.
