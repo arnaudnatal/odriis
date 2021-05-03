@@ -547,3 +547,28 @@ forvalues i=1/`obs' {
 }
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* CLEANING
+****************************************
+use"$directory\APPEND\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2.dta", clear
+
+
+
+
+
+
+
+
+
+
