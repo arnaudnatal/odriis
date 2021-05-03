@@ -8,6 +8,7 @@ Vous trouverez dans les différents dossiers, les `.do` permettant de nettoyer l
   - [x] Isoler les ménages "Someone else" étranges.
   - [ ] Terminer panel RUME - NEEMSIS 1
   - [x] Nettoyer égos
+  - [ ] Passer certains modules SN en wide pour merger avec base HH
 ---
 
 ![](https://f-origin.hypotheses.org/wp-content/blogs.dir/3627/files/2017/02/cropped-Bandeau-site_final_thin.png)
