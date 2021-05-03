@@ -131,3 +131,7 @@ Nettoyage des assets et création de la variable au passage (qui sera amené à 
 
 ### Loans
 Regrouper tous les prêts dans une seule et même base.
+
+### Network
+Regrouper les réseaux égos 1 2 3 et toutes les versions dans les mêmes fichiers.
+À vérifier avec Cécile, mais ça me parait bon.
