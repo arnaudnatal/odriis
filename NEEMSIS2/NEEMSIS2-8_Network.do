@@ -10,6 +10,197 @@ TITLE: Network
 
 
 
+
+
+
+
+
+
+
+
+****************************************
+* LOOP pour prendre les long sn
+****************************************
+foreach dbv in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSOS2_LAST NEEMSIS2_NEW_APRIL {
+
+clear all
+macro drop _all
+cls
+********** Path to folder "data" folder.
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
+
+
+
+
+global preamble "`dbv'"
+*global preamble "NEEMSIS2_APRIL"
+
+********** AUTO CALCULATION
+set obs 1
+gen _nbchar=strlen("$preamble")+2
+global nbcharact = _nbchar
+drop _nbchar
+dis $nbcharact
+
+global subdirectory ="$preamble"
+global subpath= "$directory" + "\" + "$preamble"
+
+********** Ego cleaning
+cd"$directory"
+clear all
+filelist, dir("$subdirectory") pattern(*.dta)
+split filename, p(-)
+forvalues i=1(1)50{
+capture confirm v filename`i'
+if !_rc {
+global filenamemax "`i'"
+}
+}
+gen ok=0
+replace ok=1 if substr(filename2,1,5)=="_3ego"
+replace ok=1 if substr(filename2,1,5)=="_2ego"
+replace ok=1 if substr(filename2,1,3)=="ego"
+
+replace ok=1 if substr(filename2,1,5)=="_3snr"
+replace ok=1 if substr(filename2,1,5)=="_2snr"
+replace ok=1 if substr(filename2,1,3)=="snr"
+keep if ok==1
+*Virer bis or full
+clonevar filename33=filename3
+replace filename3=filename4 if filename33=="_2ego2questionnairebis"
+replace filename4=filename5 if filename33=="_2ego2questionnairebis"
+replace filename5=filename6 if filename33=="_2ego2questionnairebis"
+capture confirme v filename7
+if _rc==0{
+replace filename6=filename7 if filename33=="_2ego2questionnairebis"
+replace filename7="" if filename33=="_2ego2questionnairebis"
+}
+
+replace filename3=filename4 if filename33=="ego2questionnairefull"
+replace filename4=filename5 if filename33=="ego2questionnairefull"
+replace filename5=filename6 if filename33=="ego2questionnairefull"
+capture confirme v filename7
+if _rc==0{
+replace filename6=filename7 if filename33=="ego2questionnairefull"
+replace filename7="" if filename33=="ego2questionnairefull"
+}
+*Name
+gen name=""
+forvalues i=1(1)$filenamemax{
+replace name=filename`i' if substr(filename`i',strlen(filename`i')-3,4)==".dta"
+}
+*Egoid
+sort name
+gen egoid=1
+replace egoid=2 if substr(name,1,2)=="_2"
+replace egoid=3 if substr(name,1,2)=="_3"
+tab egoid
+
+*Prepa pour nouveau nom
+forvalues i=2(1)$filenamemax{
+replace filename`i'="" if substr(filename`i',strlen(filename`i')-3,4)==".dta"
+replace filename`i'="-"+filename`i'
+replace filename`i'="" if filename`i'=="-"
+}
+replace name="-"+name
+
+*Construction du nouveau nom de la bdd
+replace filename6="" if filename6==filename5
+replace filename5="" if filename5==filename4
+egen newname=concat(filename1 filename2 filename3 filename4 filename5 filename6 name)
+replace newname=substr(newname,1,strlen(newname)-1) if substr(newname,strlen(newname),1)=="-"
+replace newname=substr(newname,1,strlen(newname)-1) if substr(newname,strlen(newname),1)=="-"
+replace newname=substr(newname,1,strlen(newname)-1) if substr(newname,strlen(newname),1)=="-"
+
+*Implement
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local fold = dirname + "\" + filename
+	local fnew = newname
+	local e = egoid	
+	use "`fold'", clear
+	capture confirm v egoid
+	if _rc==0{
+	}
+	else{
+	gen egoid=`e'
+	foreach x of varlist _all {
+	local varnewname=substr("`x'",3,strlen("`x'"))
+	if substr("`x'",1,2)=="_2" rename `x' `varnewname'
+	if substr("`x'",1,2)=="_3" rename `x' `varnewname'
+	}
+	}
+	capture confirm v parent_key
+	if _rc==0{
+	order parent_key egoid, first
+	drop if parent_key==""
+	}
+	tempfile save`i'
+	save "$directory\APPEND\ego_raw\\`fnew'", replace
+}
+}
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+****************************************
+* DROP RANDOM
+****************************************
+cd"$directory"
+clear all
+filelist, dir("$directory\APPEND\ego_raw") pattern(*.dta)
+split filename, p(-)
+gen name=""
+forvalues i=1(1)7{
+replace name=filename`i' if substr(filename`i',strlen(filename`i')-3,4)==".dta"
+}
+replace name=substr(name,3,strlen(name)) if substr(name,1,2)=="_2"
+replace name=substr(name,3,strlen(name)) if substr(name,1,2)=="_3"
+sort name
+keep if substr(name,1,6)=="random" | filename1=="NEEMSIS_APPEND"
+*Implement
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local f = dirname + "\" + filename
+	erase "`f'"
+	tempfile save`i'
+}
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ****************************************
 * INITIALIZATION
 ****************************************
@@ -18,7 +209,7 @@ macro drop _all
 cls
 ********** Path to folder "data" folder.
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-cd "$directory\CLEAN"
+cd "$directory\ego_raw"
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -31,132 +222,201 @@ cd "$directory\CLEAN"
 
 
 
+
+
+
+
+
 ****************************************
 * EGOID
 ****************************************
-filelist, dir("$directory\rename") pattern(*.dta)
+filelist, dir("$directory\ego_raw") pattern(*.dta)
 split filename, p(-)
-*Keep ego
-gen ok=0
-replace ok=1 if substr(filename2,1,3)=="ego"
-replace ok=1 if substr(filename2,1,5)=="_3ego"
-replace ok=1 if substr(filename2,1,5)=="_3ran"
+*Generic name more complete
+egen filenamecomp=concat(filename2 filename3 filename4 filename5 filename6 filename7), p(-)
+replace filenamecomp=substr(filenamecomp,1,strlen(filenamecomp)-1) if substr(filenamecomp,strlen(filenamecomp),1)=="-"
+replace filenamecomp=substr(filenamecomp,1,strlen(filenamecomp)-1) if substr(filenamecomp,strlen(filenamecomp),1)=="-"
+replace filenamecomp=substr(filenamecomp,1,strlen(filenamecomp)-1) if substr(filenamecomp,strlen(filenamecomp),1)=="-"
+replace filenamecomp=substr(filenamecomp,1,strlen(filenamecomp)-1) if substr(filenamecomp,strlen(filenamecomp),1)=="-"
+replace filenamecomp=substr(filenamecomp,1,strlen(filenamecomp)-1) if substr(filenamecomp,strlen(filenamecomp),1)=="-"
+replace filenamecomp=substr(filenamecomp,1,strlen(filenamecomp)-1) if substr(filenamecomp,strlen(filenamecomp),1)=="-"
 
-keep if ok==1
-drop ok
-*Keep end of the name
+duplicates drop filenamecomp, force
+gen attheline="///"
+list filenamecomp attheline, clean noobs
+
+********** CREATION OF ALL FILES (forauto seulement) IN _temp FOLDER
+global genericname	///
+_3ego1questionnaire-_3individualemployment-_3characteristicsmainjob-_3indwagejob-_3wagejobpaymentinkindgroup.dta	///	 
+_3ego1questionnaire-_3individualemployment-_3covoccupationfield.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsntypehelpreceivedgroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3sncloserelouthhgroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3sncloserelouthhid.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snhelpemergencygroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snhelpemergencyid.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3sntalkthemostgroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3sntalkthemostid.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3networkresources-_3contactgroup.dta	///	 
+ego1questionnaire-individualemployment-characteristicsmainjob-indwagejob-wagejobpaymentinkindgroup.dta	///	 
+ego1questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkergroup.dta	///	 
+ego1questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid.dta	///	 
+ego1questionnaire-individualemployment-covoccupationfieldlist.dta	///	 
+ego1questionnaire-socialnetworks-formalsocialcapital.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-covsntypehelpgivengroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-covsntypehelpreceivedgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-sncloserelouthhgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-sncloserelouthhid.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snfindcurrentjobgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snfindcurrentjobid.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snhelpemergencygroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snhelpemergencyid.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-sntalkthemostgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-sntalkthemostid.dta	///	 
+ego1questionnaire-socialnetworks-networkresources-contactgroup.dta	///	 
+ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indwagejob-_2wagejobpaymentinkindgroup.dta	///	 
+ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2informalsocialcapitalselfemp-_2snrecruitworkergroup.dta	///	 
+ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2informalsocialcapitalselfemp-_2snrecruitworkerid.dta	///	 
+ego2questionnaire-_2individualemployment-_2covoccupationfieldlist.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsnhelpreceivedid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpreceivedgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2sncloserelouthhgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2sncloserelouthhid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snfindcurrentjobgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snfindcurrentjobid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snhelpemergencygroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snhelpemergencyid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2sntalkthemostgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2sntalkthemostid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2networkresources-_2contactgroup.dta	///	 
+ego2questionnaire-randomizationego2-random_1825-show_draws.dta	///	 
+ego2questionnaire-randomizationego2-random_2635-show_draws_2.dta	///	 
+ego2questionnaire-randomizationego2-random_36-show_draws_3.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snrecommendforjobgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snrecommendforjobid.dta	///	 
+_2snrecommendassogroup.dta	///	 
+_2snrecommendassoid.dta	///	 
+_3ego1questionnaire-_3individualemployment-_3characteristicsmainjob-_3indselfemployment-_3informalsocialcapitalselfemp-_3snrecruitworkergroup.dta	///	 
+_3ego1questionnaire-_3individualemployment-_3characteristicsmainjob-_3indselfemployment-_3informalsocialcapitalselfemp-_3snrecruitworkerid.dta	///	 
+_3ego1questionnaire-_3individualemployment-_3characteristicsmainjob-_3indselfemployment-_3sourceinvestment-_3businessloandetails.dta	///	 
+_3ego1questionnaire-_3individualemployment-_3mainoccupschedule-_3indoccupmonths.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3formalsocialcapital.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsnhelpreceivedgroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsnhelpreceivedid.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3covsntypehelpgivengroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snfindcurrentjobgroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snfindcurrentjobid.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snfindjobgroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snfindjobid.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snrecommendforjobgroup.dta	///	 
+_3ego1questionnaire-_3socialnetworks-_3informalsocialcapital-_3informalsocialcapitalwageworker-_3snrecommendforjobid.dta	///	 
+ego1questionnaire-individualemployment-characteristicsmainjob-indselfemployment-informalsocialcapitalselfemp-snrecruitworkergroup.dta	///	 
+ego1questionnaire-individualemployment-characteristicsmainjob-indselfemployment-informalsocialcapitalselfemp-snrecruitworkerid.dta	///	 
+ego1questionnaire-individualemployment-characteristicsmainjob-indselfemployment-sourceinvestment-businessloandetails.dta	///	 
+ego1questionnaire-individualemployment-mainoccupschedule-indoccupmonths.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-covsnhelpgivengroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-covsnhelpgivenid.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-covsnhelpreceivedgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-covsnhelpreceivedid.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snfindjobgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snfindjobid.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snrecojobsuccessgroup.dta	///	 
+ego1questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snrecojobsuccessid.dta	///	 
+ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2businesspaymentinkindgroup.dta	///	 
+ego2questionnaire-_2individualemployment-_2characteristicsmainjob-_2indselfemployment-_2sourceinvestment-_2businessloandetails.dta	///	 
+ego2questionnaire-_2individualemployment-_2mainoccupschedule-_2indoccupmonths.dta	///	 
+ego2questionnaire-_2socialnetworks-_2formalsocialcapital.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsnhelpgivengroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsnhelpgivenid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2covsntypehelpgivengroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snfindjobgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snfindjobid.dta	///	 
+snrecommendassogroup.dta	///	 
+snrecommendassoid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snrecojobsuccessgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snrecojobsuccessid.dta	///	 
+_3snrecommendassogroup.dta	///	 
+_3snrecommendassoid.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snrecommendforjobgroup.dta	///	 
+ego2questionnaire-_2socialnetworks-_2informalsocialcapital-_2informalsocialcapitalwageworker-_2snrecommendforjobid.dta	/// 
+
+
+foreach k in $genericname{
+clear all
+set obs 1
+gen forauto="" in 1
+save"$directory/_egotemp/NEEMSIS2_LAST-`k'", replace
+save"$directory/_egotemp/NEEMSIS2_DECEMBER-`k'", replace
+save"$directory/_egotemp/NEEMSIS2_DEC-`k'", replace
+save"$directory/_egotemp/NEEMSIS2_FEB-`k'", replace
+save"$directory/_egotemp/NEEMSIS2_FEBRUARY-`k'", replace
+save"$directory/_egotemp/NEEMSIS2_NEW_APRIL-`k'", replace
+save"$directory/_egotemp/NEEMSIS2_APRIL-`k'", replace
+
+}
+
+********** INSTRUCTIONS:
+/*
+COPIER ET REMPLACER LES FICHIERS DE EGO RAW VERS EGO TEMP
+*/
+
+
+********** APPEND PAR VERSION
+foreach k in $genericname{
+use "$directory\_egotemp\NEEMSIS2_LAST-`k'", clear
+append using "$directory\_egotemp\NEEMSIS2_DECEMBER-`k'", force
+append using "$directory\_egotemp\NEEMSIS2_DEC-`k'", force
+append using "$directory\_egotemp\NEEMSIS2_FEB-`k'", force
+append using "$directory\_egotemp\NEEMSIS2_FEBRUARY-`k'", force
+append using "$directory\_egotemp\NEEMSIS2_NEW_APRIL-`k'", force
+append using "$directory\_egotemp\NEEMSIS2_APRIL-`k'", force
+save "$directory/_egotemp/inprogress/NEEMSIS_APPEND-`k'", replace
+}
+
+********** Merger les égos
+filelist, dir("$directory\_egotemp\inprogress") pattern(*.dta)
+split filename, p(-)
+*Identify generic name
+forvalues i=1(1)50{
+capture confirm v filename`i'
+if !_rc {
+global filenamemax "`i'"
+}
+}
+dis $filenamemax
 gen name=""
-forvalues i=1(1)7{
+forvalues i=1(1)$filenamemax{
 replace name=filename`i' if substr(filename`i',strlen(filename`i')-3,4)==".dta"
 }
-*Drop random and show
-gen todrop=0
-replace todrop=1 if substr(name,1,4)=="show"
-replace todrop=2 if substr(name,1,6)=="random"
-replace todrop=3 if substr(name,1,6)=="_3show"
-replace todrop=3 if substr(name,1,8)=="_3random"
-sort todrop
-
-foreach x in NEEMSIS_APPEND-ego2questionnaire-randomizationego2-random_1825-show_draws.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-randomizationego2full-random_2635-show_draws_2.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-randomizationego2full-random_36-show_draws_3.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-randomizationego2full-random_1825-show_draws.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-random_36-show_draws_3.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-random_2635-show_draws_2.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-random_2635-random_draws_2.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-random_1825-random_draws.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-randomizationego2full-random_2635-random_draws_2.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-randomizationego2full-random_1825-random_draws.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-random_36-random_draws_3.dta NEEMSIS_APPEND-ego2questionnaire-randomizationego2-randomizationego2full-random_36-random_draws_3.dta NEEMSIS_APPEND-_3random_1825-_3show_draws.dta NEEMSIS_APPEND-_3random_2635-_3random_draws_2.dta NEEMSIS_APPEND-_3random_2635-_3show_draws_2.dta NEEMSIS_APPEND-_3random_36-_3random_draws_3.dta NEEMSIS_APPEND-_3random_36-_3show_draws_3.dta {
-*set trace on
-capture confirm file "`x'"
-if _rc==0{
-erase "`x'"
-}
-}
-
-*Clean var
-drop filename1 filename2 filename3 filename4 filename5 filename6 filename7
-*Egoid
 sort name
-gen egoid=1
-replace egoid=2 if substr(name,1,2)=="_2"
-replace egoid=3 if substr(name,1,2)=="_3"
-tab egoid
-*New name
-split filename, p(.)
-drop filename2
-drop filename
-rename filename1 filename
-*Gen egoid
-tempfile myfiles
-save "`myfiles'"
-local obs=_N
-forvalues i=1/`obs' {
-	*set trace on
-	use "`myfiles'" in `i', clear
-	local f = dirname + "\" + filename
-	local s = filename
-	local e = egoid	
-	use "`f'", clear
-	gen egoid=`e'
-	foreach x of varlist _all {
-	local newname=substr("`x'",3,strlen("`x'"))
-	if substr("`x'",1,2)=="_2" rename `x' `newname'
-	if substr("`x'",1,2)=="_3" rename `x' `newname'
-	}
-	tempfile save`i'
-	save "`s'_v2.dta", replace
-}
-****************************************
-* END
-
-
-
-
-
-
-
-
-
-
-
-
-
-****************************************
-* APPEND
-****************************************
-filelist, dir("$directory\CLEAN") pattern(*.dta)
-split filename, p(-)
-*Keep ego
-gen ok=0
-replace ok=1 if substr(filename2,1,3)=="ego" 
-replace ok=1 if substr(filename2,1,5)=="_3ego"
-replace ok=1 if substr(filename2,1,5)=="_3ran"
-keep if ok==1
-drop ok
-*Keep v2
-gen ok=0
-replace ok=1 if substr(filename,strlen(filename)-6,7)=="_v2.dta"
-keep if ok==1
-drop ok
-*Keep end of the name
-gen name=""
-forvalues i=1(1)7{
-replace name=filename`i' if substr(filename`i',strlen(filename`i')-3,4)==".dta"
-}
 *New var name for ego2 and ego3
 clonevar name2=name
 replace name2=substr(name2,3,strlen(name2)) if substr(name2,1,2)=="_2"
 replace name2=substr(name2,3,strlen(name2)) if substr(name2,1,2)=="_3"
 sort name2
-
-*Pb de ego2questionnairefull
-clonevar filename33=filename3
-sort name2
-replace filename3=filename4 if filename33=="ego2questionnairefull"
-replace filename4=filename5 if filename33=="ego2questionnairefull"
-replace filename5=filename6 if filename33=="ego2questionnairefull"
-replace filename6=filename7 if filename33=="ego2questionnairefull"
-
-*Confirmation of group
-forvalues i=4(1)5{
-clonevar filename`i'_n=filename`i' 
-replace filename`i'_n=substr(filename`i'_n,3,strlen(filename`i'_n)) if substr(filename`i'_n,1,2)=="_2"
-replace filename`i'_n=substr(filename`i'_n,3,strlen(filename`i'_n)) if substr(filename`i'_n,1,2)=="_3"
+forvalues i=3(1)7{
+replace filename`i'=substr(filename`i',3,strlen(filename`i')) if substr(filename`i',1,2)=="_2"
+replace filename`i'=substr(filename`i',3,strlen(filename`i')) if substr(filename`i',1,2)=="_3"
 }
+*Remove .dta for concat (new name)
+forvalues i=1(1)7{
+replace filename`i'="" if substr(filename`i',strlen(filename`i')-3,4)==".dta"
+}
+*Drop show and random
+drop if substr(name2,1,4)=="show"
+drop if substr(name2,1,6)=="random"
+*Add -
+forvalues i=3(1)5{
+replace filename`i'="-"+filename`i'
+replace filename`i'="" if filename`i'=="-"
+}
+replace name2="-"+name2
+*How much per name?
+bysort name2: gen n=_n
+tab n
+*New name
 gen filecat2="NEEMSIS_APPEND-ego123questionnaire"
-egen filecat=concat(filecat2 filename4_n filename5_n name2), p(-)
+egen filecat=concat(filecat2 filename3 filename4 filename5 filename6 name2)
 replace filecat=substr(filecat,1,strlen(filecat)-1) if substr(filecat,strlen(filecat),1)=="-"
 replace filecat=substr(filecat,1,strlen(filecat)-1) if substr(filecat,strlen(filecat),1)=="-"
 drop filecat2
@@ -166,28 +426,9 @@ rename filecat1 filecat
 
 encode filecat, gen(filecat_encode)
 
-/*
-*File category
-egen filecat=concat(filename44 filename55 name2), p(//)
-encode filecat, gen(filecat_encode)
-*/
-
-*Egoid
-sort name
-gen egoid=1
-replace egoid=2 if substr(name,1,2)=="_2"
-replace egoid=3 if substr(name,1,2)=="_3"
-tab egoid
-sort filecat_encode egoid
-*Check
-bysort filecat_encode: gen n=_n
-bysort filecat_encode: egen nmax=max(n)
-tab nmax
-drop nmax n
-drop filename1 filename2 filename3 filename4 filename5 filename6 filename7 name name2 filecat fsize
-drop filename4_n filename5_n
-order filecat_encode egoid
-sort filecat_encode egoid
+*Cleaning
+drop filename1 filename2 filename3 filename4 filename5 filename6 filename7 name name2 n filecat fsize
+tab filecat_encode
 *Only one var
 split filename, p(.)
 drop filename filename2
@@ -195,67 +436,15 @@ rename filename1 filename
 egen onevar=concat(dirname filename), p(\)
 drop dirname filename
 *Reshape
-drop filecat3 filename33 egoid
 bysort filecat_encode: gen n=_n
+tab n
 reshape wide onevar, i(filecat_encode) j(n)
-
-*File 1:
-gen firstfile=""
-replace firstfile=onevar4 if onevar4!=""
-replace firstfile=onevar3 if onevar3!=""
-replace firstfile=onevar2 if onevar2!=""
-replace firstfile=onevar1 if onevar1!=""
-
-replace onevar1="" if onevar1==firstfile
-replace onevar2="" if onevar2==firstfile
-replace onevar3="" if onevar3==firstfile
-replace onevar4="" if onevar4==firstfile
-
-*File 2:
-gen secondfile=""
-replace secondfile=onevar4 if onevar4!=""
-replace secondfile=onevar3 if onevar3!=""
-replace secondfile=onevar2 if onevar2!=""
-replace secondfile=onevar1 if onevar1!=""
-
-replace onevar1="" if onevar1==secondfile
-replace onevar2="" if onevar2==secondfile
-replace onevar3="" if onevar3==secondfile
-replace onevar4="" if onevar4==secondfile
-
-*File 3:
-gen thirdfile=""
-replace thirdfile=onevar4 if onevar4!=""
-replace thirdfile=onevar3 if onevar3!=""
-replace thirdfile=onevar2 if onevar2!=""
-replace thirdfile=onevar1 if onevar1!=""
-
-replace onevar1="" if onevar1==thirdfile
-replace onevar2="" if onevar2==thirdfile
-replace onevar3="" if onevar3==thirdfile
-replace onevar4="" if onevar4==thirdfile
-
-*File 4:
-gen fourthfile=""
-replace fourthfile=onevar4 if onevar4!=""
-replace fourthfile=onevar3 if onevar3!=""
-replace fourthfile=onevar2 if onevar2!=""
-replace fourthfile=onevar1 if onevar1!=""
-
-replace onevar1="" if onevar1==fourthfile
-replace onevar2="" if onevar2==fourthfile
-replace onevar3="" if onevar3==fourthfile
-replace onevar4="" if onevar4==fourthfile
-
-
-*Verif
-tab1 onevar1 onevar1 onevar3 onevar4
-drop onevar1 onevar2 onevar3 onevar4
 
 *Decode filecat for generic name
 decode filecat_encode, gen(filecat)
 drop filecat_encode
 order filecat, first
+
 *Append
 tempfile myfiles
 save "`myfiles'"
@@ -264,10 +453,10 @@ forvalues i=1/`obs' {
 	*set trace on
 	use "`myfiles'" in `i', clear
 	local fc = filecat
-	local f1 = firstfile
-	local f2 = secondfile
-	local f3 = thirdfile
-	local f4 = fourthfile
+	local f1 = onevar1
+	local f2 = onevar2
+	local f3 = onevar3
+	*local f4 = onevar4
 	use "`f1'.dta", clear	
 	*First append
 	capture confirm file "`f2'.dta"
@@ -275,7 +464,7 @@ forvalues i=1/`obs' {
 	append using "`f2'.dta"
 	}
 	else{
-	save "`fc'.dta", replace
+	save "$directory\_egotemp\inprogress\\`fc'.dta", replace
 	}
 	*Second append	
 	capture confirm file "`f3'.dta"
@@ -283,21 +472,27 @@ forvalues i=1/`obs' {
 	append using "`f3'.dta"
 	}
 	else{
-	save "`fc'.dta", replace
+	save "$directory\_egotemp\inprogress\\`fc'.dta", replace
 	}
 	*Third append
+	/*
 	capture confirm file "`f4'.dta"
 	if _rc==0{
 	append using "`f4'.dta"
 	}
 	else{
-	save "`fc'.dta", replace
+	save "$directory\_egotemp\inprogress\\`fc'.dta", replace
 	}
+	*/
 	tempfile save`i'
-	save "`fc'.dta", replace
+	save "$directory\_egotemp\inprogress\\`fc'.dta", replace
 }
 ****************************************
 * END
+
+
+
+
 
 
 
@@ -308,14 +503,10 @@ forvalues i=1/`obs' {
 ****************************************
 * CLEANING
 ****************************************
-filelist, dir("$directory\CLEAN") pattern(*.dta)
+********** Drop duplicates
+filelist, dir("$directory\_egotemp") pattern(*.dta)
 split filename, p(-)
-*Keep append files
-keep if filename2=="ego123questionnaire"
-drop filename1 filename2 filename3 filename4 filename5 filename6 filename7
-split filename, p(_v)
-drop filename2 filename
-rename filename1 filename
+drop if filename2=="ego123questionnaire"
 tempfile myfiles
 save "`myfiles'"
 local obs=_N
@@ -323,35 +514,36 @@ forvalues i=1/`obs' {
 	*set trace on
 	use "`myfiles'" in `i', clear
 	local f= dirname + "/" + filename
-	use "`f'_v2.dta", clear	
-	drop setof* key
+	erase "`f'"	
+	tempfile save`i'
+}
+
+
+
+********** Remove blank and forauto
+filelist, dir("$directory\_egotemp\inprogress") pattern(*.dta)
+split filename, p(.)
+drop filename2
+rename filename1 filenamenew
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local f=dirname + "/" + filename
+	local f2=filenamenew + "_v2.dta"
+	use"`f'", replace
+	capture confirm v parent_key
+	if _rc==0{
+	drop if parent_key==""
+	}
 	capture confirm v forauto
 	if _rc==0{
 	drop forauto
 	}
-	order parent_key egoid, first
-	drop if parent_key==""
-	
+	save "$directory\CLEAN\\`f2'", replace
 	tempfile save`i'
-	save "`f'_v3.dta", replace
 }
 ****************************************
-
-
-
-
-
-
-
-****************************************
-* MERGING
-****************************************
-use"NEEMSIS2-HH_v15.dta", clear
-
-setofcontactgroup
-setofformalsocialcapital
-
-
-
-*************************************
 * END
