@@ -1,3 +1,4 @@
+cls
 /*
 -------------------------
 Arnaud Natal
@@ -88,13 +89,31 @@ replace caste=2 if jatis==`x'
 foreach x in 4 6 9 11 13 17{
 replace caste=3 if jatis==`x'
 }
-label define castecat 1"Dalits" 2"Middle" 3"Upper", replace
+replace caste=77 if jatis==77
+label define castecat 1"Dalits" 2"Middle" 3"Upper" 77"Other", replace
 label values caste castecat
 tab caste
 
 label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"Mudaliar" 12"Kulalar" 13"Chettiyar" 14"Marwari" 15"Muslims" 16"Padayachi" 17"Yathavar" 77"Other", replace
 label values jatis caste
 
+*Edulevel
+gen edulevel=.
+replace edulevel=0 if education==9
+replace edulevel=1 if education==1
+replace edulevel=2 if education==2
+replace edulevel=3 if education==3
+replace edulevel=3 if education==4
+replace edulevel=4 if education==5
+replace edulevel=5 if education==6
+replace edulevel=5 if education==7
+replace edulevel=5 if education==8
+
+tab education
+
+label define edulevel 0"Below primary" 1"Primary completed" 2"High school (8th-10th)" 3"HSC/Diploma (11th-12th)" 4"Bachelors (13th-15th)" 5"Post graduate (15th and more)", replace
+label values edulevel edulevel
+tab edulevel
 
 
 *Housing
@@ -116,50 +135,29 @@ label values housetype housetype
 gen goldquantityamount=goldquantity*2000
 
 *Own Land
-foreach x in land1acres land2acres land3acres{ 
-split `x', p(,)
-capture confirm v `x'2
-if _rc==0{
-egen `x'_concat=concat(`x'1 `x'2), p(".")
-}
-else{
-egen `x'_concat=concat(`x'1)
-}
-destring `x'_concat, gen(`x'_numeric)
-capture confirm v `x'2
-if _rc==0{
-drop `x'_concat `x'1 `x'2
-}
-else{
-drop `x'_concat `x'1
-}
-drop `x'
-rename `x'_numeric `x'
-}
+destring land1acres land2acres land3acres, replace dpcomma
+clonevar land1acres_own=land1acres
+clonevar land2acres_own=land2acres
+clonevar land3acres_own=land3acres
 
-gen sizeownlanddry=.
-replace sizeownlanddry=land1acres if land1type1==1 & land1type2==1
-replace sizeownlanddry=land1acres+land2acres if land1type1==1 & land1type2==1 & land2type1==1 & land2type2==1
-replace sizeownlanddry=land1acres+land2acres+land3acres if land1type1==1 & land1type2==1 & land2type1==1 & land2type2==1 & land3type1==1 & land3type2==1
-gen sizeownlandwet=.
-replace sizeownlandwet=land1acres if land1type1==1 & land1type2==2
-replace sizeownlandwet=land1acres+land2acres if land1type1==1 & land1type2==2 & land2type1==1 & land2type2==2
-replace sizeownlandwet=land1acres+land2acres+land3acres if land1type1==1 & land1type2==2 & land2type1==1 & land2type2==2 & land3type1==1 & land3type2==2
-gen amountownlanddry=600000*sizeownlanddry
-gen amountownlandwet=1100000*sizeownlandwet
-gen sizeownland=sizeownlanddry+sizeownlandwet
+replace land1acres_own=0 if land1type1!=1
+replace land2acres_own=0 if land2type1!=1
+replace land3acres_own=0 if land3type1!=1
 
-gen sizeleaselanddry=.
-replace sizeleaselanddry=land1acres if land1type1==2 & land1type2==1
-replace sizeleaselanddry=land1acres+land2acres if land1type1==2 & land1type2==1 & land2type1==2 & land2type2==1
-replace sizeleaselanddry=land1acres+land2acres+land3acres if land1type1==2 & land1type2==1 & land2type1==2 & land2type2==1 & land3type1==2 & land3type2==1
-gen sizeleaselandwet=.
-replace sizeleaselandwet=land1acres if land1type1==2 & land1type2==2
-replace sizeleaselandwet=land1acres+land2acres if land1type1==2 & land1type2==2 & land2type1==2 & land2type2==2
-replace sizeleaselandwet=land1acres+land2acres+land3acres if land1type1==2 & land1type2==2 & land2type1==2 & land2type2==2 & land3type1==2 & land3type2==2
-gen sizeleaseland=sizeleaselanddry+sizeleaselandwet
+gen landowndry=0
+gen landownwet=0
 
+replace landowndry=land1acres_own if land1type2==1
+replace landowndry=landowndry+land2acres_own if land2type2==1
+replace landowndry=landowndry+land3acres_own if land3type2==1
 
+replace landownwet=land1acres_own if land1type2==2
+replace landownwet=landownwet+land2acres_own if land2type2==2
+replace landownwet=landownwet+land3acres_own if land3type2==2
+
+gen amountownlanddry=600000*landowndry
+gen amountownlandwet=1100000*landownwet
+gen amountownland=amountownlanddry+amountownlandwet
 
 *Goods value
 gen value1=100000
@@ -340,6 +338,7 @@ bysort HHID2010 INDID : egen maxincome_indiv=max(annualincome)
 *occup name and occup type with the max
 gen mainoccup=occupationtype if maxincome_indiv==annualincome
 gen mainoccupname=occupationname if maxincome_indiv==annualincome
+gen mainoccupation_income_indiv=annualincome if maxincome_indiv==annualincome
 *encode name to simplify the procedure
 encode mainoccupname, gen(mainoccupnamenumeric)
 *put main occupation at indiv level
@@ -361,6 +360,7 @@ bysort HHID2010 INDID: egen nboccupation_indiv=sum(countoccupation)
 *cleaning
 rename mainoccupation mainoccupation_indiv
 rename mainoccupationname mainoccupationname_indiv
+
 drop maxincome_indiv mainoccup mainoccupname mainoccupnamenumeric countoccupation
 
 
@@ -395,19 +395,39 @@ fre occupationtype
 gen countoccupation=1 if occupationtype!=10
 bysort HHID2010 : egen nboccupation_HH=sum(countoccupation)
 drop countoccupation
+rename totalincome_indiv annualincome_indiv
+rename totalincome_HH annualincome_HH
 
 
 **********Indiv base
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-drop occupationname occupationtype annualincome stopworking n
+keep mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID
 save"RUME-occupations_2.dta", replace
+
+bysort HHID2010: gen n=_n 
+keep if n==1
+keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010
+save"RUME-occupations_3.dta", replace
+
+
 
 **********Merge dans la base HH
 use"RUME-HH_v3.dta", clear
 
-merge 1:1 HHID2010 INDID using "RUME-occupations_2.dta"
+merge 1:1 HHID2010 INDID using "RUME-occupations_2.dta", keepusing(mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv)
 drop _merge
+
+merge m:1 HHID2010 using "RUME-occupations_3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH)
+drop _merge
+
+recode mainoccupation_indiv mainoccupation_HH (.=0)
+
+preserve
+bysort HHID2010: gen n=_n
+keep if n==1
+fre mainoccupation_HH
+restore
 
 save"RUME-HH_v4.dta", replace
 ****************************************
@@ -422,8 +442,13 @@ save"RUME-HH_v4.dta", replace
 
 
 
+
+
+
+
+
 ****************************************
-* Assets
+* Assets + crisis + chit + gold + savings
 ****************************************
 use"RUME-HH_v4.dta", clear
 
@@ -442,6 +467,156 @@ tabstat assets1000 totalincome_HH1000, stat(n mean sd p50) by(caste)
 restore
 */
 
+********** Crisis
+/*
+preserve
+import excel "$directory\RUME-crisis.xlsx", sheet("T24_Problems_in_work__crisis_") firstrow clear
+rename Codefamily HHID2010
+rename B effectcrisislostjob
+rename C effectcrisislesswork
+rename D effectcrisiskindofwork
+rename E effectcrisisjoblocation
+rename F effectcrisisjoblocation2
+save"RUME-crisis.dta", replace
+restore
+*/
+merge m:1 HHID2010 using "RUME-crisis.dta"
+drop _merge
+
+
+
+********** Chit
+/*
+preserve
+import delimited "$directory\RUME-chitfunds.csv", clear delimiter(";") encoding(utf8)
+rename v1 HHID2010
+rename v2 dummychitfund
+rename v3 INDID
+rename v4 chitfundtype
+rename v5 durationchit
+rename v6 nbermemberchit
+rename v7 chitfundpayment
+rename v8 chitfundamount
+order dummychitfund HHID2010 INDID
+keep if INDID!=""
+duplicates tag HHID2010 INDID, gen(tag)
+tab tag
+drop tag
+egen HHINDID=concat(HHID2010 INDID), p(/)
+bysort HHINDID: gen n=_n
+reshape wide chitfundtype durationchit nbermemberchit chitfundpayment chitfundamount, i(HHINDID) j(n)
+drop HHINDID 
+order dummychitfund HHID2010 INDID
+save"$directory\RUME-chitfunds.dta", replace
+restore
+*/
+merge 1:1 HHID2010 INDID using "$directory\RUME-chitfunds.dta"
+drop if _merge==2
+drop _merge
+recode dummychitfund (.=0)
+rename dummychitfund chitfundbelongerlist
+bysort HHID2010: egen dummychitfund=sum(chitfundbelongerlist)
+replace dummychitfund=1 if dummychitfund>1 & dummychitfund!=. & dummychitfund!=0
+
+
+
+********** Savings
+/*
+preserve
+import delimited "$directory\RUME-savings.csv", clear delimiter(";") encoding(utf8)
+rename v1 HHID2010
+rename v2 dummysavingaccount
+rename v3 INDID
+rename v4 savingsbankname
+rename v5 savingsbankplace
+rename v6 savingsamount
+rename v7 savingspurpose1
+rename v8 savingspurpose2
+rename v9 dummydebitcard
+rename v10 dummycreditcard
+egen savingspurpose=concat(savingspurpose1 savingspurpose2), p(" ")
+drop savingspurpose1 savingspurpose2
+order dummysavingaccount HHID2010 INDID
+keep if INDID!=""
+duplicates tag HHID2010 INDID, gen(tag)
+tab tag
+drop tag
+egen HHINDID=concat(HHID2010 INDID), p(/)
+bysort HHINDID: gen n=_n
+reshape wide savingsbankname savingsbankplace savingsamount dummydebitcard dummycreditcard savingspurpose, i(HHINDID) j(n)
+drop HHINDID
+order dummysavingaccount HHID2010 INDID
+save "$directory\RUME-savings.dta", replace
+restore
+*/
+merge 1:1 HHID2010 INDID using "$directory\RUME-savings.dta"
+drop if _merge==2
+drop _merge
+recode dummysavingaccount (.=0)
+rename dummysavingaccount saving
+bysort HHID2010: egen dummysavingaccount=sum(saving)
+tab dummysavingaccount
+rename saving savingsownerlist
+replace dummysavingaccount=1 if dummysavingaccount>1 & dummysavingaccount!=.
+tab dummysavingaccount
+
+********** Gold
+/*
+preserve
+import delimited "$directory\RUME-gold.csv", clear delimiter(";") encoding(utf8)
+rename v1 HHID2010
+rename v2 goldquantity
+rename v3 goldquantitypledge
+rename v4 goldamountpledge
+drop if HHID2010==""
+gen dummygoldpledged=0
+replace dummygoldpledged=1 if goldquantitypledge!=0 & goldquantitypledge!=.
+save"$directory\RUME-gold.dta", replace
+restore
+*/
+merge m:1 HHID2010 using "$directory\RUME-gold.dta"
+drop _merge
+
+
+********** Insurance
+/*
+preserve
+import delimited "$directory\RUME-insurance.csv", clear delimiter(";") encoding(utf8)
+rename v1 HHID2010
+rename v2 dummyinsurance
+rename v3 INDID
+rename v4 insurancename
+rename v5 insurancetype
+rename v6 insurancebenefit
+rename v7 insurancejoineddate
+drop if INDID==""
+recode insurancetype (1=1) (2=2) (3=3) (4=4) (5=7) (6=.) (77=77)
+label define insurance 1"Life insurance" 2"Health insurance" 3"Crop insurance" 4"Animal insurance" 5"Accident insurance (vehicle/person)" 6"Bike insurance" 7"Savings insurance" 77"Other"
+label values insurancetype insurance
+keep if INDID!=""
+bysort HHID2010 INDID: gen n=_n
+tab n
+egen HHINDID=concat(HHID2010 INDID), p(" ")
+reshape wide insurancename insurancetype insurancebenefit insurancejoineddate, i(HHINDID) j(n)
+drop HHINDID
+order HHID2010 INDID
+save"$directory\RUME-insurance.dta", replace
+restore
+*/
+merge 1:1 HHID2010 INDID using "$directory\RUME-insurance.dta"
+drop _merge
+bysort HHID2010: egen _dummyinsurance=sum(dummyinsurance)
+tab _dummyinsurance
+rename dummyinsurance insuranceownerlist
+rename _dummyinsurance dummyinsurance
+replace dummyinsurance=1 if dummyinsurance>1 & dummyinsurance!=.
+
+
+********** Submission date
+gen submissiondate=mdy(03,01,2010)
+tab submissiondate
+format submissiondate %d
+
 save"RUME-HH_v5.dta", replace
 ****************************************
 * END
@@ -458,9 +633,17 @@ save"RUME-HH_v5.dta", replace
 ****************************************
 use"RUME-HH_v5.dta", clear
 
-merge m:1 HHID2010 using "unique_identifier_panel.dta", keepusing(HHID_panel)
-drop if _merge==2
+merge m:m HHID2010 using "unique_identifier_panel.dta", keepusing(HHID_panel)
+keep if _merge==3
 drop _merge
+preserve
+duplicates drop HHID2010, force
+tab HHID_panel
+restore
+preserve
+duplicates drop HHID_panel, force
+tab HHID2010
+restore
 
 save"RUME-HH_v6.dta", replace
 ****************************************
