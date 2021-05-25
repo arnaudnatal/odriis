@@ -366,6 +366,36 @@ drop maxincome_indiv mainoccup mainoccupname mainoccupnamenumeric countoccupatio
 
 
 
+*Agri vs non agri income?
+fre occupationtype
+forvalues i=1(1)10{
+gen labourincome_`i'=.
+}
+
+forvalues i=1(1)10{
+replace labourincome_`i'=annualincome if occupationtype==`i'
+recode labourincome_`i' (.=0)
+}
+forvalues i=1(1)10{
+bysort HHID2010 INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
+bysort HHID2010: egen labourincome_HH_`i'=sum(labourincome_`i')
+}
+
+foreach x in labourincome_indiv labourincome_HH{
+rename `x'_1 `x'_agri
+rename `x'_2 `x'_coolie
+rename `x'_3 `x'_agricoolie
+rename `x'_4 `x'_nregs
+rename `x'_5 `x'_investment
+rename `x'_6 `x'_employee
+rename `x'_8 `x'_selfemp
+rename `x'_9 `x'_pension
+rename `x'_10 `x'_nooccup
+}
+
+drop labourincome_indiv_7 labourincome_HH_7
+
+
 **********HH
 *max income or hours (income only for 2010)
 fre occupationtype
@@ -402,12 +432,12 @@ rename totalincome_HH annualincome_HH
 **********Indiv base
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID
+keep mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_HH_agri labourincome_HH_coolie labourincome_HH_agricoolie labourincome_HH_nregs labourincome_HH_investment labourincome_HH_employee labourincome_HH_selfemp labourincome_HH_pension labourincome_HH_nooccup labourincome_indiv_agri labourincome_indiv_coolie labourincome_indiv_agricoolie labourincome_indiv_nregs labourincome_indiv_investment labourincome_indiv_employee labourincome_indiv_selfemp labourincome_indiv_pension labourincome_indiv_nooccup
 save"RUME-occupations_2.dta", replace
 
 bysort HHID2010: gen n=_n 
 keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010
+keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 labourincome_HH_agri labourincome_HH_coolie labourincome_HH_agricoolie labourincome_HH_nregs labourincome_HH_investment labourincome_HH_employee labourincome_HH_selfemp labourincome_HH_pension labourincome_HH_nooccup
 save"RUME-occupations_3.dta", replace
 
 
@@ -415,10 +445,10 @@ save"RUME-occupations_3.dta", replace
 **********Merge dans la base HH
 use"RUME-HH_v3.dta", clear
 
-merge 1:1 HHID2010 INDID using "RUME-occupations_2.dta", keepusing(mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv)
+merge 1:1 HHID2010 INDID using "RUME-occupations_2.dta", keepusing(mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_coolie labourincome_indiv_agricoolie labourincome_indiv_nregs labourincome_indiv_investment labourincome_indiv_employee labourincome_indiv_selfemp labourincome_indiv_pension labourincome_indiv_nooccup)
 drop _merge
 
-merge m:1 HHID2010 using "RUME-occupations_3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH)
+merge m:1 HHID2010 using "RUME-occupations_3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_coolie labourincome_HH_agricoolie labourincome_HH_nregs labourincome_HH_investment labourincome_HH_employee labourincome_HH_selfemp labourincome_HH_pension labourincome_HH_nooccup)
 drop _merge
 
 recode mainoccupation_indiv mainoccupation_HH (.=0)
