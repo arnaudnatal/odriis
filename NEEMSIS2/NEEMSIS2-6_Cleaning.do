@@ -253,15 +253,46 @@ bysort parent_key : egen nboccupation_HH=sum(countoccupation)
 drop countoccupation
 
 
+
+*Agri vs non agri income?
+fre kindofwork
+forvalues i=1(1)8{
+gen labourincome_`i'=.
+}
+
+forvalues i=1(1)8{
+replace labourincome_`i'=annualincome if kindofwork==`i'
+recode labourincome_`i' (.=0)
+}
+forvalues i=1(1)8{
+bysort parent_key INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
+bysort parent_key: egen labourincome_HH_`i'=sum(labourincome_`i')
+}
+
+
+foreach x in labourincome_indiv labourincome_HH{
+rename `x'_1 `x'_agri
+rename `x'_2 `x'_selfemp
+rename `x'_3 `x'_sjagri
+rename `x'_4 `x'_sjnonagri
+rename `x'_5 `x'_uwhhnonagri
+rename `x'_6 `x'_uwnonagri
+rename `x'_7 `x'_uwhhagri
+rename `x'_8 `x'_uwagri
+}
+
+
+
+
 **********Indiv base
 bysort parent_key INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH parent_key INDID
+keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH parent_key INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
 save"NEEMSIS_APPEND-occupations_v3.dta", replace
 
 bysort parent_key: gen n=_n 
 keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH parent_key INDID
+keep mainoccupation_HH annualincome_HH nboccupation_HH parent_key INDID labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
 save"NEEMSIS_APPEND-occupations_v4.dta", replace
 
 
@@ -270,10 +301,10 @@ use"NEEMSIS2-HH_v7.dta", clear
 tab dummyworkedpastyear
 *1140 indiv ?
 
-merge m:1 parent_key INDID_total using "NEEMSIS_APPEND-occupations_v3.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv)
+merge m:1 parent_key INDID_total using "NEEMSIS_APPEND-occupations_v3.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri)
 drop _merge
 
-merge m:1 parent_key using "NEEMSIS_APPEND-occupations_v4.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH)
+merge m:1 parent_key using "NEEMSIS_APPEND-occupations_v4.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri)
 drop _merge
 
 recode mainoccupation_indiv mainoccupation_HH (.=0)
@@ -555,9 +586,9 @@ rename `x'5 `x'none
 
 **********Gold
 tab goldquantity
-replace goldquantity=50 if goldquantity==120000  //120 000 / 2700 = 44.4 donc 50
+replace goldquantity=25 if goldquantity==120000  //120 000 / 4800 = 25
 
-gen goldquantityamount=goldquantity*2700
+gen goldquantityamount=goldquantity*4800
 bysort HHID2010 : egen goldquantityamount2=max(goldquantityamount)
 drop goldquantityamount
 rename goldquantityamount2 goldquantityamount
@@ -569,11 +600,24 @@ tab drywetownland
 replace sizedryownland=sizeownland if drywetownland=="1" & sizedryownland==. & sizeownland!=.
 replace sizewetownland=sizeownland if drywetownland=="2" & sizewetownland==. & sizeownland!=.
 
-gen amountownlanddry=sizedryownland*600000
-gen amountownlandwet=sizewetownland*800000
+fre villageid
+gen amountownlanddry=.
+replace amountownlanddry=sizedryownland*900000 if villageid==3 | villageid==9 | villageid==6
+replace amountownlanddry=sizedryownland*1000000 if villageid==10 | villageid==7 | villageid==1 | villageid==8
+replace amountownlanddry=sizedryownland*800000 if villageid==4 | villageid==5 | villageid==2
+
+gen amountownlandwet=.
+replace amountownlandwet=sizewetownland*1600000 if villageid==3 | villageid==9 | villageid==6
+replace amountownlandwet=sizewetownland*1500000 if villageid==10 | villageid==7 | villageid==1 | villageid==8
+replace amountownlandwet=sizewetownland*1200000 if villageid==4 | villageid==5 | villageid==2
+
+
 gen amountownland=amountownlanddry+amountownlandwet
 *if both half
-replace amountownland=sizeownland*700000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==.
+replace amountownland=sizeownland*1250000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==3 | villageid==9 | villageid==6)
+replace amountownland=sizeownland*1250000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==10 | villageid==7 | villageid==1 | villageid==8)
+replace amountownland=sizeownland*1000000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==4 | villageid==5 | villageid==2)
+
 
 
 **********Livestock
@@ -646,7 +690,7 @@ rename `x'13 `x'none
 rename `x'77 `x'other
 }
 
-
+/*
 ****Cleaning for goods
 *Car
 replace numbergoods_car=1 if othergood=="Auto"
@@ -698,11 +742,14 @@ gen goodtotalamount_camera=0
 
 egen goodtotalamount=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_DVD goodtotalamount_camera goodtotalamount_TV)
 recode goodtotalamount (.=0)
+*/
+egen goodtotalamount2=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_DVD goodtotalamount_camera)
+recode goodtotalamount2 (.=0)
 
 
 **********ASSETS
-egen assets=rowtotal(amountownland livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock livestockamount_bullforploughing housevalue goldquantityamount goodtotalamount)
-egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount)
+egen assets=rowtotal(amountownland livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock livestockamount_bullforploughing housevalue goldquantityamount goodtotalamount2)
+egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount2)
 
 
 save"NEEMSIS2-HH_v11.dta", replace
@@ -1143,6 +1190,14 @@ gen totalincome_HH=annualincome_HH+remreceivedtotalamount_HH+incomeassets_HH+oth
 gen test=totalincome_indiv-annualincome_indiv
 tab test
 drop test
+
+********** Insurance
+forvalues i=1(1)6{
+rename insurancetype`i' insurancepublic`i'
+}
+forvalues i=1(1)6{
+rename insurancetypetwo`i' insurancetype`i'
+}
 
 save"NEEMSIS2-HH_v15.dta", replace
 ****************************************
