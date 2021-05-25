@@ -1,3 +1,4 @@
+cls
 /*
 -------------------------
 Arnaud Natal
@@ -31,7 +32,7 @@ recode dummydemonetisation (.=0)
 
 *panel unique id
 merge m:m HHID2010 using "unique_identifier_panel.dta", keepusing(HHID_panel)
-keep if _merge==3
+drop if _merge==2
 drop _merge
 
 save"NEEMSIS1-HH_v2.dta", replace
@@ -46,7 +47,9 @@ save"NEEMSIS1-HH_v2.dta", replace
 * Occupation
 ****************************************
 use"NEEMSIS-occupation_alllong.dta", clear
-drop HHID
+
+rename HHID parent_key
+order HHID2010 parent_key INDID INDID2010
 destring hoursayear, replace
 
 
@@ -61,8 +64,8 @@ destring hoursayear, replace
 ------------+-----------------------------------
       Total |      2,696      100.00
 */
-merge m:1 HHID2010 INDID using "NEEMSIS1-HH_v2.dta", keepusing(egoid dummymainoccup mainoccuptype othermainoccup maxhoursayear_ego dummyworkedpastyear workedpastyear_ego)
-keep if _merge==3
+merge m:1 parent_key INDID using "NEEMSIS1-HH_v2.dta", keepusing(egoid dummymainoccup mainoccuptype othermainoccup maxhoursayear_ego dummyworkedpastyear workedpastyear_ego)
+drop if _merge==2
 drop _merge
 rename maxhoursayear_ego maxhoursayear
 
@@ -222,31 +225,57 @@ bysort HHID2010 : egen nboccupation_HH=sum(countoccupation)
 drop countoccupation
 
 
+
+*Agri vs non agri income?
+fre kindofwork
+forvalues i=1(1)8{
+gen labourincome_`i'=.
+}
+
+forvalues i=1(1)8{
+replace labourincome_`i'=annualincome if kindofwork==`i'
+recode labourincome_`i' (.=0)
+}
+forvalues i=1(1)8{
+bysort HHID2010 INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
+bysort HHID2010: egen labourincome_HH_`i'=sum(labourincome_`i')
+}
+
+
+foreach x in labourincome_indiv labourincome_HH{
+rename `x'_1 `x'_agri
+rename `x'_2 `x'_selfemp
+rename `x'_3 `x'_sjagri
+rename `x'_4 `x'_sjnonagri
+rename `x'_5 `x'_uwhhnonagri
+rename `x'_6 `x'_uwnonagri
+rename `x'_7 `x'_uwhhagri
+rename `x'_8 `x'_uwagri
+}
+
+
+
 **********Indiv base
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID
+keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
 save"NEEMSIS-occupation_alllong_v2.dta", replace
 
 bysort HHID2010: gen n=_n 
 keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010
+keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
 save"NEEMSIS-occupation_alllong_v3.dta", replace
 
 
 **********Merge dans la base HH
 use"NEEMSIS1-HH_v2.dta", clear
 
-merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv)
+merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri)
 drop _merge
 
-merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH)
+merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri)
 drop _merge
 
-
-foreach x in mainoccupation_income_indiv annualincome_indiv annualincome_HH{
-gen `x'_b10=`x'*0.918905
-}
 
 recode mainoccupation_indiv mainoccupation_HH (.=0)
 
@@ -465,11 +494,6 @@ recode goodtotalamount (.=0)
 egen assets=rowtotal(amountownland livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount)
 
 egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount)
-
-foreach x in assets assets_noland{
-gen `x'_b10=`x'*0.918905
-}
-
 
 
 
