@@ -331,19 +331,209 @@ save"NEEMSIS2-HH_v8.dta", replace
 
 
 ****************************************
-* 2016 DATA PRELOAD for sex, etc.
+* 2010 2016 DATA PRELOAD for sex, etc.
 ****************************************
 use"NEEMSIS2-HH_v8.dta", clear
-merge m:1 INDIDpanel using "$directory\do_not_drop\NEEMSIS_preload2016"
+
+*merge m:1 HHID_panel using "$directory\do_not_drop\preload_HH"
+*keep if _merge==3
+*tab dummylostHH_2010_2016
+
+/*
+Attention, l'individu GOV43 --> 6 est bizarre
+il apparait dans la base lefthome sans prénom (enfin avec "...") en tant que 2 qui part
+pour work 
+je le drop de la base
+je drop aussi les 2 mariages que je ne peux pas identifier
+Tout comme les bases agri
+Donc je drop 5 obs
+*/
+drop if name==""
+
+keep HHID_panel INDID INDID_total INDID_former INDID_new INDID_left name age sex version_HH  marriedid marriedid_o marriedname marriagesomeoneelse 
+gen NEEMSIS2_indiv=1
+destring sex, replace
+label values sex sex
+destring age, replace
+
+order HHID_panel INDID INDID_total INDID_former INDID_new INDID_left marriedid marriedid_o name marriedname marriagesomeoneelse sex  age 
+
+sort HHID_panel INDID
+*br
+drop marriedid marriedid_o marriedname marriagesomeoneelse
+
+gen NEEMSIS2_HH=1
+
+foreach x in INDID name sex age version_HH{
+rename `x' `x'_p20
+}
+
+clonevar INDID=INDID_p20
+
+drop  INDID_total INDID_former INDID_new INDID_left
+save"$directory\do_not_drop\preload2020_indiv", replace
+
+
+
+use"$directory\do_not_drop\preload2020_indiv", clear
+
+merge 1:1 HHID_panel INDID using "$directory\do_not_drop\preload_indiv"
+
+
+*Garder d'abord que ceux qui sont là en 2020
+gen tokeep=0
+bysort HHID_panel: replace tokeep=1 if NEEMSIS2_HH==1
+bysort HHID_panel: egen max_tokeep=max(tokeep)
+drop if max_tokeep==0
+
+sort HHID_panel INDID
+
+order HHID_panel INDID INDID_p10 INDID_p16 INDID_p20 name_p10 name_p16 name_p20 dummynewHH_2010_2016 dummylostHH_2010_2016 _merge
+
+sort HHID_panel INDID
+
+/*
+Chercher les lost
+
+Pour ca il faut merger 2010 et 2020 puis regarder les HH perdu en 2016 pour voir les codes indiv correspondant, permet de reconstruire la base qui est dans RUME
+
+replace INDID=1 if HHID_panel=="GOV10" & INDID==201003
+
+replace INDID=1 if HHID_panel=="GOV47" & INDID==201001
+
+replace INDID=1 if HHID_panel=="GOV5" & INDID==201001
+
+replace INDID=1 if HHID_panel=="GOV9" & INDID==201001
+
+replace INDID=1 if HHID_panel=="KUV10" & INDID==201003
+
+replace INDID=1 if HHID_panel=="KUV25" & INDID==201002
+
+replace INDID=4 if HHID_panel=="MANAM19" & INDID==201001
+replace INDID=3 if HHID_panel=="MANAM19" & INDID==201003
+replace INDID=2 if HHID_panel=="MANAM19" & INDID==201004
+replace INDID=5 if HHID_panel=="MANAM19" & INDID==201007
+replace INDID=1 if HHID_panel=="MANAM19" & INDID==201008
+
+replace INDID=1 if HHID_panel=="MANAM34" & INDID==201002
+
+replace INDID=1 if HHID_panel=="MANAM40" & INDID==201002
+replace INDID=2 if HHID_panel=="MANAM40" & INDID==201006
+
+replace INDID=1 if HHID_panel=="ORA37" & INDID==201003
+replace INDID=2 if HHID_panel=="ORA37" & INDID==201004
+*/
+
+
+
+*Replace ceux qui ont les mauvais numéros
+replace INDID=5 if HHID_panel=="GOV19" & INDID_p20==3
+
+replace INDID=16 if HHID_panel=="GOV38" & INDID_p20==3
+replace INDID=17 if HHID_panel=="GOV38" & INDID_p20==4
+replace INDID=18 if HHID_panel=="GOV38" & INDID_p20==5
+replace INDID=19 if HHID_panel=="GOV38" & INDID_p20==6
+replace INDID=3 if HHID_panel=="GOV38" & INDID_p20==7
+replace INDID=4 if HHID_panel=="GOV38" & INDID_p20==8
+
+replace INDID=16 if HHID_panel=="MAN23" & INDID_p20==2
+replace INDID=17 if HHID_panel=="MAN23" & INDID_p20==3
+replace INDID=18 if HHID_panel=="MAN23" & INDID_p20==4
+
+replace INDID=16 if HHID_panel=="MAN34" & INDID_p20==1
+replace INDID=17 if HHID_panel=="MAN34" & INDID_p20==2
+replace INDID=18 if HHID_panel=="MAN34" & INDID_p20==3
+
+
+replace INDID=4 if HHID_panel=="MANAM18" & INDID_p20==2
+replace INDID=16 if HHID_panel=="MANAM18" & INDID_p20==3
+replace INDID=17 if HHID_panel=="MANAM18" & INDID_p20==4
+
+replace INDID=16 if HHID_panel=="SEM44" & INDID_p20==4
+replace INDID=17 if HHID_panel=="SEM44" & INDID_p20==5
+replace INDID=18 if HHID_panel=="SEM44" & INDID_p20==6
+replace INDID=4 if HHID_panel=="SEM44" & INDID_p20==7
+
+
+merge 1:1 HHID_panel INDID using "$directory\do_not_drop\preload_indiv"
+order HHID_panel INDID INDID_p20 INDID_p16 INDID_p10 name_p20 name_p16 name_p10 _merge
+sort HHID_panel INDID
+
+tab _merge
 drop if _merge==2
-drop HHID
-rename _merge preload2016
-sort preload2016
-recode preload2016 (1=0) (3=1)
-label list
-label values preload2016 yesno
-tab preload2016
-rename preload2016 dummy_preload2016
+rename _merge dummypreload2016
+fre dummypreload2016
+rename dummypreload2016 dummypreload
+recode dummypreload (1=0) (3=1)
+label define yesno 0"No" 1"Yes"
+label values dummypreload yesno
+tab dummypreload
+label var dummypreload "Indiv in panel"
+
+
+*panel 10 20
+preserve
+keep if name_p10!="" & name_p16=="" &name_p20!=""
+*aucun?
+restore
+
+
+save"NEEMSIS2-HH_v9_without.dta", replace
+
+append using "NEEMSIS2-HH_v9_with.dta"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+append using "NEEMSIS2-HH_v9_with.dta"
+tab dummypreload2016, m
+tab INDID_new
+
+********** Cleaning des INDID et création des dummy pour que ce soit plus clair
+tab RUME
+tab NEEMSIS1
+
+/*
+
+*/
+foreach x in INDID INDID_total INDID_former INDID_new INDID_left {
+rename `x' `x'_repeat2020
+}
+rename INDID_for2016 INDID_merge2016
+drop INDID2010 INDIDpanel INDID_p16 INDID2010_p16
+
+drop ego1INDID ego2INDID ego3INDID
+drop lefthousehold1 lefthousehold2 lefthousehold3 lefthousehold4 lefthousehold5 lefthousehold6 lefthousehold7 lefthousehold8 lefthousehold9 
+rename lefthousehold_ dummylefthousehold
+
+drop newmembernb newmember newmember1 newmember2 newmember3 newmember4 newmember5 newmember6 newmember7 newmember8 name_newmember
+
+drop formermember1 formermember2 formermember3 formermember4 formermember5 formermember6 formermember7 formermember8 formermember9 formermember10 formermember11 formermember12
+drop formermember formermember_
+drop tot_HH
+
+*New var for former, new, etc
+gen HH_panel=0
+
+gen dummymember2010=0
+replace dummymember2010=1 if name
+
+gen dummymember2016=0
+replace dummymember2016=1 if name!="" & name_p16!=""
+
+gen dummynewmember=0
+replace dummynewmember=1 if name!="" & name_
+
 
 save"NEEMSIS2-HH_v9.dta", replace
 ****************************************
@@ -521,12 +711,6 @@ drop _version_agri
 ********** Year
 gen year=2020
 
-
-
-
-
-
-**********Cleaning
 
 
 save"NEEMSIS2-HH_v10.dta", replace
@@ -1199,7 +1383,65 @@ forvalues i=1(1)6{
 rename insurancetypetwo`i' insurancetype`i'
 }
 
+
+
+********** Nettoyage INDID + preload
+tab version_HH dummy_preload2016
+
+
 save"NEEMSIS2-HH_v15.dta", replace
 ****************************************
 * END
 
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Migration
+****************************************
+use"NEEMSIS_APPEND-migrationjobidgroup.dta", clear
+drop forauto
+drop key
+drop setofmigrationjobidgroup
+
+split parent_key, p(/)
+drop parent_key2
+rename parent_key setofmigrationidgroup
+rename parent_key parent_key
+keep if migrationarea!=.
+
+drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+
+preserve
+use"NEEMSIS2-HH_v15.dta", clear
+keep dummymigration migrantlist migrantlist_ migrationgroup_count setofmigrationidgroup migrationjoblist migrationjobidgroup_count setofmigrationjobidgroup householdid2020 parent_key HHID_panel INDID INDID_total INDID_former INDID_new INDID_left egoid name sex age caste jatis villageid villageid_new version_HH 
+keep if migrantlist_==1
+save"NEEMSIS2-HH_v15_temp.dta", replace
+restore
+
+merge m:1 setofmigrationidgroup using "NEEMSIS2-HH_v15_temp.dta"
+sort _merge
+drop if _merge==2
+drop _merge
+
+erase "NEEMSIS2-HH_v15_temp.dta"
+
+save"NEEMSIS2-migration.dta", replace
+****************************************
+* END
