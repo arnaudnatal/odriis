@@ -167,7 +167,7 @@ use "RUME-loans_v3.dta", clear
 drop if loansettled==1
 
 ********** Submission darte
-gen submissiondate=mdy(6,15,2010)
+gen submissiondate=mdy(03,01,2010)
 tab submissiondate
 format submissiondate %d
 
@@ -678,6 +678,8 @@ use"RUME-HH_v7.dta", clear
 
 merge m:1 HHID2010 using "RUME-loans_v10_HH.dta", keepusing(imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH  mean_yratepaid_HH mean_monthlyinterestrate_HH)
 drop _merge
+
+
 
 save"RUME-HH_v8.dta", replace
 *************************************
