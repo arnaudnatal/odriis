@@ -826,19 +826,15 @@ keep if _merge==3
 drop _merge
 
 
-**********Panel indiv
-preserve
-keep age sex name relationshiptohead2 livinghome2 HHID_panel INDID_o
-rename relationshiptohead2 relationshiptohead
-rename INDID_o INDID2010
-label define yesno 0"No" 1"Yes"
-label values livinghome2 yesno
-rename livinghome2 dummylivinghome
-order HHID_panel INDID2010 name sex age relationshiptohead dummylivinghome 
-sort HHID_panel INDID2010
-save"C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\indiv2010", replace
-restore
 
+**********
+drop INDID name_p16
+rename INDID_o INDID2010
+merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_wide", keepusing(INDID_panel)
+keep if _merge==3
+drop _merge
+sort HHID_panel INDID_panel
+order HHID_panel INDID_panel
 
 save"RUME-HH_v7.dta", replace
 ****************************************
