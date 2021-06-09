@@ -77,6 +77,20 @@ rename ceremonies_expenses_year__rs_ ceremoniesexpenses
 rename death_expenses_year__rs_ deathexpenses
 
 
+*Relation
+label define relation 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Daughter-in-law" 8"Son-in-law" 9"Sister" 10"Mother-in-law" 11"Father-in-law" 12"Brother elder" 13"Brother younger" 14"Grand children" 15"Nobody" 77"Other"
+label values relationshiptohead relation
+
+clonevar relationshiptohead2=relationshiptohead
+recode relationshiptohead2 (8=7) (7=8) (12=10) (13=10) (10=11) (11=12) (14=13)
+label define relation2 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Son-in-law" 8"Daughter-in-law" 9"Sister" 10"Brother" 11"Mother-in-law" 12"Father-in-law" 13"Grandchild" 16"Grandmother" 17"Cousin" 77"Other"
+label values relationshiptohead2 relation2
+
+tab relationshiptohead relationshiptohead2
+
+tab livinghome
+rename livinghome livinghome2
+
 *Caste
 destring jatis, replace
 gen caste=.
@@ -810,6 +824,20 @@ Check if INDID=0 are in tracking2016
 merge m:1 HHID2010 using "panel_comp.dta"
 keep if _merge==3
 drop _merge
+
+
+**********Panel indiv
+preserve
+keep age sex name relationshiptohead2 livinghome2 HHID_panel INDID_o
+rename relationshiptohead2 relationshiptohead
+rename INDID_o INDID2010
+label define yesno 0"No" 1"Yes"
+label values livinghome2 yesno
+rename livinghome2 dummylivinghome
+order HHID_panel INDID2010 name sex age relationshiptohead dummylivinghome 
+sort HHID_panel INDID2010
+save"C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\indiv2010", replace
+restore
 
 
 save"RUME-HH_v7.dta", replace
