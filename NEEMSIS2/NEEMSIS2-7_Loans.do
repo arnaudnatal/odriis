@@ -223,8 +223,8 @@ replace loanreasongiven=2 if loanotherreasongiven=="Two wheeler loan"
 replace loanreasongiven=6 if loanotherreasongiven=="Van perches"
 tab loanreasongiven, m
 sort loanreasongiven
-label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
-label values loanlender lenders
+*label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
+*label values loanlender lenders
 tab loanlender
 
 order INDID_panel , first
@@ -310,8 +310,8 @@ rename marriedid INDID
 append using "NEEMSIS2-loans_v3.dta"
 tab loanbalance, m  // 12 + 428 = 440 ok
 tab loanlender
-label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
-label values loanlender lenders
+*label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
+*label values loanlender lenders
 tab loanlender, m
 
 save"NEEMSIS2-loans_v4.dta", replace
@@ -408,8 +408,8 @@ replace loanreasongiven=9 if loanreasongiven_MCQ=="9 11"
 replace loanreasongiven=9 if loanreasongiven_MCQ=="9 77"
 tab loanreasongiven, m
 tab loanlender, m
-label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
-label values loanlender lenders
+*label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
+*label values loanlender lenders
 tab loanlender, m
 
 clonevar loaneffectivereason=loanreasongiven
@@ -422,11 +422,21 @@ keep parent_key INDID key loanamount loandate loanreasongiven loaneffectivereaso
 
 append using "NEEMSIS2-loans_v4.dta"
 
+*Lenders
+tab loanlender, m
+label define loanlender 1"Well known people" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance (moneylenders)" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mill loan" 14"Group finance" 15"Thandal", replace
+label values loanlender loanlender
+
+tab loanlender loan_database
+label variable loanlender "From whom did you get loan?"
+tab loanlender
+
+*drop if loansettled==1
+tab loanlender loan_database
+
 save"NEEMSIS2-loans_v5.dta", replace
 ****************************************
 * END
-
-
 
 
 
@@ -627,7 +637,7 @@ save"NEEMSIS2-loans_v7.dta", replace
 ****************************************
 use "NEEMSIS2-loans_v7.dta", clear
 fre loanlender
-label define loanlender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn Broker" 7"Shop keeper" 8"Finance (moneylenders)" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 14"Group finance" 15"Thandal"  // Thandal = daily finance; door to door; small amount; it mean "immediat" in tamil
+label define loanlender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn Broker" 7"Shop keeper" 8"Finance (moneylenders)" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mill loan" 14"Group finance" 15"Thandal", replace  // Thandal = daily finance; door to door; small amount; it mean "immediat" in tamil
 label values loanlender loanlender
 fre loanlender
 *Recode loanlender pour que les intérêts soient plus justes
