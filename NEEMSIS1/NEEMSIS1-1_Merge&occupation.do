@@ -31,9 +31,12 @@ rename HHID parent_key
 recode dummydemonetisation (.=0)
 
 *panel unique id
-merge m:m HHID2010 using "unique_identifier_panel.dta", keepusing(HHID_panel)
+drop HHID2016
+rename parent_key HHID2016
+merge m:m HHID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_HH", keepusing(HHID_panel)
 drop if _merge==2
 drop _merge
+rename HHID2016 parent_key
 
 save"NEEMSIS1-HH_v2.dta", replace
 ****************************************
@@ -49,7 +52,7 @@ save"NEEMSIS1-HH_v2.dta", replace
 use"NEEMSIS-occupation_alllong.dta", clear
 
 rename HHID parent_key
-order HHID2010 parent_key INDID INDID2010
+order parent_key INDID INDID2010
 destring hoursayear, replace
 
 
@@ -81,34 +84,34 @@ replace mainoccup=kindofwork if _tempmocego==1
 replace mainoccupname=occupationname if _tempmocego==1
 *Checking
 preserve
-bysort HHID2010 INDID: gen n=_n
+bysort parent_key INDID: gen n=_n
 keep if n==1
 tab mainoccup ego, m
 restore
 *For the rest? mainoccuptype
-bysort HHID2010 INDID: egen mainok=max(mainoccup)
+bysort parent_key INDID: egen mainok=max(mainoccup)
 tab mainok, m
 replace mainoccup=kindofwork if mainoccuptype==kindofwork & mainok==.
 replace mainoccupname=occupationname if mainoccuptype==kindofwork & mainok==.
 drop mainok
-bysort HHID2010 INDID: egen mainok=max(mainoccup)
+bysort parent_key INDID: egen mainok=max(mainoccup)
 tab mainok ego, m
 *For the rest rest? Alamano
-sort HHID2010 INDID
-list HHID2010 INDID occupationid occupationname kindofwork othermainoccup if dummymainoccup==0 & mainoccupname=="", clean noobs
+sort parent_key INDID
+list parent_key INDID occupationid occupationname kindofwork othermainoccup if dummymainoccup==0 & mainoccupname=="", clean noobs
 preserve
 keep if ego!=0 & mainok==. & othermainoccup!=""
-keep HHID2010 occupationid INDID othermainoccup occupationname kindofwork mainoccuptype
-order HHID2010 INDID occupationid occupationname kindofwork mainoccuptype othermainoccup
-sort HHID2010 INDID occupationid
+keep parent_key occupationid INDID othermainoccup occupationname kindofwork mainoccuptype
+order parent_key INDID occupationid occupationname kindofwork mainoccuptype othermainoccup
+sort parent_key INDID occupationid
 *export excel using "NEEMSIS-occupations.xlsx", nolab replace firstrow(var)
 restore
 *À partir du fichier Excel
-replace mainoccup=4 if HHID2010=="ANDNAT365" & INDID==3 & occupationid==1
-replace mainoccupname="Nrega" if HHID2010=="ANDNAT365" & INDID==3 & occupationid==1
+replace mainoccup=4 if parent_key=="ANDNAT365" & INDID==3 & occupationid==1
+replace mainoccupname="Nrega" if parent_key=="ANDNAT365" & INDID==3 & occupationid==1
 
 drop mainok
-bysort HHID2010 INDID: egen mainok=max(mainoccup)
+bysort parent_key INDID: egen mainok=max(mainoccup)
 tab mainok ego, m
 
 
@@ -117,44 +120,44 @@ tab mainok ego, m
 
 **********Indiv
 *max income or hours (income only for 2010)
-bysort HHID2010 INDID : egen maxhours_indiv=max(hoursayear)
+bysort parent_key INDID : egen maxhours_indiv=max(hoursayear)
 *occup name and occup type with the max
 replace mainoccup=kindofwork if maxhours_indiv==hoursayear
 replace mainoccupname=occupationname if maxhours_indiv==hoursayear
 drop mainok
-bysort HHID2010 INDID: egen mainok=max(mainoccup)
+bysort parent_key INDID: egen mainok=max(mainoccup)
 tab mainok ego, m
 gen dummymoc=0
 replace dummymoc=1 if mainoccup!=.
 tab dummymoc // 1324 normalement
 	*Check duplicates
-	duplicates tag HHID2010 INDID egoid if dummymoc==1, gen(tag)
+	duplicates tag parent_key INDID egoid if dummymoc==1, gen(tag)
 	tab tag
-	sort tag HHID2010 INDID occupationid
+	sort tag parent_key INDID occupationid
 		*apply max income
-		bysort HHID2010 INDID: egen maxincome=max(annualincome) if tag>0
+		bysort parent_key INDID: egen maxincome=max(annualincome) if tag>0
 		replace mainoccup=. if maxincome!=annualincome & tag>0
 		replace mainoccupname="" if maxincome!=annualincome & tag>0
 		drop mainok
 		drop dummymoc
 		drop tag
-		bysort HHID2010 INDID: egen mainok=max(mainoccup)
+		bysort parent_key INDID: egen mainok=max(mainoccup)
 		tab mainok ego, m
 		gen dummymoc=0
 		replace dummymoc=1 if mainoccup!=.
 		tab dummymoc // 1135 normalement
 		*Check duplicates
-		duplicates tag HHID2010 INDID ego if dummymoc==1, gen(tag)
+		duplicates tag parent_key INDID ego if dummymoc==1, gen(tag)
 		tab tag
-		sort tag HHID2010 INDID occupationid
+		sort tag parent_key INDID occupationid
 			*apply occupation order
-			bysort HHID2010 INDID: egen minnumber=min(occupationid) if tag>0
+			bysort parent_key INDID: egen minnumber=min(occupationid) if tag>0
 			replace mainoccup=. if minnumber!=occupationid & tag>0
 			replace mainoccupname="" if minnumber!=occupationid & tag>0
 			drop mainok
 			drop dummymoc
 			drop tag
-			bysort HHID2010 INDID: egen mainok=max(mainoccup)
+			bysort parent_key INDID: egen mainok=max(mainoccup)
 			tab mainok ego, m
 			gen dummymoc=0
 			replace dummymoc=1 if mainoccup!=.
@@ -171,8 +174,8 @@ replace mainoccup_income=annualincome if dummymoc==1
 *encode name to simplify the procedure
 encode mainoccupname, gen(mainoccupnamenumeric)
 *put main occupation at indiv level
-bysort HHID2010 INDID : egen mainoccupation=max(mainoccup)
-bysort HHID2010 INDID : egen mainoccupationname=max(mainoccupnamenumeric)
+bysort parent_key INDID : egen mainoccupation=max(mainoccup)
+bysort parent_key INDID : egen mainoccupationname=max(mainoccupnamenumeric)
 *put the label
 label values mainoccupation kindofwork
 label values mainoccupationname mainoccupnamenumeric
@@ -181,11 +184,11 @@ decode mainoccupationname, gen(_mainoccupationname)
 drop mainoccupationname
 rename _mainoccupationname mainoccupationname
 *total income
-bysort HHID2010 INDID: egen annualincome_indiv=sum(annualincome)
+bysort parent_key INDID: egen annualincome_indiv=sum(annualincome)
 *nb of income sources
 fre kindofwork
 gen countoccupation=1
-bysort HHID2010 INDID: egen nboccupation_indiv=sum(countoccupation)
+bysort parent_key INDID: egen nboccupation_indiv=sum(countoccupation)
 *cleaning
 rename mainoccupation mainoccupation_indiv
 rename mainoccupationname mainoccupationname_indiv
@@ -198,10 +201,10 @@ drop mainoccup mainoccupname mainoccupnamenumeric countoccupation
 *max income or hours (income only for 2010)
 fre kindofwork
 forvalues i=1(1)8{
-bysort HHID2010 : egen maxhours_`i'=sum(hoursayear) if kindofwork==`i'
+bysort parent_key : egen maxhours_`i'=sum(hoursayear) if kindofwork==`i'
 }
 forvalues i=1(1)8{
-bysort HHID2010 : egen maxhours2_`i'=max(maxhours_`i')
+bysort parent_key : egen maxhours2_`i'=max(maxhours_`i')
 recode maxhours2_`i' (.=0)
 drop maxhours_`i'
 }
@@ -217,11 +220,11 @@ label values mainoccup2 kindofwork
 drop mainoccup maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7 maxhours2_8
 rename mainoccup2 mainoccupation_HH
 *total income
-bysort HHID2010 : egen annualincome_HH=sum(annualincome)
+bysort parent_key : egen annualincome_HH=sum(annualincome)
 *nb of income sources
 fre kindofwork
 gen countoccupation=1
-bysort HHID2010 : egen nboccupation_HH=sum(countoccupation)
+bysort parent_key : egen nboccupation_HH=sum(countoccupation)
 drop countoccupation
 
 
@@ -237,8 +240,8 @@ replace labourincome_`i'=annualincome if kindofwork==`i'
 recode labourincome_`i' (.=0)
 }
 forvalues i=1(1)8{
-bysort HHID2010 INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
-bysort HHID2010: egen labourincome_HH_`i'=sum(labourincome_`i')
+bysort parent_key INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
+bysort parent_key: egen labourincome_HH_`i'=sum(labourincome_`i')
 }
 
 
@@ -256,31 +259,30 @@ rename `x'_8 `x'_uwagri
 
 
 **********Indiv base
-bysort HHID2010 INDID: gen n=_n 
+bysort parent_key INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
+keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH parent_key INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
 save"NEEMSIS-occupation_alllong_v2.dta", replace
 
-bysort HHID2010: gen n=_n 
+bysort parent_key: gen n=_n 
 keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
+keep mainoccupation_HH annualincome_HH nboccupation_HH parent_key labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
 save"NEEMSIS-occupation_alllong_v3.dta", replace
 
 
 **********Merge dans la base HH
 use"NEEMSIS1-HH_v2.dta", clear
 
-merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri)
+merge 1:1 parent_key INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri)
 drop _merge
 
-merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri)
+merge m:1 parent_key using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri)
 drop _merge
-
 
 recode mainoccupation_indiv mainoccupation_HH (.=0)
 
 preserve
-bysort HHID2010: gen n=_n
+bysort parent_key: gen n=_n
 keep if n==1
 fre mainoccupation_HH
 restore
@@ -366,7 +368,7 @@ use"NEEMSIS1-HH_v4.dta", clear
 
 **********Gold
 gen goldquantityamount=goldquantity*2700
-bysort HHID2010 : egen goldquantityamount2=max(goldquantityamount)
+bysort parent_key : egen goldquantityamount2=max(goldquantityamount)
 drop goldquantityamount
 rename goldquantityamount2 goldquantityamount
 recode goldquantityamount (.=0)
@@ -378,14 +380,14 @@ destring drywetownland, replace
 gen	amountownlanddry=600000*sizeownland if drywetownland==1
 gen	amountownlandwet=800000*sizeownland if drywetownland==2
 preserve
-duplicates drop HHID2010, force
-sort HHID2010
-list HHID2010 villageid if drywetownland==3
+duplicates drop parent_key, force
+sort parent_key
+list parent_key villageid if drywetownland==3
 restore
 /*
 
      +-------------------------------------------------------------------+
-     |                                      HHID     HHID2010   vill~eid |
+     |                                      HHID     parent_key   vill~eid |
      |-------------------------------------------------------------------|
   3. | uuid:fa73ad2c-c373-4292-96ad-4e4830209e5d          100        KOR |
  20. | uuid:35591049-0c3e-4dac-836a-958f07745c35           22        KUV |
@@ -421,13 +423,15 @@ restore
 473. | uuid:bf24520a-2493-421c-8cdc-cfdea3c93699    VENNAT350        NAT | 0W/8D
      +-------------------------------------------------------------------+
 */
-gen amountownland=700000*sizeownland if HHID2010=="100" | HHID2010=="22" | HHID2010=="28" | HHID2010=="3" | HHID2010=="39" | HHID2010=="53" | HHID2010=="56" | HHID2010=="65" | HHID2010=="99"
+rename parent_key HHID
+rename HHID2010 parent_key
+gen amountownland=700000*sizeownland if parent_key=="100" | parent_key=="22" | parent_key=="28" | parent_key=="3" | parent_key=="39" | parent_key=="53" | parent_key=="56" | parent_key=="65" | parent_key=="99"
 *For the rest (HH who is interviewed in 2010, I looked at the 2010 values)
 *with "Base RUME_Main variables.dta"
 preserve
-duplicates drop HHID2010, force
-sort HHID2010
-list HHID2010 sizeownland if drywetownland==3, clean noobs
+duplicates drop parent_key, force
+sort parent_key
+list parent_key sizeownland if drywetownland==3, clean noobs
 restore
 /*
        ADGP194          9  6W/3D
@@ -449,27 +453,27 @@ restore
       VENMPO34          1  1W
      VENNAT350         10 2W/8D
 */
-replace amountownland=6*800000+3*600000 if HHID2010=="ADGP194"
-replace amountownland=5*800000+1*600000 if HHID2010=="ADGP197"
-replace amountownland=1*800000+2*600000 if HHID2010=="ADKU139"
+replace amountownland=6*800000+3*600000 if parent_key=="ADGP194"
+replace amountownland=5*800000+1*600000 if parent_key=="ADGP197"
+replace amountownland=1*800000+2*600000 if parent_key=="ADKU139"
 *Half
-replace amountownland=2.5*800000+2.5*600000 if HHID2010=="ANDMTP322"
-replace amountownland=6*800000+4*600000 if HHID2010=="ANDMTP323"
+replace amountownland=2.5*800000+2.5*600000 if parent_key=="ANDMTP322"
+replace amountownland=6*800000+4*600000 if parent_key=="ANDMTP323"
 *Half
-replace amountownland=1.75*800000+1.75*600000 if HHID2010=="ANTKARU279"
-replace amountownland=5*800000+1.5*600000 if HHID2010=="ANTKARU280"
-replace amountownland=0.25*800000+0.75*600000 if HHID2010=="ANTMP40"
-replace amountownland=6*600000 if HHID2010=="ANTNAT360"
+replace amountownland=1.75*800000+1.75*600000 if parent_key=="ANTKARU279"
+replace amountownland=5*800000+1.5*600000 if parent_key=="ANTKARU280"
+replace amountownland=0.25*800000+0.75*600000 if parent_key=="ANTMP40"
+replace amountownland=6*600000 if parent_key=="ANTNAT360"
 *Half
-replace amountownland=2*800000+2*600000 if HHID2010=="ANTNAT362"
-replace amountownland=2*800000 if HHID2010=="PSMPO15"
-replace amountownland=1*800000+0.5*600000 if HHID2010=="PSSEM91"
-replace amountownland=2*800000 if HHID2010=="RAKU142"
-replace amountownland=0.5*800000+0.5*600000 if HHID2010=="SINAT332"
-replace amountownland=1*600000 if HHID2010=="VENKOR221"
-replace amountownland=0.25*800000+1.75*600000 if HHID2010=="VENMPO29"
-replace amountownland=1*800000 if HHID2010=="VENMPO34"
-replace amountownland=2*800000+8*600000 if HHID2010=="VENNAT350"
+replace amountownland=2*800000+2*600000 if parent_key=="ANTNAT362"
+replace amountownland=2*800000 if parent_key=="PSMPO15"
+replace amountownland=1*800000+0.5*600000 if parent_key=="PSSEM91"
+replace amountownland=2*800000 if parent_key=="RAKU142"
+replace amountownland=0.5*800000+0.5*600000 if parent_key=="SINAT332"
+replace amountownland=1*600000 if parent_key=="VENKOR221"
+replace amountownland=0.25*800000+1.75*600000 if parent_key=="VENMPO29"
+replace amountownland=1*800000 if parent_key=="VENMPO34"
+replace amountownland=2*800000+8*600000 if parent_key=="VENNAT350"
 
 *For which i have details
 recode amountownlanddry amountownlandwet (.=0)
@@ -496,15 +500,9 @@ egen assets=rowtotal(amountownland livestockamount_cow livestockamount_goat live
 egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount)
 
 
-
-gen year=2016
-
-
-**********Panel?
-merge m:1 HHID2010 using "panel_comp.dta"
-keep if _merge==3
-drop _merge
-
+*****
+rename parent_key HHID2010
+rename HHID parent_key
 
 
 ********** Total income
@@ -514,7 +512,7 @@ recode annualincome_indiv annualincome_HH (.=0)
 *Remittances received
 recode remreceivedtotamount1 remreceivedtotamount2 (.=0)
 gen remreceivedtotalamount_indiv=remreceivedtotamount1+remreceivedtotamount2
-bysort HHID2010 : egen remreceivedtotalamount_HH=sum(remreceivedtotalamount_indiv)
+bysort parent_key : egen remreceivedtotalamount_HH=sum(remreceivedtotalamount_indiv)
 
 *Income assets
 tab dummyincomeassets
@@ -526,7 +524,7 @@ tab otherhouserent
 recode otherhouserent (66=0)
 gen otherhouserent_HH=0
 replace otherhouserent_HH=otherhouserent if otherhouserent!=.
-bysort HHID2010: gen hhsize=_N
+bysort parent_key: gen hhsize=_N
 gen otherhouserent_indiv=otherhouserent_HH/hhsize
 drop hhsize
 tab otherhouserent_indiv
@@ -534,7 +532,7 @@ tab otherhouserent_indiv
 *Schemes
 recode pensionamount_retirement pensionamount_widows pensionamount_oldage (.=0)
 gen pension_indiv=pensionamount_retirement+pensionamount_widows+pensionamount_oldage
-bysort HHID2010: egen pension_HH=sum(pension_indiv)
+bysort parent_key: egen pension_HH=sum(pension_indiv)
 tab pension_HH
 
 *TOTAL INCOME
@@ -555,6 +553,20 @@ tab totalincome_indiv
 sort totalincome_indiv
 tab totalincome_HH
 
+
+
+********** Indiv panel
+gen year=2016
+drop INDID2010
+rename INDID INDID2016
+rename parent_key HHID2016
+tostring INDID2016, replace
+
+merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_wide", keepusing(INDID_panel)
+keep if _merge==3
+drop _merge
+
+order HHID_panel INDID_panel INDID2016
 
 save"NEEMSIS1-HH_v5.dta", replace
 ****************************************
