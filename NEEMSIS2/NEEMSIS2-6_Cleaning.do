@@ -348,174 +348,29 @@ Donc je drop 5 obs
 drop if name==""
 
 rename INDID INDID2020
-merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
-keep if _merge==3
+tostring INDID2020, replace
 
-*tab dummylostHH_2010_2016
+merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_wide", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+drop if _merge==2
+drop _merge
 
-
-
-keep HHID_panel INDID INDID_total INDID_former INDID_new INDID_left name age sex version_HH  marriedid marriedid_o marriedname marriagesomeoneelse 
-gen NEEMSIS2_indiv=1
 destring sex, replace
 label values sex sex
 destring age, replace
+tab sex
+tab age
+replace sex=sex2016 if sex==.
+tab sex
+replace age=age2016+4 if age==.
+replace age=age2010+10 if age==.
+sort HHID_panel age
+destring agefromearlier1, replace
+replace age=agefromearlier1 if age==.
+tab age
 
-order HHID_panel INDID INDID_total INDID_former INDID_new INDID_left marriedid marriedid_o name marriedname marriagesomeoneelse sex  age 
+order HHID_panel INDID_panel INDID2020 sex  age 
 
-sort HHID_panel INDID
-*br
-drop marriedid marriedid_o marriedname marriagesomeoneelse
-
-gen NEEMSIS2_HH=1
-
-foreach x in INDID name sex age version_HH{
-rename `x' `x'_p20
-}
-
-clonevar INDID=INDID_p20
-
-drop  INDID_total INDID_former INDID_new INDID_left
-save"$directory\do_not_drop\preload2020_indiv", replace
-
-
-
-use"$directory\do_not_drop\preload2020_indiv", clear
-
-merge 1:1 HHID_panel INDID using "$directory\do_not_drop\preload_indiv"
-
-
-*Garder d'abord que ceux qui sont là en 2020
-gen tokeep=0
-bysort HHID_panel: replace tokeep=1 if NEEMSIS2_HH==1
-bysort HHID_panel: egen max_tokeep=max(tokeep)
-drop if max_tokeep==0
-
-sort HHID_panel INDID
-
-order HHID_panel INDID INDID_p10 INDID_p16 INDID_p20 name_p10 name_p16 name_p20 dummynewHH_2010_2016 dummylostHH_2010_2016 _merge
-
-sort HHID_panel INDID
-
-/*
-Chercher les lost
-
-Pour ca il faut merger 2010 et 2020 puis regarder les HH perdu en 2016 pour voir les codes indiv correspondant, permet de reconstruire la base qui est dans RUME
-
-replace INDID=1 if HHID_panel=="GOV10" & INDID==201003
-
-replace INDID=1 if HHID_panel=="GOV47" & INDID==201001
-
-replace INDID=1 if HHID_panel=="GOV5" & INDID==201001
-
-replace INDID=1 if HHID_panel=="GOV9" & INDID==201001
-
-replace INDID=1 if HHID_panel=="KUV10" & INDID==201003
-
-replace INDID=1 if HHID_panel=="KUV25" & INDID==201002
-
-replace INDID=4 if HHID_panel=="MANAM19" & INDID==201001
-replace INDID=3 if HHID_panel=="MANAM19" & INDID==201003
-replace INDID=2 if HHID_panel=="MANAM19" & INDID==201004
-replace INDID=5 if HHID_panel=="MANAM19" & INDID==201007
-replace INDID=1 if HHID_panel=="MANAM19" & INDID==201008
-
-replace INDID=1 if HHID_panel=="MANAM34" & INDID==201002
-
-replace INDID=1 if HHID_panel=="MANAM40" & INDID==201002
-replace INDID=2 if HHID_panel=="MANAM40" & INDID==201006
-
-replace INDID=1 if HHID_panel=="ORA37" & INDID==201003
-replace INDID=2 if HHID_panel=="ORA37" & INDID==201004
-*/
-
-
-
-*Replace ceux qui ont les mauvais numéros
-replace INDID=5 if HHID_panel=="GOV19" & INDID_p20==3
-
-replace INDID=16 if HHID_panel=="GOV38" & INDID_p20==3
-replace INDID=17 if HHID_panel=="GOV38" & INDID_p20==4
-replace INDID=18 if HHID_panel=="GOV38" & INDID_p20==5
-replace INDID=19 if HHID_panel=="GOV38" & INDID_p20==6
-replace INDID=3 if HHID_panel=="GOV38" & INDID_p20==7
-replace INDID=4 if HHID_panel=="GOV38" & INDID_p20==8
-
-replace INDID=16 if HHID_panel=="MAN23" & INDID_p20==2
-replace INDID=17 if HHID_panel=="MAN23" & INDID_p20==3
-replace INDID=18 if HHID_panel=="MAN23" & INDID_p20==4
-
-replace INDID=16 if HHID_panel=="MAN34" & INDID_p20==1
-replace INDID=17 if HHID_panel=="MAN34" & INDID_p20==2
-replace INDID=18 if HHID_panel=="MAN34" & INDID_p20==3
-
-
-replace INDID=4 if HHID_panel=="MANAM18" & INDID_p20==2
-replace INDID=16 if HHID_panel=="MANAM18" & INDID_p20==3
-replace INDID=17 if HHID_panel=="MANAM18" & INDID_p20==4
-
-replace INDID=16 if HHID_panel=="SEM44" & INDID_p20==4
-replace INDID=17 if HHID_panel=="SEM44" & INDID_p20==5
-replace INDID=18 if HHID_panel=="SEM44" & INDID_p20==6
-replace INDID=4 if HHID_panel=="SEM44" & INDID_p20==7
-
-
-merge 1:1 HHID_panel INDID using "$directory\do_not_drop\preload_indiv"
-order HHID_panel INDID INDID_p20 INDID_p16 INDID_p10 name_p20 name_p16 name_p10 _merge
-sort HHID_panel INDID
-
-tab _merge
-drop if _merge==2
-rename _merge dummypreload2016
-fre dummypreload2016
-rename dummypreload2016 dummypreload
-recode dummypreload (1=0) (3=1)
-label define yesno 0"No" 1"Yes"
-label values dummypreload yesno
-tab dummypreload
-label var dummypreload "Indiv in panel"
-
-
-*panel 10 20
-preserve
-keep if name_p10!="" & name_p16=="" &name_p20!=""
-*aucun?
-restore
-
-
-save"NEEMSIS2-HH_v9_without.dta", replace
-
-append using "NEEMSIS2-HH_v9_with.dta"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-append using "NEEMSIS2-HH_v9_with.dta"
-tab dummypreload2016, m
-tab INDID_new
-
-********** Cleaning des INDID et création des dummy pour que ce soit plus clair
-tab RUME
-tab NEEMSIS1
-
-/*
-
-*/
-foreach x in INDID INDID_total INDID_former INDID_new INDID_left {
-rename `x' `x'_repeat2020
-}
-rename INDID_for2016 INDID_merge2016
-drop INDID2010 INDIDpanel INDID_p16 INDID2010_p16
+sort HHID_panel INDID_panel
 
 drop ego1INDID ego2INDID ego3INDID
 drop lefthousehold1 lefthousehold2 lefthousehold3 lefthousehold4 lefthousehold5 lefthousehold6 lefthousehold7 lefthousehold8 lefthousehold9 
@@ -526,18 +381,6 @@ drop newmembernb newmember newmember1 newmember2 newmember3 newmember4 newmember
 drop formermember1 formermember2 formermember3 formermember4 formermember5 formermember6 formermember7 formermember8 formermember9 formermember10 formermember11 formermember12
 drop formermember formermember_
 drop tot_HH
-
-*New var for former, new, etc
-gen HH_panel=0
-
-gen dummymember2010=0
-replace dummymember2010=1 if name
-
-gen dummymember2016=0
-replace dummymember2016=1 if name!="" & name_p16!=""
-
-gen dummynewmember=0
-replace dummynewmember=1 if name!="" & name_
 
 
 save"NEEMSIS2-HH_v9.dta", replace
@@ -564,6 +407,14 @@ save"NEEMSIS2-HH_v9.dta", replace
 ****************************************
 use"NEEMSIS2-HH_v9.dta", clear
 
+merge m:1 HHID_panel using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_HH", keepusing(jatis2010 jatis2016)
+drop if _merge==2
+drop _merge
+
+merge 1:1 HHID_panel INDID_panel using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\educ2016"
+drop if _merge==2
+drop _merge
+
 ********** HOW MUCH PRESENT ON NEEMSIS2 survey?
 gen respondent2020=.
 replace respondent2020=0 if INDID_left!=.
@@ -577,7 +428,7 @@ rename respondent2020 dummy_respondent2020
 tab caste
 destring castepreload2016, replace
 tab castepreload2016
-tab caste_p16
+tab jatis2010 jatis2016
 
 replace caste=castepreload2016 if caste==. & castepreload2016!=.
 tab caste
@@ -602,7 +453,7 @@ rename caste jatis
 order parent_key HHID_panel HHID2010 householdid2020 villageid villagearea jatis caste_group , first
 rename caste_group caste
 
-
+drop jatis2010 jatis2016
 
 
 
@@ -618,38 +469,16 @@ rename ego egoid
 tab name
 sort name
 sort householdid2020
-list marriedid name marriedname marriagesomeoneelse namefrompreload name_p16 HHID2010 if marriedname!="",clean
+list marriedid name marriedname marriagesomeoneelse namefrompreload HHID2010 if marriedname!="",clean
 replace name=namefrompreload if name=="" & namefrompreload!=""
 tab name if dummy_respondent2020==1
-
-
-
-********** Sex
-destring sex, replace
-replace sex_new=sex_p16 if sex_new==. & sex_p16!=.
-replace sex_new=sex if sex_new==. & sex!=.
-tab sex_new
-drop sex sex_p16 
-rename sex_new sex
-tab sex if dummy_respondent2020==1
-
-
-
-
-
-********** Age
-destring age, replace
-destring agefromearlier1, replace
-replace age=agefromearlier1 if age==. & agefromearlier1!=.
-replace age=age_p16+3 if age==. & INDID_left!=.
-sum age if dummy_respondent2020==1
-
+tab name
 
 
 
 ********** Education
 foreach x in everattendedschool classcompleted{
-replace `x'=`x'_p16 if `x'==. & `x'_p16!=.
+replace `x'=`x'2016 if `x'==. & `x'2016!=.
 }
 gen edulevel=.
 replace edulevel = 0 if  everattendedschool == 0
@@ -670,14 +499,26 @@ tab age if edulevel==.
 replace edulevel=0 if edulevel==. & age<4
 tab edulevel livinghome, m
 
-list parent_key INDID	INDID_total	INDID_former	INDID_new	INDID_left name version_HH if livinghome==1 & edulevel==., clean noobs
+list HHID_panel INDID_panel	name age version_HH if livinghome==1 & edulevel==., clean noobs
 /*
-                                   parent_key   INDID   INDID_~l   INDID_~r   INDID_~w   INDID_~t          name           version_HH  
-    uuid:cd6b0c54-a3bf-40f5-9a46-4860744cc378       6          6          .          6          .      Keerthas   NEEMSIS2_NEW_APRIL  
+    HHID_p~l   INDID~el            name   age           version_HH  
+       MAN52        In7      Masilamani    68       NEEMSIS2_APRIL  
+        MAN9        In4      Pavunambal    65       NEEMSIS2_APRIL  
+       KUV38        In5     Machagandhi    77       NEEMSIS2_APRIL  
+       NAT49        In6       Vadivelan    33       NEEMSIS2_APRIL  
+       GOV13        In1      Anbazhagan    50       NEEMSIS2_APRIL  
+       GOV38        In5        Keerthas     4   NEEMSIS2_NEW_APRIL  
+       GOV50        In2     Arunachalam    67       NEEMSIS2_APRIL  
+       GOV50        In3   Bhuvaneshwari    62       NEEMSIS2_APRIL  
+       ELA21        In4     Krishnaveni    65       NEEMSIS2_APRIL  
+       ELA21        In3        Munisamy    71       NEEMSIS2_APRIL  
+       ELA36        In5      Loganathan    56       NEEMSIS2_APRIL  
+       ELA31        In9   Pazhaniyammal    75       NEEMSIS2_APRIL  
+       ELA52        In5            Rasu    69       NEEMSIS2_APRIL  
 */
 
-order parent_key HHID_panel HHID2010 householdid2020 villageid villagearea jatis caste  INDID INDID_total INDID_former INDID_new INDID_left egoid name sex age edulevel, first
-
+drop sex2010 age2010 HHID2010 dummyeverland2010 dummyHHlost2016
+drop edulevel2016 classcompleted2016 everattendedschool2016 age2016 sex2016
 
 
 
@@ -778,7 +619,7 @@ tab goldquantity
 replace goldquantity=25 if goldquantity==120000  //120 000 / 4800 = 25
 
 gen goldquantityamount=goldquantity*4800
-bysort HHID2010 : egen goldquantityamount2=max(goldquantityamount)
+bysort HHID_panel : egen goldquantityamount2=max(goldquantityamount)
 drop goldquantityamount
 rename goldquantityamount2 goldquantityamount
 recode goldquantityamount (.=0)
@@ -925,13 +766,14 @@ gen goodtotalamount_TV=.
 replace goodtotalamount_TV=numbergoods_TV*1000
 
 
+egen goodtotalamount=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_DVD goodtotalamount_camera goodtotalamount_TV)
+recode goodtotalamount (.=0)
+*/
 *goodtotalamount
 gen goodtotalamount_DVD=0
 gen goodtotalamount_camera=0
 
-egen goodtotalamount=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_DVD goodtotalamount_camera goodtotalamount_TV)
-recode goodtotalamount (.=0)
-*/
+
 egen goodtotalamount2=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_DVD goodtotalamount_camera)
 recode goodtotalamount2 (.=0)
 
@@ -1266,14 +1108,17 @@ save"NEEMSIS2-HH_v13.dta", replace
 
 
 
+
+
+
+
+
 ****************************************
 * CLEANING
 ****************************************
 use"NEEMSIS2-HH_v13.dta", clear
 
 rename marriedid_o old_marriedid
-rename egoid_p16 egoid_panel
-drop*_p16
 drop loandetails* loanlender* threemainloans_* 
 drop *_o
 drop selected_index1 selected_index2 selected_index3 selected_name1 selected_name2 selected_name3 selected_index1_2 selected_index2_2 selected_index3_2 selected_name1_2 selected_name2_2 selected_name3_2 selected_index1_3 selected_index2_3 selected_index3_3 selected_name1_3 selected_name2_3 selected_name3_3 _3selected_index1 _3selected_index2 _3selected_index3 _3selected_name1 _3selected_name2 _3selected_name3 _3selected_index1_2 _3selected_index2_2 _3selected_index3_2 _3selected_name1_2 _3selected_name2_2 _3selected_name3_2 _3ego2random_3_2 _3selected_index1_3 _3selected_index2_3 _3selected_index3_3 _3selected_name1_3 _3selected_name2_3 _3selected_name3_3 _3ego2random_1_3 _3ego2random_2_3 _3ego2random_3_3
@@ -1295,13 +1140,14 @@ drop covexpensesdecrease_1 covexpensesdecrease_4 covexpensesdecrease_3 covexpens
 drop howbuyhouse_2 howbuyhouse_7 howbuyhouse_5 howbuyhouse_4 howbuyhouse_1 schemeslist_2 schemeslist_3 schemeslist_4 schemeslist_5 schemeslist_6 schemeslist_7 schemeslist_8 schemeslist_9 schemeslist_18 schemeslist_19 schemeslist_21 schemeslist_23 covrationcarduse_2 covrationcarduse_1 covrationcarduse_3 waterfromownland_1 waterfromownland_2 waterfromownland_4 waterfromleaseland_2 waterfromleaseland_1 landpurchasedhowbuy_2 landpurchasedhowbuy_4 landpurchasedhowbuy_1 landpurchasedhowbuy_3 landleaserrelation_2 landleaserrelation_1 landleaserrelation_10 landleaserrelation_5 landleasingrelation_10 landleasingrelation_2 landleasingrelation_1 landleasingrelation_8 productlist_15 covsubsistencereason_1 covsubsistencereason_2 covsubsistencereason_3 covsubsistencereason_77 covexpensesincrease_5 covexpensesstable_1 covexpensesstable_7 covexpensesstable_2 howbuyhouse_3 howbuyhouse_6 rationcardreasonnouse_6 rationcardreasonnouse_2 rationcardreasonnouse_1
 dropmiss, force
 
-tab HHID2010
-duplicates tag parent_key INDID, gen(tag)
+tab HHID_panel
+duplicates tag HHID_panel INDID_panel, gen(tag)
 tab tag
 preserve
 keep if tag==1
 dropmiss, force
 restore
+drop tag
 
 
 save"NEEMSIS2-HH_v14.dta", replace
@@ -1391,7 +1237,7 @@ rename insurancetypetwo`i' insurancetype`i'
 
 
 ********** Nettoyage INDID + preload
-tab version_HH dummy_preload2016
+tab version_HH 
 
 
 save"NEEMSIS2-HH_v15.dta", replace
@@ -1435,7 +1281,7 @@ drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
 preserve
 use"NEEMSIS2-HH_v15.dta", clear
-keep dummymigration migrantlist migrantlist_ migrationgroup_count setofmigrationidgroup migrationjoblist migrationjobidgroup_count setofmigrationjobidgroup householdid2020 parent_key HHID_panel INDID INDID_total INDID_former INDID_new INDID_left egoid name sex age caste jatis villageid villageid_new version_HH 
+keep dummymigration migrantlist migrantlist_ migrationgroup_count setofmigrationidgroup migrationjoblist migrationjobidgroup_count setofmigrationjobidgroup householdid2020 parent_key HHID_panel INDID_panel INDID2020 INDID_total INDID_former INDID_new INDID_left egoid name sex age caste jatis villageid villageid_new version_HH 
 keep if migrantlist_==1
 save"NEEMSIS2-HH_v15_temp.dta", replace
 restore
