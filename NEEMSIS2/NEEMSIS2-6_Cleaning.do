@@ -335,10 +335,7 @@ save"NEEMSIS2-HH_v8.dta", replace
 ****************************************
 use"NEEMSIS2-HH_v8.dta", clear
 
-*merge m:1 HHID_panel using "$directory\do_not_drop\preload_HH"
-*keep if _merge==3
-*tab dummylostHH_2010_2016
-
+tab name, m
 /*
 Attention, l'individu GOV43 --> 6 est bizarre
 il apparait dans la base lefthome sans prénom (enfin avec "...") en tant que 2 qui part
@@ -349,6 +346,14 @@ Tout comme les bases agri
 Donc je drop 5 obs
 */
 drop if name==""
+
+rename INDID INDID2020
+merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+keep if _merge==3
+
+*tab dummylostHH_2010_2016
+
+
 
 keep HHID_panel INDID INDID_total INDID_former INDID_new INDID_left name age sex version_HH  marriedid marriedid_o marriedname marriagesomeoneelse 
 gen NEEMSIS2_indiv=1
