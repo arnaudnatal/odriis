@@ -350,7 +350,23 @@ drop if name==""
 rename INDID INDID2020
 tostring INDID2020, replace
 
-merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_wide", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+preserve
+keep HHID_panel INDID2020 name ego livinghome sex age relationshiptohead maritalstatus version_HH relationshiptoheadother
+gen year=2020
+save"indiv2020_temp", replace
+restore
+
+
+*******
+******
+*****
+****
+***
+**
+*
+
+
+merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_2010_2016_2020_wide", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
 drop if _merge==2
 drop _merge
 
