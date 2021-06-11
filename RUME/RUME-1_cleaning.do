@@ -830,7 +830,7 @@ drop _merge
 **********
 drop INDID name_p16
 rename INDID_o INDID2010
-merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_wide", keepusing(INDID_panel)
+merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_2010_2016_wide", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge
 sort HHID_panel INDID_panel
