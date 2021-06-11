@@ -11,17 +11,6 @@ CLEANING ALL LONG FILES OF NEEMSIS2
 
 
 
-/*
-foreach x in NEEMSIS2_APRIL NEEMSIS2_NEW_APRIL {
-cd"$directory\\`x'"
-do "import_`x'"
-}
-*/
-
-
-*foreach dbv in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST NEEMSIS2_NEW_APRIL {
-
-
 ****************************************
 * INITIALIZATION
 ****************************************
@@ -39,8 +28,12 @@ global preamble "NEEMSIS2_NEW_APRIL"
 * END
 
 
-
-
+/*
+foreach x in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST NEEMSIS2_NEW_APRIL {
+cd"$directory\\`x'"
+do "import_`x'"
+}
+*/
 
 
 
