@@ -562,7 +562,7 @@ rename INDID INDID2016
 rename parent_key HHID2016
 tostring INDID2016, replace
 
-merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_wide", keepusing(INDID_panel)
+merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_2010_2016_wide", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge
 
