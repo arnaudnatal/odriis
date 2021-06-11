@@ -294,6 +294,10 @@ order loanid loanamount loandate loanreasongiven loaneffectivereason loanlender 
 fre loansettled  // 12
 *drop if loansettled==1
 tab loanbalance,m  // 12 ok
+rename parent_key setofmarriagegroup
+split key, p(/)
+rename key1 parent_key
+drop key2 key3
 merge m:m setofmarriagegroup using "NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta", keepusing(marriedid marriedname)
 keep if _merge==3
 drop _merge
