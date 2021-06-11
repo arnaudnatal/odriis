@@ -27,6 +27,7 @@ clear all
 * Formal social capital:asso
 ****************************************
 use"$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2.dta", clear
+
 keep if associationname!=""
 dropmiss, force
 tab snrecommendasso
