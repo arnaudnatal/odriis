@@ -530,7 +530,7 @@ tempfile myfiles
 save "`myfiles'"
 local obs=_N
 forvalues i=1/`obs' {
-	set trace on
+	*set trace on
 	use "`myfiles'" in `i', clear
 	local f=dirname + "/" + filename
 	local f2=filenamenew + "_v2.dta"
