@@ -49,6 +49,9 @@ use"$directory\CLEAN\NEEMSIS2-HH_v5.dta", clear
 replace INDID=. if version=="NEEMSIS2_NEW_APRIL"
 replace INDIDpanel="" if version=="NEEMSIS2_NEW_APRIL"
 
+tostring INDID, replace
+drop sex age
+
 merge m:1 INDID HHID_panel using "$directory\do_not_drop\preload2016"
 drop _merge
 *
@@ -115,7 +118,7 @@ replace mar=1 if HHID_panel=="SEM48"
 preserve
 keep if mar==1
 sort HHID_panel INDID
-list HHID_panel INDID INDID_p16 INDID_left reasonlefthome name_p16 name maritalstatus_p16 maritalstatus sex_p16, clean noobs
+*list HHID_panel INDID INDID_p16 INDID_left reasonlefthome name_p16 name maritalstatus_p16 maritalstatus sex_p16, clean noobs
 restore
 
 
@@ -171,9 +174,8 @@ replace mar=1 if HHID_panel=="SEM34"
 preserve
 keep if mar==1
 sort HHID_panel
-list HHID_panel INDID INDID_p16 INDID_left name_p16 name maritalstatus_p16 maritalstatus sex_p16, clean noobs
-list HHID_panel INDID INDID_left reasonlefthome, clean noobs
-
+*list HHID_panel INDID INDID_p16 INDID_left name_p16 name maritalstatus_p16 maritalstatus sex_p16, clean noobs
+*list HHID_panel INDID INDID_left reasonlefthome, clean noobs
 restore
 
 
