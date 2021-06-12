@@ -1,20 +1,20 @@
 # Individual panel
 
-Comme Cécile a fait un identifiant unique panel pour les ménages, je me suis dit qu'il était nécessaire de faire de même avec les individus.
-Je pense que pour 2010-2016 le travail avait déjà été fait, mais comme je l'ai déjà dit, avec toutes les versions sur la Dropbox, je me suis perdu, donc j'ai préféré tout reprendre.
-
-Les fichiers permettent donc de suivre les individus en panel selon leur code HHID_panel.
+Les fichiers "panel_" permettent donc de suivre les individus en panel selon leur code HHID_panel.
 	- panel_indiv_wide pour avoir une ligne par individu
 	- panel_indiv_long pour avoir une ligne par individu par année
-La chose la plus importante concerne donc le panel 2010-2016 pour qui les codes INDID étaient très différents.
-Puis le panel avec les données non preload de 2020 car, comme Cécile m'a expliqué, ce sont des ménages qui existaient en 2016, mais pour lesquelles nous n'avions pas toutes les informations (c'est bien ça ?).
+Il y a la version 2010-2016 puis, partant de là et avec le .do, la version avec 2020.
 
-Ça a été un peu fastidieux à faire, je compte sur vous pour passer derrière moi et vérifier que les prénoms sont cohérents.
+L'ID est en string "Ind_x" pour x allant de 1 à n.
+Cette version de l'ID est bien meilleur que la version précédente (que j'ai supprimé) dans la mesure où il est ordonné :
+	- Commence par respecter l'ordre de 2010;
+	- Puis 2016;
+	- Puis 2020.
 
-Pour l'ID, il est en string "In1" à "In16". 
-L'ordre n'est pas parfait, mais fait le travail, je pense.
-Le plus important étant une grille de conversion INDID2010, INDID2016, INDID2020.
+Donc tous les individus ont un code, qu'ils soient en panel ou non : j'ai listé tous les membres du ménage, quelle que soit la date, je les ai triés selon les critères précédents puis j'ai attribué un numéro.
 
-Si jamais vous voyez une erreur, dites-la-moi, je modifierai.
+Je ne pense pas que ce soit encore totalement parfait, donc je compte sur vous pour repasser derrière et vérifier que ça colle à chaque fois (avec la base wide).
+Je dis ça dans le sens où j'ai peut-être fait des erreurs d'attribution du prénom.
+Je m'en excuse par avance.
 
 Arnaud 
