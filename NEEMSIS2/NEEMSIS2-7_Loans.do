@@ -1040,6 +1040,10 @@ bysort HHID: egen mean_monthlyinterestrate_HH=mean(monthlyinterestrate)
 
 rename HHID householdid2020
 
+*
+ta loans_indiv
+sort HHID_panel INDID2020 loans_indiv
+
 *Otherlenderservices
 fre otherlenderservices
 forvalues i=1(1)5{
