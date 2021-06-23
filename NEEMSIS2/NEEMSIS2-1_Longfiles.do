@@ -83,7 +83,7 @@ rename filename`v' filename_`v'
 split varname, p(.)
 sort filename
 drop if filename=="$preamble.dta"
-drop if filename=="$preamble-hhquestionnaire-employment.dta"
+*drop if filename=="$preamble-hhquestionnaire-employment.dta"
 drop if filename_2=="_3ego1questionnaire"
 drop if filename_2=="ego1questionnaire"
 drop if filename_2=="ego2questionnaire"
@@ -200,10 +200,10 @@ save"$directory\APPEND\raw\\$preamble-householdquestionnaireold-hhquestionnaire-
 
 
 ********** For new HH
-capture confirm file "$directory\\$preamble\\$preamble-hhquestionnaire-migration-migrationidgroup.dta"
+capture confirm file "$directory\\$preamble\\$preamble-hhquestionnaire-migration-migrationgroup.dta"
 if _rc==0 {
-use "$directory\\$preamble\\$preamble-hhquestionnaire-migration-migrationidgroup", clear
-drop setofmigrationidgroup
+use "$directory\\$preamble\\$preamble-hhquestionnaire-migration-migrationgroup", clear
+drop setofmigrationgroup
 rename key setofmigrationidgroup
 
 	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
@@ -215,14 +215,14 @@ rename key setofmigrationidgroup
 	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
-save"$directory\APPEND\raw\\$preamble-hhquestionnaire-migration-migrationidgroup.dta", replace
+save"$directory\APPEND\raw\\$preamble-hhquestionnaire-migration-migrationgroup.dta", replace
 }
 
-capture confirm file "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remreceived-remreceivedidgroup.dta"
+capture confirm file "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remreceived-remreceivedgroup.dta"
 if _rc==0 {
-use "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remreceived-remreceivedidgroup", clear
-drop setofremreceivedidgroup
-rename key setofremreceivedidgroup
+use "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remreceived-remreceivedgroup", clear
+drop setofremreceivedgroup
+rename key setofremreceivedgroup
 
 	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
 	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
@@ -233,14 +233,14 @@ rename key setofremreceivedidgroup
 	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
-save"$directory\APPEND\raw\\$preamble-hhquestionnaire-remittances-remreceived-remreceivedidgroup", replace
+save"$directory\APPEND\raw\\$preamble-hhquestionnaire-remittances-remreceived-remreceivedgroup", replace
 }
 
-capture confirm file "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remsent-remsentidgroup.dta"
+capture confirm file "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remsent-remsentgroup.dta"
 if _rc==0 {
-use "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remsent-remsentidgroup", clear
-drop setofremsentidgroup
-rename key setofremsentidgroup
+use "$directory\\$preamble\\$preamble-hhquestionnaire-remittances-remsent-remsentgroup", clear
+drop setofremsentgroup
+rename key setofremsentgroup
 	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
 	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
 	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
@@ -250,5 +250,5 @@ rename key setofremsentidgroup
 	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
-save"$directory\APPEND\raw\\$preamble-hhquestionnaire-remittances-remsent-remsentidgroup", replace
+save"$directory\APPEND\raw\\$preamble-hhquestionnaire-remittances-remsent-remsentgroup", replace
 }
