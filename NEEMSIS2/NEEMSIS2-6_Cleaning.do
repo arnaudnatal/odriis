@@ -917,7 +917,6 @@ egen num_tt = rowtotal(numeracy1 numeracy2 numeracy3 numeracy4 numeracy5 numerac
 egen lit_tt = rowtotal(canreadcard1a canreadcard1b canreadcard1c canreadcard2), missing 
 
 
-
 *********Cleaning
 global big5 ///
 curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
@@ -927,23 +926,36 @@ workwithother  understandotherfeeling trustingofother rudetoother toleratefaults
 managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm ///
 tryhard  stickwithg~s   goaftergoal finishwhat~n finishtasks  keepworking
 
+fre $big5
+
 global locus locuscontrol1 locuscontrol2 locuscontrol3 locuscontrol4 locuscontrol5 locuscontrol6 
 
 mdesc $big5 $locus
 
-alpha curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, casewise  // .74
-alpha organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, casewise  // .65 
-alpha enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, casewise  // .64 
-alpha workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, casewise  // .54 
-alpha managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, casewise  // .66 
-alpha tryhard  stickwithg~s   goaftergoal finishwhat~n finishtasks  keepworking, casewise  // .66 
-alpha $locus, casewise  // nickel
+omega curious interested~t repetitive~s inventive liketothink newideas activeimag~n, rev(repetitive~s) // .7715
+
+omega organized  makeplans workhard appointmen~e putoffduties easilydist~d completedu~s, rev(putoffduties easilydist~d)  // .7158
+
+omega enjoypeople sharefeeli~s shywithpeo~e  enthusiastic  talktomany~e  talkative expressing~s, rev(shywithpeople)  // .6565
+		
+omega workwithot~r   understand~g trustingof~r rudetoother toleratefa~s  forgiveother  helpfulwit~s, rev(rudetoother)  // .6186
+
+omega managestress  nervous  changemood feeldepres~d easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7178
+
+*Verification du sens
+tab rudetoother 
+tab helpfulwit~s 
+
 
 *recode all so that more is better! 
 foreach var of varlist $big5 {
+clonevar raw_`var'=`var' 	
 recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
 }
-
+label define big5n 1"5 - Almost never" 2"4 - Rarely" 3"3 - Sometimes" 4"2 - Quite often" 5"1 - Almost always"
+foreach x in $big5 {
+label values `x' big5n
+}
 
 **Correction du biais d'"acquiescence"
 *Paires
@@ -956,32 +968,57 @@ repetitive~s curious  ///
 nervous staycalm ///  
 worryalot managestress 
 
-tab rudetoother helpfulwit~s,  cell  // AG
-tab putoffduties completedut~s, nofreq cell  // acquiesence bias CO
-tab easilydistracted makeplans, nofreq cell  // same.. CO
-tab shywithpeople talktomany~e, nofreq cell  // EX
-tab repetitive~s curious, nofreq cell  // same.. OP
-tab nervous staycalm, nofreq cell  // same.. ES
-tab worryalot managestress, nofreq cell  // same.. ES
-
-
-*moyenne
+*moyenne des paires pour savoir si ils sont loin de 3, si oui alors biais
 egen ars=rowmean(`varlist') 
 tabstat ars, stat(n mean sd q min max)
 ttest ars==3
 tab ars
 gen ars2=ars-3  
-sum ars 
-ttest ars=3 
+set graph on
+gen ars3=abs(ars2)
+pctile ars3_p=ars3, n(20)
+gen n=_n*5
+replace n=. if n>100
+tab ars3
+drop ars3_p n
+*histogram ars3, width(0.05) percent xtitle("Acquiesence bias") xlabel(0(0.5)2) xmtick(0(0.1)2) ylabel(0(1)14) ymtick(0(0.2)14) note("NEEMSIS-2 (2020-21)", size(small))
+*graph export "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\ars2_NEEMSIS2.pdf", replace
+
 *recode reversely coded items 
 foreach var of varlist rudetoother putoffduties easilydistracted shywithpeople repetitive~s nervous changemood feeldepres easilyupset worryalot {
-gen raw_`var' = `var' 	
 recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
 }
+label define big5n2 5"5 - Almost never" 4"4 - Rarely" 3"3 - Sometimes" 2"2 - Quite often" 1"1 - Almost always"
+foreach x in rudetoother putoffduties easilydistracted shywithpeople repetitive~s nervous changemood feeldepres easilyupset worryalot {
+label values `x' big5n2
+}
+
 *corrected items: 
 foreach var of varlist $big5 {
 gen cr_`var'=`var'-ars2 if ars!=. 
 }
+
+cls
+*OP : 3907 cor vs 7715
+omega cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n, rev(cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n)
+omega raw_curious raw_interested~t raw_repetitive~s raw_inventive raw_liketothink raw_newideas raw_activeimag~n, rev(raw_repetitive~s)
+
+*CO : 3829 cor vs 7158
+omega cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s, rev(cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s)
+omega raw_organized raw_makeplans raw_workhard raw_appointmen~e raw_putoffduties raw_easilydist~d raw_completedu~s, rev(raw_putoffduties raw_easilydist~d)  // .7158
+
+*EX : 4645 cor vs 6565
+omega cr_enjoypeople cr_sharefeeli~s cr_shywithpeo~e  cr_enthusiastic  cr_talktomany~e  cr_talkative cr_expressing~s, rev(cr_enjoypeople cr_sharefeeli~s cr_shywithpeo~e  cr_enthusiastic  cr_talktomany~e  cr_talkative cr_expressing~s)
+omega raw_enjoypeople raw_sharefeeli~s raw_shywithpeo~e raw_enthusiastic  raw_talktomany~e raw_talkative raw_expressing~s, rev(raw_shywithpeople)  // .6565
+
+*AG : 3066 cor vs 6186
+omega cr_workwithot~r   cr_understand~g cr_trustingof~r cr_rudetoother cr_toleratefa~s  cr_forgiveother  cr_helpfulwit~s, rev(cr_workwithot~r   cr_understand~g cr_trustingof~r cr_rudetoother cr_toleratefa~s  cr_forgiveother  cr_helpfulwit~s)
+omega raw_workwithot~r raw_understand~g raw_trustingof~r raw_rudetoother raw_toleratefa~s raw_forgiveother raw_helpfulwit~s, rev(raw_rudetoother)  // .6186
+
+*ES: 7877 cor vs 7178
+omega cr_managestress cr_nervous cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot cr_staycalm, rev(cr_managestress cr_nervous  cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot cr_staycalm)
+omega raw_managestress raw_nervous raw_changemood raw_feeldepres~d raw_easilyupset raw_worryalot raw_staycalm, rev(raw_managestress raw_staycalm)  // .7178
+
 	
 **Moyenne pour avoir les traits
 egen cr_OP = rowmean(cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n)
@@ -998,25 +1035,6 @@ egen AG = rowmean(workwithot~r understand~g trustingof~r rudetoother toleratefa~
 egen ES = rowmean(managestress nervous changemood feeldepres~d easilyupset worryalot staycalm) 
 egen Grit = rowmean(tryhard stickwithg~s  goaftergoal finishwhat~n finishtasks keepworking)
 
-
-**Alpha
-alpha curious 		interested~t   repetitive~s inventive liketothink newideas activeimag~n
-alpha cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n
-
-alpha organized  makeplans workhard appointmen~e putoffduties easilydist~d completedu~s
-alpha cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s
-	
-alpha enjoypeople sharefeeli~s shywithpeo~e  enthusiastic  talktomany~e  talkative expressing~s 
-alpha cr_enjoypeople cr_sharefeeli~s cr_shywithpeo~e  cr_enthusiastic  cr_talktomany~e  cr_talkative cr_expressing~s
-	
-alpha workwithot~r   understand~g trustingof~r rudetoother toleratefa~s  forgiveother  helpfulwit~s
-alpha cr_workwithot~r   cr_understand~g cr_trustingof~r cr_rudetoother cr_toleratefa~s  cr_forgiveother  cr_helpfulwit~s 
-	
-alpha managestress  nervous  changemood feeldepres~d easilyupset worryalot  staycalm 
-alpha cr_managestress  cr_nervous  cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot  cr_staycalm
-	
-alpha tryhard  stickwithg~s   goaftergoal finishwhat~n finishtasks  keepworking	
-alpha cr_tryhard  cr_stickwithg~s   cr_goaftergoal cr_finishwhat~n cr_finishtasks  cr_keepworking
 
 
 save"NEEMSIS2-HH_v12.dta", replace
