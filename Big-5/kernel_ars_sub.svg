@@ -6345,7 +6345,7 @@
 	<line x1="3611.79" y1="2245.63" x2="3719.79" y2="2245.63" style="stroke:#606060;stroke-width:6.48"/>
 	<line x1="3611.79" y1="2345.66" x2="3669.43" y2="2345.66" style="stroke:#A0A0A0;stroke-width:6.48"/>
 	<line x1="3698.19" y1="2345.66" x2="3719.79" y2="2345.66" style="stroke:#A0A0A0;stroke-width:6.48"/>
-	<text x="3779.86" y="2266.64" style="font-family:'Helvetica';font-size:59.94px;fill:#000000">]30;] 2016-17</text>
+	<text x="3779.86" y="2266.64" style="font-family:'Helvetica';font-size:59.94px;fill:#000000">];30] 2016-17</text>
 	<text x="3779.86" y="2366.67" style="font-family:'Helvetica';font-size:59.94px;fill:#000000">]30;[ 2016-17</text>
 	<text x="80.59" y="2787.35" style="font-family:'Helvetica';font-size:39.96px;fill:#000000">Kernel epanechnikov with bandwidth=0.15</text>
 </svg>
