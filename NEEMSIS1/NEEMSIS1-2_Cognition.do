@@ -1,3 +1,4 @@
+cls
 /*
 -------------------------
 Arnaud Natal
@@ -215,12 +216,15 @@ tab helpfulwit~s
 
 *recode all so that more is better! 
 foreach var of varlist $big5 {
-clonevar raw_`var'=`var' 	
+clonevar raw_`var'=`var' 
+clonevar raw_rec_`var'=`var' 	
 recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
+recode raw_rec_`var' (5=1) (4=2) (3=3) (2=4) (1=5)
 }
 label define big5n 1"5 - Almost never" 2"4 - Rarely" 3"3 - Sometimes" 4"2 - Quite often" 5"1 - Almost always"
 foreach x in $big5 {
 label values `x' big5n
+label values raw_rec_`x' big5n
 }
 
 **Correction du biais d'"acquiescence"
@@ -273,10 +277,26 @@ foreach var of varlist $big5 {
 gen cr_`var'=`var'-ars2 if ars!=. 
 }
 
+*** Test the way with ES/NE & OP
+*ES/NE
+cls
+fre raw_managestress raw_nervous raw_changemood raw_feeldepres~d raw_easilyupset raw_worryalot raw_staycalm  // raw
+fre raw_rec_managestress raw_rec_nervous raw_rec_changemood raw_rec_feeldepres~d raw_rec_easilyupset raw_rec_worryalot raw_rec_staycalm  // raw but always in 5
+fre cr_managestress cr_nervous cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot cr_staycalm  // corr
+*CO
+cls
+fre raw_organized raw_makeplans raw_workhard raw_appointmen~e raw_putoffduties raw_easilydist~d raw_completedu~s
+fre raw_rec_organized raw_rec_makeplans raw_rec_workhard raw_rec_appointmen~e raw_rec_putoffduties raw_rec_easilydist~d raw_rec_completedu~s
+fre cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s
+tab cr_putoffduties if cr_putoffduties>=5
+
+
 cls
 *OP : 8113 cor vs 8684
 omega cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n, rev(cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n)
 omega raw_curious raw_interested~t raw_repetitive~s raw_inventive raw_liketothink raw_newideas raw_activeimag~n, rev(raw_repetitive~s)
+omega raw_rec_curious raw_rec_interested~t raw_rec_repetitive~s raw_rec_inventive raw_rec_liketothink raw_rec_newideas raw_rec_activeimag~n, rev(raw_rec_repetitive~s)
+
 
 *CO : 8566 cor vs 8513
 omega cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s, rev(cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s)
@@ -309,6 +329,27 @@ egen EX = rowmean(enjoypeople sharefeeli~s shywithpeo~e enthusiastic talktomany~
 egen AG = rowmean(workwithot~r understand~g trustingof~r rudetoother toleratefa~s forgiveother helpfulwit~s) 
 egen ES = rowmean(managestress nervous changemood feeldepressed easilyupset worryalot staycalm) 
 egen Grit = rowmean(tryhard stickwithg~s  goaftergoal finishwhat~n finishtasks keepworking)
+
+
+***Check way
+*ES NE
+label var nervous "nervous"
+label var raw_rec_nervous "raw_rec_nervous"
+label var managestress "managestress"
+label var raw_rec_managestress "raw_rec_managestress"
+tab nervous raw_rec_nervous  // reverse question for ES (NE if no reverse)
+tab managestress raw_rec_managestress  // normal question for ES
+fre raw_rec_managestress raw_rec_nervous raw_rec_changemood raw_rec_feeldepressed raw_rec_easilyupset raw_rec_worryalot raw_rec_staycalm
+
+*CO
+label var organized "organized"
+label var raw_rec_organized "raw_rec_organized"
+label var putoffduties "putoffduties"
+label var raw_rec_putoffduties "raw_rec_putoffduties"
+
+tab organized raw_rec_organized
+tab putoffduties raw_rec_putoffduties  // reverse
+
 
 save"NEEMSIS1-HH_v6.dta", replace
 ****************************************

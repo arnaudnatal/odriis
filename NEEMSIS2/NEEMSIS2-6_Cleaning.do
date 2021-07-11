@@ -949,12 +949,15 @@ tab helpfulwit~s
 
 *recode all so that more is better! 
 foreach var of varlist $big5 {
-clonevar raw_`var'=`var' 	
+clonevar raw_`var'=`var' 
+clonevar raw_rec_`var'=`var' 	
 recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
+recode raw_rec_`var' (5=1) (4=2) (3=3) (2=4) (1=5)
 }
 label define big5n 1"5 - Almost never" 2"4 - Rarely" 3"3 - Sometimes" 4"2 - Quite often" 5"1 - Almost always"
 foreach x in $big5 {
 label values `x' big5n
+label values raw_rec_`x' big5n
 }
 
 **Correction du biais d'"acquiescence"
