@@ -73,23 +73,48 @@ Entre *corrected* et *non-corrected* on voit que les traits non-corrigés sont b
 ### Raw items (non-corrected from acquiescence bias)
 
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_raw.svg)
+
+#### Segmentation by age
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_raw.svg)
+
+#### Segmentation by caste
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_raw.svg)
+
+#### Segmentation by gender
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_raw.svg)
 
 ### Corrected items from acquiescence bias
 
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cor.svg)
+
+#### Segmentation by age
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_cor.svg)
+
+#### Segmentation by caste
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_cor.svg)
+
+#### Segmentation by gender
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_cor.svg)
 
 
-###
+### Cognitive skills
+
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cog.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cog.svg)
+
+#### Segmentation by age
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cog_age.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cog_age.svg)
+
+#### Segmentation by caste
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cog_caste.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cog_caste.svg)
+
+#### Segmentation by gender
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cog_gender.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cog_gender.svg)
+
+
+
+
 
 ## Factor analysis
-
-
 
 ### NEEMSIS-1 (2016-17) data
 
