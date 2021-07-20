@@ -68,7 +68,10 @@ Le dernier tableau (en bas à droite) représente le cumul du taux de variation 
 Plus la courbe est applati, plus le trait est stable entre 2016-17 et 2020-21.
 Les autres tableaux représente, sous une autre forme, la variation segmenté par age, genre et caste.
 
-Entre *corrected* et *non-corrected* on voit que les traits non-corrigés sont beaucoup plus stable entre 2016-17 et 2020-21.
+Entre *corrected* et *non-corrected* on voit que les traits corrigés semblent plus stable entre 2016-17 et 2020-21.
+
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cor_ncor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_cor_ncor.svg)
+
 
 ### Raw items (non-corrected from acquiescence bias)
 
