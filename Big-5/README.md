@@ -111,6 +111,23 @@ Entre *corrected* et *non-corrected* on voit que les traits corrigés semblent p
 
 ### Cognitive skills
 
+|					 | Raven	| Numeracy	| Literacy 	|
+| ---	 			 | --- 		| --- 		| --- 		| 
+| Stable or increase | 473 		| 692 		| 542 		|
+| Decrease			 | 326 		| 116 		| 109 		|
+| Total				 | 835 		| 808 		| 651 		|
+
+| N of skills decreasing  | 0   | 1     | 2     | 3  |
+|--------------|-----|-------|-------|----|
+| N of egos            | 403 | 297   | 115   | 20 |
+| Whose... (%) |     |       |       |    |
+| *Raven*        |     | 78.79 |       |    |
+| *Numeracy*     |     | 12.46 |       |    |
+| *Literacy*     |     | 8.75  |       |    |
+| *Rav & Num*    |     |       | 45.22 |    |
+| *Rav & Lit*    |     |       | 48.69 |    |
+| *Num & Lit*    |     |       | 6.09  |    |
+
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cog.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cog.svg)
 
 #### Segmentation by age
@@ -130,29 +147,11 @@ Entre *corrected* et *non-corrected* on voit que les traits corrigés semblent p
 
 ### NEEMSIS-1 (2016-17) data
 
-#### 6 factors with raw items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Raw_with.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Raw_with.svg)
-
-#### 6 factors with corrected items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Corr_with.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Corr_with.svg)
 
 #### 5 factors with raw items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Raw.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_2.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_2.svg)
 
-#### 5 factors with corrected items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Corr.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2016_Corr.svg)
+
 
 
 ### NEEMSIS-2 (2020-21) data
-
-#### 6 factors with raw items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Raw_with.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Raw_with.svg)
-
-#### 6 factors with corrected items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Corr_with.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Corr_with.svg)
-
-#### 5 factors with raw items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Raw.svg)
-
-#### 5 factors with corrected items
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Corr.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/factor2020_Corr.svg)
