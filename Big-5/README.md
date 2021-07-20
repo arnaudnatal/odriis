@@ -63,9 +63,18 @@ En 2016-17, la correction améliore les omega (sauf pour EX et OP).
 
 Concernant la stabilité dans le temps, j'ai trié les analyses entre *corrected items* et *non-corrected*.
 
-Dans le premier tableau des *corrected items*, je regarde le taux de variation du score aux traits de personnalité.
-Le dernier tableau (en bas à droite) représente le cumul du taux de variation absolu.
-Plus la courbe est applati, plus le trait est stable entre 2016-17 et 2020-21.
+Au début pour vérifier la stabilité j'avais calculé des taux de variation.
+Cependant, je me suis dit que ce n'était peut-pas le plus intéressant, car relatif à la valeur de départ.
+> Au Raven, un individu passant de 1 sur 36, à 2 sur 36 va avoir un taux de variation aussi élevé qu'un individu passant de 18 à 36.
+
+Ainsi, j'ai calculé la pente de la droite reliant le score de 2016 à celui de 2020.
+C'est ce qu'on peut voir dans le premier tableau de *Raw items* et *Corrected items*.
+Afin de segmenter l'analyse par genre, age et caste, j'ai catégorisé la variable.
+
+Pour ça, j'ai rapporté l'étendue de la variable à 100.
+Puis j'ai considéré comme stable, une différence comprise entre -5% et 5% de l'étendue, centrée sur 0.
+J'ai fait 4 catégories dans le négatif, 4 dans le positif, au seuil de 5-10%; 10-20%; 20-50%; 50-100%.
+
 Les autres tableaux représente, sous une autre forme, la variation segmenté par age, genre et caste.
 
 Entre *corrected* et *non-corrected* on voit que les traits corrigés semblent plus stable entre 2016-17 et 2020-21.
