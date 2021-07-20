@@ -56,7 +56,7 @@ En 2016-17, la correction améliore les omega (sauf pour EX et OP).
 
 [![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/omega.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/omega.svg)
 
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/omega_delta.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/omega_delta.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/omega_diff.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/omega_diff.svg)
 
 
 ## Stability over time
@@ -72,18 +72,20 @@ Entre *corrected* et *non-corrected* on voit que les traits non-corrigés sont b
 
 ### Raw items (non-corrected from acquiescence bias)
 
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/deltacont_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/deltacont_raw.svg)
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_age_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_age_raw.svg)
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_caste_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_caste_raw.svg)
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_gender_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_gender_raw.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_raw.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_raw.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_raw.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_raw.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_raw.svg)
 
 ### Corrected items from acquiescence bias
 
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/deltacont_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/deltacont_cor.svg)
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_age_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_age_cor.svg)
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_caste_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_caste_cor.svg)
-[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_gender_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/delta_gender_cor.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diffcont_cor.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_age_cor.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_caste_cor.svg)
+[![](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_cor.svg "")](https://raw.githubusercontent.com/4rnaud/RUME-NEEMSIS/main/Big-5/diff_gender_cor.svg)
 
+
+###
 
 ## Factor analysis
 
