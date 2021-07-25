@@ -241,7 +241,7 @@ drop if loansettled==1
 
 *Change date format of submissiondate
 drop submissiondate
-merge m:1 HHID2016 INDID2016 using "NEEMSIS1-HH_v6.dta", keepusing(submissiondate) keep(3) nogen
+merge m:1 HHID2016 INDID2010 using "NEEMSIS1-HH_v6.dta", keepusing(submissiondate) keep(3) nogen
 rename submissiondate submissiondate_o
 gen submissiondate=dofc(submissiondate_o)
 format submissiondate %td
@@ -684,7 +684,7 @@ save"NEEMSIS1-loans_v9-bis.dta", replace
 use"NEEMSIS1-loans_v9-bis.dta", clear
 *drop num
 *rename namenumber INDID
-merge m:1 HHID2016 INDID2016 using "NEEMSIS1-HH_v6.dta", keepusing(annualincome_indiv annualincome_HH)
+merge m:1 HHID2016 INDID2010 using "NEEMSIS1-HH_v6.dta", keepusing(annualincome_indiv annualincome_HH)
 drop if _merge==2
 drop _merge
 
@@ -969,6 +969,8 @@ save"NEEMSIS1-loans_v11_HH.dta", replace
 
 *********** Merge
 use"NEEMSIS1-HH_v6.dta", clear
+drop HHID2016
+rename parent_key HHID2016
 
 merge 1:1 HHID2016 INDID2016 using "NEEMSIS1-loans_v11_indiv.dta", keepusing(imp1_ds_tot_indiv imp1_is_tot_indiv imp1_ds_tot_wm_indiv imp1_is_tot_wm_indiv informal_indiv semiformal_indiv formal_indiv economic_indiv current_indiv humancap_indiv social_indiv house_indiv incomegen_indiv noincomegen_indiv economic_amount_indiv current_amount_indiv humancap_amount_indiv social_amount_indiv house_amount_indiv incomegen_amount_indiv noincomegen_amount_indiv informal_amount_indiv formal_amount_indiv semiformal_amount_indiv marriageloan_indiv marriageloanamount_indiv dummyproblemtorepay_indiv dummyhelptosettleloan_indiv dummyinterest_indiv loans_indiv loanamount_indiv loanbalance_indiv loanamount_wm_indiv mean_yratepaid_indiv mean_monthlyinterestrate_indiv sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4 sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6 sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10 sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5)
 drop _merge

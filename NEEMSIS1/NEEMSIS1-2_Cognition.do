@@ -351,6 +351,10 @@ tab organized raw_rec_organized
 tab putoffduties raw_rec_putoffduties  // reverse
 
 
+*Indid2016
+rename INDID INDID2016
+tostring INDID2016, replace
+
 save"NEEMSIS1-HH_v6.dta", replace
 ****************************************
 * END

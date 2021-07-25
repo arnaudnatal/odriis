@@ -35,6 +35,16 @@ drop if _merge==2
 rename HHID parent_key
 drop _merge
 
+*indiv panel
+rename INDID INDID2016
+tostring INDID2016, replace
+merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_2010_2016_2020_wide.dta", keepusing(INDID_panel)
+keep if _merge==3
+drop _merge
+
+rename INDID2016 INDID
+destring INDID, replace
+
 save"NEEMSIS1-HH_v2.dta", replace
 ****************************************
 * END
@@ -164,8 +174,11 @@ tab dummymoc // 1324 normalement
 *hours and income of main
 gen mainoccup_hours=.
 gen mainoccup_income=.
+gen mainoccup_distance=.
 replace mainoccup_hours=hoursayear if dummymoc==1
 replace mainoccup_income=annualincome if dummymoc==1
+replace mainoccup_distance=jobdistance if dummymoc==1
+replace mainoccup_distance=0 if dummymoc==1 & mainoccup_distance==.
 
 
 *encode name to simplify the procedure
@@ -191,6 +204,7 @@ rename mainoccupation mainoccupation_indiv
 rename mainoccupationname mainoccupationname_indiv
 rename mainoccup_hours mainoccupation_hours_indiv
 rename mainoccup_income mainoccupation_income_indiv
+rename mainoccup_distance mainoccupation_distance_indiv
 drop mainoccup mainoccupname mainoccupnamenumeric countoccupation
 
 
@@ -258,7 +272,7 @@ rename `x'_8 `x'_uwagri
 **********Indiv base
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
+keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv mainoccupation_distance_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri mainoccupation_distance_indiv
 save"NEEMSIS-occupation_alllong_v2.dta", replace
 
 bysort HHID2010: gen n=_n 
@@ -270,7 +284,7 @@ save"NEEMSIS-occupation_alllong_v3.dta", replace
 **********Merge dans la base HH
 use"NEEMSIS1-HH_v2.dta", clear
 
-merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri)
+merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_distance_indiv)
 drop _merge
 
 merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri)
