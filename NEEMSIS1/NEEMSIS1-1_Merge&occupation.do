@@ -63,6 +63,33 @@ order HHID2010 parent_key INDID INDID2010
 destring hoursayear, replace
 
 
+**********Nb ext
+tab joblocation
+gen ext=1
+replace ext=0 if strpos(joblocation,"Same village")
+replace ext=0 if strpos(joblocation,"Same vilage")
+replace ext=0 if strpos(joblocation,"Samevillage")
+replace ext=0 if strpos(joblocation,"Same house")
+replace ext=0 if strpos(joblocation,"Same village ")
+replace ext=0 if strpos(joblocation,"Same villages")
+replace ext=0 if strpos(joblocation,"Same villgae")
+replace ext=0 if strpos(joblocation,"Same villlage")
+replace ext=0 if strpos(joblocation,"Same vllage")
+replace ext=0 if strpos(joblocation,"Samebvillage")
+replace ext=0 if strpos(joblocation,"Samvillage")
+replace ext=0 if strpos(joblocation,".Same village")
+replace ext=0 if joblocation=="Same"
+replace ext=0 if kindofwork==1
+replace ext=0 if kindofwork==2
+tab ext
+
+bysort parent_key: egen sum_ext_HH=sum(ext)
+
+preserve
+duplicates drop parent_key, force
+tab sum_ext
+restore
+
 
 **********EGO
 /*
@@ -272,12 +299,12 @@ rename `x'_8 `x'_uwagri
 **********Indiv base
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv mainoccupation_distance_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri mainoccupation_distance_indiv
+keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv mainoccupation_distance_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri mainoccupation_distance_indiv sum_ext_HH
 save"NEEMSIS-occupation_alllong_v2.dta", replace
 
 bysort HHID2010: gen n=_n 
 keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
+keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri sum_ext_HH
 save"NEEMSIS-occupation_alllong_v3.dta", replace
 
 
@@ -287,7 +314,7 @@ use"NEEMSIS1-HH_v2.dta", clear
 merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_distance_indiv)
 drop _merge
 
-merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri)
+merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri sum_ext_HH)
 drop _merge
 
 
