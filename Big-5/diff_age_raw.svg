@@ -413,12 +413,12 @@
 	<text x="1951.89" y="2289.96" style="font-family:'Helvetica';font-size:39.96px;fill:#606060" transform="rotate(-45 1951.89,2289.96)" text-anchor="end">[0.5;1]</text>
 	<text x="1197.45" y="1821.45" style="font-family:'Helvetica';font-size:53.33px;fill:#000000" text-anchor="middle">ES</text>
 	<text x="80.59" y="2787.35" style="font-family:'Helvetica';font-size:39.96px;fill:#000000">Raw traits (non-corrected from acquiesence bias).</text>
-	<rect x="1501.74" y="2561.13" width="1316.39" height="146.34" style="fill:#FFFFFF"/>
-	<rect x="1504.62" y="2564.00" width="1310.63" height="140.58" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
-	<rect x="1544.94" y="2604.33" width="144.04" height="59.94" style="fill:#808080"/>
-	<rect x="1547.82" y="2607.21" width="138.29" height="54.18" style="fill:none;stroke:#000000;stroke-width:5.76"/>
+	<rect x="1438.83" y="2561.13" width="1442.34" height="146.34" style="fill:#FFFFFF"/>
+	<rect x="1441.71" y="2564.00" width="1436.58" height="140.58" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<rect x="1482.03" y="2604.33" width="143.91" height="59.94" style="fill:#808080"/>
+	<rect x="1484.91" y="2607.21" width="138.15" height="54.18" style="fill:none;stroke:#000000;stroke-width:5.76"/>
 	<rect x="2199.96" y="2604.33" width="144.05" height="59.94" style="fill:#B0CEFF"/>
 	<rect x="2202.84" y="2607.21" width="138.29" height="54.18" style="fill:none;stroke:#619CFF;stroke-width:5.76"/>
-	<text x="1748.93" y="2655.31" style="font-family:'Helvetica';font-size:59.94px;fill:#000000">];30] 2016-17</text>
-	<text x="2403.95" y="2655.31" style="font-family:'Helvetica';font-size:59.94px;fill:#000000">]30;[ 2016-17</text>
+	<text x="1686.02" y="2655.31" style="font-family:'Helvetica';font-size:59.94px;fill:#000000">];30] in 2016-17</text>
+	<text x="2403.95" y="2655.31" style="font-family:'Helvetica';font-size:59.94px;fill:#000000">]30;[ in 2016-17</text>
 </svg>

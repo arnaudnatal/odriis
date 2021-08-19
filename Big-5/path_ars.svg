@@ -68,57 +68,60 @@
 	<rect x="1714.64" y="138.92" width="1068.66" height="2048.93" style="fill:#E0E0E0"/>
 	<rect x="1716.79" y="141.08" width="1064.34" height="2044.61" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
 	<line x1="1714.64" y1="2187.84" x2="2783.30" y2="2187.84" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="1714.64" y1="1739.77" x2="2783.30" y2="1739.77" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="1714.64" y1="1291.84" x2="2783.30" y2="1291.84" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="1714.64" y1="843.90" x2="2783.30" y2="843.90" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="1714.64" y1="395.83" x2="2783.30" y2="395.83" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<rect x="1802.93" y="1629.21" width="63.72" height="558.64" style="fill:#808080"/>
-	<rect x="1805.08" y="1631.37" width="59.40" height="554.32" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="1866.65" y="1878.82" width="63.59" height="309.02" style="fill:#B0CEFF"/>
-	<rect x="1868.80" y="1880.98" width="59.27" height="304.70" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<rect x="1930.23" y="1761.10" width="63.72" height="426.74" style="fill:#80E0D7"/>
-	<rect x="1932.39" y="1763.26" width="59.40" height="422.42" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
-	<rect x="2036.61" y="478.58" width="63.59" height="1709.26" style="fill:#808080"/>
-	<rect x="2038.77" y="480.74" width="59.27" height="1704.94" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="2100.20" y="308.34" width="63.72" height="1879.50" style="fill:#B0CEFF"/>
-	<rect x="2102.35" y="310.50" width="59.40" height="1875.18" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<rect x="2163.92" y="321.17" width="63.72" height="1866.67" style="fill:#80E0D7"/>
-	<rect x="2166.07" y="323.33" width="59.40" height="1862.35" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
-	<rect x="2270.30" y="1618.00" width="63.59" height="569.84" style="fill:#808080"/>
-	<rect x="2272.45" y="1620.16" width="59.27" height="565.52" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="2333.88" y="1659.99" width="63.72" height="527.86" style="fill:#B0CEFF"/>
-	<rect x="2336.04" y="1662.15" width="59.40" height="523.54" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<rect x="2397.60" y="1974.41" width="63.59" height="213.44" style="fill:#80E0D7"/>
-	<rect x="2399.76" y="1976.57" width="59.27" height="209.12" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
-	<rect x="2503.84" y="545.54" width="63.72" height="1642.30" style="fill:#808080"/>
-	<rect x="2506.00" y="547.70" width="59.40" height="1637.98" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="2567.57" y="424.18" width="63.72" height="1763.67" style="fill:#B0CEFF"/>
-	<rect x="2569.72" y="426.34" width="59.40" height="1759.35" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<rect x="2631.28" y="214.52" width="63.59" height="1973.33" style="fill:#80E0D7"/>
-	<rect x="2633.44" y="216.68" width="59.27" height="1969.01" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
-	<text x="1834.79" y="1584.11" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">12.5</text>
-	<text x="1898.37" y="1833.73" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">6.9</text>
-	<text x="1962.09" y="1716.01" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">9.5</text>
-	<text x="2068.47" y="433.35" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">38.2</text>
-	<text x="2132.05" y="263.25" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">42.0</text>
-	<text x="2195.78" y="276.07" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">41.7</text>
-	<text x="2302.02" y="1572.90" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">12.7</text>
-	<text x="2365.74" y="1614.89" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">11.8</text>
-	<text x="2429.46" y="1929.31" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">4.8</text>
-	<text x="2535.70" y="500.45" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">36.7</text>
-	<text x="2599.43" y="379.08" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">39.4</text>
-	<text x="2663.01" y="169.42" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">44.0</text>
+	<line x1="1714.64" y1="1793.10" x2="2783.30" y2="1793.10" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="1714.64" y1="1398.49" x2="2783.30" y2="1398.49" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="1714.64" y1="1003.88" x2="2783.30" y2="1003.88" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="1714.64" y1="609.26" x2="2783.30" y2="609.26" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="1714.64" y1="214.52" x2="2783.30" y2="214.52" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<rect x="1802.93" y="1695.76" width="63.72" height="492.08" style="fill:#808080"/>
+	<rect x="1805.08" y="1697.92" width="59.40" height="487.76" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="1866.65" y="1914.87" width="63.59" height="272.97" style="fill:#B0CEFF"/>
+	<rect x="1868.80" y="1917.03" width="59.27" height="268.65" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<rect x="1930.23" y="1816.32" width="63.72" height="371.53" style="fill:#80E0D7"/>
+	<rect x="1932.39" y="1818.48" width="59.40" height="367.21" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
+	<rect x="2036.61" y="682.03" width="63.59" height="1505.81" style="fill:#808080"/>
+	<rect x="2038.77" y="684.19" width="59.27" height="1501.49" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="2100.20" y="527.32" width="63.72" height="1660.53" style="fill:#B0CEFF"/>
+	<rect x="2102.35" y="529.48" width="59.40" height="1656.21" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<rect x="2163.92" y="562.82" width="63.72" height="1625.02" style="fill:#80E0D7"/>
+	<rect x="2166.07" y="564.98" width="59.40" height="1620.70" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
+	<rect x="2270.30" y="1685.91" width="63.59" height="501.94" style="fill:#808080"/>
+	<rect x="2272.45" y="1688.07" width="59.27" height="497.62" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="2333.88" y="1721.55" width="63.72" height="466.30" style="fill:#B0CEFF"/>
+	<rect x="2336.04" y="1723.71" width="59.40" height="461.98" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<rect x="2397.60" y="2002.08" width="63.59" height="185.76" style="fill:#80E0D7"/>
+	<rect x="2399.76" y="2004.24" width="59.27" height="181.44" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
+	<rect x="2503.84" y="741.03" width="63.72" height="1446.82" style="fill:#808080"/>
+	<rect x="2506.00" y="743.19" width="59.40" height="1442.50" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="2567.57" y="640.99" width="63.72" height="1546.85" style="fill:#B0CEFF"/>
+	<rect x="2569.72" y="643.15" width="59.40" height="1542.53" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<rect x="2631.28" y="423.50" width="63.59" height="1764.34" style="fill:#80E0D7"/>
+	<rect x="2633.44" y="425.66" width="59.27" height="1760.02" style="fill:none;stroke:#00C0AF;stroke-width:4.32"/>
+	<text x="1834.79" y="1650.53" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">12.5</text>
+	<text x="1898.37" y="1869.64" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">6.9</text>
+	<text x="1962.09" y="1771.22" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">9.4</text>
+	<text x="2068.47" y="636.93" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">38.2</text>
+	<text x="2132.05" y="482.22" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">42.1</text>
+	<text x="2195.78" y="517.59" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">41.2</text>
+	<text x="2302.02" y="1640.67" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">12.7</text>
+	<text x="2365.74" y="1676.31" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">11.8</text>
+	<text x="2429.46" y="1956.98" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">4.7</text>
+	<text x="2535.70" y="695.93" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">36.7</text>
+	<text x="2599.43" y="595.89" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">39.2</text>
+	<text x="2663.01" y="378.27" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">44.7</text>
 	<line x1="1714.64" y1="2187.84" x2="1684.67" y2="2187.84" style="stroke:#606060;stroke-width:4.32"/>
 	<text x="1669.55" y="2203.61" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">0</text>
-	<line x1="1714.64" y1="1739.77" x2="1684.67" y2="1739.77" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="1669.55" y="1755.54" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">10</text>
-	<line x1="1714.64" y1="1291.84" x2="1684.67" y2="1291.84" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="1669.55" y="1307.60" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">20</text>
-	<line x1="1714.64" y1="843.90" x2="1684.67" y2="843.90" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="1669.55" y="859.67" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">30</text>
-	<line x1="1714.64" y1="395.83" x2="1684.67" y2="395.83" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="1669.55" y="411.59" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">40</text>
-	<line x1="1714.64" y1="2187.84" x2="1714.64" y2="395.83" style="stroke:#000000;stroke-width:4.32"/>
+	<line x1="1714.64" y1="1793.10" x2="1684.67" y2="1793.10" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="1669.55" y="1808.87" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">10</text>
+	<line x1="1714.64" y1="1398.49" x2="1684.67" y2="1398.49" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="1669.55" y="1414.26" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">20</text>
+	<line x1="1714.64" y1="1003.88" x2="1684.67" y2="1003.88" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="1669.55" y="1019.64" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">30</text>
+	<line x1="1714.64" y1="609.26" x2="1684.67" y2="609.26" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="1669.55" y="625.03" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">40</text>
+	<line x1="1714.64" y1="214.52" x2="1684.67" y2="214.52" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="1669.55" y="230.29" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">50</text>
+	<line x1="1714.64" y1="2187.84" x2="1714.64" y2="214.52" style="stroke:#000000;stroke-width:4.32"/>
 	<text x="1593.58" y="1163.31" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" transform="rotate(-90 1593.58,1163.31)" text-anchor="middle">Percent</text>
 	<text x="1909.52" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 1909.52,2228.96)" text-anchor="end">Always biased</text>
 	<text x="2143.20" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 2143.20,2228.96)" text-anchor="end">Becomes biased</text>
@@ -137,60 +140,60 @@
 	<text x="2607.53" y="2601.46" style="font-family:'Helvetica';font-size:44.95px;fill:#000000">Upper</text>
 	<rect x="2858.90" y="63.32" width="1397.66" height="2678.71" style="fill:#FFFFFF"/>
 	<rect x="2861.05" y="65.48" width="1393.34" height="2674.39" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
-	<rect x="3122.15" y="138.92" width="1058.80" height="2048.93" style="fill:#E0E0E0"/>
-	<rect x="3124.30" y="141.08" width="1054.49" height="2044.61" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="3122.15" y1="2187.84" x2="4180.95" y2="2187.84" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="3122.15" y1="1734.91" x2="4180.95" y2="1734.91" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="3122.15" y1="1282.12" x2="4180.95" y2="1282.12" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="3122.15" y1="829.32" x2="4180.95" y2="829.32" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<line x1="3122.15" y1="376.52" x2="4180.95" y2="376.52" style="stroke:#FFFFFF;stroke-width:4.32"/>
-	<rect x="3215.16" y="1555.36" width="87.21" height="632.48" style="fill:#808080"/>
-	<rect x="3217.32" y="1557.52" width="82.89" height="628.16" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="3302.37" y="1793.10" width="87.21" height="394.75" style="fill:#B0CEFF"/>
-	<rect x="3304.53" y="1795.26" width="82.89" height="390.43" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<rect x="3448.03" y="214.52" width="87.08" height="1973.33" style="fill:#808080"/>
-	<rect x="3450.19" y="216.68" width="82.76" height="1969.01" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="3535.11" y="415.27" width="87.21" height="1772.58" style="fill:#B0CEFF"/>
-	<rect x="3537.27" y="417.43" width="82.89" height="1768.26" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<rect x="3680.78" y="1782.97" width="87.21" height="404.87" style="fill:#808080"/>
-	<rect x="3682.93" y="1785.13" width="82.89" height="400.55" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="3767.99" y="1633.93" width="87.21" height="553.91" style="fill:#B0CEFF"/>
-	<rect x="3770.14" y="1636.09" width="82.89" height="549.59" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<rect x="3913.51" y="669.88" width="87.21" height="1517.96" style="fill:#808080"/>
-	<rect x="3915.67" y="672.04" width="82.89" height="1513.64" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="4000.72" y="380.57" width="87.21" height="1807.27" style="fill:#B0CEFF"/>
-	<rect x="4002.88" y="382.73" width="82.89" height="1802.95" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<text x="3258.76" y="1510.13" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">14.0</text>
-	<text x="3345.97" y="1748.00" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">8.7</text>
-	<text x="3491.64" y="169.42" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">43.6</text>
-	<text x="3578.72" y="370.03" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">39.1</text>
-	<text x="3724.38" y="1737.88" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">8.9</text>
-	<text x="3811.59" y="1588.70" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">12.2</text>
-	<text x="3957.12" y="624.78" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">33.5</text>
-	<text x="4044.33" y="335.47" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">39.9</text>
-	<line x1="3122.15" y1="2187.84" x2="3092.18" y2="2187.84" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="3077.19" y="2203.61" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">0</text>
-	<line x1="3122.15" y1="1734.91" x2="3092.18" y2="1734.91" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="3077.19" y="1750.68" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">10</text>
-	<line x1="3122.15" y1="1282.12" x2="3092.18" y2="1282.12" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="3077.19" y="1297.88" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">20</text>
-	<line x1="3122.15" y1="829.32" x2="3092.18" y2="829.32" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="3077.19" y="845.09" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">30</text>
-	<line x1="3122.15" y1="376.52" x2="3092.18" y2="376.52" style="stroke:#606060;stroke-width:4.32"/>
-	<text x="3077.19" y="392.29" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">40</text>
-	<line x1="3122.15" y1="2187.84" x2="3122.15" y2="376.52" style="stroke:#000000;stroke-width:4.32"/>
+	<rect x="3109.32" y="138.92" width="1071.63" height="2048.93" style="fill:#E0E0E0"/>
+	<rect x="3111.48" y="141.08" width="1067.31" height="2044.61" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="3109.32" y1="2187.84" x2="4180.95" y2="2187.84" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="3109.32" y1="1734.91" x2="4180.95" y2="1734.91" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="3109.32" y1="1282.12" x2="4180.95" y2="1282.12" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="3109.32" y1="829.32" x2="4180.95" y2="829.32" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="3109.32" y1="376.52" x2="4180.95" y2="376.52" style="stroke:#FFFFFF;stroke-width:4.32"/>
+	<rect x="3202.61" y="1555.36" width="88.43" height="632.48" style="fill:#808080"/>
+	<rect x="3204.76" y="1557.52" width="84.11" height="628.16" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="3291.03" y="1793.10" width="88.42" height="394.75" style="fill:#B0CEFF"/>
+	<rect x="3293.19" y="1795.26" width="84.11" height="390.43" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<rect x="3438.72" y="214.52" width="88.43" height="1973.33" style="fill:#808080"/>
+	<rect x="3440.88" y="216.68" width="84.11" height="1969.01" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="3527.15" y="415.27" width="88.43" height="1772.58" style="fill:#B0CEFF"/>
+	<rect x="3529.30" y="417.43" width="84.11" height="1768.26" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<rect x="3674.70" y="1782.97" width="88.43" height="404.87" style="fill:#808080"/>
+	<rect x="3676.86" y="1785.13" width="84.11" height="400.55" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="3763.13" y="1633.93" width="88.43" height="553.91" style="fill:#B0CEFF"/>
+	<rect x="3765.28" y="1636.09" width="84.11" height="549.59" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<rect x="3910.82" y="669.88" width="88.42" height="1517.96" style="fill:#808080"/>
+	<rect x="3912.97" y="672.04" width="84.11" height="1513.64" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="3999.24" y="380.57" width="88.43" height="1807.27" style="fill:#B0CEFF"/>
+	<rect x="4001.40" y="382.73" width="84.11" height="1802.95" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<text x="3246.75" y="1510.13" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">14.0</text>
+	<text x="3335.18" y="1748.00" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">8.7</text>
+	<text x="3482.86" y="169.42" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">43.6</text>
+	<text x="3571.29" y="370.03" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">39.1</text>
+	<text x="3718.98" y="1737.88" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">8.9</text>
+	<text x="3807.41" y="1588.70" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">12.2</text>
+	<text x="3955.09" y="624.78" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">33.5</text>
+	<text x="4043.52" y="335.47" style="font-family:'Helvetica';font-size:29.97px;fill:#606060" text-anchor="middle">39.9</text>
+	<line x1="3109.32" y1="2187.84" x2="3079.22" y2="2187.84" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="3064.23" y="2203.61" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">0</text>
+	<line x1="3109.32" y1="1734.91" x2="3079.22" y2="1734.91" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="3064.23" y="1750.68" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">10</text>
+	<line x1="3109.32" y1="1282.12" x2="3079.22" y2="1282.12" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="3064.23" y="1297.88" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">20</text>
+	<line x1="3109.32" y1="829.32" x2="3079.22" y2="829.32" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="3064.23" y="845.09" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">30</text>
+	<line x1="3109.32" y1="376.52" x2="3079.22" y2="376.52" style="stroke:#606060;stroke-width:4.32"/>
+	<text x="3064.23" y="392.29" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" text-anchor="end">40</text>
+	<line x1="3109.32" y1="2187.84" x2="3109.32" y2="376.52" style="stroke:#000000;stroke-width:4.32"/>
 	<text x="2991.37" y="1163.31" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" transform="rotate(-90 2991.37,1163.31)" text-anchor="middle">Percent</text>
-	<text x="3313.52" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3313.52,2228.96)" text-anchor="end">Always biased</text>
-	<text x="3546.26" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3546.26,2228.96)" text-anchor="end">Becomes biased</text>
-	<text x="3779.13" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3779.13,2228.96)" text-anchor="end">Leave bias</text>
-	<text x="4011.87" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 4011.87,2228.96)" text-anchor="end">Never biased</text>
-	<rect x="3148.07" y="2530.75" width="1006.96" height="109.76" style="fill:#FFFFFF"/>
-	<rect x="3150.22" y="2532.91" width="1002.65" height="105.44" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
-	<rect x="3180.47" y="2563.15" width="104.63" height="44.96" style="fill:#808080"/>
-	<rect x="3182.62" y="2565.31" width="100.31" height="40.64" style="fill:none;stroke:#000000;stroke-width:4.32"/>
-	<rect x="3690.36" y="2563.15" width="104.63" height="44.96" style="fill:#B0CEFF"/>
-	<rect x="3692.52" y="2565.31" width="100.31" height="40.64" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
-	<text x="3343.28" y="2601.46" style="font-family:'Helvetica';font-size:44.95px;fill:#000000">];30] 2016-17</text>
-	<text x="3853.03" y="2601.46" style="font-family:'Helvetica';font-size:44.95px;fill:#000000">]30;[ 2016-17</text>
+	<text x="3302.18" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3302.18,2228.96)" text-anchor="end">Always biased</text>
+	<text x="3538.29" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3538.29,2228.96)" text-anchor="end">Becomes biased</text>
+	<text x="3774.27" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3774.27,2228.96)" text-anchor="end">Leave bias</text>
+	<text x="4010.39" y="2228.96" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 4010.39,2228.96)" text-anchor="end">Never biased</text>
+	<rect x="3135.24" y="2530.75" width="1019.79" height="109.76" style="fill:#FFFFFF"/>
+	<rect x="3137.40" y="2532.91" width="1015.47" height="105.44" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
+	<rect x="3167.64" y="2563.15" width="96.66" height="44.96" style="fill:#808080"/>
+	<rect x="3169.80" y="2565.31" width="92.34" height="40.64" style="fill:none;stroke:#000000;stroke-width:4.32"/>
+	<rect x="3680.91" y="2563.15" width="96.66" height="44.96" style="fill:#B0CEFF"/>
+	<rect x="3683.07" y="2565.31" width="92.34" height="40.64" style="fill:none;stroke:#619CFF;stroke-width:4.32"/>
+	<text x="3318.03" y="2601.46" style="font-family:'Helvetica';font-size:44.95px;fill:#000000">];30] in 2016-17</text>
+	<text x="3831.30" y="2601.46" style="font-family:'Helvetica';font-size:44.95px;fill:#000000">]30;[ in 2016-17</text>
 	<text x="80.59" y="2787.35" style="font-family:'Helvetica';font-size:39.96px;fill:#000000">Acquiesence bias</text>
 </svg>

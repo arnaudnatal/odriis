@@ -76,7 +76,7 @@
 	<text x="1000.70" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 1000.70,2334.94)" text-anchor="end">[0.05;0.1[</text>
 	<text x="1131.51" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 1131.51,2334.94)" text-anchor="end">[0.1;0.2[</text>
 	<text x="1262.33" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 1262.33,2334.94)" text-anchor="end">[0.2;0.5[</text>
-	<text x="858.74" y="193.90" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" text-anchor="middle">raven_tt</text>
+	<text x="858.74" y="193.90" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" text-anchor="middle">Raven</text>
 	<rect x="1461.11" y="63.32" width="1397.79" height="2537.77" style="fill:#FFFFFF"/>
 	<rect x="1463.26" y="65.48" width="1393.47" height="2533.45" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
 	<rect x="1729.76" y="224.91" width="1053.54" height="2068.91" style="fill:#E0E0E0"/>
@@ -164,7 +164,7 @@
 	<text x="2470.44" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 2470.44,2334.94)" text-anchor="end">[0.1;0.2[</text>
 	<text x="2571.83" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 2571.83,2334.94)" text-anchor="end">[0.2;0.5[</text>
 	<text x="2673.21" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 2673.21,2334.94)" text-anchor="end">[0.5;1]</text>
-	<text x="2256.53" y="193.90" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" text-anchor="middle">num_tt</text>
+	<text x="2256.53" y="193.90" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" text-anchor="middle">Numeracy</text>
 	<rect x="2858.90" y="63.32" width="1397.66" height="2537.77" style="fill:#FFFFFF"/>
 	<rect x="2861.05" y="65.48" width="1393.34" height="2533.45" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
 	<rect x="3127.55" y="224.91" width="1053.40" height="2068.91" style="fill:#E0E0E0"/>
@@ -249,7 +249,7 @@
 	<text x="3868.23" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3868.23,2334.94)" text-anchor="end">[0.1;0.2[</text>
 	<text x="3969.62" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 3969.62,2334.94)" text-anchor="end">[0.2;0.5[</text>
 	<text x="4071.00" y="2334.94" style="font-family:'Helvetica';font-size:44.95px;fill:#606060" transform="rotate(-45 4071.00,2334.94)" text-anchor="end">[0.5;1]</text>
-	<text x="3654.32" y="193.90" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" text-anchor="middle">lit_tt</text>
+	<text x="3654.32" y="193.90" style="font-family:'Helvetica';font-size:59.94px;fill:#000000" text-anchor="middle">Literacy</text>
 	<rect x="1701.27" y="2635.65" width="917.32" height="146.48" style="fill:#FFFFFF"/>
 	<rect x="1704.15" y="2638.53" width="911.57" height="140.72" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
 	<rect x="1744.47" y="2678.85" width="144.05" height="60.08" style="fill:#808080"/>
