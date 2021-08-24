@@ -29,7 +29,7 @@ set graph off
 
 
 ****************************************
-* PREPA COGNITIVE
+* Cognitive
 ****************************************
 use"NEEMSIS1-HH_v5.dta", clear
 
@@ -175,11 +175,38 @@ twoway (histogram lit_tt if username==2, w(0.5)) (histogram lit_tt if username==
 twoway (histogram num_tt if username==2, w(1)) (histogram num_tt if username==4, color(green) w(1)) (histogram num_tt if username==7, color(blue) w(1)) (histogram num_tt if username==8, color(red) w(1)), legend(order(1 "Vivek" 2 "Suganya" 3 "Chithra" 4 "Raichal" ))
 tabstat lit_tt num_tt, stat(n mean sd q min max) by(username)
 */
+****************************************
+* END
 
 
 
 
-*********Cleaning
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Big-5
+****************************************
+
+*Macro
 global big5 ///
 curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
 organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties ///
@@ -189,16 +216,25 @@ managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm 
 tryhard  stickwithgoals   goaftergoal finishwhatbegin finishtasks  keepworking
 
 fre $big5
+*At baseline, max=never
 
+
+
+********** Recode 1
 foreach x in $big5 {
 clonevar `x'_old=`x'
 replace `x'=. if `x'==99 | `x'==6
 }
+fre completeduties putoffduties
+/*
+completeduties_old putoffduties_old = max never, with 99 as cat
+completeduties putoffduties = max never, with 99 recoded as missing
+*/
 
-fre $big5
 
-mdesc $big5
 
+
+********* Omega
 omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .8684
 
 omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .8513
@@ -209,12 +245,9 @@ omega workwithother  understandotherfeeling trustingofother rudetoother tolerate
 
 omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .4794
 
-*Verification du sens
-tab rudetoother 
-tab helpfulwit~s 
 
 
-*recode all so that more is better! 
+********** Recode 2: all so that more is better! 
 foreach var of varlist $big5 {
 clonevar raw_`var'=`var' 
 clonevar raw_rec_`var'=`var' 	
@@ -226,8 +259,17 @@ foreach x in $big5 {
 label values `x' big5n
 label values raw_rec_`x' big5n
 }
+/*
+completeduties_old putoffduties_old = max never, with 99 as cat
+raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
+raw_rec_completeduties raw_rec_putoffduties = max always, with 99 recoded as missing
+completeduties putoffduties = max always, with 99 recoded as missing
+*/
 
-**Correction du biais d'"acquiescence"
+
+
+
+********** Correction du biais d'"acquiescence"
 *Paires
 local varlist ///
 rudetoother helpfulwit~s  ///
@@ -237,7 +279,6 @@ shywithpeople talktomany~e ///
 repetitive~s curious  ///
 nervous staycalm ///  
 worryalot managestress 
-
 *moyenne des paires pour savoir si ils sont loin de 3, si oui alors biais
 egen ars=rowmean(`varlist') 
 tabstat ars, stat(n mean sd q min max)
@@ -254,7 +295,6 @@ drop ars3_p n
 set scheme plotplain
 *histogram ars3, width(0.05) percent xtitle("Acquiesence bias") xlabel(0(0.5)2) xmtick(0(0.1)2) ylabel(0(1)14) ymtick(0(0.2)14) note("NEEMSIS-1 (2016-17)", size(small))
 *graph export "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\ars2_NEEMSIS1.pdf", replace
-
 /*
 preserve
 import delimited C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\ars3.csv, delimiter(";") clear
@@ -263,7 +303,8 @@ restore
 */
 
 
-*recode reversely coded items 
+
+********** Recode 3: reversely coded items 
 foreach var of varlist rudetoother putoffduties easilydistracted shywithpeople repetitive~s nervous changemood feeldepressed easilyupset worryalot {
 recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
 }
@@ -271,51 +312,107 @@ label define big5n2 5"5 - Almost never" 4"4 - Rarely" 3"3 - Sometimes" 2"2 - Qui
 foreach x in rudetoother putoffduties easilydistracted shywithpeople repetitive~s nervous changemood feeldepressed easilyupset worryalot {
 label values `x' big5n2
 }
-
 *corrected items: 
 foreach var of varlist $big5 {
 gen cr_`var'=`var'-ars2 if ars!=. 
 }
+/*
+completeduties_old putoffduties_old = max never, with 99 as cat
+raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
+raw_rec_completeduties raw_rec_putoffduties = max always, with 99 recoded as missing
 
-*** Test the way with ES/NE & OP
-*ES/NE
-cls
-fre raw_managestress raw_nervous raw_changemood raw_feeldepres~d raw_easilyupset raw_worryalot raw_staycalm  // raw
-fre raw_rec_managestress raw_rec_nervous raw_rec_changemood raw_rec_feeldepres~d raw_rec_easilyupset raw_rec_worryalot raw_rec_staycalm  // raw but always in 5
-fre cr_managestress cr_nervous cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot cr_staycalm  // corr
-*CO
-cls
-fre raw_organized raw_makeplans raw_workhard raw_appointmen~e raw_putoffduties raw_easilydist~d raw_completedu~s
-fre raw_rec_organized raw_rec_makeplans raw_rec_workhard raw_rec_appointmen~e raw_rec_putoffduties raw_rec_easilydist~d raw_rec_completedu~s
-fre cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s
-tab cr_putoffduties if cr_putoffduties>=5
+cr_completeduties cr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias
+
+completeduties putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5
+*/
 
 
-cls
-*OP : 8113 cor vs 8684
-omega cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n, rev(cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n)
-omega raw_curious raw_interested~t raw_repetitive~s raw_inventive raw_liketothink raw_newideas raw_activeimag~n, rev(raw_repetitive~s)
-omega raw_rec_curious raw_rec_interested~t raw_rec_repetitive~s raw_rec_inventive raw_rec_liketothink raw_rec_newideas raw_rec_activeimag~n, rev(raw_rec_repetitive~s)
 
 
-*CO : 8566 cor vs 8513
-omega cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s, rev(cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s)
-omega raw_organized raw_makeplans raw_workhard raw_appointmen~e raw_putoffduties raw_easilydist~d raw_completedu~s, rev(raw_putoffduties raw_easilydist~d)  // .7158
 
-*EX : 5883 cor vs 7292
-omega cr_enjoypeople cr_sharefeeli~s cr_shywithpeo~e  cr_enthusiastic  cr_talktomany~e  cr_talkative cr_expressing~s, rev(cr_enjoypeople cr_sharefeeli~s cr_shywithpeo~e  cr_enthusiastic  cr_talktomany~e  cr_talkative cr_expressing~s)
-omega raw_enjoypeople raw_sharefeeli~s raw_shywithpeo~e raw_enthusiastic  raw_talktomany~e raw_talkative raw_expressing~s, rev(raw_shywithpeople)  // .6565
 
-*AG : 6020 cor vs 5108
-omega cr_workwithot~r   cr_understand~g cr_trustingof~r cr_rudetoother cr_toleratefa~s  cr_forgiveother  cr_helpfulwit~s, rev(cr_workwithot~r   cr_understand~g cr_trustingof~r cr_rudetoother cr_toleratefa~s  cr_forgiveother  cr_helpfulwit~s)
-omega raw_workwithot~r raw_understand~g raw_trustingof~r raw_rudetoother raw_toleratefa~s raw_forgiveother raw_helpfulwit~s, rev(raw_rudetoother)  // .6186
+********** Rename
+global big5 ///
+curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
+organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties ///
+enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts  ///
+workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers ///
+managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm ///
+tryhard  stickwithgoals   goaftergoal finishwhatbegin finishtasks  keepworking
 
-*ES: 8019 cor vs 4794
-omega cr_managestress cr_nervous cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot cr_staycalm, rev(cr_managestress cr_nervous  cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot cr_staycalm)
-omega raw_managestress raw_nervous raw_changemood raw_feeldepres~d raw_easilyupset raw_worryalot raw_staycalm, rev(raw_managestress raw_staycalm)  // .7178
+foreach x in $big5 {
+rename raw_rec_`x' rr_`x'
+}
+/*
+completeduties_old putoffduties_old = max never, with 99 as cat
+raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
+rr_completeduties rr_putoffduties = max always, with 99 recoded as missing
 
-	
-**Moyenne pour avoir les traits
+cr_completeduties cr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias
+
+completeduties putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5
+*/
+
+
+
+
+
+********** Recode 4: from max=NE to max=ES
+foreach x in rr_managestress rr_nervous rr_changemood rr_feeldepressed rr_easilyupset rr_worryalot rr_staycalm {
+recode `x' (5=1) (4=2) (3=3) (2=4) (1=5)
+}
+
+
+
+
+
+********** Imputation
+global big5rr rr_curious rr_interestedbyart rr_repetitivetasks rr_inventive rr_liketothink rr_newideas rr_activeimagination rr_organized rr_makeplans rr_workhard rr_appointmentontime rr_putoffduties rr_easilydistracted rr_completeduties rr_enjoypeople rr_sharefeelings rr_shywithpeople rr_enthusiastic rr_talktomanypeople rr_talkative rr_expressingthoughts rr_workwithother rr_understandotherfeeling rr_trustingofother rr_rudetoother rr_toleratefaults rr_forgiveother rr_helpfulwithothers rr_managestress rr_nervous rr_changemood rr_feeldepressed rr_easilyupset rr_worryalot rr_staycalm rr_tryhard rr_stickwithgoals rr_goaftergoal rr_finishwhatbegin rr_finishtasks rr_keepworking
+foreach x in $big5rr{
+gen im`x'=`x'
+}
+forvalues j=1(1)3{
+forvalues i=1(1)2{
+foreach x in $big5rr{
+sum im`x' if sex==`i' & caste==`j' & egoid!=0 & egoid!=.
+replace im`x'=r(mean) if `x'==. & sex==`i' & caste==`j' & egoid!=0 & egoid!=.
+}
+}
+}
+
+foreach x in $big5{
+gen imcr_`x'=cr_`x'
+}
+forvalues j=1(1)3{
+forvalues i=1(1)2{
+foreach x in $big5i{
+sum imcr_`x' if sex==`i' & caste==`j' & egoid!=0 & egoid!=.
+replace imcr_`x'=r(mean) if imcr_`x'==. & sex==`i' & caste==`j' & egoid!=0 & egoid!=.
+}
+}
+}
+/*
+completeduties_old putoffduties_old = max never, with 99 as cat
+raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
+rr_completeduties raw_rec_putoffduties = max always, with 99 recoded as missing
+
+cr_completeduties cr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias
+
+imrr_completeduties imrr_putoffduties = max always, with 99 recoded as missing and imputation to avoid missing
+
+imcr_completeduties imcr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias and imputation to avoid missing
+
+
+completeduties putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5
+*/
+
+
+
+
+
+
+
+********** Big-5 taxonomy	
 egen cr_OP = rowmean(cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n)
 egen cr_CO = rowmean(cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s) 
 egen cr_EX = rowmean(cr_enjoypeople cr_sharefeeli~s cr_shywithpeo~e  cr_enthusiastic  cr_talktomany~e  cr_talkative cr_expressing~s ) 
@@ -331,114 +428,12 @@ egen ES = rowmean(managestress nervous changemood feeldepressed easilyupset worr
 egen Grit = rowmean(tryhard stickwithg~s  goaftergoal finishwhat~n finishtasks keepworking)
 
 
-***Check way
-*ES NE
-label var nervous "nervous"
-label var raw_rec_nervous "raw_rec_nervous"
-label var managestress "managestress"
-label var raw_rec_managestress "raw_rec_managestress"
-tab nervous raw_rec_nervous  // reverse question for ES (NE if no reverse)
-tab managestress raw_rec_managestress  // normal question for ES
-fre raw_rec_managestress raw_rec_nervous raw_rec_changemood raw_rec_feeldepressed raw_rec_easilyupset raw_rec_worryalot raw_rec_staycalm
-
-*CO
-label var organized "organized"
-label var raw_rec_organized "raw_rec_organized"
-label var putoffduties "putoffduties"
-label var raw_rec_putoffduties "raw_rec_putoffduties"
-
-tab organized raw_rec_organized
-tab putoffduties raw_rec_putoffduties  // reverse
 
 
-*Indid2016
+********** Indid2016
 rename INDID INDID2016
 tostring INDID2016, replace
 
 save"NEEMSIS1-HH_v6.dta", replace
-****************************************
-* END
-
-
-
-
-/*
-****************************************
-* EFA
-****************************************
-global directory = "C:\Users\Arnaud\Desktop\NEEMSIS2\DATA\APPEND\CLEAN"
-cd"$directory"
-clear all
-use"NEEMSIS_APPEND_v8.dta", clear
-
-global big5  ///
-	cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts ///
-	cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers /// 
-	cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm ///
-	cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination ///
-	cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties ///
-	cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking
-
-global big5questionsnogrit curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
-organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties ///
-enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts ///
-workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother ///
-helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm
-	
-*1. Vérif des missings
-gen nmiss=0
-foreach x in $big5{
-replace nmiss=nmiss+1 if `x'==.
-}
-tab nmiss
-*2. Imputation avec les moyennes par sexe pour ne pas perdre des individus
-foreach x in $big5{
-gen im`x'=`x'
-}
-global big5i imcr_curious imcr_interestedbyart imcr_repetitivetasks imcr_inventive imcr_liketothink imcr_newideas imcr_activeimagination ///
-imcr_organized imcr_makeplans imcr_workhard imcr_appointmentontime imcr_putoffduties imcr_easilydistracted imcr_completeduties ///
-imcr_enjoypeople imcr_sharefeelings imcr_shywithpeople imcr_enthusiastic imcr_talktomanypeople imcr_talkative imcr_expressingthoughts ///
-imcr_workwithother imcr_understandotherfeeling imcr_trustingofother imcr_rudetoother imcr_toleratefaults imcr_forgiveother ///
-imcr_helpfulwithothers imcr_managestress imcr_nervous imcr_changemood imcr_feeldepressed imcr_easilyupset imcr_worryalot imcr_staycalm
-forvalues i=1(1)2{
-foreach x in $big5i{
-sum `x' if sex==`i'
-replace `x'=r(mean) if `x'==. & sex==`i' & egoid!=0 & egoid!=.
-}
-}
-*3. Check imputations
-replace nmiss=0 if egoid!=0 & egoid!=.
-foreach x in $big5i{
-replace nmiss=nmiss+1 if `x'==.
-}
-tab nmiss
-drop nmiss
-*3. EFA
-factor $big5i, pcf fa(5)
-rotate, promax 
-putexcel set "C:\Users\Arnaud\Desktop\PANEL_NEEMSIS\EFA.xlsx", modify sheet(2020res)
-putexcel (E2)=matrix(e(r_L)) 
-
-factor $big5questionsnogrit, pcf fa(5)
-rotate, promax 
-putexcel set "C:\Users\Arnaud\Desktop\PANEL_NEEMSIS\EFA.xlsx", modify sheet(2020resnogritnocr)
-putexcel (E2)=matrix(e(r_L)) 
-
-*4. Graph
-/*
-screeplot, neigen(10) yline(1) ylabel(1[1]10) xlabel(1[1]10) 
-loadingplot, legend(off) xline(0) yline(0) scale(.8)
-scoreplot
-*/
-*5. Predict
-predict f1 f2 f3 f4 f5
-global factor f1 f2 f3 f4 f5
-sum $factor
-sum $big5, sep(50)
-sum $big5i, sep(50)
-*global naivebig5 EGOcrOP EGOcrEX EGOcrES EGOcrCO EGOcrAG
-*pwcorr $naivebig5 $factor, star(.01)
-
-save"NEEMSIS_APPEND_v9.dta", replace
 ****************************************
 * END
