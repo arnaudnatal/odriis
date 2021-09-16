@@ -51,7 +51,7 @@ save"NEEMSIS2-loans.dta", replace
 *2. Merge: borrower with loan to have indiv details with loan
 use "NEEMSIS2-HH_v15.dta", clear
 keep if nbloansbyborrower!=.
-keep parent_key HHID_panel INDID_panel INDID2020 INDID_total INDID_former INDID_new INDID_left setofloansbyborrower setofdetailsloanbyborrower borrowerid borrowername nbloansbyborrower detailsloanbyborrower_count
+keep parent_key HHID_panel INDID_panel INDID2020 INDID_total INDID_former INDID_new INDID_left setofloansbyborrower setofdetailsloanbyborrower borrowerid borrowername nbloansbyborrower detailsloanbyborrower_count householdid2020 submissiondate version_HH householdid2020 caste jatis
 
 sort parent_key borrowerid
 merge 1:m setofloansbyborrower using "NEEMSIS2-loans.dta"
@@ -256,6 +256,17 @@ foreach x in snmoneylenderdummyfam snmoneylenderfriend snmoneylenderwkp snmoneyl
 destring `x', replace
 }
 
+*Duplicates 
+	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+
+
 save "NEEMSIS2-loans_v3.dta", replace
 ****************************************
 * END
@@ -275,6 +286,26 @@ save "NEEMSIS2-loans_v3.dta", replace
 use"NEEMSIS_APPEND-marriagefinance.dta", clear
 gen loan_database="MARRIAGE"
 keep if marriageloanid!=""
+drop key parent_key
+split setofmarriagefinance, p(/)
+drop setofmarriagefinance2 setofmarriagefinance3
+rename setofmarriagefinance1 parent_key
+
+*Duplicates 
+	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+
+replace setofmarriagefinance=substr(setofmarriagefinance,1,strlen(setofmarriagefinance)-3)
+
+merge m:m setofmarriagefinance using "NEEMSIS2-HH_v15.dta", keepusing(HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis)
+drop if _merge==2
+
 rename marrigeloandate marriageloandate
 foreach x in marriageloanid marriageloanamount marriageloanlender marriageloanlistsn marriageloanlendername marriageloanlendersex marriageloanlenderoccup marriageloancaste marriagelenderfrom marriageloansettled marriageloanbalance marriageloandate{
 local newname=substr("`x'",9,.)
@@ -307,6 +338,15 @@ destring marriedid, replace
 destring loanid, replace
 rename marriedid INDID
 
+*Ajouter HHID_panel
+use "NEEMSIS2-HH_v15.dta", clear
+
+
+keepusing(HHID_panel submissiondate version_HH householdid2020 caste jatis)
+drop if loanamount==.
+duplicates drop
+drop _merge
+
 *split setofmarriagegroup, p(/)
 *drop setofmarriagegroup2
 *rename setofmarriagegroup1 parent_key
@@ -330,6 +370,8 @@ save"NEEMSIS2-loans_v4.dta", replace
 
 
 
+
+
 ****************************************
 * GOLD
 ****************************************
@@ -337,6 +379,26 @@ save"NEEMSIS2-loans_v4.dta", replace
 use"NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-goldgroup-gold.dta", clear
 gen loan_database="GOLD"
 keep if loanamount!=.
+
+*Duplicates 
+	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+
+
+merge 1:m setofgold using "NEEMSIS2-HH_v15.dta", keepusing(HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis)
+
+keep if _merge==3
+drop _merge
+
+order HHID_panel INDID_panel, first
+sort HHID_panel INDID_panel
+
 rename goldownername namefromearlier 
 rename goldnumber INDID
 rename loanamountgold loanamount
@@ -422,7 +484,8 @@ rename lenderfrom snmoneylenderliving
 
 order loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database
 
-keep parent_key INDID key loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database
+keep parent_key HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis key loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database
+
 
 append using "NEEMSIS2-loans_v4.dta"
 
@@ -447,6 +510,12 @@ save"NEEMSIS2-loans_v5.dta", replace
 
 
 
+
+
+
+
+
+
 ****************************************
 * CLEAN
 ****************************************
@@ -455,10 +524,6 @@ use"NEEMSIS2-loans_v5.dta", clear
 tab loandate, m
 tab loanbalance, m  // 314 miss pour l'or, le reste pour settled
 
-merge m:m parent_key INDID2020 using "NEEMSIS2-HH_v15.dta", keepusing(HHID_panel submissiondate version_HH householdid2020 caste jatis)
-sort _merge
-keep if _merge==3
-drop _merge
 tab caste
 
 /*
@@ -489,7 +554,7 @@ replace loanlender=12 if loanlender_new2020==15
 tab loanlender loanlender_new2020
 
 *Order
-global all HHID_panel INDID borrowername nbloansbyborrower loanid loanamount loandate loanreasongiven loanreasongiven2 loaneffectivereason loaneffectivereason2 loanotherreasongiven loanothereffectivereason loanlender lendername snmoneylenderdummyfam snmoneylenderfriend snmoneylenderwkp snmoneylenderlabourrelation snmoneylendersex snmoneylenderage snmoneylenderlabourtype snmoneylendercastes snmoneylendercastesother snmoneylendereduc snmoneylenderoccup snmoneylender2 snmoneylenderemployertype snmoneylenderoccupother snmoneylender3 snmoneylenderliving snmoneylenderruralurban snmoneylendermapdistrict snmoneylenderdistrict snmoneylenderlivingname snmoneylendercompared snmoneylenderduration snmoneylendermeet snmoneylendermeetfrequency snmoneylenderinvite snmoneylenderreciprocity1 snmoneylenderintimacy snmoneylenderphonenb snmoneylenderphoto snmoneylendermeetother otherlenderservices guarantee allloans3 guaranteeother otherlenderservicesother guaranteetype loansettled dummyinterest interestpaid covfrequencyinterest covamountinterest alloans4 loanbalance totalrepaid covfrequencyrepayment covrepaymentstop mainloanid mainloanname lenderfirsttime additionalloan borrowerservices borrowerservicesother plantorepay plantorepayother termsofrepayment repayduration1 repayduration2 dummyinteret interestfrequency interestloan dummyproblemtorepay problemdelayrepayment problemdelayrepaymentother settleloanstrategy settleloanstrategyother loanproductpledge loanproductpledgeother loanproductpledgeaamount dummyhelptosettleloan helptosettleloan dummyrecommendation dummyguarantor recommenddetailscaste recommendloanrelation guarantordetailscaste guarantorloanrelation dummyincomeassets incomeassets
+global all HHID_panel INDID caste jatis borrowername nbloansbyborrower loanid loanamount loandate loanreasongiven loanreasongiven2 loaneffectivereason loaneffectivereason2 loanotherreasongiven loanothereffectivereason loanlender lendername snmoneylenderdummyfam snmoneylenderfriend snmoneylenderwkp snmoneylenderlabourrelation snmoneylendersex snmoneylenderage snmoneylenderlabourtype snmoneylendercastes snmoneylendercastesother snmoneylendereduc snmoneylenderoccup snmoneylender2 snmoneylenderemployertype snmoneylenderoccupother snmoneylender3 snmoneylenderliving snmoneylenderruralurban snmoneylendermapdistrict snmoneylenderdistrict snmoneylenderlivingname snmoneylendercompared snmoneylenderduration snmoneylendermeet snmoneylendermeetfrequency snmoneylenderinvite snmoneylenderreciprocity1 snmoneylenderintimacy snmoneylenderphonenb snmoneylenderphoto snmoneylendermeetother otherlenderservices guarantee allloans3 guaranteeother otherlenderservicesother guaranteetype loansettled dummyinterest interestpaid covfrequencyinterest covamountinterest alloans4 loanbalance totalrepaid covfrequencyrepayment covrepaymentstop mainloanid mainloanname lenderfirsttime additionalloan borrowerservices borrowerservicesother plantorepay plantorepayother termsofrepayment repayduration1 repayduration2 dummyinteret interestfrequency interestloan dummyproblemtorepay problemdelayrepayment problemdelayrepaymentother settleloanstrategy settleloanstrategyother loanproductpledge loanproductpledgeother loanproductpledgeaamount dummyhelptosettleloan helptosettleloan dummyrecommendation dummyguarantor recommenddetailscaste recommendloanrelation guarantordetailscaste guarantorloanrelation dummyincomeassets incomeassets
 foreach x in $all{
 capture confirm v `x'
 if _rc==0{
