@@ -493,9 +493,14 @@ tab name
 
 
 ********** Education
-foreach x in everattendedschool classcompleted{
+foreach x in canread everattendedschool classcompleted after10thstandard durationafter10th typeofhigheredu subjectsafter10th currentlyatschool educationexpenses amountschoolfees bookscost transportcost   dummyscholarship scholarshipamount scholarshipduration converseinenglish{
 replace `x'=`x'2016 if `x'==. & `x'2016!=.
 }
+
+foreach x in othersubjectsafter10th otherreasondroppingschool reasonneverattendedschool reasondropping {
+replace `x'=`x'2016 if `x'=="" & `x'2016!=""
+}
+
 gen edulevel=.
 replace edulevel = 0 if  everattendedschool == 0
 replace edulevel = 0 if classcompleted < 5 & classcompleted != .
@@ -534,7 +539,7 @@ list HHID_panel INDID_panel	name age version_HH if livinghome==1 & edulevel==., 
 */
 
 drop sex2010 age2010 HHID2010 dummyeverland2010 dummyHHlost2016
-drop edulevel2016 classcompleted2016 everattendedschool2016 age2016 sex2016
+drop canread2016 everattendedschool2016 classcompleted2016 after10thstandard2016 durationafter10th2016 typeofhigheredu2016 subjectsafter10th2016 othersubjectsafter10th2016 currentlyatschool2016 educationexpenses2016 amountschoolfees2016 bookscost2016 transportcost2016 reasonneverattendedschool2016 reasondropping2016 otherreasondroppingschool2016 dummyscholarship2016 scholarshipamount2016 scholarshipduration2016 converseinenglish2016 age2016 sex2016
 
 
 
