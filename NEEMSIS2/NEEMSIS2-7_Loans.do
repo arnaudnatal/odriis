@@ -286,7 +286,7 @@ save "NEEMSIS2-loans_v3.dta", replace
 use"NEEMSIS_APPEND-marriagefinance.dta", clear
 gen loan_database="MARRIAGE"
 keep if marriageloanid!=""
-drop key parent_key
+drop  parent_key
 split setofmarriagefinance, p(/)
 drop setofmarriagefinance2 setofmarriagefinance3
 rename setofmarriagefinance1 parent_key
@@ -305,6 +305,7 @@ replace setofmarriagefinance=substr(setofmarriagefinance,1,strlen(setofmarriagef
 
 merge m:m setofmarriagefinance using "NEEMSIS2-HH_v15.dta", keepusing(HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis)
 drop if _merge==2
+drop _merge
 
 rename marrigeloandate marriageloandate
 foreach x in marriageloanid marriageloanamount marriageloanlender marriageloanlistsn marriageloanlendername marriageloanlendersex marriageloanlenderoccup marriageloancaste marriagelenderfrom marriageloansettled marriageloanbalance marriageloandate{
@@ -329,23 +330,16 @@ rename parent_key setofmarriagegroup
 split key, p(/)
 rename key1 parent_key
 drop key2 key3
-merge m:m setofmarriagegroup using "NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta", keepusing(marriedid marriedname)
-keep if _merge==3
-drop _merge
-tab loanbalance, m  // 12 ok
+*merge m:m setofmarriagegroup using "NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta", keepusing(marriedid marriedname)
+*keep if _merge==3
+*drop _merge
+*tab loanbalance, m  // 12 ok
 *rename marriedname namefromearlier
-destring marriedid, replace
+*destring marriedid, replace
 destring loanid, replace
-rename marriedid INDID
-
-*Ajouter HHID_panel
-use "NEEMSIS2-HH_v15.dta", clear
+*rename marriedid INDID
 
 
-keepusing(HHID_panel submissiondate version_HH householdid2020 caste jatis)
-drop if loanamount==.
-duplicates drop
-drop _merge
 
 *split setofmarriagegroup, p(/)
 *drop setofmarriagegroup2
@@ -591,7 +585,7 @@ clonevar lendersex=snmoneylendersex
 clonevar lenderoccup=snmoneylenderoccup
 
 *Add caste, etc
-merge m:1 HHID_panel INDID2020 using "NEEMSIS2-HH_v15.dta", keepusing(parent_key HHID_panel householdid2020 villageid villagearea jatis caste INDID_panel INDID2020 INDID_total INDID_former INDID_new INDID_left egoid name sex age edulevel)
+merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v15.dta", keepusing(egoid name sex age edulevel)
 drop if _merge==2
 
 save"NEEMSIS2-loans_v6.dta", replace
