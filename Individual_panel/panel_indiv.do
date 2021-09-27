@@ -349,7 +349,10 @@ drop `x'
 rename max_`x' `x'
 }
 
-keep HHID2010 villageid name namemigrant year sex relationshiptohead relationshiptoheadother age caste dummyego maritalstatus 
+keep HHID2010 villageid name namemigrant year sex relationshiptohead relationshiptoheadother age caste dummyego maritalstatus INDIDtracking
+
+rename INDIDtracking INDID
+tostring INDID, replace
 
 save"D:\Documents\_Thesis\_DATA\Tracking2016\DATA\NEEMSIS-tracking_indiv.dta", replace
 
@@ -432,9 +435,6 @@ drop if year==.
 
 tab year
 
-rename dummyleft_2020 dummyleft
-rename dummynew_2020 dummynew
-rename dummyformer_2020 dummyformer
 
 save"$git\code_indiv_2010_2016_2020_tracking2019", replace
 
@@ -473,4 +473,3 @@ order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020
 save"$git\code_indiv_2010_2016_2020_tracking2019_wide", replace
 ****************************************
 * END
-
