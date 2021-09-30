@@ -10,11 +10,15 @@ TITLE: Occupation
 -------------------------
 */
 
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
+clear all
+macro drop _all
+cls
+********** Path to folder "data" folder.
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global git ="C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
 
-
-cd "$directory"
+cd"$directory"
+clear all
 
 
 
@@ -23,75 +27,97 @@ cd "$directory"
 ****************************************
 * Occupation
 ****************************************
-use"NEEMSIS-occupation_alllong.dta", clear
+use"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3", clear
 
-rename HHID parent_key
-order HHID2010 parent_key INDID INDID2010
-destring hoursayear, replace
-
-tostring INDID, gen(INDID2016)
-rename parent_key HHID2016
-
-gen year=2016
-
-merge m:1 HHID2016 INDID2016 using "NEEMSIS1-HH_v8", keepusing(classcompleted everattendedschool)
-keep if _merge==3
+merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v19.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel)
+drop if _merge==2
 drop _merge
 
+drop keep_occupposition _2keep_occupposition _3keep_occupposition businesslabourers_count infoemployer_count salariedjobgroup2_count
 
+order HHID_panel INDID_panel
+destring hoursayear, replace
+
+gen year=2020
 
 gen occup_sector= .
+
+gen classcompleted10ormore=.
+replace classcompleted10ormore=0 if classcompleted<10 & classcompleted!=.
+replace classcompleted10ormore=1 if classcompleted>=10 & classcompleted!=.
+
+drop classcompleted
+
+gen agetowork=.
+replace agetowork=0 if age<=14 & age!=.
+replace agetowork=0 if age>=71 & age!=.
+replace agetowork=1 if age>14 & age<71 & age!=.
+
+drop age
+
+rename kindofwork kindofwork2020
+
+*Quelles occupations ?
+cls
+preserve
+duplicates drop occupationname kindofwork2020 classcompleted10ormore everattendedschool agetowork, force
+keep occupationname kindofwork2020 everattendedschool classcompleted10ormore agetowork
+gen profession=.
+order kindofwork occupationname profession
+export excel using "$git\Occupations\Occupations.xlsx", sheet("NEEMSIS2") sheetmodify firstrow(variables)
+
+gen year=2020
+
+keep occupationname profession year
+save"$git\Occupations\sector2020.dta", replace
+
+/*
+sort occupationname
+drop if occup_sector!=.
+list occupationname, clean noobs
+*/
+restore
+
 			
-* cultivators	
-replace  occup_sector= 11 if  occupationname == "Agriculture (own land )" |  occupationname == "Own agriculture (Lease land)" ///
-	|  occupationname == "Agriculture (Own land)" |  occupationname == "Agriculture  (own land )"|  occupationname == "Agriculture Own land" ///
-	|  occupationname == "Agriculture in own land"|  occupationname == "Agticulture" |  occupationname == "Agriculture (Own Land)" ///
-	|  occupationname == "Agriculture ( own land)" |  occupationname == "Agriculture Own Land"|  occupationname == "Agriculture (own)" ///
-	|  occupationname == "Agriculture coolie (own land)" 	|  occupationname == "Agriculture coolie own land"|  occupationname == "Own land Agriculture" ///
-	|  occupationname == "Agriculture in family land"|  occupationname == ".Agriculture" |  occupationname == "Agriculture own farm" ///
-	|  occupationname == "Agriculture (lease Land)" |  occupationname == "Agriculture lease land" |  occupationname == "Agri in own form" ///
-	|  occupationname == "Agriculture(lease land)"|  occupationname == "Agriculture own Land" |  occupationname == "Agriculture on own land" ///
-	|  occupationname == "Agriculture own" |  occupationname == "Agri own" ///
-	| occupationname == "Agriculture assistance for her husband" |  occupationname == "Agriculture Assistance for her husband" ///
-	|  occupationname == "Agriculture assisting his father" |  occupationname == "Agriculture Assistance in her husband" ///
-	|  occupationname == "Agriculture Assistance  in her husband" |  occupationname == "Agriculture Assistance to her husband" ///
-	|  occupationname == "Agriculture assisting her husband" |  occupationname == "Agriculture support in her husband" |  occupationname == "Agriculture to support her husband" ///
-	|  occupationname == "Agriculture assisting his son" |  occupationname == "Agriculture in support to his mother" |  occupationname == "Agriculture own Land(unpaid)" ///
-	|  occupationname == "Agriculture own land (unpaid)" |  occupationname == "Agriculture own Land (unpaid)"|  occupationname == "Agriculture (own Land)unpaid" ///
-	|  occupationname == "Agriculture (own Land) unpaid" |  occupationname == "Agriculture Assistance for her father..." ///
-	|  occupationname == "Agriculture Assistance for his father" |  occupationname == "Agriculture to support his father" ///
-	|  occupationname == "Agriculture lease land(unpaid worker)"|  occupationname == "Agriculture (unpaid worker)" |  occupationname == "Agriculture  (unpaid )" ///
-	|  occupationname == "Agriculture  (unpaid)" |  occupationname == "Agriculture (unpaid)" |  occupationname == "Agriculture own land" |  occupationname == "Agriculture(own land)" ///
-	|  occupationname == "Agriculture (own land)" |  occupationname== "Agriculture (lease land)" |  occupationname == "Agriculture" |  occupationname == "Own agriculture" ///
-	|  occupationname == "Agriculture unpaid" |  occupationname == "Agriculture in own farm" |  occupationname == "Agriculture (own Land)" |  occupationname == "Agriculture  (own land)" ///
-	|  occupationname == "Own agriculture (unpaid)" |  occupationname == "Own agriculture lease land(unpaid)" |  occupationname == "Agriculture Assistance for her father in law" ///
-	|  occupationname == "Agriculture (own Land)" 
-	
-	
-	* above job on own/leased land but are unpaid because agri family income only on one household member
+* cultivators
+replace occup_sector= 11 if  ///
+(strpos(occupationname,"agri") | strpos(occupationname,"Agri"))  ///
+& ///
+(strpos(occupationname,"own") | strpos(occupationname,"Own") | strpos(occupationname,"lease"))
+replace occup_sector=11 if occupationname=="Agricultural weeding" ///
+| occupationname=="Agriculture" ///
+| occupationname=="Agriculture activities" ///
+| occupationname=="Agriculture atto" ///
+| occupationname=="Agriculture labour" ///
+| occupationname=="Agriculture weeding" ///
+| occupationname=="Agriculture weeding and seedling" ///
+| occupationname=="Agriculture weeding work" ///
+| occupationname=="Agriculture work" ///
+| occupationname=="Agriculture work ( weeding and seedling)" ///
+| occupationname=="Agriculture work (Andam poduthal)" ///
+| occupationname=="Agriculture work (sugarcane cutting)" ///
+| occupationname=="Agriculture work (weeding and seedling)" ///
+| occupationname=="Agriculture work seedling" ///
+| occupationname=="Agriculture work weeding" 
+* above job on own/leased land but are unpaid because agri family income only on one household member
+
+
+* Agricultural labourers
+replace  occup_sector= 12  if  ///
+(strpos(occupationname,"agri") | strpos(occupationname,"Agri")) ///
+& ///
+(strpos(occupationname,"cooli") | strpos(occupationname,"Cooli") | strpos(occupationname,"kooli"))
 
 	
-	* Agricultural labourers
-	
-	replace  occup_sector= 12  if  occupationname== "Agri Coolie" |  occupationname == "Agri cooli" |  occupationname == "Agri.coolie" |  occupationname == "Agricooli" ///
-	|  occupationname == "Agricultural coolie"  |  occupationname == "Agri.cooli" |  occupationname == "Agriculture Cooli" |  occupationname == "Agriculture Coolie" ///
-	|  occupationname == "Agriculture colli" |  occupationname == "Agriculture cooli" |  occupationname == "Agriculture collie" |  occupationname == "Agri coolie" ///
-	|  occupationname == "Agri.colie" |  occupationname == "Agriculture,cooli" |  occupationname == "Agriculture.coolie" |  occupationname == "Agri. coolie"  |  occupationname == "Agri coolie" ///
-	|  occupationname == "Agriculture  Coolie" |  occupationname == "Agriculture  colli"|  occupationname == "' Agri.coolie" |  occupationname == "Agriculture work" ///
-	|  occupationname== "Agriculture coolie" ///
-	|  occupationname == "Horticulture coolie" ///
-	|  occupationname== "Agriculture coolie"
-	
-	* Sugarcane plantation labourers
-	
-	replace  occup_sector= 13  if  occupationname == "Sugar cane cutting" ///
-		|  occupationname == "Sugarcane cutter helper" |  occupationname == "Sugarcane cutting helper" |  occupationname == "Sugar cutting" |  occupationname == "Sugarcane cutting colli" ///
-		|  occupationname == "Sugarcane harvest" |  occupationname == "Sugarcane work"  |  occupationname == "Sugar cane Cutting" ///
-		|  occupationname == "Sugarcane cutting" |  occupationname == "Sugar cane Cutting" 
-		
-	* Other farm workers
-	
-	replace  occup_sector= 14 if  occupationname == "Cattle rearing (milk production)"|  occupationname == "Chicken rearing" ///
+* Sugarcane plantation labourers
+replace  occup_sector= 13  if  strpos(occupationname,"Sugarcane") & occup_sector==. 
+replace  occup_sector= 13  if  strpos(occupationname,"Sugar") & strpos(occupationname,"cane") & occup_sector==. 
+replace  occup_sector=13 if occupationname=="Sugar cutting  work"
+replace occup_sector=13 if occupationname=="Sugar mill work"
+
+
+* Other farm workers
+replace  occup_sector= 14 if  occupationname == "Cattle rearing (milk production)"|  occupationname == "Chicken rearing" ///
 		|  occupationname == "Cow rearing" ///
 		|  occupationname == "Milk productin" |  occupationname == "Cow rearing  (milk selling)" ///
 		|  occupationname == "Chicken centre" |  occupationname == "Cow rearing" |  occupationname == "Cattle rearing" ///
@@ -447,22 +473,6 @@ replace  occup_sector= 11 if  occupationname == "Agriculture (own land )" |  occ
 	|  occupationname == "nrega" |  occupationname == "Nrges" |  occupationname == "Nerega" |  occupationname == "Nrega" ///
 	|  occupationname == "Bore Weller (goverment temporary worker)" 
 	
-mdesc occup_sector
-list occupationname if occup_sector==., clean noobs
-/*
-                      occupationname  
-                               Thari  
-                      Thari (unpaid)  
-                               Thari  
-                               Thari  
-    Salaried work in Mascut (abroad)  
-               Water company private  
-                     Private company  
-                   Workshop training  
-               Cycles services  shop  
-                                  88  
-                                  88  
-*/	
 
 
 gen occup_sector2= 1 if occup_sector==11
@@ -484,7 +494,6 @@ label define sector 1 "Cultivators" 2 "Agricultural and plantation labourers" 3 
 11 "NREGA"
 label values occup_sector2 sector 	
 	
-mdesc occup_sector2	
 	
 	
 * make occup_sector2 comparable to 2010 
@@ -639,51 +648,30 @@ label define occupcode 1 "Agri self-employed" 2 "Agri casual workers" 3 "Non-agr
 
 label values occupcode2016 occupcode
 
+tab occupcode2016 if year==2016
 
-mdesc occupcode2016
-list occupationname if occupcode2016==., clean noobs
-/*
-                                     occupationname  
-                                Data entry operater  
-                      Supervisor in private company  
-                                              Thari  
-                                     Thari (unpaid)  
-                                              Thari  
-                                              Thari  
-                                         Supervisor  
-                                        Post master  
-                                   Toll gate worker  
-                            Construction supervisor  
-                                 Van Driver(school)  
-                   Salaried work in Mascut (abroad)  
-                          Bus driver (govt) Chennai  
-                                Supervisor ( NREGA)  
-                              Water company private  
-                                         Bus driver  
-                            Transport company staff  
-                                           Advocate  
-                                         Bus driver  
-                                     Security gaurd  
-              Office assistant in Co-operative bank  
-                                    Private company  
-                                  Workshop training  
-                         Supervisor in construction  
-     Accountant in ration (gov job) no contract yet  
-                                      Billing staff  
-                              Cycles services  shop  
-                                                 88  
-                                                 88  
-                             Admin work(Feron tech)  
-                            Bus conductor (TN govt)  
-                                       Receptionist  
-    Secretary(primary agriculture cooperative bank)  
-                                           Advocats 
-*/
+
 
 * distinction non-agri coolie & regular non qualified pas très claire...
 	* using job location: new category for migrant construction workers
 	* shop labour: family business ? 5 are in non-agri coolies
 	* occup_sector 31-33: flou
+
+
+bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2016==3 & occup_sector!=22
+* list job coolie non-agri industry hors construction
+tab occupationname occup_sector  if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedwagetype  if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedjobtype  if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
+tab occupationname annualincome if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
+
+
+bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2016==4 & occup_sector!=22
+* list job regular non-qualified industry hors construction
+tab occupationname occup_sector  if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedwagetype  if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedjobtype  if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
+tab occupationname annualincome if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
 
 
 
@@ -702,7 +690,6 @@ gen occupcode2=occupcode2016 if year==2016
 label values occupcode2 occupcode
 
 replace occupcode2=5 if occupcode2==. & occupationname=="Advocate"
-replace occupcode2=5 if occupcode2==. & occupationname=="Advocats"
 replace occupcode2=4 if occupcode2==. & occupationname=="Bus driver"
 replace occupcode2=4 if occupcode2==. & occupationname=="Office assistant in Co-operative bank"
 replace occupcode2=4 if occupcode2==. & occupationname=="Water company private"
@@ -714,9 +701,6 @@ replace occupationid=. if occupationname=="No occupation"
 
 
 tab occupcode2 year, column
-
-mdesc occupcode2
-list occupationname if occupcode2==., clean noobs
 
 
 
@@ -839,56 +823,5 @@ rename occupation4 occupa_unemployed_15_70
 
 
 save"NEEMSIS-occupation_alllong_v2.dta", replace
-****************************************
-* END
-
-
-
-
-
-
-
-
-
-
-****************************************
-* Excel
-****************************************
-use"NEEMSIS-occupation_alllong_v2.dta", clear
-
-keep occupationname kindofwork_new profession occupation occupa_unemployed occupa_unemployed_15_70 occup_sector2 age everattendedschool classcompleted
-
-gen classcompleted10ormore=.
-replace classcompleted10ormore=0 if classcompleted<10 & classcompleted!=.
-replace classcompleted10ormore=1 if classcompleted>=10 & classcompleted!=.
-
-drop classcompleted
-
-gen agetowork=.
-replace agetowork=0 if age<=14 & age!=.
-replace agetowork=0 if age>=71 & age!=.
-replace agetowork=1 if age>14 & age<71 & age!=.
-
-drop age
-
-foreach x in *{
-compress `x'
-}
-
-rename kindofwork_new kindofwork2016
-
-drop if occupation==.
-
-order kindofwork2016 occupationname profession occup_sector2 occupation occupa_unemployed occupa_unemployed_15_70 agetowork classcompleted10ormore everattendedschool
-
-duplicates drop occupationname kindofwork2016 profession occup_sector2 occupation occupa_unemployed occupa_unemployed_15_70 agetowork classcompleted10ormore everattendedschool, force
-
-
-export excel using "$git\Occupations\Occupations.xlsx", sheet("NEEMSIS1") sheetmodify firstrow(variables)
-
-gen year=2016
-keep occupationname profession year
-
-save"$git\Occupations\sector2016.dta", replace
 ****************************************
 * END

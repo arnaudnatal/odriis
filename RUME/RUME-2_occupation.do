@@ -10,7 +10,8 @@ TITLE: RUME occupation panel
 -------------------------
 */
 
-global directory = "D:\Documents\_Thesis\_DATA\RUME\DATA"
+global directory = "D:\Documents\_Thesis\_DATA\RUME\"
+global git ="C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
 cd "$directory"
 
 
@@ -18,7 +19,7 @@ cd "$directory"
 ****************************************
 * SJ
 ****************************************
-import delimited D:\Documents\_Thesis\_DATA\RUME\DATA\RUME-salariedjob1.csv, delimiter(";") clear 
+import delimited "$directory\RUME-salariedjob1.csv", delimiter(";") clear 
 rename codefamily HHID2010
 rename v2 INDID
 rename v5 occupationname2
@@ -39,7 +40,7 @@ drop if INDID==""
 save"RUME-salariedjob1.dta", replace
 
 
-import delimited D:\Documents\_Thesis\_DATA\RUME\DATA\RUME-salariedjob2.csv, delimiter(";") clear 
+import delimited "$directory\RUME-salariedjob2.csv", delimiter(";") clear 
 rename codefamily HHID2010
 rename idmember INDID
 rename v3 daysworked
@@ -95,7 +96,7 @@ fre occupationtype
 gen year=2010
 
 rename INDID INDID2010
-merge m:1 HHID2010 INDID2010 using "RUME-HH_v8.dta",keepusing(age)
+merge m:1 HHID2010 INDID2010 using "RUME-HH_v8.dta",keepusing(age education)
 drop if _merge==2
 drop _merge
 
@@ -117,6 +118,11 @@ sort tag HHID2010 INDID
 **********************************************
 **  Create 'occup_sector' variable for 2010 **			!! Pension and no occup not assigned to occup-sector (n=10) !!
 **********************************************
+
+
+drop if occupationtype==10
+sort occupationtype HHID2010 INDID2010
+
 
 gen occup_sector=.
 
@@ -292,8 +298,10 @@ replace occup_sector=102 if year==2010 & (occupationname=="JOSIYAM (CLAIVOYANT)"
 	*Public works/ NREGA
 replace occup_sector=111 if year==2010 & (occupationname=="NREGA" | occupationname=="NREGS" | occupationname=="NRGEA")	
 
-	
-	
+mdesc occup_sector
+list occupationname if occup_sector==., clean
+replace occup_sector=999 if occup_sector==.
+
 	
 gen occup_sector2= 1 if occup_sector==11
 replace occup_sector2= 2 if occup_sector>11 & occup_sector<20
@@ -306,14 +314,16 @@ replace occup_sector2= 8 if occup_sector>80 & occup_sector<90
 replace occup_sector2= 9 if occup_sector>90 & occup_sector<100
 replace occup_sector2= 10 if occup_sector>100 & occup_sector<110
 replace occup_sector2= 11 if occup_sector>110 & occup_sector<120
-
+replace occup_sector2=999 if occup_sector==999 
 
 label define sector 1 "Cultivators" 2 "Agricultural and plantation labourers" 3 "Production workers, transport equipment operators and labourers" ///
 4 "Most qualified workers" 5 "Administrative, executive and managerial workers" 6 "Labour contractors" ///
 7 "Clerical workers" 8 "Merchents and sellers" 9 "Service workers" 10 "Artists and astrologers" ///
-11 "NREGA"
+11 "NREGA" 999"Pension+retirement"
 label values occup_sector2 sector 	
 
+mdesc occup_sector2
+tab occup_sector2, m
 
 *** Sort
 sort occupationtype
@@ -345,7 +355,7 @@ gen occupcode2010=1 if occupationtype==1
 *agri coolie
 replace occupcode2010=2 if occupationtype==3 |occupationname=="AGRI COOLIE"
 
-*non-agri coolie (industry, service)
+*non-agri coolie (industry, service) ou non-agri casual
 replace occupcode2010=3 if occupationname== "CENTRING WORK (CONSTRUCTION)" ///
 | occupationname=="CONSTRUCTION WROK"  ///
  | occupationname=="LORRY DRIVER"  ///
@@ -359,7 +369,11 @@ replace occupcode2010=3 if occupationname== "CENTRING WORK (CONSTRUCTION)" ///
  |occupationname=="BUS CLEANER" | occupationname=="HELPER -COOKING" ///
  | occupationname=="HOTEL WORK" | occupationname=="HOTEL WORKER" | occupationname=="TEMPO DRIVER" ///
  | occupationname=="COOLIE IIN HOTEL"| occupationname=="COOLIE IN CENIMA THEATRE" | occupationname=="COOLIE IN HOTEL" ///
- | occupationname=="TENT HOUSE WORK" 
+ | occupationname=="TENT HOUSE WORK"  
+* | occupationname=="COOLIE IN FANCY STORE" ///
+* | occupationname=="COLLIE IN CLOTH STORE" ///
+* | occupationname=="COOLIE IN FANCY STORE" ///
+* | occupationname=="COOLIE IN SWEET STALL" 
 * | occupationname=="PRIVATE COMPANY WORK" & _23_1_g_work_type!=1 ///
  
  
@@ -375,7 +389,8 @@ replace occupcode2010=4 if occupationname=="BANK CLERK" | occupationname=="BANK 
 | occupationname=="GROSORY SHOP" | occupationname=="WORKING IN COOLDRINKS SHOP" ///
 | occupationname=="WORKING IN JEWELLERY SHOP" | occupationname=="WORKING IN JEWELRY SHOP" ///
 | occupationname=="WORKING IN WINE SHOP" | occupationname=="FLLOWER SHOP COOLIE"| occupationname=="FLOOWER SHOP WORK" ///
-| occupationname=="TEXTILE SHOP WORK" | occupationname=="DRIVER"| occupationname=="DRIVING" 
+| occupationname=="TEXTILE SHOP WORK" | occupationname=="DRIVER"| occupationname=="DRIVING"  
+*| occupationname=="CAR DRIVER" | occupationname=="SECURITY"
 
 
 * regular qualified  
@@ -389,6 +404,10 @@ replace occupcode2010=5 if occupationname=="AMN ASSISTANT (ARMY WORK)"| occupati
 | occupationname=="COOPERATIVE BANK WORKER" | occupationname=="GOVT.JOB" | occupationname=="LIC AGENT (INSURANCE)" ///
 | occupationname=="MECHANIC" | occupationname=="MECHANIC WORK" ///
 | occupationname=="ELECTRECIAN" | occupationname=="ELECTRICIAN" 
+*| occupationname=="ENGINEER BUILDING CONSTRUCTION" | occupationname=="ACCOUNTS OFFICER" ///
+*| occupationname=="PVT.SCHOOL TEACHER" | occupationname=="PVT.SCHOOL TEACHER" ///
+*| occupationname=="SUPERVISOR IN PVT COMPANY" | occupationname=="GOVT.HOSPITAL" ///
+*| occupationname=="SERVICE ENG LG"
 *| occupationname=="PRIVATE COMPANY WORK" & _23_1_g_work_type==1 | occupationname=="SERVICE ENG LG" ///
  
  
@@ -408,16 +427,62 @@ replace occupcode2010=5 if occupcode2010==6 & occupationname=="AC MECHANIC" |occ
 replace occupcode2010=7 if occupationtype==4
 
 *reste=pension 
+mdesc occupcode2010
+list occupationname if occupcode2010==. & occup_sector2!=999, clean noobs
+/*
+                    occupationname  
+                     HOUSE KEEPING  
+             COOLIE IN FANCY STORE  
+             COLLIE IN CLOTH STORE  
+             COOLIE IN FANCY STORE  
+             COOLIE IN SWEET STALL  
+                          SECURITY  
+                           PVT.CO.  
+                        CO-OP BANK  
+              PRIVATE COMPONY WORK  
+      HANDLOOM CO-OPRATIVE SOCIETY  
+                 HARTICULTURE WORK  
+                     GOVT.HOSPITAL  
+                    SERVICE ENG LG  
+    ENGINEER BUILDING CONSTRUCTION  
+                           PVT.CO.  
+                        CAR DRIVER  
+                  WATERMAN IN BSNL  
+                    TRACTOR driver  
+                       HOSTEL COOK  
+                  ACCOUNTS OFFICER  
+                           PVT. CO  
+                   PRIVATE COMPANY  
+                PVT.SCHOOL TEACHER  
+                PVT.SCHOOL TEACHER  
+                     HOUSE KEEPING  
+         SUPERVISOR IN PVT COMPANY 
+*/
 
-
-
-
-
-
-
+/*
+preserve
+keep if occupcode2010==.
+drop if occupationtype==9
+rename INDID2010 INDID
+merge 1:m HHID2010 INDID using "RUME-salariedjob1.dta"
+drop if _merge==2
+drop _merge
+order occupationname occupationtype occup_sector2 worktype fulltimejob
+label define fulltimejob 1"Part time" 2"Full time", replace
+label define worktype 1"Permanent" 2"Temporal" 3"Seasonal", replace
+label values worktype worktype
+label values fulltimejob fulltimejob
+restore
+*/
 
 
 ************************ same occupcode2 for 2010 & 2016 
+ 
+label define occupcode 1 "Agri self-employed" 2 "Agri casual workers" 3 "Non-agri casual workers" 4 "Non-agri regular non-qualified workers" ///
+5 "Non-agri regular qualified workers" 6 "Non-agri self-employed" 7 "Public employment scheme workers (NREGA)"
+
+label values occupcode2010 occupcode
+
  
 gen occupcode2=occupcode2010 if year==2010
 label values occupcode2 occupcode
@@ -545,5 +610,50 @@ rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
 
 save"RUME-occupations_v2.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+****************************************
+* Excel
+****************************************
+use"RUME-occupations_v2.dta", clear
+
+keep occupationname occupationtype profession occupation occupa_unemployed occupa_unemployed_15_70 occup_sector2 age
+
+foreach x in *{
+compress `x'
+}
+
+gen agetowork=.
+replace agetowork=0 if age<=14 & age!=.
+replace agetowork=0 if age>=71 & age!=.
+replace agetowork=1 if age>14 & age<71 & age!=.
+
+drop age
+
+
+rename occupationtype kindofwork2010
+
+drop if occupation==.
+
+order kindofwork2010 occupationname profession occup_sector2 occupation occupa_unemployed occupa_unemployed_15_70 agetowork
+
+duplicates drop occupationname kindofwork2010 profession occup_sector2 occupation occupa_unemployed occupa_unemployed_15_70 agetowork, force
+
+
+export excel using "$git\Occupations\Occupations.xlsx", sheet("RUME") sheetmodify firstrow(variables)
+
+gen year=2010
+keep occupationname profession year
+
+save"$git\Occupations\sector2010.dta", replace
 ****************************************
 * END
