@@ -31,6 +31,8 @@ destring hoursayear, replace
 tostring INDID, gen(INDID2016)
 rename parent_key HHID2016
 
+gen year=2016
+
 merge m:1 HHID2016 INDID2016 using "NEEMSIS1-HH_v8", keepusing(classcompleted everattendedschool)
 keep if _merge==3
 drop _merge
@@ -647,5 +649,153 @@ tab occupationname annualincome if occupcode2016==4 & occup_sector2==3 & occup_s
 
 
 
+
+
+
+
+
+
+
+
+
+************************ same occupcode2 for 2010 & 2016 
+ 
+gen occupcode2=occupcode2016 if year==2016
+label values occupcode2 occupcode
+
+replace occupcode2=5 if occupcode2==. & occupationname=="Advocate"
+replace occupcode2=4 if occupcode2==. & occupationname=="Bus driver"
+replace occupcode2=4 if occupcode2==. & occupationname=="Office assistant in Co-operative bank"
+replace occupcode2=4 if occupcode2==. & occupationname=="Water company private"
+replace occupcode2=4 if occupcode2==. & occupationname=="Accountant in ration (gov job) no contract yet"
+replace occupcode2=4 if occupcode2==. & occupationname=="Secretary(primary agriculture cooperative bank)"
+
+
+replace occupationid=. if occupationname=="No occupation"
+
+
+tab occupcode2 year, column
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+************************ Define construction sector dummies (sector 22,26,31,32)
+ 
+gen construction_coolie=(occupcode2016==3 & occup_sector==22|occupcode2016==3 & occup_sector==26|occupcode2016==3 & occup_sector==31) if year==2016
+
+  
+gen construction_regular=(occupcode2016==4 & occup_sector==22|occupcode2016==4 & occupationname=="Welder"|occupcode2016==4 & occupationname=="Welding labour"|occupcode2016==4 & occup_sector==32) if year==2016
+
+
+gen construction_qualified = (occupcode2016==5 & occup_sector==26 & occupationname!="Tv mechanic self employed" ///
+|occupcode2016==6 & occup_sector==61 & occupationname!="Mason maistry" ///
+|occupcode2016==6 & occup_sector==61 & occupationname =="Brickling maistry" | occupcode2016==6 & occup_sector==61 & occupationname =="Maistry (contractor)" ///
+|occupcode2016==6 & occup_sector==61 & occupationname == "Construction maistry" |occupcode2016==6 & occup_sector== 85 & occupationname == "Building contractor") if year==2016	
+
+
+
+gen cc=.
+replace cc=0 if construction_coolie==0 & occupcode2==3
+replace cc=1 if construction_coolie==1 & occupcode2==3
+drop construction_coolie
+ren cc construction_coolie
+tab construction_coolie year, column
+
+gen cr=.
+replace cr=0 if construction_regular==0 & occupcode2==4
+replace cr=1 if construction_regular==1 & occupcode2==4
+drop construction_regular
+ren cr construction_regular
+tab construction_regular year, column
+
+gen cq=.
+replace cq=0 if construction_qualified==0 & occupcode2==5
+replace cq=1 if construction_qualified==1 & occupcode2==5
+drop construction_qualified
+ren cq construction_qualified
+tab construction_qualified year, column
+
+
+* occupcode3 includes individuals counted in working pop but not working 
+gen occupcode3=occupcode2 
+replace occupcode3=0 if occupationid==.
+
+label define occupcode 0 "No occupation", modify
+label values occupcode3 occupcode
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+* Labelisation of key variables of occupations
+	
+		**label PROFESSION of workers (occup_sector)
+	rename occup_sector occupation1
+	label var occupation1 "Detailed occupations of workers"
+	label define occupation1 11 "Cultivators" 12 "Agricultural labourers" 13"Sugarcane plantation labourers" 14 "Other farm workers" 22 "Bricklayers and construction workers (chamber, roads)" ///
+	23 "Spinners, Weavers, Knitters, Dyers" 24 "Tailors, dress makers, sewers" 25 "Clay workers, potters, sculptors, painters" 26 "Electrical workers" 27 "Mechanic and machinery fitters/assemblers (except electrical)" ///
+	28 "Transport Equipment operators" 29 "Stationery Engines and related equipment operators" 30 "Material handling and related equipment operators (loaders/unloaders)" ///
+	31 "Other Industrial workers (glass, mining, chemicals, printing, welders)" 32 "Other craftsworkers (Carpenters, tiles workers, Paper product makers)" 33 "Other labour" ///
+	41 "Teachers" 42 "Architects, Engineers, ..." 43 "Engineering technicians" 44 "Scientific, medical and technical persons" 45 "Nursing and health technicians" 46 "Economists, Accountants, auditors" ///
+	47 "Jurists" 51 "Administrative and executive officials government and local bodies" 52 "Working proprietors, directors, managers in mining, construction, manufacturing" ///
+	61 "Independent labour contractors" 71 "Clerical and other supervisors" 72 "Other clerical workers" 73 "Transport conductors and guards" 81 "Shop keepers (wholesale and retail)" ///
+	82 "Agri equipment sellers" 83 "Rent shop/ activities" 84 "Salesmen, shop assistants and related workers" 85 "Technical salesmen & commercial travellers" 86 "Money lenders and pawn brokers" ///
+	91 "Hotel and restaurant keepers" 92 "Cooks, waiters" 93 "Building caretakers, sweepers, cleaners" 94 "Maids and house keeping service workers" 95 "Hair dressers, barbers..." 96 "Private transportation" ///
+	97 "Other service workers" 101 "Performing artists" 102 "Astrologers" 111 "Public works/ NREGA"
+	label value occupation1 occupation1
+
+		**label Occupations of workers
+	rename occupcode2 occupation2
+	label var occupation2 "Occupations of workers"
+		
+		**label Occupations of workers + unoccupied individuals
+	rename occupcode3 occupation3
+	label var occupation3 "Occupations of workers + unoccupied individuals"
+
+		**Generate and label occupation variable only for population on working age (15-60 included)
+	gen occupation4=.
+	replace occupation4=occupation3 if age>14 & age<71
+	label define occupcode 0 "Unoccupied working age individuals", modify
+	label var occupation4 "Occupations of workers + unoccupied working age indiv (15-70)"
+	label values occupation4 occupcode
+
+		**Generate active and inactive population in the same variable
+		
+	gen working_pop=.
+	replace working_pop = 1 if occupation4==.
+	replace working_pop = 2 if occupation4==0	
+	replace working_pop = 3 if occupation4>0 & occupation4!=.
+	label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
+	label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+	label values working_pop working_pop
+
+
+rename occupation1 profession
+rename occupation2 occupation
+rename occupation3 occupa_unemployed
+rename occupation4 occupa_unemployed_15_70
+
+
+save"NEEMSIS-occupation_alllong_v2.dta", replace
 ****************************************
 * END
