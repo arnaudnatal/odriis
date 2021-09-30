@@ -1256,9 +1256,16 @@ save"NEEMSIS2-loans_v13.dta", replace
 use"NEEMSIS2-loans_v13.dta", clear
 
 *Indiv
-bysort householdid2020 INDID2020: gen n=_n
+bysort HHID_panel INDID_panel: gen n=_n
+
 keep if n==1
+
 keep HHID_panel INDID_panel INDID2020 imp1_ds_tot_indiv imp1_is_tot_indiv informal_indiv semiformal_indiv formal_indiv economic_indiv current_indiv humancap_indiv social_indiv house_indiv incomegen_indiv noincomegen_indiv economic_amount_indiv current_amount_indiv humancap_amount_indiv social_amount_indiv house_amount_indiv incomegen_amount_indiv noincomegen_amount_indiv informal_amount_indiv formal_amount_indiv semiformal_amount_indiv marriageloan_indiv marriageloanamount_indiv dummyproblemtorepay_indiv dummyhelptosettleloan_indiv dummyinterest_indiv loans_indiv loanamount_indiv loanbalance_indiv mean_yratepaid_indiv mean_monthlyinterestrate_indiv imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH mean_yratepaid_HH mean_monthlyinterestrate_HH sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4 sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6 sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10 sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5 sum_debtrelation_shame
+
+
+duplicates tag HHID_panel INDID_panel, gen(tag)
+tab tag
+sort tag HHID_panel INDID_panel
 
 save"NEEMSIS2-loans_v13_indiv.dta", replace
 
@@ -1270,7 +1277,7 @@ keep HHID_panel imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_H
 save"NEEMSIS2-loans_v13_HH.dta", replace
 
 *********** Merge
-use"NEEMSIS2-HH_v15.dta", clear
+use"NEEMSIS2-HH_v16.dta", clear
 
 merge 1:1 HHID_panel INDID_panel using "NEEMSIS2-loans_v13_indiv.dta", keepusing(imp1_ds_tot_indiv imp1_is_tot_indiv informal_indiv semiformal_indiv formal_indiv economic_indiv current_indiv humancap_indiv social_indiv house_indiv incomegen_indiv noincomegen_indiv economic_amount_indiv current_amount_indiv humancap_amount_indiv social_amount_indiv house_amount_indiv incomegen_amount_indiv noincomegen_amount_indiv informal_amount_indiv formal_amount_indiv semiformal_amount_indiv marriageloan_indiv marriageloanamount_indiv dummyproblemtorepay_indiv dummyhelptosettleloan_indiv dummyinterest_indiv loans_indiv loanamount_indiv loanbalance_indiv mean_yratepaid_indiv mean_monthlyinterestrate_indiv sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4 sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6 sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10 sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5 sum_debtrelation_shame)
 drop _merge
@@ -1278,6 +1285,6 @@ drop _merge
 merge m:1 HHID_panel using "NEEMSIS2-loans_v13_HH.dta", keepusing(imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH mean_yratepaid_HH mean_monthlyinterestrate_HH)
 drop _merge
 
-save"NEEMSIS2-HH_v16.dta", replace
+save"NEEMSIS2-HH_v17.dta", replace
 *************************************
 * END

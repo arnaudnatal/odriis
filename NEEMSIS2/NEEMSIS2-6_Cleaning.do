@@ -366,7 +366,7 @@ restore
 *
 
 
-merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_2010_2016_2020_wide", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_wide", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
 drop if _merge==2
 drop _merge
 
@@ -423,7 +423,7 @@ save"NEEMSIS2-HH_v9.dta", replace
 ****************************************
 use"NEEMSIS2-HH_v9.dta", clear
 
-merge m:1 HHID_panel using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_HH", keepusing(jatis2010 jatis2016)
+merge m:1 HHID_panel using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_HH", keepusing(jatis2010 jatis2016)
 drop if _merge==2
 drop _merge
 
@@ -1355,5 +1355,41 @@ drop _merge
 erase "NEEMSIS2-HH_v15_temp.dta"
 
 save"NEEMSIS2-migration.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Died
+****************************************
+use"NEEMSIS2-HH_v15.dta", clear
+
+rename livinghome livinghome2020
+
+merge 1:1 HHID_panel INDID_panel using "D:\Documents\_Thesis\_DATA\NEEMSIS1\DATA\NEEMSIS1-HH_v2.dta", keepusing(livinghome)
+
+drop if _merge==2
+drop _merge
+
+tab livinghome livinghome2020, m
+rename livinghome livinghome2016
+rename livinghome2020 livinghome
+
+label var livinghome2016 ""
+tab livinghome2016 livinghome, m
+
+fre livinghome
+replace livinghome=4 if livinghome2016==4 & livinghome!=. & livinghome2016!=.
+
+
+save"NEEMSIS2-HH_v16.dta", replace
 ****************************************
 * END

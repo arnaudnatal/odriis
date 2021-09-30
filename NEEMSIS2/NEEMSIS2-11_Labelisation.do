@@ -25,7 +25,7 @@ clear all
 ****************************************
 * Variables Arnaud
 ****************************************
-use"$directory\CLEAN\NEEMSIS2-HH_v18.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v19.dta", clear
 
 
 drop setoffamilymembers setofeducation setofindividualid setoflefthome setofremreceivedidgroup setofremsentidgroup setofmigrationidgroup setofloansbyborrower setoflendingmoney setofrecommendationgiven setofchitfund setofsavings setofgold setofinsurance setofschemenregaind setofcashassistancemarriagegroup setofgoldmarriagegroup setofschemepension1group setofschemepension2group setofschemepension3group setofschemepension4group setofschemepension5group setofschemepension6group setofschemepension7group
@@ -57,9 +57,15 @@ rename `x'_ dummy_`x'
 }
 
 
+foreach x in curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm tryhard stickwithgoals goaftergoal finishwhatbegin finishtasks keepworking {
+rename `x' `x'_recode
+rename `x'_old `x'
+}
 
 
-global arnaud orga_HHagri mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri dummy_respondent2020 edulevel goodtotalamount2 assets assets_noland ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt ars ars2 ars3 cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit totalincome_indiv totalincome_HH loans_indiv loanamount_indiv caste egoid dummyego
+
+
+global arnaud orga_HHagri mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri dummy_respondent2020 edulevel goodtotalamount2 assets assets_noland ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt ars ars2 ars3 cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit totalincome_indiv totalincome_HH loans_indiv loanamount_indiv caste egoid dummyego understandotherfeeling_recode expressingthoughts_recode helpfulwithothers_recode appointmentontime_recode activeimagination_recode talktomanypeople_recode easilydistracted_recode trustingofother_recode repetitivetasks_recode interestedbyart_recode finishwhatbegin_recode toleratefaults_recode stickwithgoals_recode completeduties_recode workwithother_recode shywithpeople_recode sharefeelings_recode feeldepressed_recode putoffduties_recode managestress_recode forgiveother_recode enthusiastic_recode rudetoother_recode liketothink_recode keepworking_recode goaftergoal_recode finishtasks_recode enjoypeople_recode easilyupset_recode changemood_recode worryalot_recode talkative_recode organized_recode makeplans_recode inventive_recode workhard_recode staycalm_recode newideas_recode tryhard_recode nervous_recode curious_recode
 
 foreach v of varlist $arnaud {
 label variable `v' `"Arnaud `: variable label `v''"'
@@ -104,11 +110,64 @@ rename `x'_ `x'
 
 
 *** Order
-order parent_key HHID_panel HHID householdid2020 submissiondate version_HH version_agri year INDID_panel name sex age egoid
+order HHID_panel submissiondate year INDID_panel name sex age egoid jatis address villageid
 
 
-save"$directory\CLEAN\NEEMSIS2-HH_v19.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS-HH_v19.dta", replace
+*** Il en reste
+drop everattendedschoolfromearlier everattendschoolfinal
+
+*** drop
+drop if HHID_panel==""
+
+*** Verif
+preserve
+sort canread
+drop if INDID_left!=.
+drop if livinghome==4
+drop if livinghome==3
+sort canread
+restore
+/*
+HHID_panel	submissiondate	year	INDID_panel
+SEM44	10apr2021 18:05:50	2020	Ind_5
+GOV5	09apr2021 11:35:51	2020	Ind_8
+SEM44	10apr2021 18:05:50	2020	Ind_6
+MAN23	11apr2021 19:34:01	2020	Ind_4
+GOV38	09apr2021 12:04:57	2020	Ind_6
+*/
+
+
+save"$directory\CLEAN\NEEMSIS2-HH_v20.dta", replace
+save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v20.dta", replace
+
+****************************************
+* END
+
+
+
+
+
+
+****************************************
+* Loans
+****************************************
+use"$directory\CLEAN\NEEMSIS2-loans_v6", clear
+
+drop _merge key3 key2 forauto loanreasongivenlabel
+
+order setofmarriagefinance setofmarriagegroup setofloansbyborrower setofdetailsloanbyborrower setofmainloans, last
+
+foreach v in loan_database version_HH loanlender_new2020 edulevel {
+label variable `v' `"Arnaud `: variable label `v''"'
+}
+
+order HHID_panel INDID_panel name sex age jatis edulevel egoid loan_database loanamount
+
+drop if HHID_panel==""
+drop caste
+
+save"$directory\CLEAN\NEEMSIS2-loans_v6bis", replace
+save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-loans_v6bis", replace
 
 ****************************************
 * END

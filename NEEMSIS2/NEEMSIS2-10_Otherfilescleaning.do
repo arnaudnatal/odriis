@@ -86,10 +86,10 @@ merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v17.dta"
 *Ok
 
 *Sortir setofoccupations pour ne pas induire en erreur
-use"$directory\CLEAN\NEEMSIS2-HH_v17.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v18.dta", clear
 drop setofoccupations
-save"$directory\CLEAN\NEEMSIS2-HH_v18.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v18.dta", replace
+save"$directory\CLEAN\NEEMSIS2-HH_v19.dta", replace
+save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v19.dta", replace
 *erase"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v17.dta"
 ****************************************
 * END
@@ -131,7 +131,7 @@ order setofremreceivedidgroup, last
 
 save"$directory\CLEAN\NEEMSIS_APPEND-remreceivedsourceidgroup_v2.dta", replace
 save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remreceivedsourceidgroup_v2.dta", replace
-erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remreceivedsourceidgroup.dta"
+*erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remreceivedsourceidgroup.dta"
 
 *Test
 merge m:m setofremreceivedidgroup using "$directory\CLEAN\NEEMSIS2-HH_v18.dta"
@@ -160,7 +160,7 @@ order setofremsentidgroup, last
 
 save"$directory\CLEAN\NEEMSIS_APPEND-remsentidgroup_v2.dta", replace
 save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remsentidgroup_v2.dta", replace
-erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remsentidgroup.dta"
+*erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remsentidgroup.dta"
 
 *Test
 merge m:m setofremsentidgroup using "$directory\CLEAN\NEEMSIS2-HH_v18.dta"

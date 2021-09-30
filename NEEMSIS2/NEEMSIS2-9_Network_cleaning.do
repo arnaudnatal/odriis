@@ -164,7 +164,7 @@ save"$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-networkr
 ****************************************
 * Merging with HH database
 ****************************************
-use"$directory\CLEAN\NEEMSIS2-HH_v16.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v17.dta", clear
 
 merge m:1 parent_key egoid using "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2_wide.dta"
 drop if _merge==2
@@ -177,7 +177,7 @@ drop _merge
 *Cleaning des set of au passage
 drop setofbusinessloandetails setofwagejobpaymentinkindgroup setofcovoccupationfieldlist setofformalsocialcapital setofsnfindcurrentjobid setofsnfindcurrentjobgroup setofsnfindjobid setofsnfindjobgroup setofsnrecommendforjobid setofsnrecommendforjobgroup setofsntalkthemostid setofsntalkthemostgroup setofsncloserelouthhid setofsncloserelouthhgroup setofcovsntypehelpreceivedgroup setofcovsntypehelpgivengroup setofcontactgroup setofshow_draws setofshow_draws_2 setofshow_draws_3 setof_2wagejobpaymentinkindgroup setof_2covoccupationfieldlist setof_2formalsocialcapital setof_2snfindcurrentjobid setof_2snfindcurrentjobgroup setof_2snfindjobid setof_2snfindjobgroup setof_2sntalkthemostid setof_2sntalkthemostgroup setof_2snhelpemergencyid setof_2snhelpemergencygroup setof_2sncloserelouthhid setof_2sncloserelouthhgroup setof_2covsnhelpreceivedid setof_2covsnhelpreceivedgroup setof_2covsntypehelpreceivedgrou setof_2covsntypehelpgivengroup setof_2contactgroup setof_3show_draws setof_3show_draws_2 setof_3show_draws_3 setof_3wagejobpaymentinkindgroup setof_3covoccupationfield setof_3formalsocialcapital setof_3snfindcurrentjobid setof_3snfindcurrentjobgroup setof_3snfindjobid setof_3snfindjobgroup setof_3sntalkthemostid setof_3sntalkthemostgroup setof_3snhelpemergencyid setof_3snhelpemergencygroup setof_3sncloserelouthhid setof_3sncloserelouthhgroup setof_3covsntypehelpreceivedgrou setof_3covsntypehelpgivengroup setof_3contactgroup
 
-save"$directory\CLEAN\NEEMSIS2-HH_v17.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v17.dta", replace
+save"$directory\CLEAN\NEEMSIS2-HH_v18.dta", replace
+save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v18.dta", replace
 ****************************************
 * END

@@ -38,36 +38,21 @@ drop dummyinterest_indiv dummyhelptosettleloan_indiv dummyproblemtorepay_indiv m
 
 
 
+foreach x in curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm tryhard stickwithgoals goaftergoal finishwhatbegin finishtasks keepworking {
+rename `x' `x'_recode
+rename `x'_old `x'
+}
 
 
 
-global arnaud orga_HHagri mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri dummy_respondent2020 edulevel goodtotalamount2 assets assets_noland ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt ars ars2 ars3 cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit totalincome_indiv totalincome_HH loans_indiv loanamount_indiv caste egoid dummyego
+global arnaud mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupation_distance_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri edulevel caste goldquantityamount amountownlanddry amountownlandwet amountownland livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock goodtotalamount assets year totalincome_indiv totalincome_HH ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit loans_indiv loanamount_indiv trustingofother_recode enjoypeople_recode curious_recode organized_recode managestress_recode interestedbyart_recode tryhard_recode workwithother_recode makeplans_recode sharefeelings_recode nervous_recode stickwithgoals_recode repetitivetasks_recode shywithpeople_recode workhard_recode changemood_recode understandotherfeeling_recode inventive_recode enthusiastic_recode feeldepressed_recode appointmentontime_recode goaftergoal_recode easilyupset_recode talktomanypeople_recode liketothink_recode finishwhatbegin_recode putoffduties_recode rudetoother_recode finishtasks_recode toleratefaults_recode worryalot_recode easilydistracted_recode keepworking_recode completeduties_recode talkative_recode newideas_recode staycalm_recode forgiveother_recode activeimagination_recode expressingthoughts_recode helpfulwithothers_recode
 
 foreach v of varlist $arnaud {
 label variable `v' `"Arnaud `: variable label `v''"'
 }
 
 order $arnaud, last
-order parent_key HHID_panel HHID householdid2020 startdate startquestionnaire enddate endquestionnaire submissiondate version_HH version_agri year
-
-drop orga_HHagri
-
-rename startquestionnaire start_HH_quest
-rename endquestionnaire end_HH_quest
-
-rename startdate start_agri_quest
-rename enddate end_agri_quest
-
-order start_HH_quest end_HH_quest start_agri_quest end_agri_quest, last
-
-
-***Preload à ranger
-*Comefrom
-replace comefrom=comefrompreload2016 if comefrom=="" & comefrompreload2016!=""
-drop comefrompreload2016
-
-*Caste
-drop castepreload2016 numfamilypreload2016 dummyeverhadlandpreload2016 ownlandpreload2016 sizeownlandpreload2016
+order HHID_panel HHID2016 submissiondate year
 
 
 
@@ -75,22 +60,43 @@ drop castepreload2016 numfamilypreload2016 dummyeverhadlandpreload2016 ownlandpr
 sort HHID_panel INDID_panel
 
 
-***From earlier
-drop namefromearlier4 namefromearlier5 workedpastyearfromearlier mainoccupationfromearlier attendedschoolfromearlier namefromearlier sexfromearlier agefromearlier namefromearlier2 livinghomefromearlier2 namefromearlier3
+*** Order
+order HHID_panel submissiondate year INDID_panel name sex age egoid jatis address villageid
 
 
-***Selected
-foreach x in selected_occupposition selected_occupname selected_months selected_months_monthsid {
-rename `x'_ `x'
+save"$directory\NEEMSIS1-HH_v8.dta", replace
+save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS1\NEEMSIS1-HH_v8.dta", replace
+
+
+
+/*
+
+year mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupation_distance_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri edulevel caste goldquantityamount amountownlanddry amountownlandwet amountownland livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock goodtotalamount assets totalincome_indiv totalincome_HH ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit loans_indiv loanamount_indiv trustingofother_recode enjoypeople_recode curious_recode organized_recode managestress_recode interestedbyart_recode tryhard_recode workwithother_recode makeplans_recode sharefeelings_recode nervous_recode stickwithgoals_recode repetitivetasks_recode shywithpeople_recode workhard_recode changemood_recode understandotherfeeling_recode inventive_recode enthusiastic_recode feeldepressed_recode appointmentontime_recode goaftergoal_recode easilyupset_recode talktomanypeople_recode liketothink_recode finishwhatbegin_recode putoffduties_recode rudetoother_recode finishtasks_recode toleratefaults_recode worryalot_recode easilydistracted_recode keepworking_recode completeduties_recode talkative_recode newideas_recode staycalm_recode forgiveother_recode activeimagination_recode expressingthoughts_recode helpfulwithothers_recode
+
+
+*/
+****************************************
+* END
+
+
+
+
+****************************************
+* Variables Arnaud
+****************************************
+use"NEEMSIS1-loans_v11", clear
+
+drop submissiondate_o loan_id lender2 lender3 lender4 totalrepaid2 interestpaid2 principalpaid2 yratepaid monthlyinterestrate ratiotest loanduration_wm totalrepaid2_wm loanamount_wm loanbalance_wm interestpaid2_wm annualincome_indiv annualincome_HH debt_service debt_service_wm interest_service interest_service_wm imp_principal imp1_interest imp1_totalrepaid_year imp1_debt_service imp1_debt_service_wm imp1_interest_service imp1_interest_service_wm imp1_ds_tot_indiv imp1_is_tot_indiv imp1_ds_tot_wm_indiv imp1_is_tot_wm_indiv imp1_ds_tot_HH imp1_is_tot_HH imp1_ds_tot_wm_HH imp1_is_tot_wm_HH marriageloan marriageloanamount loans informal_indiv informal_HH semiformal_indiv semiformal_HH formal_indiv formal_HH economic_indiv economic_HH current_indiv current_HH humancap_indiv humancap_HH social_indiv social_HH house_indiv house_HH incomegen_indiv incomegen_HH noincomegen_indiv noincomegen_HH economic_amount_indiv economic_amount_HH current_amount_indiv current_amount_HH humancap_amount_indiv humancap_amount_HH social_amount_indiv social_amount_HH house_amount_indiv house_amount_HH incomegen_amount_indiv incomegen_amount_HH noincomegen_amount_indiv noincomegen_amount_HH informal_amount_indiv informal_amount_HH formal_amount_indiv formal_amount_HH semiformal_amount_indiv semiformal_amount_HH marriageloan_indiv marriageloan_HH marriageloanamount_indiv marriageloanamount_HH dummyproblemtorepay_indiv dummyproblemtorepay_HH dummyhelptosettleloan_indiv dummyhelptosettleloan_HH dummyinterest_indiv dummyinterest_HH loans_indiv loans_HH loanamount_indiv loanamount_HH loanbalance_indiv loanbalance_HH loanamount_wm_indiv loanamount_wm_HH mean_yratepaid_indiv mean_monthlyinterestrate_indiv mean_yratepaid_HH mean_monthlyinterestrate_HH otherlenderservices_1 otherlenderservices_2 otherlenderservices_3 otherlenderservices_4 otherlenderservices_5 sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5 borrowerservices_1 borrowerservices_2 borrowerservices_3 borrowerservices_4 sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4 plantorepay_1 plantorepay_2 plantorepay_3 plantorepay_4 plantorepay_5 plantorepay_6 sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6 settleloanstrategy_1 settleloanstrategy_2 settleloanstrategy_3 settleloanstrategy_4 settleloanstrategy_5 settleloanstrategy_6 settleloanstrategy_7 settleloanstrategy_8 settleloanstrategy_9 settleloanstrategy_10 sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10
+
+
+
+
+foreach x in dummymainloan year submissiondate loanduration informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount {
+label variable `x' `"Arnaud `: variable label `v''"'
 }
 
-
-*** Order
-order parent_key HHID_panel HHID householdid2020 submissiondate version_HH version_agri year INDID_panel name sex age egoid
-
-
-save"$directory\CLEAN\NEEMSIS2-HH_v19.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS-HH_v19.dta", replace
+save"NEEMSIS1-loans_v12", replace
+save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS1\NEEMSIS1-loans_v12", replace
 
 ****************************************
 * END
