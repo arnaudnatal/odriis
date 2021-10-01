@@ -10,7 +10,7 @@ TITLE: RUME
 -------------------------
 */
 
-global directory = "D:\Documents\_Thesis\_DATA\RUME\DATA"
+global directory = "D:\Documents\_Thesis\_DATA\RUME\"
 cd "$directory"
 
 
@@ -380,34 +380,7 @@ drop maxincome_indiv mainoccup mainoccupname mainoccupnamenumeric countoccupatio
 
 
 
-*Agri vs non agri income?
-fre occupationtype
-forvalues i=1(1)10{
-gen labourincome_`i'=.
-}
 
-forvalues i=1(1)10{
-replace labourincome_`i'=annualincome if occupationtype==`i'
-recode labourincome_`i' (.=0)
-}
-forvalues i=1(1)10{
-bysort HHID2010 INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
-bysort HHID2010: egen labourincome_HH_`i'=sum(labourincome_`i')
-}
-
-foreach x in labourincome_indiv labourincome_HH{
-rename `x'_1 `x'_agri
-rename `x'_2 `x'_coolie
-rename `x'_3 `x'_agricoolie
-rename `x'_4 `x'_nregs
-rename `x'_5 `x'_investment
-rename `x'_6 `x'_employee
-rename `x'_8 `x'_selfemp
-rename `x'_9 `x'_pension
-rename `x'_10 `x'_nooccup
-}
-
-drop labourincome_indiv_7 labourincome_HH_7
 
 
 **********HH
@@ -441,6 +414,51 @@ bysort HHID2010 : egen nboccupation_HH=sum(countoccupation)
 drop countoccupation
 rename totalincome_indiv annualincome_indiv
 rename totalincome_HH annualincome_HH
+
+
+
+
+**********Agri vs non agri income?
+fre occupationtype
+forvalues i=1(1)10{
+gen labourincome_`i'=.
+}
+
+forvalues i=1(1)10{
+replace labourincome_`i'=annualincome if occupationtype==`i'
+recode labourincome_`i' (.=0)
+}
+forvalues i=1(1)10{
+bysort HHID2010 INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
+bysort HHID2010: egen labourincome_HH_`i'=sum(labourincome_`i')
+}
+
+foreach x in labourincome_indiv labourincome_HH{
+rename `x'_1 `x'_agri
+rename `x'_2 `x'_coolie
+rename `x'_3 `x'_agricoolie
+rename `x'_4 `x'_nregs
+rename `x'_5 `x'_investment
+rename `x'_6 `x'_employee
+rename `x'_8 `x'_selfemp
+rename `x'_9 `x'_pension
+rename `x'_10 `x'_nooccup
+}
+
+drop labourincome_indiv_7 labourincome_HH_7
+
+
+
+
+**********Dummyjob and nb of job/indiv
+sort occupationtype
+gen job=0
+replace job=1 if occupationtype!=10 & occupationtype!=9 & occupationtype!=.
+ta job
+
+bysort HHID2010 INDID: egen nbjob_indiv
+
+
 
 
 **********Indiv base
