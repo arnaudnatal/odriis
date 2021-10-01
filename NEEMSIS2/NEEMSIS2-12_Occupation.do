@@ -78,28 +78,22 @@ list occupationname, clean noobs
 */
 restore
 
+gen toask=0
+sort occupationname
+order occupationname occup_sector
+
+*to launch
+mdesc occup_sector
+
 			
-* cultivators
+* Cultivators
 replace occup_sector= 11 if  ///
 (strpos(occupationname,"agri") | strpos(occupationname,"Agri"))  ///
 & ///
 (strpos(occupationname,"own") | strpos(occupationname,"Own") | strpos(occupationname,"lease"))
-replace occup_sector=11 if occupationname=="Agricultural weeding" ///
-| occupationname=="Agriculture" ///
-| occupationname=="Agriculture activities" ///
-| occupationname=="Agriculture atto" ///
-| occupationname=="Agriculture labour" ///
-| occupationname=="Agriculture weeding" ///
-| occupationname=="Agriculture weeding and seedling" ///
-| occupationname=="Agriculture weeding work" ///
-| occupationname=="Agriculture work" ///
-| occupationname=="Agriculture work ( weeding and seedling)" ///
-| occupationname=="Agriculture work (Andam poduthal)" ///
-| occupationname=="Agriculture work (sugarcane cutting)" ///
-| occupationname=="Agriculture work (weeding and seedling)" ///
-| occupationname=="Agriculture work seedling" ///
-| occupationname=="Agriculture work weeding" 
-* above job on own/leased land but are unpaid because agri family income only on one household member
+replace occup_sector=11 if occupationname=="Farmer"
+replace occup_sector=11 if occupationname=="Fermar"
+replace occup_sector=11 if occupationname=="Agriculture"
 
 
 * Agricultural labourers
@@ -107,372 +101,426 @@ replace  occup_sector= 12  if  ///
 (strpos(occupationname,"agri") | strpos(occupationname,"Agri")) ///
 & ///
 (strpos(occupationname,"cooli") | strpos(occupationname,"Cooli") | strpos(occupationname,"kooli"))
+replace occup_sector=12 if occupationname=="Agriculture labour"
+replace occup_sector=12 if occupationname=="Kooli"
+replace occup_sector=12 if occupationname=="Seeding"
+replace occup_sector=12 if occupationname=="Seedling"
+replace occup_sector=12 if occupationname=="Weeding"
+replace occup_sector=12 if occupationname=="Agricultural weeding"
+replace occup_sector=12 if occupationname=="Agriculture activities"
+replace occup_sector=12 if occupationname=="Agriculture atto"
+replace occup_sector=12 if occupationname=="Agriculture weeding"
+replace occup_sector=12 if occupationname=="Agriculture weeding and seedling"
+replace occup_sector=12 if occupationname=="Agriculture weeding work"
+replace occup_sector=12 if occupationname=="Agriculture work"
+replace occup_sector=12 if occupationname=="Agriculture work ( weeding and seedling)"
+replace occup_sector=12 if occupationname=="Agriculture work (Andam poduthal)"
+replace occup_sector=12 if occupationname=="Agriculture work (weeding and seedling)"
+replace occup_sector=12 if occupationname=="Agriculture work seedling"
+replace occup_sector=12 if occupationname=="Agriculture work weeding"
+replace occup_sector=12 if occupationname=="Andam  poduthal"
+replace occup_sector=12 if occupationname=="Andam poduthal"
+replace occup_sector=12 if occupationname=="Andamvetuthal"
+replace occup_sector=12 if occupationname=="Guava fruit picking"
+replace occup_sector=12 if occupationname=="Irrigation work"
+replace occup_sector=12 if occupationname=="Plowing"
 
-	
-* Sugarcane plantation labourers
-replace  occup_sector= 13  if  strpos(occupationname,"Sugarcane") & occup_sector==. 
-replace  occup_sector= 13  if  strpos(occupationname,"Sugar") & strpos(occupationname,"cane") & occup_sector==. 
-replace  occup_sector=13 if occupationname=="Sugar cutting  work"
-replace occup_sector=13 if occupationname=="Sugar mill work"
+
+
+
+* Sugarcane worker
+replace  occup_sector=13  if  ///
+(strpos(occupationname,"sugar") | strpos(occupationname,"Sugar")) ///
+& ///
+(strpos(occupationname,"cane") | strpos(occupationname,"work"))
+replace occup_sector=13 if occupationname=="Karumbu vatuthal"
+replace occup_sector=13 if occupationname=="Karumbu vettuthal"
 
 
 * Other farm workers
-replace  occup_sector= 14 if  occupationname == "Cattle rearing (milk production)"|  occupationname == "Chicken rearing" ///
-		|  occupationname == "Cow rearing" ///
-		|  occupationname == "Milk productin" |  occupationname == "Cow rearing  (milk selling)" ///
-		|  occupationname == "Chicken centre" |  occupationname == "Cow rearing" |  occupationname == "Cattle rearing" ///
-		|  occupationname == "Agriculture  farm watchman" /// * permanent & monthly salary
-		|  occupationname == "Agri.sprayer machine"  ///
-		|  occupationname == "Garden colli" ///	
-		|  occupationname == "Tree cutting" 
-		
+replace occup_sector=14 if occupationname=="Tree cutting work"
+replace occup_sector=14 if occupationname=="Cow Rearing -own"
+replace occup_sector=14 if occupationname=="Land watcher"
+replace occup_sector=14 if occupationname=="Goat rearing"
+replace occup_sector=14 if occupationname=="Poultry"
+
+
 		
 **** Production workers, transport equipment operators and labourers
 
-	* electricians, mechanic, operators
-			
+* Bricklayers and construction workers (chamber, roads)	
+replace occup_sector=22 if ///
+strpos(occupationname,"Construction") ///
+| strpos(occupationname,"construction") ///
+| strpos(occupationname,"Chamber") ///
+| strpos(occupationname,"chamber") ///
+| strpos(occupationname,"Brick") ///
+| strpos(occupationname,"brick") ///
+| strpos(occupationname,"Centring") ///
+| strpos(occupationname,"centring") ///
+| strpos(occupationname,"Mason") ///
+| strpos(occupationname,"mason") ///
+| strpos(occupationname,"Maison") ///
+| strpos(occupationname,"maison") ///
+| strpos(occupationname,"Sentring") ///
+| strpos(occupationname,"sentring") ///
+| strpos(occupationname,"Paint") ///
+| strpos(occupationname,"paint") 
+replace occup_sector=22 if occupationname=="Chember work"
+replace occup_sector=22 if occupationname=="Kottanar worker"
+replace occup_sector=22 if strpos(occupationname,"Kothanar")
+replace occup_sector=22 if occupationname=="Tiles work"
+replace occup_sector=22 if occupationname=="Pointing  work"
 
-	* Bricklayers and construction workers (chamber, roads)
-	
-	replace  occup_sector= 22 if  occupationname == "Construction Coolie" |  occupationname == "Construction labour" /// 
-	|  occupationname == "Construction worker" |  occupationname == "Construction worker coolie" |  occupationname == "Sentring work" |  occupationname == "Centring work" |  occupationname == "Centringwork" ///
-	|  occupationname == "Construction Worker" |  occupationname == "Construction labor" |  occupationname == "Construction mason" |  occupationname == "Construction helper" |  occupationname == "Construction work coolie" ///
-	|  occupationname == "Construction coolie" |  occupationname == "Construction coolie worker" |  occupationname == "Construction wage sithaal" /// 
-	|  occupationname == "Brick Works" |  occupationname == "Brick Work" |  occupationname == "Brick works (chamber)" |  occupationname == "Bricklin work" |  occupationname == "Bricklin work" /// *sengal soolai
-	|  occupationname == "Briklin work" |  occupationname == "Brikline work" |  occupationname == "Brincklin work" |  occupationname == "Chamber work" |  occupationname == "Chamber worker" ///
-	|  occupationname == "Agriculture coolie (bricklin work)" |  occupationname == "Bricklin" |  occupationname == "Bricklin worker" |  occupationname == "Sengal Sulai work" ///
-	|  occupationname == "Sengal sulai work" |  occupationname == "Brick klin worker" |  occupationname == "Brick works (CHAMBER)" |  occupationname == "Chamber works" ///
-	|  occupationname == "Chamber worker(RKV chamber chennai)" |  occupationname == "Brick klin work" |  occupationname == "Brick work" |  occupationname == "Bricklin work assistant" ///
-	|  occupationname == "Chamber working" |  occupationname == "Bricklin work" |  occupationname == "Brick" |  occupationname == "bricklin work" |  occupationname == "Brick.assistant" ///
-	|  occupationname == "Construction work (MAISON)" |  occupationname == "Construction work" ///
-	|  occupationname == "Mason" |  occupationname == "Masan" 	|  occupationname == "Maison" |  occupationname == "Construction sithal"  ///
-	|  occupationname == "Road work" |  occupationname == "Road worker" ///
-	|  occupationname == "Chamber" |  occupationname == "Bricklin work" ///	
-	|  occupationname == "Painting work" |  occupationname == "Painter" 	|  occupationname == "Painting" ///
-	|  occupationname == "Painting worker" 
 		
-	* Spinners, Weavers, Knitters, Dyers
+* Spinners, Weavers, Knitters, Dyers
+replace occup_sector=23 if ///
+strpos(occupationname,"Weaver") ///
+| strpos(occupationname,"weaver") ///
+| strpos(occupationname,"Handloom") ///
+| (strpos(occupationname,"hand") & strpos(occupationname,"loom")) ///
+| (strpos(occupationname,"Hand") & strpos(occupationname,"loom"))
+replace occup_sector=23 if occupationname=="Cotton work"
 	
-	replace  occup_sector= 23 if  occupationname == "Spinning coolie" ///
-	|  occupationname == "Handloom weaving labour" |  occupationname == "Handloom weaving work" ///
-	|  occupationname == "Labour in cotton mill"  |  occupationname == "Spinning mill" ///
-	|  occupationname == "Thread rolling and helping work" |  occupationname == "Thread rolling and helper in power loom industry" ///
-	|  occupationname == "Handlom weaving business"|  occupationname == "Handlom weaving labour" ///
-	|  occupationname == "Hand looming"|  occupationname == "Handloom weaving business" ///
-	|  occupationname == "Handloom weaving" |  occupationname == "Handloom weaving agent"|  occupationname == "Handloom weaving work" ///
-	|  occupationname == "Handloom work" ///
-	|  occupationname == "Handloom waving agent" ///
-	|  occupationname == "Hand looming (thread rolling)" 		
 
 	
-	* Tailors, dress makers, sewers
-	
-	replace  occup_sector= 24 if  occupationname == "Tailoring work" |  occupationname == "Tyloring" |  occupationname == "Tailor (in home)" ///
-	|  occupationname == "Tailoring" |  occupationname == "Tailor" ///	
-	|  occupationname == "Tailoring" |  occupationname == "Leather bag tailoring labour" 
-
-	* Clay workers, potters, sculptors, painters
-	
-	replace  occup_sector= 25 if  occupationname == "Toys selling"| occupationname == "Pottery selling (migration)" ///
-		|  occupationname == "Clay toys making" ///
-		|  occupationname == "Doll making" |  occupationname == "Pot making" |  occupationname == "Pottery making" ///
-		|  occupationname == "Pottory" |  occupationname == "Toys making" |  occupationname == "Clay toys maker" ///
-		|  occupationname == "Pottery making unpaid" 	/// unpaid below
-	    |  occupationname == "Pottery making helper" ///
-	 	|  occupationname == "Clay toy making assistant" |  occupationname == "Doll making assistant" ///
-		|  occupationname == "Toys selling with wife" ///
-		|  occupationname == "Pattory assistant" |  occupationname == "Pottery" ///
-		|  occupationname == "Unpaid in doll making family business" ///
-		|  occupationname == "Pottery making" ///
-		|  occupationname == "Sculpture (coolie)" ///
-		|  occupationname == "Sculpture" |  occupationname == "Sculpture (SELF business)" ///		
-
-	* Electrical workers
-	
-	replace  occup_sector= 26 if  occupationname == "Electrician" ///
-	|  occupationname == "Électricien" ///
-	|  occupationname == "Wiring helper" |  occupationname == "Electrician (salaried)" ///
-	|  occupationname == "Electrician (NlC)" |  occupationname == "Electrician work" ///
-	|  occupationname == "Sai power serve" |  occupationname == "Sriram Battery Copany pvt" |  occupationname == "Électricity dept(govt)" ///	
-	|  occupationname == "Electricity rent work" /// 
-	|  occupationname == "Elactetion work" |  occupationname == "Electrician" ///
-	|  occupationname == "Tv and electronic service man" |  occupationname =="Tv mechanic self employed"
-	
-	* Mechanic and machinery fitters/assemblers (except electrical)
-	
-	replace  occup_sector= 27 if  occupationname == "Fitter" ///
-	|  occupationname == "Mechanic (car company)" |  occupationname == "Mechanic technician in private company" ///
-	|  occupationname == "Mechanic Assistant in private company" |  occupationname == "Mechanic in PRIVATE company" |  occupationname == "Mechanic in private company in chennai" |  occupationname == "Mechanical work" ///
-	|  occupationname == "A/C Mechanic at Chennai" |  occupationname == "A/c mechanic" |  occupationname == "AC mechanic" |  occupationname == "CNC Machine mechanic" ///	
-	|  occupationname == "Mechanic" |  occupationname == "Mechanic (in Qatar)" ///
-	|  occupationname == "Motor mechanic trainee" ///
-	|  occupationname == "Junior mech. In a motor company" ///
-	|  occupationname == "A/C Mechanic Own Shop at Chennai" ///
-	|  occupationname == "Mechanic in a two wheeler workshop" |  occupationname == "Apprentice in Mechanic in private company" 
-	
-	* Transport Equipment operators	
-
-	replace  occup_sector= 28 if  occupationname == "JCB Driver" |  occupationname == "JCB operator" |  occupationname == "JCB (Driver)" |  occupationname == "JCB driver" ///
-	|  occupationname == "JCP operater" ///
-	|  occupationname == "Tata ace driver" |  occupationname == "Driver (Tata ace)" ///
-	|  occupationname == "Tanker Lorry Driver" |  occupationname == "Lorry Driver" |  occupationname == "Lorry driver" |  occupationname == "Driver(709 vehicle )" ///
-	|  occupationname == "Tractor driver" ///	
-	|  occupationname == "Lorry transport" ///
-	|  occupationname == "GOODS CARRIER (TATA ACE)self business" |  occupationname == "OwnLorry load business" ///
-	|  occupationname == "Goods transport (tata ace) self business" ///
-	|  occupationname == "Truck driver (own)" |  occupationname == "Tractor driver" ///
-	|  occupationname == "Tractor driver" |  occupationname == "Own plugging machine driver" ///
-	|  occupationname == "Transport business" ///
-	|  occupationname == "Container driver (chennai horbar)" ///
-	|  occupationname == "Private company driver"  |  occupationname == "Draiver" |  occupationname =="Driver in private company in gutar" ///
-	|  occupationname == "Tractor driving" ///
-	|  occupationname == "Bullock cart" |  occupationname == "Bullock cart business" |  occupationname == "Bullock rider" |  occupationname ==  "Bullockart" |  occupationname == "Bulluck cart"
-	
-	
-	* Stationery Engines and related equipment operators
-	replace  occup_sector= 29 if  occupationname == "Power loom machine operator" ///
-	|  occupationname == "Operator (suger mill)" |  occupationname == "Operator (sugar mill)"|  occupationname == "Pan man (suger mill)"
-	
-	
-	* Material handling and related equipment operators (loaders/unloaders)
-	replace  occup_sector= 30 if  occupationname == "Load man" ///
-	|  occupationname == "Load man coolie" |  occupationname == "Loadman" |  occupationname == "Coolie (load man)" ///
-	|  occupationname == "Supplyer in hotal" 
+* Tailors, dress makers, sewers
+replace occup_sector=24 if ///
+strpos(occupationname,"Tailor") /// 
+| strpos(occupationname,"tailor")  
+replace occup_sector=24 if occupationname=="Leather designer"
+replace occup_sector=24 if occupationname=="Textile designer"
 
 
-	* Other Industrial workers (glass, mining, chemicals, printing, welders)
-	replace  occup_sector= 31 if  occupationname == "PVC company trainee" |  occupationname == "Mining assist. Nlc" |  occupationname == "Coolie worker in a soap company" |  occupationname == "Printing company (printer)" ///
-	|  occupationname == "Welder (coolie)" |  occupationname == "Welder"  |  occupationname == "Welding labour" ///
-	|  occupationname == "Private company Labour" |  occupationname == "Private company helper" |  occupationname == "Private company labour" |  occupationname == "Private company labour (trainee)" ///
-	|  occupationname == "Company (work man)" |  occupationname == "Attender Contract labour in a company"
+
+* Clay workers, potters, sculptors, painters
+replace occup_sector=25 if  ///
+strpos(occupationname,"making") 
+replace occup_sector=25 if occupationname=="Clay pot worker"
+replace occup_sector=25 if occupationname=="Sculptor"
+replace occup_sector=25 if occupationname=="Pot maker"
+
+
+
+
+* Electrical workers
+replace occup_sector=26 if ///
+strpos(occupationname,"Electric") ///
+| strpos(occupationname,"electric")
+
 
 	
-	* Other craftsworkers (Carpenters, tiles workers, Paper product makers)	
-	replace  occup_sector= 32 if  occupationname == "Carpentor" |  occupationname == "Tiles work" |  occupationname == "Tiles & granite flooring work" ///
-	|  occupationname == "Old Paper and jute bags businesses" |  occupationname == "Old paper and jute bag business" |  occupationname == "Old jute bag business" 
-	
-	* Other labour
-	replace  occup_sector= 33 if  occupationname == "Coolie velai" |  occupationname == "Coolie" |  occupationname == "Coolie in kerela" ///
-	|  occupationname == "Singer factory" /// * other
-	|  occupationname == "Service man (sasun)" |  occupationname == "Service man, tata sky" ///
-	|  occupationname == "(NOKIA) Private company worker" ///
-	|  occupationname == "Wheel company" ///
-	|  occupationname == "Biscuit company" ///
-	|  occupationname == "Contract worker"
+* Mechanic and machinery fitters/assemblers (except electrical)
+replace occup_sector=27 if ///
+strpos(occupationname,"Mechanic") ///
+| strpos(occupationname,"mechanic")
+replace occup_sector=27 if occupationname=="A.c machanice"
+replace occup_sector=27 if occupationname=="Technician"
+replace occup_sector=27 if occupationname=="Marunthu adithall mechine"
+replace occup_sector=27 if occupationname=="Motor repair work"
 
+
+
+	
+* Transport Equipment operators	
+replace occup_sector=28 if  ///
+strpos(occupationname,"Tata" "drive") ///
+| strpos(occupationname,"TATA" "drive") ///
+| strpos(occupationname,"TATA" "Drive") ///
+| strpos(occupationname,"Lorry" "driver")
+replace occup_sector=28 if occupationname=="Container lorry driver"
+replace occup_sector=28 if occupationname=="Lowry driver"
+replace occup_sector=28 if occupationname=="Private lorry driver"
+replace occup_sector=28 if strpos(occupationname,"Bullock")
+
+
+	
+* Stationery Engines and related equipment operators
+*replace occup_sector=29 if  
+	
+	
+* Material handling and related equipment operators (loaders/unloaders)
+replace occup_sector=30 if ///
+strpos(occupationname,"load") ///
+| strpos(occupationname,"Load")
+replace occup_sector=30 if occupationname=="Lorry loder"
+replace occup_sector=30 if occupationname=="Cooli work ( lorry stone work)"
+
+
+
+* Other Industrial workers (glass, mining, chemicals, printing, welders)
+replace occup_sector=31 if ///
+strpos(occupationname,"Welder") ///
+| strpos(occupationname,"Welding") 
+replace occup_sector=31 if occupationname=="Work in private company"
+replace occup_sector=31 if occupationname=="Printing operator"
+replace occup_sector=31 if occupationname=="Printing worker in dubai"
+
+	
+* Other craftsworkers (Carpenters, tiles workers, Paper product makers)	
+replace occup_sector=32 if ///
+strpos(occupationname,"Carpent")
+ 
+	
+* Other labour
+replace occup_sector=33 if occupationname=="Cooli work"
+replace occup_sector=33 if occupationname=="Cooli worker"
+replace occup_sector=33 if occupationname=="Coolie"
+replace occup_sector=33 if occupationname=="Coolie  worker"
+replace occup_sector=33 if occupationname=="Coolie worker"
+replace occup_sector=33 if occupationname=="Coolie worker in market"
+
+replace occup_sector=33 if occupationname=="Private company"
+replace occup_sector=33 if occupationname=="Private company  cellphone delivery"
+replace occup_sector=33 if occupationname=="Private company (Abudhabi)"
+replace occup_sector=33 if occupationname=="Private company at Pondy"
+replace occup_sector=33 if occupationname=="Private company at Saudi Arabia"
+replace occup_sector=33 if occupationname=="Private company at chennai"
+replace occup_sector=33 if occupationname=="Private company at pantruti"
+replace occup_sector=33 if occupationname=="Private company cellphone  delivery"
+replace occup_sector=33 if occupationname=="Private company in pantruti"
+replace occup_sector=33 if occupationname=="Private company pantruti"
+replace occup_sector=33 if occupationname=="Private company worker"
+replace occup_sector=33 if occupationname=="Worker in a UCO4G COMPANY  "
+replace occup_sector=33 if occupationname=="Worker in a gas company"
+replace occup_sector=33 if occupationname=="Worker in private company"
+replace occup_sector=33 if occupationname=="Working at chemical company"
+replace occup_sector=33 if occupationname=="Working at computer centre"
+replace occup_sector=33 if occupationname=="Working at private company"
+replace occup_sector=33 if occupationname=="Working at textile"
+replace occup_sector=33 if occupationname=="Working at tirupur textile"
+replace occup_sector=33 if occupationname=="Working at tolgate"
+replace occup_sector=33 if occupationname=="Working in TVS company"
+replace occup_sector=33 if occupationname=="Working in cuddalore  sipcot"
+replace occup_sector=33 if occupationname=="Working in cuddalore sipcot"
+		
 	
 **** Qualified jobs
+* Teachers	
+replace occup_sector=41 if ///
+strpos(occupationname,"Teacher") ///
+| strpos(occupationname,"teacher") 
 
-	* Teachers	
-	replace  occup_sector= 41 if  occupationname == "Teacher in PRIVATE school" |  occupationname == "Private school teacher" |  occupationname == "Matriculation school teacher" ///
-	|  occupationname == ".Anganwadi assistant (child care)" |  occupationname == "Teacher" ///
-	|  occupationname == "Lecturer" |  occupationname == "Lecturer(E.S.Engineering college )" 
-	
-	* Architects, Engineers, ..
-	replace  occup_sector= 42 if  occupationname == "Civil Engineering work" /// * engineering pu/pvt
-	|  occupationname == "Chief engineer" ///
-	|  occupationname == "Production engineer(Sai power serve)" ///
-	|  occupationname == "Software developer" ///
-	|  occupationname == "Plastic engineer" ///
-	|  occupationname == "Engineer (Shasun chemicals)"
 
-	* Engineering technicians
-	replace  occup_sector= 43 if  occupationname == "Service engineering (lanson toyato)" ///
-	|  occupationname == "Tech.assist.in a private company" |  occupationname == "Technical in PRIVATE company" /// 
-	|  occupationname == "Technical officer in private company" |  occupationname == "Technician( hindustan liver)" ///
-	|  occupationname == "Technician in car parts company at chennai" |  occupationname == "Car parts company technician" ///
-	|  occupationname == "Technician" 
+* Architects, Engineers, ..
+replace occup_sector=42 if  ///
+strpos(occupationname,"Engineer") ///
+| strpos(occupationname,"engineer") 
+/*
+Software Engineer
+Engineer
+Engineering works Sriperumbudur
+Engineer
+*/
 
-	* Scientific, medical and technical persons
-	replace  occup_sector= 44 if   occupationname == "Medical representative" 
+* Engineering technicians
+*replace occup_sector=43 if ///
+
+
+
+
+* Scientific, medical and technical persons
+replace occup_sector=44 if occupationname=="Medical  representative"
+replace occup_sector=44 if occupationname=="Pharmist"
+
 				
-	* Nursing and health technicians
-	replace  occup_sector= 45 if  occupationname == "CL (Pallava Hospital)" |  occupationname == "Nurse" |  occupationname == "Nurse in a private hospital" ///
-		|  occupationname == "Nurse in private hospital" |  occupationname == "Nursing apprentice" |  occupationname == "Nursing training" ///
-		|  occupationname == "Mid wife" ///
-		|  occupationname == "108 ambulance technicien" 
+* Nursing and health technicians
+replace occup_sector=45 if  ///
+strpos(occupationname,"Nurs") ///
+| strpos(occupationname,"nurs")
+replace occup_sector=45 if occupationname=="Ward boy"
+replace occup_sector=45 if occupationname=="Anganwadi worker"
+
+
 	
-	* Economists, Accountants, auditors
-	replace  occup_sector= 46 if  occupationname == "Analyst in chemical company" ///
-		|  occupationname == "Accountant (royal Enfield)" |  occupationname == "Accountant(Syria technology)" |  occupationname == "Accountant(Jayam trading company)" ///
-		|  occupationname == "Quality Controller" ///
-		|  occupationname == "Accountant in ration (gov job) no contract yet" 
+* Economists, Accountants, auditors
+/*
+replace occup_sector=46 if ///
+strpos(occupationname,"") ///
+*/
 
-	* Jurists
-	replace  occup_sector= 47 if  occupationname == "Advocate" ///
-		|  occupationname == "Advocats"
 
+* Jurists
+replace occup_sector=47 if strpos(occupationname,"Advo")
+
+	
+	
+	
+	
 	
 	
 **** Administrative, executive and managerial workers
+* Administrative and executive officials government and local bodies
+replace occup_sector=51 if ///
+strpos(occupationname,"Police") ///
+| strpos(occupationname,"police") ///
+| (strpos(occupationname,"offic") & occupationname!="Loan officer")
+replace occup_sector=52 if occupationname=="LIC agent"
+replace occup_sector=52 if occupationname=="Social Audit"
+replace occup_sector=52 if occupationname=="Project manager"
 
-	* Administrative and executive officials government and local bodies
-	replace  occup_sector= 51 if  occupationname == "Police" |  occupationname == "Police man" |  occupationname == "Police training" ///
-		|  occupationname == "Civil supplies employer (ration shop)" ///
-		|  occupationname == "B.D.O Office (S. L )" |  occupationname == "EB Officer" ///
-		|  occupationname == "Horticulture officer (ADMINISTRATION WORK)" 
-
-	* Working proprietors, directors, managers in mining, construction, manufacturing
-	replace  occup_sector= 52 if  occupationname == "Line incharge (pondy polymers)" |  occupationname == "Marketing executive" |  occupationname == "Incharge ( hutson milk product)" ///
-	
 	
 	
 **** Independent labour contractors
-	
-	replace  occup_sector= 61 if  occupationname == "Sugar cane Cutting maistry" |  occupationname == "Sugarcane cutting -Maistri" |  occupationname == "Sugarcane cutting maistri" ///
-		|  occupationname == "Mason maistry" |  occupationname =="Brickling maistry" 	|  occupationname == "Maistry (contractor)" ///
-		|  occupationname == "Construction maistry"
- 
+*replace occup_sector=61 if  // maistry
+
+
 	 
 **** Clerical workers
+* Clerical and other supervisors
+replace occup_sector=71 if ///
+strpos(occupationname,"supervisor") ///
+| strpos(occupationname,"Supervisor")
+replace occup_sector=71 if occupationname=="Editorial"
+replace occup_sector=71 if occupationname=="Panchayat president"
+replace occup_sector=71 if occupationname=="Self help group leader"
+replace occup_sector=71 if occupationname=="Village Panchayat president"
+replace occup_sector=71 if occupationname=="Chef"
+replace occup_sector=71 if occupationname=="Kovil poosari"
+replace occup_sector=71 if occupationname=="Makkal Nala Paniyalar"
 
-	* Clerical and other supervisors
-	
-	replace  occup_sector= 71 if   occupationname == "Supervisor ( NREGA)" ///
-		|  occupationname == "Nrega, organizer" /// * public service
-		|  occupationname == "Supervisor in construction" |  occupationname == "Supervisor in private company" ///
-		|  occupationname == "Construction supervisor" ///
-	    |  occupationname == "Supervisor in hotel" ///
-		|  occupationname == "Supervisor" 
 
-	* Other clerical workers
-	replace  occup_sector= 72 if  occupationname == "Admin work(Feron tech)" ///
+
+
+* Other clerical workers
+replace occup_sector=72 if ///
+strpos(occupationname,"assistant") ///
+| strpos(occupationname,"Assistant")
+replace occup_sector=72 if occupationname=="Data entry operator"
+replace occup_sector=72 if occupationname=="Govt. Job (Clerk in BDO Office)"
+
+
+/*
+ occupationname == "Admin work(Feron tech)" ///
 		|  occupationname == "Office assistant in Co-operative bank" |  occupationname == "Secretary(primary agriculture cooperative bank)" ///
 		|  occupationname == "Receptionist" ///
 		|  occupationname == "Billing staff" ///
 		|  occupationname == "Transport company staff" ///
 		|  occupationname == "Data entry operater" ///
 		|  occupationname == "Post master" |  occupationname == "Mail Gard (central goverment railways dept)"
+*/
+		
+* Transport conductors and guards
+replace occup_sector=73 if occupationname=="Private Bus Driver"
+replace occup_sector=73 if occupationname=="TNSTC driver"
+replace occup_sector=73 if occupationname=="Security"
+replace occup_sector=73 if occupationname=="Watch man"
+replace occup_sector=73 if occupationname=="Bus driver"
+replace occup_sector=73 if occupationname=="Bus conductor"
 
-	* Transport conductors and guards
-	replace  occup_sector= 73 if  occupationname == "Private bus conductor"  |  occupationname == "Bus conductor" |  occupationname == "Bus conductor (TN govt)" ///
-	|  occupationname == "Bus driver" |  occupationname == "Bus driver (govt) Chennai" |  occupationname == "Van Driver(school)" ///
-	|  occupationname == "Toll gate worker" |  occupationname == "Security gaurd"
-	
+
 
 	
 **** Sales workers
-
-	* Shop keepers (wholesale and retail)
-	replace  occup_sector= 81 if  occupationname == "Fancy store (self-employment)" ///
-	|  occupationname == "Shop keeper" ///
-	|  occupationname == "Petti shop owner" |  occupationname == "Petti shop" |  occupationname == "Petty shop" 	|  occupationname == "Own petty shop" ///
-	|  occupationname == "Maligai store" |  occupationname == "Grocery shop" ///
-	|  occupationname == "Water cane business"  |  occupationname == "Petti Shop,recharge, water cane sales" ///
-	|  occupationname == "Flower tieing" |  occupationname == "Flower shop" ///
-	|  occupationname == "Tea stall" |  occupationname == "Mobile tea selling" |  occupationname =="Tea stall with small petty shop" ///
-	|  occupationname == "Tea shop" ///
-	|  occupationname == "Idly shop" |  occupationname == "Idli Shop" ///
-	|  occupationname == "Tea shop ,mini hotel" |  occupationname == "Tea shop, mini hotel" ///
-	|  occupationname == "Tea and tiffan shop" ///
-	|  occupationname == "Bar bar shop house itself" ///
-	|  occupationname == "Meat shop" ///
-	|  occupationname == "Own vegetables shop" |  occupationname == "Vegetable seller" ///
-	|  occupationname == "Milk vendor"  |  occupationname == "Milk seller" ///
-	|  occupationname == "Fish seller" |  occupationname == "Fish selling" |  occupationname == "Fish vendor" ///
-	|  occupationname == "Fruit seller" |  occupationname == "Fruits sales" |  occupationname == "Gouva selling" |  occupationname =="Gouva selling (self business)" ///
-	|  occupationname == "Tamarind seed business" |  occupationname == "Collecting tamarind seeds for subramani business" ///
-	|  occupationname == "Jute bag and tamarind seeds collection and sales" ///
-	|  occupationname == "Salt seller"  |  occupationname == "Rice selling" ///
-	|  occupationname == "Gany merchent" /// ??
-	|  occupationname == "Scarab business" /// ??
-	|  occupationname == "Plastic seller" /// 
-	|  occupationname == "Own Xerox shop" ///
-	|  occupationname == "Jewel seller" ///
-	|  occupationname == "Cycles services shop" ///
-	|  occupationname == "Medical shop" ///
-	|  occupationname == "Assistance for his husband in petti shop" |  occupationname == "Unpaid in husband's grocery shop"  |  occupationname == "Tea shop Assistance for his husband"  
+* Shop keepers (wholesale and retail) (et coolie in shop ?)
+replace occup_sector=81 if  ///
+strpos(occupationname,"Shop") ///
+| strpos(occupationname,"shop") ///
+| strpos(occupationname,"Business") ///
+| strpos(occupationname,"business") ///
+| strpos(occupationname,"Seller") /// 
+| strpos(occupationname,"seller") ///
+| strpos(occupationname,"Selling") /// 
+| strpos(occupationname,"selling")
+replace occup_sector=81 if occupationname=="Grocery store"
+replace occup_sector=81 if occupationname=="Milk store"
+replace occup_sector=81 if occupationname=="Own grocery store"
+replace occup_sector=81 if occupationname=="Fishmonger"
+replace occup_sector=81 if occupationname=="Milk man"
+replace occup_sector=81 if occupationname=="Mobile tea stall"
+replace occup_sector=81 if occupationname=="Mushroom stall"
 
 	 
-	* Agri equipment sellers
-	replace  occup_sector= 82 if  occupationname == "Tractor vendor" |  occupationname == "Agriculture equipment seller" |  occupationname == "Agriculture tractor and equipment" 
-		 
-	* Rent shop/ activities
-	replace  occup_sector= 83 if  occupationname == "Vessels rental shop" ///
-	|  occupationname == "Shop rent collection" ///
-    |  occupationname == "Pesticide spray machine rent" /// 
-	|  occupationname == "Tractor hiring"|  occupationname == "Lorry hiring" 
+* Agri equipment sellers
+replace occup_sector=82 if occupationname=="Tractor dealer"
+
+
+* Rent shop/ activities
+replace occup_sector=83 if strpos(occupationname,"Rent") 
+replace occup_sector=83 if strpos(occupationname,"rent") 
+
 		
-	* Salesmen, shop assistants and related workers
-	 replace  occup_sector= 84 if  occupationname == "Helper in grosory shop" |  occupationname == "Salaried work in a grossery shop" |  occupationname == "Salaried in a grossery shop" ///
-	 |  occupationname == "Sweet seller in sweet shop"|  occupationname == "Salesman in sweet stall" ///
-	 |  occupationname == "Salaried in shoe mart" |  occupationname == "Working in furniture mart as sales girl" ///
-	 |  occupationname == "Sales girl" |  occupationname == "Cloth store" ///
-	 |  occupationname == "Pookkadai (Thins coolie)" |  occupationname == "flower shop labour" |  occupationname == "Assistant in a flower shop" ///
-	 |  occupationname == "Private Shop worker" |  occupationname == "labour in muthu silk house"  ///
-	 |  occupationname == "Shoe company worker" ///
-	 |  occupationname == "Assistant in Biriyani and fast food centre" ///
-	 |  occupationname == "Flower shop labour" ///
-	 |  occupationname == "Packing girl" 
-
-	* Technical salesmen & commercial travellers
- 	replace  occup_sector= 85 if  occupationname == "Bus contracter" /// 		
-	|  occupationname == "Building contractor" ///* Insurance, real estate, securities and business service salesmen and auctioneers
+* Salesmen, shop assistants and related workers
+replace occup_sector=84 if ///
+strpos(occupationname,"Sales") ///
+| strpos(occupationname,"sales")
+replace occup_sector=84 if occupationname=="Cashier work"
+replace occup_sector=84 if occupationname=="Groundnut Sale Assistance"
 
 
-	* Money lenders and pawn brokers	
-	replace  occup_sector= 86 if   occupationname == "Money lending" ///	
-	 |  occupationname == "Tractor buying broker" ///
-	 |  occupationname == "Apraisser" |  occupationname == "Gold appriser" 
+* Technical salesmen & commercial travellers
+replace occup_sector=85 if strpos(occupationname,"Contract") & occupationname!="Road contract supervisor"
+replace occup_sector=85 if strpos(occupationname,"contract") & occupationname!="Road contract supervisor"
+	
+
+
+* Money lenders and pawn brokers	
+replace occup_sector=86 if occupationname=="Broker" 
 	
 	
 
 			
 **** Service workers
-
-	* Hotel and restaurant keepers
-	replace  occup_sector= 91 if   occupationname == "Hotel master" ///
-	|  occupationname == "Biriyany and fast food centre" 
+* Hotel and restaurant keepers
+replace occup_sector=91 if ///
+strpos(occupationname,"Hotel") ///
+| strpos(occupationname,"hotel")
 	
-	* Cooks, waiters
-	replace  occup_sector= 92 if  occupationname == "Canteen (cooking)" |  occupationname == "Cooking work ( Government )" |  occupationname == "Cook in government hostel" ///* Hotel/restaurants
-		|  occupationname == "Server(hotel)" |  occupationname == "Waiter" |  occupationname == "Waiter in a hotel" ///
-		|  occupationname == "Sweet master" |  occupationname == "Cooking work" |  occupationname == "Cooking master" ///
-		|  occupationname == "Catering work" 	|  occupationname == "Catering Coolie" ///
-		|  occupationname == "Cookie in a hotel" ///
-		|  occupationname == "Restaurant worker" 
+* Cooks, waiters
+replace occup_sector=92 if ///
+strpos(occupationname,"catering") ///
+| strpos(occupationname,"Catering")
+replace occup_sector=92 if occupationname=="Hotel Master"
+replace occup_sector=92 if occupationname=="Tea master"
 
-	* Building caretakers, sweepers, cleaners	
-	replace  occup_sector= 93 if   occupationname == "Cookie cleaner in a hotel" ///
-		|  occupationname == "Sanitary worker in village panchayath" 	|  occupationname == "Meeniyal (Thotti)" ///
-		|  occupationname == "Cleaner in hotal" |  occupationname == "Sweeper in temple" ///
-		|  occupationname == "Broomstick cleanning" |  occupationname == "Broomstick work" 
 
-	* Maids and house keeping service workers
-	replace  occup_sector= 94 if  occupationname == "House keeping" |  occupationname == "House work" 
 
-	* Hair dressers, barbers..
-	replace  occup_sector= 95 if  occupationname == "Beauty Parlor Trainee"	
+* Building caretakers, sweepers, cleaners	
+replace occup_sector=93 if occupationname=="Grass broom work"
+replace occup_sector=93 if occupationname=="Sewage cleaner"
 
-	* Private transportation
-	replace  occup_sector= 96 if  occupationname == "Auto Driver (self-employed)" |  occupationname == "Auto driving (own auto)" ///
-		|  occupationname == "Driver (own vehicle)" 	|  occupationname == "Taxi driving (own)" ///
-		|  occupationname == "Travels" |  occupationname == "Driver" 
 
-	* Other service workers
-	replace  occup_sector= 97 if  occupationname == "Pétrol bunk (servant)" |  occupationname == "Petrol seller" ///
+* Maids and house keeping service workers
+replace occup_sector=94 if strpos(occupationname,"House")
+replace occup_sector=94 if strpos(occupationname,"house")
+
+
+* Hair dressers, barbers..
+replace occup_sector=95 if strpos(occupationname,"Hair")
+replace occup_sector=95 if strpos(occupationname,"hair")
+
+
+* Private transportation
+replace occup_sector=96 if occupationname=="Private driver"
+replace occup_sector=96 if occupationname=="Auto driver"
+replace occup_sector=96 if occupationname=="Auto driver own"
+replace occup_sector=96 if occupationname=="Car driver"
+replace occup_sector=96 if occupationname=="Driver"
+replace occup_sector=96 if occupationname=="Driver ( work in private company)"
+replace occup_sector=96 if occupationname=="Private  driver"
+replace occup_sector=96 if occupationname=="Own van driver"
 
 
 	
 **** Performing artists
-	
-	replace  occup_sector= 101 if   occupationname == "Drums beetter on death ceremonies" |  occupationname == "Thavil vidvan" ///
-	|  occupationname == "Drums beating" |  occupationname == "Koil molam" ///
-	|  occupationname == "Drums Beeting" |  occupationname == "Drum beeter" |  occupationname == "Drummer at death ceremonies" ///
-	|  occupationname == "Archestra" |  occupationname == "Archestra Singer" ///
-	|  occupationname == "Archestra (instrument player)" ///
-	|  occupationname == "Asst.in a studio" |  occupationname == "Camara man (cinima)" 
+replace occup_sector=101 if strpos(occupationname,"Drum")
+replace occup_sector=101 if strpos(occupationname,"drum")
+replace occup_sector=101 if strpos(occupationname,"Art's work")
+replace occup_sector=101 if strpos(occupationname,"Arts work")
+
 
 		
 **** Astrologers 
+replace occup_sector=102 if strpos(occupationname,"Astro")
+replace occup_sector=102 if strpos(occupationname,"astro")
 
-	replace  occup_sector= 102 if occupationname == "Josiyam" |  occupationname == "Josyam(self employment)" |  occupationname == "Josiyam parthal" |  occupationname == "Josiyam partial ( Samiyar )" |  occupationname == "Horoscope" ///
+
 
 **** Public works/ NREGA
-	replace  occup_sector= 111 if  occupationname == "NREGA" |  occupationname == "NREGS" |  occupationname == "Nregs" |  occupationname == ".Nrega" ///
-	|  occupationname == "nrega" |  occupationname == "Nrges" |  occupationname == "Nerega" |  occupationname == "Nrega" ///
-	|  occupationname == "Bore Weller (goverment temporary worker)" 
-	
+replace occup_sector=111 if strpos(occupationname,"NREG")
+replace occup_sector=111 if strpos(occupationname,"Nreg")
+replace occup_sector=111 if strpos(occupationname,"nreg")
+replace occup_sector=111 if occupationname=="NREga"
 
 
 gen occup_sector2= 1 if occup_sector==11
@@ -493,7 +541,40 @@ label define sector 1 "Cultivators" 2 "Agricultural and plantation labourers" 3 
 7 "Clerical workers" 8 "Merchents and sellers" 9 "Service workers" 10 "Artists and astrologers" ///
 11 "NREGA"
 label values occup_sector2 sector 	
-	
+
+
+label define occupation1 11 "Cultivators" 12 "Agricultural labourers" 13"Sugarcane plantation labourers" 14 "Other farm workers" 22 "Bricklayers and construction workers (chamber, roads)" ///
+	23 "Spinners, Weavers, Knitters, Dyers" 24 "Tailors, dress makers, sewers" 25 "Clay workers, potters, sculptors, painters" 26 "Electrical workers" 27 "Mechanic and machinery fitters/assemblers (except electrical)" ///
+	28 "Transport Equipment operators" 29 "Stationery Engines and related equipment operators" 30 "Material handling and related equipment operators (loaders/unloaders)" ///
+	31 "Other Industrial workers (glass, mining, chemicals, printing, welders)" 32 "Other craftsworkers (Carpenters, tiles workers, Paper product makers)" 33 "Other labour" ///
+	41 "Teachers" 42 "Architects, Engineers, ..." 43 "Engineering technicians" 44 "Scientific, medical and technical persons" 45 "Nursing and health technicians" 46 "Economists, Accountants, auditors" ///
+	47 "Jurists" 51 "Administrative and executive officials government and local bodies" 52 "Working proprietors, directors, managers in mining, construction, manufacturing" ///
+	61 "Independent labour contractors" 71 "Clerical and other supervisors" 72 "Other clerical workers" 73 "Transport conductors and guards" 81 "Shop keepers (wholesale and retail)" ///
+	82 "Agri equipment sellers" 83 "Rent shop/ activities" 84 "Salesmen, shop assistants and related workers" 85 "Technical salesmen & commercial travellers" 86 "Money lenders and pawn brokers" ///
+	91 "Hotel and restaurant keepers" 92 "Cooks, waiters" 93 "Building caretakers, sweepers, cleaners" 94 "Maids and house keeping service workers" 95 "Hair dressers, barbers..." 96 "Private transportation" ///
+	97 "Other service workers" 101 "Performing artists" 102 "Astrologers" 111 "Public works/ NREGA"
+label value occup_sector occupation1
+
+tab occup_sector, m
+
+preserve
+keep if occup_sector==.
+duplicates drop occupationname, force
+sort occupationname
+list occupationname, clean noobs
+restore
+
+preserve
+rename occup_sector profession
+gen codepro=profession+1-1
+keep occupationname profession codepro
+duplicates drop
+sort occupationname
+
+
+
+
+
 	
 	
 * make occup_sector2 comparable to 2010 
