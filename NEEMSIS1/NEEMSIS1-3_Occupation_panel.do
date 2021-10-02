@@ -23,10 +23,59 @@ cd "$directory"
 ****************************************
 * Occupation
 ****************************************
+preserve
 use"NEEMSIS-occupation_alllong.dta", clear
+tab occupationid
+duplicates tag HHID INDID occupationid, gen(tag)
+tab tag
+duplicates drop HHID INDID, force
+keep HHID INDID
+gen data_alllong=1
+save "NEEMSIS-occupverif_v1.dta", replace
+restore
 
+preserve
+use"NEEMSIS-occupation_allwide.dta", clear
+tab occupationid
+duplicates tag HHID INDID occupationid, gen(tag)
+tab tag
+duplicates drop HHID INDID, force
+keep HHID INDID
+gen data_alllong=1
+save "NEEMSIS-occupverif_v2.dta", replace
+restore
+
+
+preserve
+use"NEEMSIS-occupation.dta", clear
+duplicates tag HHID INDID occupationid, gen(tag)
+tab tag
+duplicates drop HHID INDID, force
+keep HHID INDID
+gen data_classic=1
+save "NEEMSIS-occupverif_v3.dta", replace
+restore
+
+preserve
+use"NEEMSIS1-HH_v5.dta", clear
+rename parent_key HHID
+rename INDID2016 INDID
+destring INDID, replace
+merge 1:1 HHID INDID using "NEEMSIS-occupverif_v1.dta"
+drop _merge
+merge 1:1 HHID INDID using "NEEMSIS-occupverif_v2.dta"
+drop _merge
+merge 1:1 HHID INDID using "NEEMSIS-occupverif_v3.dta"
+drop _merge
+erase "NEEMSIS-occupverif_v1.dta"
+erase "NEEMSIS-occupverif_v2.dta"
+restore
+*Bon, je n'ai pas la diff pour all long, je sors all long
+
+
+use"NEEMSIS-occupation_allwide.dta", clear
 rename HHID parent_key
-order HHID2010 parent_key INDID INDID2010
+order parent_key INDID
 destring hoursayear, replace
 
 tostring INDID, gen(INDID2016)
@@ -35,6 +84,7 @@ rename parent_key HHID2016
 gen year=2016
 
 merge m:1 HHID2016 INDID2016 using "NEEMSIS1-HH_v8", keepusing(classcompleted everattendedschool)
+sort _merge
 keep if _merge==3
 drop _merge
 
@@ -832,13 +882,18 @@ label values occupcode3 occupcode
 	label values working_pop working_pop
 
 
+order occupation1 occupation2 occupation3 occupation4, last
+	
 rename occupation1 profession
 rename occupation2 occupation
 rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
+rename occup_sector2 occupsector
 
 
-save"NEEMSIS-occupation_alllong_v2.dta", replace
+drop occupcode2016 
+
+save"NEEMSIS-occupation_allwide_v2.dta", replace
 ****************************************
 * END
 
@@ -848,7 +903,7 @@ save"NEEMSIS-occupation_alllong_v2.dta", replace
 
 
 
-
+/*
 
 
 ****************************************

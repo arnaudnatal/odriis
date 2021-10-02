@@ -12,7 +12,7 @@ description: 	Cog
 */
 
 
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS1\DATA"
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
 
 
 cd "$directory"
@@ -31,7 +31,7 @@ set graph off
 ****************************************
 * Cognitive
 ****************************************
-use"NEEMSIS1-HH_v5.dta", clear
+use"NEEMSIS1-HH_v4.dta", clear
 
 ***Raven
 /*
@@ -434,6 +434,6 @@ egen Grit = rowmean(tryhard stickwithg~s  goaftergoal finishwhat~n finishtasks k
 rename INDID INDID2016
 tostring INDID2016, replace
 
-save"NEEMSIS1-HH_v6.dta", replace
+save"NEEMSIS1-HH_v5.dta", replace
 ****************************************
 * END
