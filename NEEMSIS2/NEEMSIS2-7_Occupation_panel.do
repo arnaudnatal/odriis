@@ -572,16 +572,12 @@ duplicates drop
 sort occupationname
 
 
+		
+* make occup_sector2 comparable to 2010 and 2016 and 2020
+tab kindofwork2020 occup_sector2 
 
-
-
-	
-	
-* make occup_sector2 comparable to 2010 
-	
-tab kindofwork occup_sector2 
-
-clonevar kindofwork_old=kindofwork
+clonevar kindofwork_old=kindofwork2020
+rename kindofwork2020 kindofwork
 
 replace kindofwork=3 if occup_sector2==2 & kindofwork==4
 replace kindofwork=4 if occup_sector2==3 & kindofwork==3
@@ -593,6 +589,7 @@ replace kindofwork=2 if occup_sector2==10
 
 
 *recode handloom: recode to self-employed when job location is govulapuram or same village
+tab joblocation
 replace kindofwork=2 if occup_sector==23 & kindofwork!=2 & joblocation=="Same village" ///
 | occup_sector==23 & kindofwork!=2 & joblocation=="Govulapuram"		///
 | occup_sector==23 & kindofwork!=2 & joblocation=="Same village,own house"		///
@@ -605,26 +602,21 @@ rename kindofwork_old kindofwork
 	
 	
 	
-	
-	
-	
-	
-	
-	
-************************ define occupcode2016 (replace occupcode)
+
+************************ define occupcode2020 (replace occupcode)
 
 **"CULTIVATORS" 
-gen occupcode2016= 1 if occup_sector2==1
+gen occupcode2020= 1 if occup_sector2==1
 
 **"AGRI COOLIE" (in occup sector 2 but not self-employed)
-replace occupcode2016= 2 if occup_sector2==2 & kindofwork!=2
+replace occupcode2020= 2 if occup_sector2==2 & kindofwork!=2
 
 **"COOLIE NON-AGRI" (industry+service): employed, daily/seasonal/occasional job
 * industry workers (sector 3) 
 * coolies in shops	(sector 8)	
 * coolies in service (sector 9)
 
-replace occupcode2016= 3 if occup_sector2==3 & kindofwork!=2 & salariedjobtype>=3 | occup_sector2==8 & kindofwork!=2 & salariedjobtype>=3 | occup_sector2==9 & kindofwork!=2 & salariedjobtype>=3
+replace occupcode2020= 3 if occup_sector2==3 & kindofwork!=2 & salariedjobtype>=3 | occup_sector2==8 & kindofwork!=2 & salariedjobtype>=3 | occup_sector2==9 & kindofwork!=2 & salariedjobtype>=3
 
 **"REGULAR NON-QUALIFIED NON-AGRI" (industry+service): employed, fixed/permanent jobs, less than 10std or more than 10std but no monthly wage (only piece rate or daily)	
 * regular non qualified industry workers (sector 3): mostly in sector 22, 23= construction, handloom in thirupur)
@@ -634,7 +626,7 @@ replace occupcode2016= 3 if occup_sector2==3 & kindofwork!=2 & salariedjobtype>=
 * qualified job but less than 10std (mid wife, assistant) (sector 4)
 	
 			
-replace occupcode2016=4 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted<10 | occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & everattendedschool==0 ///
+replace occupcode2020=4 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted<10 | occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & everattendedschool==0 ///
 			| occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted>=10 & salariedwagetype!=3 ///
 			| occup_sector2==7 & classcompleted<10 | occup_sector2==7 & classcompleted>=10 & salariedwagetype!=3 ///
 			| occup_sector2==8 & kindofwork!=2 & salariedjobtype<3 | occup_sector2==9 & kindofwork!=2 & salariedjobtype<3 ///
@@ -650,7 +642,7 @@ replace occupcode2016=4 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 
 			* Qualified jobs (sector 4), more than 10std
 			* Administrative, executive and managerial workers (sector 5): all more than 10 std
 
-replace occupcode2016=5 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted>=10 & salariedwagetype==3 ///
+replace occupcode2020=5 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted>=10 & salariedwagetype==3 ///
 			| occup_sector2==4 & classcompleted>=10 & salariedwagetype==3 | occup_sector2==5  ///
 
 		
@@ -662,22 +654,22 @@ replace occupcode2016=5 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 
 			*service self-employed (sector 9)
 			*artists (sector 10)
 		
-replace occupcode2016=6 if kindofwork==2 & occup_sector2==2 | kindofwork==2 & occup_sector2==3 | occup_sector2==6 | kindofwork==2 & occup_sector2==8 | kindofwork==2 & occup_sector2==9 | occup_sector2==10
+replace occupcode2020=6 if kindofwork==2 & occup_sector2==2 | kindofwork==2 & occup_sector2==3 | occup_sector2==6 | kindofwork==2 & occup_sector2==8 | kindofwork==2 & occup_sector2==9 | occup_sector2==10
 
 
 		**"NREGA" (sector 11)
-replace occupcode2016=7 if occup_sector2==11
+replace occupcode2020=7 if occup_sector2==11
 
 
 * recode non-agri coolie unpaid in HH/other business (mostly pottery) to self-employed
 		* clay toys maker & petty shop, etc: recoded to self-employed (family business)
-replace occupcode2016=6 if occupcode2016==3 & kindofwork==5
-replace occupcode2016=6 if occupcode2016==3 & kindofwork==6
-replace occupcode2016=6 if occupcode2016==3 & kindofwork==7
-replace occupcode2016=6 if occupcode2016==4 & kindofwork==5
-replace occupcode2016=6 if occupcode2016==4 & kindofwork==6
+replace occupcode2020=6 if occupcode2020==3 & kindofwork==5
+replace occupcode2020=6 if occupcode2020==3 & kindofwork==6
+replace occupcode2020=6 if occupcode2020==3 & kindofwork==7
+replace occupcode2020=6 if occupcode2020==4 & kindofwork==5
+replace occupcode2020=6 if occupcode2020==4 & kindofwork==6
 
-replace occupcode2016=6 if occupcode2016==3 & occup_sector2==8 & joblocation=="Own"
+replace occupcode2020=6 if occupcode2020==3 & occup_sector2==8 & joblocation=="Own"
 
 
 *** pour indsutry sector: frontiere floue entre non-agri coolie et regular non-qualified 
@@ -690,33 +682,33 @@ replace occupcode2016=6 if occupcode2016==3 & occup_sector2==8 & joblocation=="O
 			
 			
 * recode from non-agri coolie to regular non-qualified (drivers(28), tailors(24), construction)
-replace occupcode2016=4 if occupcode2016==3 & occup_sector2==9 & occupationname=="Driver"
-replace occupcode2016=4 if occupcode2016==3 & occup_sector2==3 & occup_sector==28 & salariedjobtype==3
-replace occupcode2016=4 if occupcode2016==3 & occup_sector2==3 & occup_sector==24 & salariedjobtype==3
-replace occupcode2016=4 if occupcode2016==3 & occupationname=="Masan"|occupcode2016==3 & occupationname=="Mason"| occupcode2016==3 & occupationname=="Painter" ///
-| occupcode2016==3 & occupationname=="Painting work" | occupcode2016==3 & occupationname=="Painting" | occupcode2016==3 & occupationname=="Painting worker" ///
-| occupcode2016==3 & occupationname=="Tiles work" | occupcode2016==3 & occupationname=="Construction mason"
+replace occupcode2020=4 if occupcode2020==3 & occup_sector2==9 & occupationname=="Driver"
+replace occupcode2020=4 if occupcode2020==3 & occup_sector2==3 & occup_sector==28 & salariedjobtype==3
+replace occupcode2020=4 if occupcode2020==3 & occup_sector2==3 & occup_sector==24 & salariedjobtype==3
+replace occupcode2020=4 if occupcode2020==3 & occupationname=="Masan"|occupcode2020==3 & occupationname=="Mason"| occupcode2020==3 & occupationname=="Painter" ///
+| occupcode2020==3 & occupationname=="Painting work" | occupcode2020==3 & occupationname=="Painting" | occupcode2020==3 & occupationname=="Painting worker" ///
+| occupcode2020==3 & occupationname=="Tiles work" | occupcode2020==3 & occupationname=="Construction mason"
 
 * recode from self-employed to regular non-qualified (carpentor): ***this job info will still be in SE!!
-replace occupcode2016=4 if occupcode2016==6 & occupationname=="Carpentor"
+replace occupcode2020=4 if occupcode2020==6 & occupationname=="Carpentor"
 
 * recode from self-employed to regular qualified (electricians, mechanics): ***this job info will still be in SE!!
-replace occupcode2016=5 if occupcode2016==6 & occupationname=="Elactetion work"|occupcode2016==6 & occupationname== "Electrician" ///
-|occupcode2016==6 & occupationname== "A/C Mechanic Own Shop at Chennai" ///
-|occupcode2016==6 & occupationname== "Tv mechanic self employed"
+replace occupcode2020=5 if occupcode2020==6 & occupationname=="Elactetion work"|occupcode2020==6 & occupationname== "Electrician" ///
+|occupcode2020==6 & occupationname== "A/C Mechanic Own Shop at Chennai" ///
+|occupcode2020==6 & occupationname== "Tv mechanic self employed"
 
 * recode from regular qualified to regular non-qualified (tailoring, drivers, operators, other industry labour)
-replace occupcode2016=4 if occupcode2016==5 & occup_sector2==3 & occup_sector==24 |occupcode2016==5 & occup_sector2==3 & occup_sector>27
+replace occupcode2020=4 if occupcode2020==5 & occup_sector2==3 & occup_sector==24 |occupcode2020==5 & occup_sector2==3 & occup_sector>27
 
 * recode from non-agri coolie to qualified (electricians)
-replace occupcode2016=5 if occupcode2016==3 & occup_sector2==3 & occup_sector==26 & occupationname!="Wiring helper"
+replace occupcode2020=5 if occupcode2020==3 & occup_sector2==3 & occup_sector==26 & occupationname!="Wiring helper"
 * recode from regular non-qualified to qualified (electricians, mechanics)
-replace occupcode2016=5 if occupcode2016==4 & occup_sector2==3 & occup_sector==26
-replace occupcode2016=5 if occupcode2016==4 & occup_sector2==3 & occup_sector==27
+replace occupcode2020=5 if occupcode2020==4 & occup_sector2==3 & occup_sector==26
+replace occupcode2020=5 if occupcode2020==4 & occup_sector2==3 & occup_sector==27
 
 * recode from regular non-qualified to non-agri coolie (load man)
-replace occupcode2016=3 if occupcode2016==4 & occup_sector2==3 & occup_sector==30
-replace occupcode2016=3 if occupcode2016==4 & occup_sector2==3 & occupationname=="Sculpture (coolie)"
+replace occupcode2020=3 if occupcode2020==4 & occup_sector2==3 & occup_sector==30
+replace occupcode2020=3 if occupcode2020==4 & occup_sector2==3 & occupationname=="Sculpture (coolie)"
 
 
 * former label
@@ -727,9 +719,9 @@ label define occupcode 1 "Agri self-employed" 2 "Agri casual workers" 3 "Non-agr
 5 "Non-agri regular qualified workers" 6 "Non-agri self-employed" 7 "Public employment scheme workers (NREGA)"
 
 
-label values occupcode2016 occupcode
+label values occupcode2020 occupcode
 
-tab occupcode2016 if year==2016
+tab occupcode2020 if year==2020
 
 
 
@@ -739,20 +731,20 @@ tab occupcode2016 if year==2016
 	* occup_sector 31-33: flou
 
 
-bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2016==3 & occup_sector!=22
+bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2020==3 & occup_sector!=22
 * list job coolie non-agri industry hors construction
-tab occupationname occup_sector  if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedwagetype  if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedjobtype  if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
-tab occupationname annualincome if occupcode2016==3 & occup_sector2==3 & occup_sector!=22 
+tab occupationname occup_sector  if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedwagetype  if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedjobtype  if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
+tab occupationname annualincome if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
 
 
-bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2016==4 & occup_sector!=22
+bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2020==4 & occup_sector!=22
 * list job regular non-qualified industry hors construction
-tab occupationname occup_sector  if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedwagetype  if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedjobtype  if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
-tab occupationname annualincome if occupcode2016==4 & occup_sector2==3 & occup_sector!=22 
+tab occupationname occup_sector  if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedwagetype  if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
+tab occupationname salariedjobtype  if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
+tab occupationname annualincome if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
 
 
 
@@ -765,9 +757,9 @@ tab occupationname annualincome if occupcode2016==4 & occup_sector2==3 & occup_s
 
 
 
-************************ same occupcode2 for 2010 & 2016 
+************************ same occupcode2 for 2010 & 2016 & 2020
  
-gen occupcode2=occupcode2016 if year==2016
+gen occupcode2=occupcode2020 if year==2020
 label values occupcode2 occupcode
 
 replace occupcode2=5 if occupcode2==. & occupationname=="Advocate"
@@ -799,16 +791,16 @@ tab occupcode2 year, column
 
 ************************ Define construction sector dummies (sector 22,26,31,32)
  
-gen construction_coolie=(occupcode2016==3 & occup_sector==22|occupcode2016==3 & occup_sector==26|occupcode2016==3 & occup_sector==31) if year==2016
+gen construction_coolie=(occupcode2020==3 & occup_sector==22|occupcode2020==3 & occup_sector==26|occupcode2020==3 & occup_sector==31) if year==2020
 
   
-gen construction_regular=(occupcode2016==4 & occup_sector==22|occupcode2016==4 & occupationname=="Welder"|occupcode2016==4 & occupationname=="Welding labour"|occupcode2016==4 & occup_sector==32) if year==2016
+gen construction_regular=(occupcode2020==4 & occup_sector==22|occupcode2020==4 & occupationname=="Welder"|occupcode2020==4 & occupationname=="Welding labour"|occupcode2020==4 & occup_sector==32) if year==2020
 
 
-gen construction_qualified = (occupcode2016==5 & occup_sector==26 & occupationname!="Tv mechanic self employed" ///
-|occupcode2016==6 & occup_sector==61 & occupationname!="Mason maistry" ///
-|occupcode2016==6 & occup_sector==61 & occupationname =="Brickling maistry" | occupcode2016==6 & occup_sector==61 & occupationname =="Maistry (contractor)" ///
-|occupcode2016==6 & occup_sector==61 & occupationname == "Construction maistry" |occupcode2016==6 & occup_sector== 85 & occupationname == "Building contractor") if year==2016	
+gen construction_qualified = (occupcode2020==5 & occup_sector==26 & occupationname!="Tv mechanic self employed" ///
+|occupcode2020==6 & occup_sector==61 & occupationname!="Mason maistry" ///
+|occupcode2020==6 & occup_sector==61 & occupationname =="Brickling maistry" | occupcode2020==6 & occup_sector==61 & occupationname =="Maistry (contractor)" ///
+|occupcode2020==6 & occup_sector==61 & occupationname == "Construction maistry" |occupcode2020==6 & occup_sector== 85 & occupationname == "Building contractor") if year==2020	
 
 
 
