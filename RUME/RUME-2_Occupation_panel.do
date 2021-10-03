@@ -96,7 +96,7 @@ fre occupationtype
 gen year=2010
 
 rename INDID INDID2010
-merge m:1 HHID2010 INDID2010 using "RUME-HH_v8.dta",keepusing(age education)
+merge m:1 HHID2010 INDID2010 using "RUME-HH_v6.dta",keepusing(age education)
 drop if _merge==2
 drop _merge
 
@@ -608,6 +608,7 @@ rename occupation1 profession
 rename occupation2 occupation
 rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
+rename occup_sector2 sector
 
 save"RUME-occupations_v2.dta", replace
 ****************************************
@@ -620,13 +621,13 @@ save"RUME-occupations_v2.dta", replace
 
 
 
-
+/*
 ****************************************
 * Excel
 ****************************************
 use"RUME-occupations_v2.dta", clear
 
-keep occupationname occupationtype profession occupation occupa_unemployed occupa_unemployed_15_70 occup_sector2 age
+keep occupationname occupationtype profession occupation occupa_unemployed occupa_unemployed_15_70 sector age
 
 foreach x in *{
 compress `x'

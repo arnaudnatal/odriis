@@ -319,200 +319,11 @@ save"RUME-HH_v3.dta", replace
 
 
 
-****************************************
-* RUME occupations
-****************************************
-use"RUME-occupations.dta", clear
-drop INDID
-rename code_id_mb INDID
-rename occupation_code2 occupationtype
-rename ocupationname occupationname
-fre occupationtype
-label define occupationtype ///
-1"Agriculture" ///
-2"Coolie" ///
-3"Agri Coolie" ///
-4"NREGS" ///
-5"Investment" ///
-6"Employee" ///
-7"Service" ///
-8"Self employment" ///
-9"Pension" ///
-10"No Occupation" ///
-66"Irrelevant" ///
-77"Other" ///
-88"Don't know" ///
-99"No response"
-label values occupationtype occupationtype
-fre occupationtype
-
-**********Indiv
-*max income or hours (income only for 2010)
-bysort HHID2010 INDID : egen maxincome_indiv=max(annualincome)
-*occup name and occup type with the max
-gen mainoccup=occupationtype if maxincome_indiv==annualincome
-gen mainoccupname=occupationname if maxincome_indiv==annualincome
-gen mainoccupation_income_indiv=annualincome if maxincome_indiv==annualincome
-*encode name to simplify the procedure
-encode mainoccupname, gen(mainoccupnamenumeric)
-*put main occupation at indiv level
-bysort HHID2010 INDID : egen mainoccupation=max(mainoccup)
-bysort HHID2010 INDID : egen mainoccupationname=max(mainoccupnamenumeric)
-*put the label
-label values mainoccupation occupationtype
-label values mainoccupationname mainoccupnamenumeric
-*decode the name to compare between the waves
-decode mainoccupationname, gen(_mainoccupationname)
-drop mainoccupationname
-rename _mainoccupationname mainoccupationname
-*total income
-bysort HHID2010 INDID: egen totalincome_indiv=sum(annualincome)
-*nb of income sources
-fre occupationtype
-gen countoccupation=1 if occupationtype!=10
-bysort HHID2010 INDID: egen nboccupation_indiv=sum(countoccupation)
-*cleaning
-rename mainoccupation mainoccupation_indiv
-rename mainoccupationname mainoccupationname_indiv
-
-drop maxincome_indiv mainoccup mainoccupname mainoccupnamenumeric countoccupation
-
-
-
-
-
-
-
-**********HH
-*max income or hours (income only for 2010)
-fre occupationtype
-forvalues i=1(1)10{
-bysort HHID2010 : egen maxincome_`i'=sum(annualincome) if occupationtype==`i'
-}
-forvalues i=1(1)10{
-bysort HHID2010 : egen maxincome2_`i'=max(maxincome_`i')
-recode maxincome2_`i' (.=0)
-drop maxincome_`i'
-}
-*occup type with the max
-egen mainoccup=rowmax(maxincome2_1 maxincome2_2 maxincome2_3 maxincome2_4 maxincome2_5 maxincome2_6 maxincome2_7 maxincome2_8 maxincome2_9 maxincome2_10)
-*occup name and occup type with the max
-gen mainoccup2=.
-forvalues i=1(1)10{
-replace mainoccup2=`i' if maxincome2_`i'==mainoccup
-}
-*put the label
-label values mainoccup2 occupationtype
-drop mainoccup maxincome2_1 maxincome2_2 maxincome2_3 maxincome2_4 maxincome2_5 maxincome2_6 maxincome2_7 maxincome2_8 maxincome2_9 maxincome2_10
-rename mainoccup2 mainoccupation_HH
-*total income
-bysort HHID2010 : egen totalincome_HH=sum(annualincome)
-*nb of income sources
-fre occupationtype
-gen countoccupation=1 if occupationtype!=10
-bysort HHID2010 : egen nboccupation_HH=sum(countoccupation)
-drop countoccupation
-rename totalincome_indiv annualincome_indiv
-rename totalincome_HH annualincome_HH
-
-
-
-
-**********Agri vs non agri income?
-fre occupationtype
-forvalues i=1(1)10{
-gen labourincome_`i'=.
-}
-
-forvalues i=1(1)10{
-replace labourincome_`i'=annualincome if occupationtype==`i'
-recode labourincome_`i' (.=0)
-}
-forvalues i=1(1)10{
-bysort HHID2010 INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
-bysort HHID2010: egen labourincome_HH_`i'=sum(labourincome_`i')
-}
-
-foreach x in labourincome_indiv labourincome_HH{
-rename `x'_1 `x'_agri
-rename `x'_2 `x'_coolie
-rename `x'_3 `x'_agricoolie
-rename `x'_4 `x'_nregs
-rename `x'_5 `x'_investment
-rename `x'_6 `x'_employee
-rename `x'_8 `x'_selfemp
-rename `x'_9 `x'_pension
-rename `x'_10 `x'_nooccup
-}
-
-drop labourincome_indiv_7 labourincome_HH_7
-
-
-
-
-**********Dummyjob and nb of job/indiv
-sort occupationtype
-gen job=0
-replace job=1 if occupationtype!=10 & occupationtype!=9 & occupationtype!=.
-ta job
-
-bysort HHID2010 INDID: egen nbjob_indiv
-
-
-
-
-**********Indiv base
-bysort HHID2010 INDID: gen n=_n 
-keep if n==1
-keep mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_HH_agri labourincome_HH_coolie labourincome_HH_agricoolie labourincome_HH_nregs labourincome_HH_investment labourincome_HH_employee labourincome_HH_selfemp labourincome_HH_pension labourincome_HH_nooccup labourincome_indiv_agri labourincome_indiv_coolie labourincome_indiv_agricoolie labourincome_indiv_nregs labourincome_indiv_investment labourincome_indiv_employee labourincome_indiv_selfemp labourincome_indiv_pension labourincome_indiv_nooccup
-save"RUME-occupations_2.dta", replace
-
-bysort HHID2010: gen n=_n 
-keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 labourincome_HH_agri labourincome_HH_coolie labourincome_HH_agricoolie labourincome_HH_nregs labourincome_HH_investment labourincome_HH_employee labourincome_HH_selfemp labourincome_HH_pension labourincome_HH_nooccup
-save"RUME-occupations_3.dta", replace
-
-
-
-**********Merge dans la base HH
-use"RUME-HH_v3.dta", clear
-
-merge 1:1 HHID2010 INDID using "RUME-occupations_2.dta", keepusing(mainoccupation_income_indiv mainoccupation_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_coolie labourincome_indiv_agricoolie labourincome_indiv_nregs labourincome_indiv_investment labourincome_indiv_employee labourincome_indiv_selfemp labourincome_indiv_pension labourincome_indiv_nooccup)
-drop _merge
-
-merge m:1 HHID2010 using "RUME-occupations_3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_coolie labourincome_HH_agricoolie labourincome_HH_nregs labourincome_HH_investment labourincome_HH_employee labourincome_HH_selfemp labourincome_HH_pension labourincome_HH_nooccup)
-drop _merge
-
-recode mainoccupation_indiv mainoccupation_HH (.=0)
-
-preserve
-bysort HHID2010: gen n=_n
-keep if n==1
-fre mainoccupation_HH
-restore
-
-save"RUME-HH_v4.dta", replace
-****************************************
-* END
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ****************************************
 * Assets + crisis + chit + gold + savings
 ****************************************
-use"RUME-HH_v4.dta", clear
+use"RUME-HH_v3.dta", clear
 
 egen assets=rowtotal(amountownlanddry amountownlandwet livestockamount_goat livestockamount_cow housevalue goldquantityamount goodtotalamount)
 gen assets1000=assets/1000
@@ -679,7 +490,7 @@ gen submissiondate=mdy(03,01,2010)
 tab submissiondate
 format submissiondate %d
 
-save"RUME-HH_v5.dta", replace
+save"RUME-HH_v4.dta", replace
 ****************************************
 * END
 
@@ -693,7 +504,7 @@ save"RUME-HH_v5.dta", replace
 ****************************************
 * HHID_panel
 ****************************************
-use"RUME-HH_v5.dta", clear
+use"RUME-HH_v4.dta", clear
 
 merge m:m HHID2010 using "unique_identifier_panel.dta", keepusing(HHID_panel)
 keep if _merge==3
@@ -707,7 +518,7 @@ duplicates drop HHID_panel, force
 tab HHID2010
 restore
 
-save"RUME-HH_v6.dta", replace
+save"RUME-HH_v5.dta", replace
 ****************************************
 * END
 
@@ -721,7 +532,7 @@ save"RUME-HH_v6.dta", replace
 ****************************************
 * Panel individuals
 ****************************************
-use"RUME-HH_v6.dta", clear
+use"RUME-HH_v5.dta", clear
 /*
 ********** RAW: F1 to 1
 split INDID, p(F)
@@ -817,7 +628,7 @@ OK pour la dernière version (2 donc car en 3 je vérifie 2)
 */
 
 ********** MERGER LES NOUVEAUX CODE DONC
-use"RUME-HH_v6.dta", clear
+use"RUME-HH_v5.dta", clear
 merge 1:1 HHID2010 INDID using "RUME-name_panel_v2.dta"
 drop _merge
 rename INDID INDID_o
@@ -838,25 +649,17 @@ Check if INDID=0 are in tracking2016
 */
 
 
-**********Panel ?
-merge m:1 HHID2010 using "panel_comp.dta"
-keep if _merge==3
-drop _merge
-
 
 
 **********
 drop INDID name_p16
 rename INDID_o INDID2010
-merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\panel_indiv_2010_2016_wide", keepusing(INDID_panel)
+merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_wide", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge
 sort HHID_panel INDID_panel
 order HHID_panel INDID_panel
 
-save"RUME-HH_v7.dta", replace
+save"RUME-HH_v6.dta", replace
 ****************************************
 * END
-
-
-

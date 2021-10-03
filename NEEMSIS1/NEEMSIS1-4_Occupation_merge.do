@@ -457,12 +457,6 @@ save"NEEMSIS-occupation_allwide_v3.dta", replace
 
 
 
-
-
-
-
-
-
 ****************************************
 * Merge avec base HH
 ****************************************
