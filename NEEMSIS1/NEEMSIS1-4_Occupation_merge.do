@@ -431,8 +431,6 @@ rename `x'_7 `x'_nrega
 }
 
 
-
-
 **********Indiv and HH dataset
 preserve
 bysort HHID2010 INDID: gen n=_n 
@@ -447,7 +445,6 @@ keep if n==1
 keep HHID2010 sum_ext_HH mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH kowinc_HH_agri kowinc_HH_selfemp kowinc_HH_sjagri kowinc_HH_sjnonagri kowinc_HH_uwhhnonagri kowinc_HH_uwnonagri kowinc_HH_uwhhagri kowinc_HH_uwagri occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
 save"NEEMSIS-occupation_allwide_HH.dta", replace
 restore
-
 
 save"NEEMSIS-occupation_allwide_v3.dta", replace
 ****************************************
@@ -470,7 +467,7 @@ save"NEEMSIS-occupation_allwide_v3.dta", replace
 ****************************************
 * Merge avec base HH
 ****************************************
-use"NEEMSIS1-HH_v2.dta", clear
+use"NEEMSIS1-HH_v5.dta", clear
 
 merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_distance_indiv)
 drop _merge

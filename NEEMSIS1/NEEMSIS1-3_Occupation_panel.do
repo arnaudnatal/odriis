@@ -79,11 +79,10 @@ order parent_key INDID
 destring hoursayear, replace
 
 tostring INDID, gen(INDID2016)
-rename parent_key HHID2016
 
 gen year=2016
 
-merge m:1 HHID2016 INDID2016 using "NEEMSIS1-HH_v8", keepusing(classcompleted everattendedschool)
+merge m:1 parent_key INDID2016 using "NEEMSIS1-HH_v5", keepusing(classcompleted everattendedschool)
 sort _merge
 keep if _merge==3
 drop _merge
