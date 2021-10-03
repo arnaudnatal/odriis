@@ -31,7 +31,6 @@ tab INDID
 *1324 individuals
 restore
 
-rename HHID2016 parent_key
 order HHID2010 parent_key INDID INDID2010 occupationid
 destring hoursayear, replace
 
@@ -469,36 +468,15 @@ save"NEEMSIS-occupation_allwide_v3.dta", replace
 ****************************************
 use"NEEMSIS1-HH_v5.dta", clear
 
-merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_alllong_v2.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri mainoccupation_distance_indiv)
+destring INDID2016, gen(INDID)
+merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_allwide_indiv.dta"
+drop _merge
+merge m:1 HHID2010 using "NEEMSIS-occupation_allwide_HH.dta"
 drop _merge
 
-merge m:1 HHID2010 using "NEEMSIS-occupation_alllong_v3.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri sum_ext_HH)
-drop _merge
-
-
-recode mainoccupation_indiv mainoccupation_HH (.=0)
-
-preserve
-bysort HHID2010: gen n=_n
-keep if n==1
-fre mainoccupation_HH
-restore
-
-
-save"NEEMSIS1-HH_v3.dta", replace
+save"NEEMSIS1-HH_v6.dta", replace
 ****************************************
 * END
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -507,6 +485,7 @@ save"NEEMSIS1-HH_v3.dta", replace
 ****************************************
 * Total income
 ****************************************
+use"NEEMSIS1-HH_v6.dta", clear
 
 *Remittances received
 recode remreceivedtotamount1 remreceivedtotamount2 (.=0)
@@ -539,7 +518,6 @@ tab pension_HH
 gen totalincome_indiv=annualincome_indiv+remreceivedtotalamount_indiv+incomeassets_indiv+otherhouserent_indiv+pension_indiv
 gen totalincome_HH=annualincome_HH+remreceivedtotalamount_HH+incomeassets_HH+otherhouserent_HH+pension_HH
 
-
-save"NEEMSIS1-HH_v4.dta", replace
+save"NEEMSIS1-HH_v7.dta", replace
 ****************************************
 * END
