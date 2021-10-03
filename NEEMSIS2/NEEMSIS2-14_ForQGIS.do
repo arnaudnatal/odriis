@@ -27,7 +27,7 @@ clear all
 ****************************************
 * Occupation
 ****************************************
-use"$directory\CLEAN\NEEMSIS2-HH_v19.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
 
 duplicates drop HHID_panel, force
 keep HHID_panel villageid villagearea jatis caste geopointlatitude geopointlongitude geopointaltitude geopointaccuracy address

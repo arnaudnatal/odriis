@@ -29,7 +29,7 @@ clear all
 ****************************************
 use"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3", clear
 
-merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v19.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel)
+merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v14.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel)
 drop if _merge==2
 drop _merge
 
