@@ -55,13 +55,13 @@ replace agetowork=1 if age>14 & age<71 & age!=.
 
 drop age
 
-rename kindofwork kindofwork2020
+*rename kindofwork kindofwork2020
 
 *Quelles occupations ?
 cls
 preserve
-duplicates drop occupationname kindofwork2020 classcompleted10ormore everattendedschool agetowork, force
-keep occupationname kindofwork2020 everattendedschool classcompleted10ormore agetowork
+duplicates drop occupationname kindofwork classcompleted10ormore everattendedschool agetowork, force
+keep occupationname kindofwork everattendedschool classcompleted10ormore agetowork
 gen profession=.
 order kindofwork occupationname profession
 export excel using "$git\Occupations\Occupations.xlsx", sheet("NEEMSIS2") sheetmodify firstrow(variables)
@@ -570,14 +570,10 @@ gen codepro=profession+1-1
 keep occupationname profession codepro
 duplicates drop
 sort occupationname
+restore
 
-
-		
 * make occup_sector2 comparable to 2010 and 2016 and 2020
-tab kindofwork2020 occup_sector2 
-
-clonevar kindofwork_old=kindofwork2020
-rename kindofwork2020 kindofwork
+gen kindofwork_old=kindofwork
 
 replace kindofwork=3 if occup_sector2==2 & kindofwork==4
 replace kindofwork=4 if occup_sector2==3 & kindofwork==3
@@ -586,7 +582,6 @@ replace kindofwork=4 if kindofwork==3 & occup_sector2==7
 replace kindofwork=4 if kindofwork==3 & occup_sector2==9
 replace kindofwork=2 if occup_sector2==10
 * attention !!!! malgré ces changements, details des occupations restent dans catégorie initiale (SE, salaried)
-
 
 *recode handloom: recode to self-employed when job location is govulapuram or same village
 tab joblocation
@@ -601,7 +596,7 @@ rename kindofwork kindofwork_new
 rename kindofwork_old kindofwork
 	
 	
-	
+
 
 ************************ define occupcode2020 (replace occupcode)
 
