@@ -888,7 +888,7 @@ rename occupation1 profession
 rename occupation2 occupation
 rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
-rename occup_sector2 occupsector
+rename occup_sector2 sector
 
 
 drop occupcode2016 

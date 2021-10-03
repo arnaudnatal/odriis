@@ -97,7 +97,6 @@ restore
 
 
 **********EGO
-*dummymainoccup va se multiplier donc ca sera toujours la même
 sort HHID2010 INDID egoid occupationid
 order HHID2010 INDID egoid occupationid kindofwork hoursayear dummymainoccup mainoccuptype maxhoursayear 
 
@@ -127,7 +126,7 @@ mainok_ind |              egoid
 restore
 
 
-*À la main pour ceux qui n'ont pas la bonne main occupation
+*À la main pour ceux qui n'ont pas la bonne main occupation (21+15)
 gen tokeep=1
 replace tokeep=0 if egoid!=0 & mainok_indiv==0
 preserve
@@ -237,6 +236,7 @@ restore
 
 
 **********Indiv
+***MOC
 order HHID2010 parent_key INDID INDID2010 INDID2016 egoid
 *max income or hours (income only for 2010)
 bysort HHID2010 INDID : egen maxhours_indiv=max(hoursayear)
@@ -288,78 +288,115 @@ mainok_ind |              egoid
 restore
 tab mainocc, m
 
-*Var to create
-gen mainoccup_kindofwork=.
-gen mainoccup_profession=.
-gen mainoccup_occupation=.
-gen mainoccup_occupsector=.
-gen mainoccup_occupname=""
-gen mainoccup_hours=.
-gen mainoccup_income=.
-gen mainoccup_distance=.
+*Var to create at occupation level, so it is temporary var
+foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
+gen temp_mainocc_`x'=.
+}
+gen temp_mainocc_occupationname=""
 
-replace mainoccup_kindofwork=kindofwork if mainocc==1 
-replace mainoccup_profession=profession if mainocc==1
-replace mainoccup_occupation=occupation if mainocc==1
-replace mainoccup_occupsector=occupsector if mainocc==1
-replace mainoccup_occupname=occupationname if mainocc==1
-replace mainoccup_hours=hoursayear if mainocc==1
-replace mainoccup_income=annualincome if mainocc==1
-replace mainoccup_distance=jobdistance if mainocc==1
+foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
+replace temp_mainocc_`x'=`x' if mainocc==1 
+}
+replace temp_mainocc_occupationname=occupationname if mainocc==1
+
+
+*Individual level now
+foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
+bysort HHID2010 INDID: egen mainocc_`x'=max(temp_mainocc_`x')
+}
+
+*More tricky for occupname:
+encode temp_mainocc_occupationname, gen(mainoccnamenum)
+bysort HHID2010 INDID: egen _mainocc_occupationname=max(mainoccnamenum)
+label values _mainocc_occupationname mainoccnamenum
+decode _mainocc_occupationname, gen(mainocc_occupationname)
 
 *Clean
-drop mainocc maxhours_indiv mainok mainok_indiv
+drop mainocc maxhours_indiv mainok mainok_indiv temp_mainocc_* mainoccnamenum _mainocc_occupationname
+
+*Label
+label values mainocc_kindofwork kindofwork
+label values mainocc_profession occupation1
+label values mainocc_occupation occupcode
+label values mainocc_sector sector
+
+*Rename
+foreach x in mainocc_kindofwork mainocc_profession mainocc_occupation mainocc_sector mainocc_hoursayear mainocc_annualincome mainocc_jobdistance mainocc_occupationname {
+rename `x' `x'_indiv
+}
+
+
+***Nb occupation per indiv + annual income per indiv
+bysort HHID2010 INDID: egen annualincome_indiv=sum(annualincome)
+bysort HHID2010 INDID: egen nboccupation_indiv=sum(1)
+
 
 
 **********HH
-*max income or hours (income only for 2010)
-fre kindofwork
+***Max hoursayear with maxhours per kindofwork
 forvalues i=1(1)8{
 bysort HHID2010 : egen maxhours_`i'=sum(hoursayear) if kindofwork==`i'
-}
-forvalues i=1(1)8{
 bysort HHID2010 : egen maxhours2_`i'=max(maxhours_`i')
 recode maxhours2_`i' (.=0)
 drop maxhours_`i'
 }
-*occup type with the max
-egen mainoccup=rowmax(maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7 maxhours2_8)
-*occup name and occup type with the max
-gen mainoccup2=.
+*Maxhoursoccup
+egen maxhoursmainocc=rowmax(maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7 maxhours2_8)
+*Moc kindofwork
+gen mainocc_kindofwork_HH=.
 forvalues i=1(1)8{
-replace mainoccup2=`i' if maxhours2_`i'==mainoccup
+replace mainocc_kindofwork_HH=`i' if maxhours2_`i'==maxhoursmainocc
 }
-*put the label
-label values mainoccup2 kindofwork
-drop mainoccup maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7 maxhours2_8
-rename mainoccup2 mainoccupation_HH
-*total income
-bysort HHID2010 : egen annualincome_HH=sum(annualincome)
-*nb of income sources
+
+*Label
+label values mainocc_kindofwork_HH kindofwork
+drop maxhoursmainocc maxhours2_*
+
+
+
+***Max hoursayear with maxhours per occupation
+forvalues i=1(1)7{
+bysort HHID2010 : egen maxhours_`i'=sum(hoursayear) if occupation==`i'
+bysort HHID2010 : egen maxhours2_`i'=max(maxhours_`i')
+recode maxhours2_`i' (.=0)
+drop maxhours_`i'
+}
+*Maxhoursoccup
+egen maxhoursmainocc=rowmax(maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7)
+*Moc occupation
+gen mainocc_occupation_HH=.
+forvalues i=1(1)7{
+replace mainocc_occupation_HH=`i' if maxhours2_`i'==maxhoursmainocc
+}
+
+*Label
+label values mainocc_occupation_HH occupcode
+drop maxhoursmainocc maxhours2_*
+
+
+
+***Income  nb occ
+bysort HHID2010: egen annualincome_HH=sum(annualincome)
+bysort HHID2010: egen nboccupation_HH=sum(1)
+
+
+
+
+**********Agri vs non agri income?
+***Kindofwork
+forvalues i=1(1)8{
+gen kowinc_`i'=.
+}
+forvalues i=1(1)8{
+replace kowinc_`i'=annualincome if kindofwork==`i'
+recode kowinc_`i' (.=0)
+}
+forvalues i=1(1)8{
+bysort HHID2010 INDID: egen kowinc_indiv_`i'=sum(kowinc_`i')
+bysort HHID2010: egen kowinc_HH_`i'=sum(kowinc_`i')
+}
 fre kindofwork
-gen countoccupation=1
-bysort HHID2010 : egen nboccupation_HH=sum(countoccupation)
-drop countoccupation
-
-
-
-*Agri vs non agri income?
-fre kindofwork
-forvalues i=1(1)8{
-gen labourincome_`i'=.
-}
-
-forvalues i=1(1)8{
-replace labourincome_`i'=annualincome if kindofwork==`i'
-recode labourincome_`i' (.=0)
-}
-forvalues i=1(1)8{
-bysort HHID2010 INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
-bysort HHID2010: egen labourincome_HH_`i'=sum(labourincome_`i')
-}
-
-
-foreach x in labourincome_indiv labourincome_HH{
+foreach x in kowinc_indiv kowinc_HH{
 rename `x'_1 `x'_agri
 rename `x'_2 `x'_selfemp
 rename `x'_3 `x'_sjagri
@@ -370,18 +407,49 @@ rename `x'_7 `x'_uwhhagri
 rename `x'_8 `x'_uwagri
 }
 
+***Occupation
+forvalues i=1(1)7{
+gen occinc_`i'=.
+}
+forvalues i=1(1)7{
+replace occinc_`i'=annualincome if occupation==`i'
+recode occinc_`i' (.=0)
+}
+forvalues i=1(1)7{
+bysort HHID2010 INDID: egen occinc_indiv_`i'=sum(occinc_`i')
+bysort HHID2010: egen occinc_HH_`i'=sum(occinc_`i')
+}
+fre occupation
+foreach x in occinc_indiv occinc_HH{
+rename `x'_1 `x'_agri
+rename `x'_2 `x'_agricasual
+rename `x'_3 `x'_nonagricasual
+rename `x'_4 `x'_nonagriregnonqual
+rename `x'_5 `x'_nonagriregqual
+rename `x'_6 `x'_selfemp
+rename `x'_7 `x'_nrega
+}
 
 
-**********Indiv base
+
+
+**********Indiv and HH dataset
+preserve
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv mainoccupation_distance_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri mainoccupation_distance_indiv sum_ext_HH
-save"NEEMSIS-occupation_alllong_v2.dta", replace
+keep HHID2010 INDID mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
+save"NEEMSIS-occupation_allwide_indiv.dta", replace
+restore
 
+preserve
 bysort HHID2010: gen n=_n 
 keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH HHID2010 labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri sum_ext_HH
-save"NEEMSIS-occupation_alllong_v3.dta", replace
+keep HHID2010 sum_ext_HH mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH kowinc_HH_agri kowinc_HH_selfemp kowinc_HH_sjagri kowinc_HH_sjnonagri kowinc_HH_uwhhnonagri kowinc_HH_uwnonagri kowinc_HH_uwhhagri kowinc_HH_uwagri occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
+save"NEEMSIS-occupation_allwide_HH.dta", replace
+restore
+
+
+save"NEEMSIS-occupation_allwide_v3.dta", replace
 ****************************************
 * END
 
