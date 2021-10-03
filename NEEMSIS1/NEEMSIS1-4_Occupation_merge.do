@@ -80,18 +80,19 @@ tab maxhoursayear
 
 
 **********Var
-gen mainoccup_kindofwork=.
-gen mainoccup_profession=.
-gen mainoccup_occupation=.
-gen mainoccup_occupsector=.
-gen mainoccupname=""
-*
-gen mainok=1 if mainoccup_kindofwork!=.
-bysort HHID2010 INDID: egen mainok_indiv=sum(mainok)
+gen mainocc=.
 preserve
 duplicates drop HHID2010 INDID, force
-tab mainok egoid, m
-*503 non-ego; 477 ego1; 344 ego2.
+tab egoid, m
+/*
+      egoid |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        503       37.99       37.99
+          1 |        477       36.03       74.02
+          2 |        344       25.98      100.00
+------------+-----------------------------------
+      Total |      1,324      100.00
+*/
 restore
 
 
@@ -102,16 +103,11 @@ order HHID2010 INDID egoid occupationid kindofwork hoursayear dummymainoccup mai
 
 *Moc
 destring hoursayear maxhoursayear, replace
-replace mainoccup_kindofwork=kindofwork if hoursayear==maxhoursayear & dummymainoccup==1
-replace mainoccup_profession=profession if hoursayear==maxhoursayear & dummymainoccup==1
-replace mainoccup_occupation=occupation if hoursayear==maxhoursayear & dummymainoccup==1
-replace mainoccup_occupsector=occupsector if hoursayear==maxhoursayear & dummymainoccup==1
-replace mainoccupname=occupationname if hoursayear==maxhoursayear & dummymainoccup==1
-tab mainoccup_kindofwork
+replace mainocc=1 if hoursayear==maxhoursayear & dummymainoccup==1
+tab mainocc
 *
-drop mainok mainok_indiv
 gen mainok=0
-replace mainok=1 if mainoccup_kindofwork!=.
+replace mainok=1 if mainocc!=.
 tab mainok egoid, m
 bysort HHID2010 INDID: egen mainok_indiv=sum(mainok)
 tab mainok_indiv egoid, m
@@ -142,13 +138,14 @@ restore
 gen moctokeep=.
 order HHID2010 INDID occupationid occupationname hoursayear othermainoccup maxhoursayear moctokeep tokeep
 sort tokeep HHID2010 INDID occupationid
-edit
+*edit
 /*
 Je fais correspondre occupationname et othermainoccup
 Je mets un 1 à moctokeep
 Du coup plus, il faut remplacer la mainoccup pour ceux qui ont 1 à moctokeep et 0 à tokeep 
 0 à tokeep c'est pour les égos qui n'ont pas encore de valeurs
 Normalement c'est ça:
+*/
 replace moctokeep = 1 in 1
 replace moctokeep = 1 in 4
 replace moctokeep = 1 in 8
@@ -185,17 +182,13 @@ replace moctokeep = 1 in 80
 replace moctokeep = 1 in 84
 replace moctokeep = 1 in 87
 replace moctokeep = 1 in 90
-*/
-replace mainoccup_kindofwork=kindofwork if tokeep==0 & moctokeep==1
-replace mainoccup_profession=profession if tokeep==0 & moctokeep==1 
-replace mainoccup_occupation=occupation if tokeep==0 & moctokeep==1
-replace mainoccup_occupsector=occupsector if tokeep==0 & moctokeep==1
-replace mainoccupname=occupationname if tokeep==0 & moctokeep==1
+
+replace mainocc=1 if tokeep==0 & moctokeep==1
 drop moctokeep tokeep
 *
 drop mainok mainok_indiv
 gen mainok=0
-replace mainok=1 if mainoccup_kindofwork!=.
+replace mainok=1 if mainocc!=.
 tab mainok egoid, m
 bysort HHID2010 INDID: egen mainok_indiv=sum(mainok)
 tab mainok_indiv egoid, m
@@ -218,15 +211,11 @@ restore
 *Correction des deux qui ont le même nb d'heure
 tab mainok_indiv
 sort mainok_indiv HHID2010 INDID occupationid
-replace mainoccup_kindofwork=. if mainok_indiv==2 & kindofwork!=mainoccuptype
-replace mainoccup_profession=. if mainok_indiv==2 & kindofwork!=mainoccuptype 
-replace mainoccup_occupation=. if mainok_indiv==2 & kindofwork!=mainoccuptype
-replace mainoccup_occupsector=. if mainok_indiv==2 & kindofwork!=mainoccuptype
-replace mainoccupname="" if mainok_indiv==2 & kindofwork!=mainoccuptype
+replace mainocc=. if mainok_indiv==2 & kindofwork!=mainoccuptype
 *
 drop mainok mainok_indiv
 gen mainok=0
-replace mainok=1 if mainoccup_kindofwork!=.
+replace mainok=1 if mainocc!=.
 tab mainok egoid, m
 bysort HHID2010 INDID: egen mainok_indiv=sum(mainok)
 tab mainok_indiv egoid, m
@@ -244,107 +233,82 @@ mainok_ind |              egoid
 */
 restore
 
+
+
+
 **********Indiv
 order HHID2010 parent_key INDID INDID2010 INDID2016 egoid
 *max income or hours (income only for 2010)
 bysort HHID2010 INDID : egen maxhours_indiv=max(hoursayear)
 replace maxhours_indiv=. if egoid==1 | egoid==2
 *occup name and occup type with the max
-replace mainoccup_kindofwork=kindofwork if maxhours_indiv==hoursayear & egoid==0
-replace mainoccup_occupation=occupation if maxhours_indiv==hoursayear & egoid==0
-replace mainoccup_profession=profession if maxhours_indiv==hoursayear & egoid==0
-replace mainoccup_occupsector=occupsector if maxhours_indiv==hoursayear & egoid==0
-replace mainoccupname=occupationname if maxhours_indiv==hoursayear & egoid==0
-drop mainok
-bysort HHID2010 INDID: egen mainok=max(mainoccup_kindofwork)
-tab mainok ego, m
-gen dummymoc=0
-replace dummymoc=1 if mainoccup_kindofwork!=.
-tab dummymoc // 1324 normalement
-*Check duplicates
-duplicates tag HHID2010 INDID egoid if dummymoc==1, gen(tag)
-tab tag
-*1272 ok, le reste il y a des doublons
-
-
-	sort tag HHID2010 INDID occupationid
-		*apply max income
-		bysort HHID2010 INDID: egen maxincome=max(annualincome) if tag>0
-		replace mainoccup_kindofwork=. if maxincome!=annualincome & tag>0
-		replace mainoccup_occupation=. if maxincome!=annualincome & tag>0
-		replace mainoccup_profession=. if maxincome!=annualincome & tag>0
-		replace mainoccup_occupsector=. if maxincome!=annualincome & tag>0
-		replace mainoccupname="" if maxincome!=annualincome & tag>0
-		drop mainok
-		drop dummymoc
-		drop tag
-		bysort HHID2010 INDID: egen mainok=max(mainoccup_kindofwork)
-		tab mainok ego, m
-		gen dummymoc=0
-		replace dummymoc=1 if mainoccup_kindofwork!=.
-		tab dummymoc // 1324 normalement
-		*Check duplicates
-		duplicates tag HHID2010 INDID ego if dummymoc==1, gen(tag)
-		tab tag
-		sort tag HHID2010 INDID occupationid
-			*apply occupation order
-			bysort HHID2010 INDID: egen minnumber=min(occupationid) if tag>0
-			replace mainoccup_kindofwork=. if minnumber!=occupationid & tag>0
-			replace mainoccup_occupation=. if minnumber!=occupationid & tag>0
-			replace mainoccup_profession=. if minnumber!=occupationid & tag>0
-			replace mainoccup_occupsector=. if minnumber!=occupationid & tag>0
-			replace mainoccupname="" if minnumber!=occupationid & tag>0
-			drop mainok
-			drop dummymoc
-			drop tag
-			bysort HHID2010 INDID: egen mainok=max(mainoccup_kindofwork)
-			tab mainok ego, m
-			gen dummymoc=0
-			replace dummymoc=1 if mainoccup_kindofwork!=.
-			tab dummymoc // 1135 normalement
-			drop mainok minnumber maxincome maxhours_indiv _tempmocego
-
-
+replace mainocc=1 if maxhours_indiv==hoursayear & egoid==0
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID2010 INDID: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
 preserve
-duplicates drop parent_key INDID, force
-tab1 mainoccup_kindofwork mainoccup_profession mainoccup_occupation mainoccup_occupsector
+duplicates drop HHID2010 INDID, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |              egoid
+        iv |         0          1          2 |     Total
+-----------+---------------------------------+----------
+         1 |       501        477        344 |     1,322 
+         2 |         2          0          0 |         2 
+-----------+---------------------------------+----------
+     Total |       503        477        344 |     1,324
+*/
 restore
-			
-*hours and income of main
+
+*Check duplicates
+list HHID2010 INDID occupationid occupationname kindofwork hoursayear if mainok_indiv==2, clean noobs
+replace mainocc=. if mainok_indiv==2 & occupationid==2
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID2010 INDID: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID2010 INDID, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |              egoid
+        iv |         0          1          2 |     Total
+-----------+---------------------------------+----------
+         1 |       503        477        344 |     1,324 
+-----------+---------------------------------+----------
+     Total |       503        477        344 |     1,324 
+*/
+restore
+tab mainocc, m
+
+*Var to create
+gen mainoccup_kindofwork=.
+gen mainoccup_profession=.
+gen mainoccup_occupation=.
+gen mainoccup_occupsector=.
+gen mainoccup_occupname=""
 gen mainoccup_hours=.
 gen mainoccup_income=.
 gen mainoccup_distance=.
-replace mainoccup_hours=hoursayear if dummymoc==1
-replace mainoccup_income=annualincome if dummymoc==1
-replace mainoccup_distance=jobdistance if dummymoc==1
-replace mainoccup_distance=0 if dummymoc==1 & mainoccup_distance==.
 
+replace mainoccup_kindofwork=kindofwork if mainocc==1 
+replace mainoccup_profession=profession if mainocc==1
+replace mainoccup_occupation=occupation if mainocc==1
+replace mainoccup_occupsector=occupsector if mainocc==1
+replace mainoccup_occupname=occupationname if mainocc==1
+replace mainoccup_hours=hoursayear if mainocc==1
+replace mainoccup_income=annualincome if mainocc==1
+replace mainoccup_distance=jobdistance if mainocc==1
 
-*encode name to simplify the procedure
-encode mainoccupname, gen(mainoccupnamenumeric)
-*put main occupation at indiv level
-bysort HHID2010 INDID : egen mainoccupation=max(mainoccup)
-bysort HHID2010 INDID : egen mainoccupationname=max(mainoccupnamenumeric)
-*put the label
-label values mainoccupation kindofwork
-label values mainoccupationname mainoccupnamenumeric
-*decode the name to compare between the waves
-decode mainoccupationname, gen(_mainoccupationname)
-drop mainoccupationname
-rename _mainoccupationname mainoccupationname
-*total income
-bysort HHID2010 INDID: egen annualincome_indiv=sum(annualincome)
-*nb of income sources
-fre kindofwork
-gen countoccupation=1
-bysort HHID2010 INDID: egen nboccupation_indiv=sum(countoccupation)
-*cleaning
-rename mainoccupation mainoccupation_indiv
-rename mainoccupationname mainoccupationname_indiv
-rename mainoccup_hours mainoccupation_hours_indiv
-rename mainoccup_income mainoccupation_income_indiv
-rename mainoccup_distance mainoccupation_distance_indiv
-drop mainoccup mainoccupname mainoccupnamenumeric countoccupation
+*Clean
+drop mainocc maxhours_indiv mainok mainok_indiv
 
 
 **********HH
