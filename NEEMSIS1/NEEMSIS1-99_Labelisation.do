@@ -64,8 +64,8 @@ sort HHID_panel INDID_panel
 order HHID_panel submissiondate year INDID_panel name sex age egoid jatis address villageid
 
 
-save"$directory\NEEMSIS1-HH_v9.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS1\NEEMSIS1-HH_v9.dta", replace
+*save"$directory\NEEMSIS1-HH_v9.dta", replace
+*save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS1\NEEMSIS1-HH_v9.dta", replace
 
 
 

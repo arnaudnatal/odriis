@@ -677,6 +677,8 @@ replace occupcode2020=6 if occupcode2020==3 & occup_sector2==8 & joblocation=="O
 			
 			
 * recode from non-agri coolie to regular non-qualified (drivers(28), tailors(24), construction)
+
+tab occupationname if
 replace occupcode2020=4 if occupcode2020==3 & occup_sector2==9 & occupationname=="Driver"
 replace occupcode2020=4 if occupcode2020==3 & occup_sector2==3 & occup_sector==28 & salariedjobtype==3
 replace occupcode2020=4 if occupcode2020==3 & occup_sector2==3 & occup_sector==24 & salariedjobtype==3
