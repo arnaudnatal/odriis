@@ -207,7 +207,7 @@ save"$directory/_temp/NEEMSIS2_FEB`k'", replace
 save"$directory/_temp/NEEMSIS2_FEBRUARY`k'", replace
 save"$directory/_temp/NEEMSIS2_NEW_APRIL`k'", replace
 save"$directory/_temp/NEEMSIS2_APRIL`k'", replace
-
+save"$directory/_temp/NEEMSIS2_NEW_JUNE`k'", replace
 }
 
 
@@ -249,6 +249,7 @@ append using "$directory\rename\NEEMSIS2_FEB`k'", force
 append using "$directory\rename\NEEMSIS2_FEBRUARY`k'", force
 append using "$directory\rename\NEEMSIS2_NEW_APRIL`k'", force
 append using "$directory\rename\NEEMSIS2_APRIL`k'", force
+append using "$directory\rename\NEEMSIS2_NEW_JUNE`k'", force
 do "$directory\do_not_drop\_1-3-datachoicelist_v2"
 save "$directory/CLEAN/NEEMSIS_APPEND`k'", replace
 }
@@ -278,13 +279,14 @@ save "$directory/CLEAN/NEEMSIS_APPEND`k'", replace
 /*
 APPEND la bonne base HH 
 */
-use"$directory\rename\NEEMSIS2_LAST~_v4.dta", clear
-append using "$directory\rename\NEEMSIS2_DECEMBER~_v4.dta", force
-append using "$directory\rename\NEEMSIS2_DEC~_v4.dta", force
-append using "$directory\rename\NEEMSIS2_FEB~_v4.dta", force
-append using "$directory\rename\NEEMSIS2_FEBRUARY~_v4.dta", force
-append using "$directory\rename\NEEMSIS2_NEW_APRIL~_v4.dta", force
-append using "$directory\rename\NEEMSIS2_APRIL~_v4.dta", force
+use"$directory\rename\NEEMSIS2_LAST~_v4.dta", clear  // 225
+append using "$directory\rename\NEEMSIS2_DECEMBER~_v4.dta", force  // 1737
+append using "$directory\rename\NEEMSIS2_DEC~_v4.dta", force  // 1739
+append using "$directory\rename\NEEMSIS2_FEB~_v4.dta", force  // 1773
+append using "$directory\rename\NEEMSIS2_FEBRUARY~_v4.dta", force  // 2376
+append using "$directory\rename\NEEMSIS2_NEW_APRIL~_v4.dta", force  // 2538
+append using "$directory\rename\NEEMSIS2_APRIL~_v4.dta", force  // 2913
+append using "$directory\rename\NEEMSIS2_NEW_JUNE~_v4.dta", force  // 3603
 duplicates tag parent_key name, gen(tag)
 tab tag
 drop tag
@@ -407,11 +409,11 @@ drop tag
 
 ********** MERGE UNIQUE PANEL IDENTIFIER
 merge m:1 householdid2020 using "$directory\do_not_drop\unique_identifier_panel.dta", keepusing(villageid villageareaid HHID HHID2010 dummynewHH dummydemonetisation caste villageid_new villageid_new_comments tracked HHID_panel dummyHHlost2016 value_householdid_2020 householdid2020)
-keep if _merge==3
+drop if _merge==2
+*keep if _merge==3
 drop _merge
 order parent_key householdid2020 HHID2010 name namefrompreload INDID INDID_former INDID_left ego, first
-recast str20 HHID2010
-
+compress
 
 
 

@@ -22,14 +22,15 @@ global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
 *global preamble "`dbv'"
-global preamble "NEEMSIS2_NEW_APRIL"
+global preamble "NEEMSIS2_NEW_JUNE"
 
 ****************************************
 * END
 
 
 /*
-foreach x in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST NEEMSIS2_NEW_APRIL {
+*foreach x in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST NEEMSIS2_NEW_APRIL NEEMSIS2_NEW_JUNE {
+foreach x in  NEEMSIS2_NEW_JUNE {
 cd"$directory\\`x'"
 do "import_`x'"
 }

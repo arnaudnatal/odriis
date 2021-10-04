@@ -26,7 +26,7 @@ cls
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
-global preamble "NEEMSIS2_NEW_APRIL"
+global preamble "NEEMSIS2_NEW_JUNE"
 
 ********** SSC to install
 *ssc install dropmiss, replace
