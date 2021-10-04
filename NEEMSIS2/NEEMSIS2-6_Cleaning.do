@@ -185,10 +185,6 @@ drop jatis2010 jatis2016
 rename ego egoid
 
 
-
-
-
-
 ********** Name
 tab name
 sort name
@@ -652,6 +648,15 @@ save"NEEMSIS2-HH_v11.dta", replace
 
 use"NEEMSIS2-HH_v11.dta", clear
 
+*use"NEEMSIS2-HH_v5.dta", clear
+*drop if ego==0
+*ta ego
+*ta version
+
+merge 1:1 HHID_panel INDID_panel using "D:\Documents\_Thesis\_DATA\ego2016"
+keep if _merge==3
+
+
 *Macro
 global big5 ///
 curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
@@ -680,18 +685,16 @@ completeduties putoffduties = max never, with 99 recoded as missing
 */
 
 
-
-
 ********* Omega
-omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .7715
+omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .7642
 
-omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .7158
+omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .7040
 
-omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .6565
+omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .6511
 
-omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .6186
+omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .6126
 
-omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7178
+omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7295
 
 
 
@@ -776,39 +779,43 @@ completeduties putoffduties = max always, with 99 recoded as missing and reverse
 ********** Internal consistency v2
 
 *OP
-omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .7715
-alpha curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination // .7694
+omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .7642
+alpha curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination // .7624
 
-omega cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination, rev(cr_repetitivetasks) // .3907
-
-
-omega cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination, rev(cr_repetitivetasks) // .3907
-
-
-
-
-
-alpha cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination // .3415
+omega cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination, rev(cr_repetitivetasks) // .3684
+alpha cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination // .3189
 
 
 *CO
-omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .7158
-alpha organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties  // .7109
+omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .7040
+alpha organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties  // .7015
 
-omega cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties, rev(cr_putoffduties cr_easilydistracted)  // .3829
-alpha cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties  // .4187
+omega cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties, rev(cr_putoffduties cr_easilydistracted)  // .4171
+alpha cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties  // .4723
 
 
 *EX
-omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .6565
+omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .6511
+alpha enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts  // .6511
+
+omega cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts, rev(cr_shywithpeople)  // .4486
+
+alpha cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts  // .4480
 
 
 *AG
-omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .6186
+omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .6126
+alpha workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers  // .5437
 
+omega cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers, rev(cr_rudetoother)  // .3076
+alpha cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers  // .2834
 
 *ES
-omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7178
+omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7295
+alpha managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm  // .7312
+
+omega cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot  cr_staycalm, rev(cr_managestress cr_staycalm)  // .7929
+alpha cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot  cr_staycalm  // .7939
 
 
 
