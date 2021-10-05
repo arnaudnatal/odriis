@@ -92,6 +92,9 @@ cd"D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 *use"indiv2020_temp.dta", clear
 
 use "NEEMSIS2-HH_v5.dta" , clear
+
+
+
 gen year=2020
 rename INDID INDID2020
 destring INDID_total INDID_former INDID_new INDID_left, replace

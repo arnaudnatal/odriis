@@ -88,8 +88,6 @@ sort householdid2020
 save"$directory\\$neemsis-_tocomp", replace
 
 
-
-
 ********** Append la base
 use"$git\unique_identifier_panel", clear
 fre villageareaid
@@ -110,13 +108,32 @@ order villageid n1 max_n1
 bysort villageid n1: gen ntemp=_n
 replace ntemp=. if n1!=.
 order villageid n1 max_n1 ntemp
-
 gen n2=.
 replace n2=n1 if n1!=.
 replace n2=max_n1 + ntemp if n1==.
-
 order villageid n1 max_n1 ntemp n2
 
+*Nouveau HHID_panel
+drop villageid_lab
+decode villageid, gen(villageid_lab)
+replace villageid_lab=villageid_str if villageid_lab=="."
+replace villageid_lab=villageid_str if villageid_lab==""
+egen HHID_panel_n2=concat(villageid_lab n2)
+order HHID_panel HHID_panel_n2
 
+*Verif
+gen pb=0
+replace pb=1 if HHID_panel!=HHID_panel_n2
+tab pb if HHID_panel!="", m 
+drop pb
+
+*Ok
+rename HHID_panel HHID_panel_n1
+rename HHID_panel_n2 HHID_panel
+label var HHID_panel "Unique for RUME & NEEMSIS HH (with n2)"
+
+
+*Save
+save "$git\unique_identifier_panel_v2.dta", replace
 ****************************************
 * END
