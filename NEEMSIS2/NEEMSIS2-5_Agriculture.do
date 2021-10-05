@@ -354,8 +354,8 @@ destring INDID_former, replace
 destring INDID_left, replace
 rename version version_agri
 
-erase"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v2.dta"
-erase"$directory\CLEAN\NEEMSIS_Agriculture_APPEND.dta"
+*erase"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v2.dta"
+*erase"$directory\CLEAN\NEEMSIS_Agriculture_APPEND.dta"
 
 save"$directory\CLEAN\NEEMSIS2-HH_v7.dta", replace
 ****************************************

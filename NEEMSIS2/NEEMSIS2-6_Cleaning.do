@@ -43,7 +43,8 @@ cd "$directory\CLEAN"
 ****************************************
 use"NEEMSIS2-HH_v7.dta", clear
 
-tab name, m
+mdesc name
+sort name
 /*
 Attention, l'individu GOV43 --> 6 est bizarre
 il apparait dans la base lefthome sans prénom (enfin avec "...") en tant que 2 qui part
@@ -74,7 +75,7 @@ restore
 *
 
 
-merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_wide", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_wide_v2", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
 drop if _merge==2
 drop _merge
 
@@ -262,7 +263,8 @@ replace version_HH=4 if _version_HH=="NEEMSIS2_FEB"
 replace version_HH=5 if _version_HH=="NEEMSIS2_FEBRUARY"
 replace version_HH=6 if _version_HH=="NEEMSIS2_APRIL"
 replace version_HH=7 if _version_HH=="NEEMSIS2_NEW_APRIL"
-label define version_HH 1"LAST" 2"DEC" 3"DECEMBER" 4"FEB" 5"FEBRUARY" 6"APRIL" 7"NEW_APRIL", replace
+replace version_HH=8 if _version_HH=="NEEMSIS2_NEW_JUNE"
+label define version_HH 1"LAST" 2"DEC" 3"DECEMBER" 4"FEB" 5"FEBRUARY" 6"APRIL" 7"NEW_APRIL" 8"NEW_JUNE", replace
 label values version_HH version_HH
 drop _version_HH
 

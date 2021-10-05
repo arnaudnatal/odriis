@@ -44,7 +44,7 @@ cd"$directory"
 ****************************************
 
 ********** TEMPORARY PANEL DATA BASE TO HAVE ALL INDIVIDUALS
-use"$directory\CLEAN\NEEMSIS2-HH_v5.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
 
 replace INDID=. if version=="NEEMSIS2_NEW_APRIL"
 replace INDIDpanel="" if version=="NEEMSIS2_NEW_APRIL"
@@ -262,15 +262,21 @@ save"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.d
 
 
 
-*********** MERGE MARRIAGE WITH HOUSEHOLD DATA BASE
-use"$directory\CLEAN\NEEMSIS2-HH_v5.dta", clear
+
+
+
+****************************************
+* MERGE MARRIAGE WITH HOUSEHOLD DATA BASE
+****************************************
+use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
 drop INDID2010 INDIDpanel
 
-merge 1:1 INDID HHID_panel using "$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta"
+merge 1:m INDID HHID_panel using "$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta"
 
 rename _merge marriagepb
 label define marriagepb 1"No marriage" 2"Someone else" 3"Merge marriage ok"
 label values marriagepb marriagepb
 
 save"$directory\CLEAN\NEEMSIS2-HH_v6.dta", replace
-
+****************************************
+* END
