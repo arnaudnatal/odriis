@@ -257,12 +257,16 @@ tab year
 
 
 ********** Creation of id for new member
+/*
+Ajouter v2 v3 v4 à chaque fois que je relance avec des nouveaux individus
+*/
 sort HHID_panel INDID_panel
 split INDID_panel, p(_)
 drop INDID_panel1
 rename INDID_panel2 codeid
 destring codeid, replace
 bysort HHID_panel: egen max_codeid=max(codeid)
+recode max_codeid (.=0)
 
 gen INDID2020=INDID if year==2020
 destring INDID2020, replace
@@ -298,15 +302,15 @@ rename dummyleft_2020 dummyleft
 rename dummynew_2020 dummynew
 rename dummyformer_2020 dummyformer
 
-
-save"$git\code_indiv_2010_2016_2020", replace
+save"$git\code_indiv_2010_2016_2020_v2", replace
 
 egen HHINDID=concat(HHID_panel INDID_panel), p(/)
+
 reshape wide INDID name sex age relationshiptohead dummylivinghome maritalstatus egoid dummyleft dummyformer dummynew, i(HHINDID) j(year)
 drop HHINDID
 order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020
 
-save"$git\code_indiv_2010_2016_2020_wide", replace
+save"$git\code_indiv_2010_2016_2020_wide_v2", replace
 ****************************************
 * END
 
@@ -315,8 +319,36 @@ save"$git\code_indiv_2010_2016_2020_wide", replace
 
 
 
+/*
+****************************************
+* Vérifier INDID_panel
+****************************************
+use"$git\code_indiv_2010_2016_2020_wide", clear
 
+rename name2010 name_2010
+rename name2016 name_2016
+rename name2020 name_2020
 
+merge 1:1 HHID_panel INDID_panel using "$git\code_indiv_2010_2016_2020_wide_v2", keepusing(name2010 name2016 name2020)
+keep if _merge==3
+
+foreach x in 10 16 20 {
+gen test20`x'=.
+}
+
+foreach x in 10 16 20 {
+replace test20`x'=1 if name20`x'!=name_20`x'
+}
+
+tab1 test2010 test2016 test2020
+sort test2020
+
+/*
+OK
+*/
+****************************************
+* END
+*/
 
 
 
@@ -377,7 +409,7 @@ order HHID_panel HHID2010 INDID_panel namemigrant
 
 
 *INDID_panel
-merge m:m HHID_panel INDID_panel using "$git\code_indiv_2010_2016_2020"
+merge m:m HHID_panel INDID_panel using "$git\code_indiv_2010_2016_2020_v2"
 tab year
 
 gen HHok=1 if dummyego!=.
@@ -438,7 +470,7 @@ drop if year==.
 tab year
 
 
-save"$git\code_indiv_2010_2016_2020_tracking2019", replace
+save"$git\code_indiv_2010_2016_2020_tracking2019_v2", replace
 
 *Attention à Saravanan
 egen HHINDID=concat(HHID_panel INDID_panel), p(/)
@@ -472,6 +504,6 @@ reshape wide name sex age relationshiptohead maritalstatus relationshiptoheadoth
 drop HHINDID
 order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020
 
-save"$git\code_indiv_2010_2016_2020_tracking2019_wide", replace
+save"$git\code_indiv_2010_2016_2020_tracking2019_wide_v2", replace
 ****************************************
 * END
