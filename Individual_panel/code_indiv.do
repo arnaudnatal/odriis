@@ -13,9 +13,6 @@ Indiv panel
 
 
 
-
-
-
 ****************************************
 * INITIALIZATION
 ****************************************
@@ -40,10 +37,6 @@ Le but est donc de compléter ça avec les données 2020 sachant qu'une bonne pa
 
 ****************************************
 * END
-
-
-
-
 
 
 
@@ -91,14 +84,15 @@ Il faut ouvrir indiv2020_temp créer avec les .do.
 cd"D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 *use"indiv2020_temp.dta", clear
 
-use "NEEMSIS2-HH_v5.dta" , clear
-
-
+use "NEEMSIS2-HH_v5_bis.dta" , clear
 
 gen year=2020
 rename INDID INDID2020
+rename ego egoid
 destring INDID_total INDID_former INDID_new INDID_left, replace
-keep HHID_panel name ego version relationshiptohead relationshiptoheadother maritalstatus year INDID_total INDID_former INDID_new INDID_left INDID2020 livinghome
+keep HHID_panel name egoid version relationshiptohead relationshiptoheadother maritalstatus year INDID_total INDID_former INDID_new INDID_left INDID2020 livinghome
+
+mdesc HHID_panel
 
 gen dummyleft_2020=0
 replace dummyleft_2020=1 if INDID_left!=.
@@ -116,7 +110,6 @@ replace dummylivinghome=0 if livinghome==3 | livinghome==4
 replace dummylivinghome=1 if livinghome==1 | livinghome==2
 
 save"indiv2020_temp", replace
-
 
 
 use"indiv2020_temp.dta", clear
@@ -152,16 +145,16 @@ drop relationshiptoheadother
 **********Panel2020
 clonevar INDID2016=INDID2020
 tostring INDID2016, replace
-foreach x in name sex age relationshiptohead maritalstatus egoid dummylivinghome{
+foreach x in name relationshiptohead maritalstatus egoid dummylivinghome{
 rename `x' `x'2020
 }
 
 *
-drop INDID_panel
+*drop INDID_panel
 
 merge 1:m HHID_panel INDID2016 using "$git\code_indiv_2010_2016_wide"
 
-order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020 name2010 name2016 name2020 version_HH
+order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020 name2010 name2016 name2020 version
 drop year
 sort HHID_panel INDID_panel
 tab name2010
@@ -176,6 +169,8 @@ keep if _merge==3
 *Donc premiere partie du panel ok
 drop INDID2010 name2010 sex2010 age2010 relationshiptohead2010 dummylivinghome2010
 drop INDID2016 name2016 sex2016 age2016 relationshiptohead2016 dummylivinghome2016 maritalstatus2016 egoid2016
+
+tostring INDID2020, replace
 save"indiv2020_temp2", replace
 restore
 
@@ -207,6 +202,7 @@ drop if _merge==2
 
 
 *Modif car panel avec 2010
+tostring INDID2020, replace
 replace INDID_panel="Ind_1" if HHID_panel=="GOV10" & INDID2020=="1"
 replace INDID_panel="Ind_4" if HHID_panel=="GOV47" & INDID2020=="2"
 replace INDID_panel="Ind_1" if HHID_panel=="GOV5" & INDID2020=="1"
@@ -243,17 +239,17 @@ drop HHINDID
 tab INDID2020 if INDID_panel==""
 *ok
 
-foreach x in INDID name egoid sex age relationshiptohead maritalstatus {
+foreach x in INDID name egoid relationshiptohead maritalstatus {
 rename `x'2020 `x'
 }
 gen year=2020
 
-order year HHID_panel INDID_panel INDID name sex age relationshiptohead maritalstatus egoid
-drop version_HH 
-
-
+order year HHID_panel INDID_panel INDID name relationshiptohead maritalstatus egoid
+drop version
 save"indiv2020_v2", replace
 
+
+use"indiv2020_v2", clear
 append using "$git\code_indiv_2010_2016"
 drop HHINDID
 sort HHID_panel INDID_panel
