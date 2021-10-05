@@ -91,8 +91,11 @@ Il faut ouvrir indiv2020_temp créer avec les .do.
 cd"D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 *use"indiv2020_temp.dta", clear
 
-use "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v18.dta" , clear
-keep HHID_panel name  egoid version_HH sex age relationshiptohead relationshiptoheadother maritalstatus year INDID_panel INDID_total INDID_former INDID_new INDID_left INDID2020 livinghome
+use "NEEMSIS2-HH_v5.dta" , clear
+gen year=2020
+rename INDID INDID2020
+destring INDID_total INDID_former INDID_new INDID_left, replace
+keep HHID_panel name ego version relationshiptohead relationshiptoheadother maritalstatus year INDID_total INDID_former INDID_new INDID_left INDID2020 livinghome
 
 gen dummyleft_2020=0
 replace dummyleft_2020=1 if INDID_left!=.
@@ -110,10 +113,10 @@ replace dummylivinghome=0 if livinghome==3 | livinghome==4
 replace dummylivinghome=1 if livinghome==1 | livinghome==2
 
 save"indiv2020_temp", replace
+
+
+
 use"indiv2020_temp.dta", clear
-
-
-
 ********** Relationshiptohead2020
 fre relationshiptohead
 tab relationshiptoheadother 
