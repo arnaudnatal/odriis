@@ -29,7 +29,7 @@ clear all
 ****************************************
 use"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3", clear
 
-merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v14.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel)
+merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v9.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel)
 drop if _merge==2
 drop _merge
 
@@ -523,6 +523,148 @@ replace occup_sector=111 if strpos(occupationname,"nreg")
 replace occup_sector=111 if occupationname=="NREga"
 
 
+
+********** Label
+
+label define occupation1 11 "Cultivators" 12 "Agricultural labourers" 13"Sugarcane plantation labourers" 14 "Other farm workers" 22 "Bricklayers and construction workers (chamber, roads)" ///
+	23 "Spinners, Weavers, Knitters, Dyers" 24 "Tailors, dress makers, sewers" 25 "Clay workers, potters, sculptors, painters" 26 "Electrical workers" 27 "Mechanic and machinery fitters/assemblers (except electrical)" ///
+	28 "Transport Equipment operators" 29 "Stationery Engines and related equipment operators" 30 "Material handling and related equipment operators (loaders/unloaders)" ///
+	31 "Other Industrial workers (glass, mining, chemicals, printing, welders)" 32 "Other craftsworkers (Carpenters, tiles workers, Paper product makers)" 33 "Other labour" ///
+	41 "Teachers" 42 "Architects, Engineers, ..." 43 "Engineering technicians" 44 "Scientific, medical and technical persons" 45 "Nursing and health technicians" 46 "Economists, Accountants, auditors" ///
+	47 "Jurists" 51 "Administrative and executive officials government and local bodies" 52 "Working proprietors, directors, managers in mining, construction, manufacturing" ///
+	61 "Independent labour contractors" 71 "Clerical and other supervisors" 72 "Other clerical workers" 73 "Transport conductors and guards" 81 "Shop keepers (wholesale and retail)" ///
+	82 "Agri equipment sellers" 83 "Rent shop/ activities" 84 "Salesmen, shop assistants and related workers" 85 "Technical salesmen & commercial travellers" 86 "Money lenders and pawn brokers" ///
+	91 "Hotel and restaurant keepers" 92 "Cooks, waiters" 93 "Building caretakers, sweepers, cleaners" 94 "Maids and house keeping service workers" 95 "Hair dressers, barbers..." 96 "Private transportation" ///
+	97 "Other service workers" 101 "Performing artists" 102 "Astrologers" 111 "Public works/ NREGA"
+label value occup_sector occupation1
+
+tab occup_sector, m
+
+
+
+
+*********Appel avec Sébastien le 12/10/2021
+order occupationname occup_sector kindofwork HHID_panel INDID_panel occupationnumber
+compress 
+sort occup_sector occupationname
+
+
+***** Recoder kindofwork
+replace kindofwork=3 if HHID_panel=="KUV1" & INDID_panel=="Ind_2" & occupationnumber=="2"
+
+
+
+***** Recoder occup_sector
+replace occup_sector=11 if HHID_panel=="KAR17" & occupationname=="Agricultural cooli in own farm"
+replace occup_sector=11 if HHID_panel=="ORA30" & occupationname=="Agricultural cooli in own farm"
+replace occup_sector=11 if HHID_panel=="ORA14" & occupationname=="Agricultural cooli on own land"
+
+replace occup_sector=46 if HHID_panel=="KUV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // LIC agent
+replace occup_sector=33 if HHID_panel=="MANAM26" & INDID_panel=="Ind_2" & occupationnumber=="2"  // SHG leader
+replace occup_sector=41 if HHID_panel=="GOV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // Assistant professor
+replace occup_sector=71 if HHID_panel=="KOR7" & INDID_panel=="Ind_5" & occupationnumber=="1"  // Govt. Job (Clerk in BDO Office)
+
+
+replace occup_sector=901 if occupationname=="Cashew company"
+replace occup_sector=901 if occupationname=="Cashew nut company"
+replace occup_sector=901 if occupationname=="Cashew nuts company worker"
+label define occupation1 901 "Food-processing industry", modify
+
+
+replace occup_sector=28 if occupationname=="Cow driving"
+
+replace occup_sector=96 if occupationname=="Cooli driver"
+
+replace occup_sector=33 if occupationname=="Company"
+
+replace occup_sector=902 if occupationname=="Daily wager"
+label define occupation1 902 "Coolie non-agri", modify
+
+replace occup_sector=72 if occupationname=="Employee in finance company"
+replace occup_sector=72 if occupationname=="Loan officer"
+replace occup_sector=72 if occupationname=="Operator"
+
+replace occup_sector=903 if occupationname=="Function decoration labour"
+replace occup_sector=903 if occupationname=="Marriage decorator"
+label define occupation1 903 "Other salaried, non quali", modify
+
+replace occup_sector=92 if occupationname=="Home made items elladai"
+replace occup_sector=92 if occupationname=="Running a canteen in Villupuram private hospital"
+
+replace occup_sector=31 if occupationname=="Hundai company"
+replace occup_sector=31 if occupationname=="ITI company Sriram"
+replace occup_sector=31 if occupationname=="MRF tyer company"
+replace occup_sector=31 if occupationname=="Malar soap company"
+replace occup_sector=31 if occupationname=="Plastic company worker"
+replace occup_sector=31 if occupationname=="Soap company"
+replace occup_sector=31 if occupationname=="Mosquito nets company"
+replace occup_sector=31 if occupationname=="Water purifier company"
+replace occup_sector=31 if occupationname=="Worker in a UCO4G COMPANY"
+replace occup_sector=31 if occupationname=="Godreje"
+
+replace occup_sector=904 if occupationname=="Jeans company production"
+replace occup_sector=904 if occupationname=="Textile company @ Thiruppur"
+replace occup_sector=904 if occupationname=="Textile company at Thiruppur"
+replace occup_sector=904 if occupationname=="Textile company at Thiruppur"
+replace occup_sector=904 if occupationname=="Thirupur company"
+replace occup_sector=904 if occupationname=="Panjumill"
+replace occup_sector=904 if occupationname=="Baniyan company"
+replace occup_sector=904 if occupationname=="Baniyan factory"
+label define occupation1 904 "Textile industry/company", modify
+
+replace occup_sector=902 if occupationname=="Labour work"
+
+replace occup_sector=902 if occupationname=="Market"
+
+replace occup_sector=905 if occupationname=="Market Labour"
+label define occupation1 905 "Non agri regular qualified", modify
+
+replace occup_sector=71 if occupationname=="Thinathanthi newspaper"
+
+replace occup_sector=44 if occupationname=="Pharmacy work"
+
+replace occup_sector=96 if occupationname=="Traiver"
+
+replace occup_sector=81 if occupationname=="Self employed"
+
+replace occup_sector=906 if occupationname=="Rewinding works"
+label define occupation1 906 "Automobile", modify
+
+replace occup_sector=84 if occupationname=="Retailer"
+
+replace occup_sector=26 if occupationname=="TNEB"
+
+replace occup_sector=14 if occupationname=="Samanthi naduthal"
+
+replace occup_sector=906 if occupationname=="Fisherman"
+label define occupation1 906 "Fisherman", modify
+
+replace occup_sector=51 if occupationname=="Municipality worker"
+replace occup_sector=51 if occupationname=="NLC Employer"
+
+
+replace occup_sector=73 if occupationname=="Metro Tracking"
+
+
+
+
+
+
+********** Label
+label values occup_sector occupation1
+tab occup_sector, m
+/*
+HHID_panel	INDID_panel	occupationnumber
+GOV35	Ind_4	1
+GOV9	Ind_4	1
+GOV35	Ind_3	1
+GOV10	Ind_6	1
+MAN47	Ind_3	1
+MAN18	Ind_5	1
+*/
+
+
+********** Occup sector 2
 gen occup_sector2= 1 if occup_sector==11
 replace occup_sector2= 2 if occup_sector>11 & occup_sector<20
 replace occup_sector2= 3 if occup_sector>20 & occup_sector<40
@@ -543,20 +685,7 @@ label define sector 1 "Cultivators" 2 "Agricultural and plantation labourers" 3 
 label values occup_sector2 sector 	
 
 
-label define occupation1 11 "Cultivators" 12 "Agricultural labourers" 13"Sugarcane plantation labourers" 14 "Other farm workers" 22 "Bricklayers and construction workers (chamber, roads)" ///
-	23 "Spinners, Weavers, Knitters, Dyers" 24 "Tailors, dress makers, sewers" 25 "Clay workers, potters, sculptors, painters" 26 "Electrical workers" 27 "Mechanic and machinery fitters/assemblers (except electrical)" ///
-	28 "Transport Equipment operators" 29 "Stationery Engines and related equipment operators" 30 "Material handling and related equipment operators (loaders/unloaders)" ///
-	31 "Other Industrial workers (glass, mining, chemicals, printing, welders)" 32 "Other craftsworkers (Carpenters, tiles workers, Paper product makers)" 33 "Other labour" ///
-	41 "Teachers" 42 "Architects, Engineers, ..." 43 "Engineering technicians" 44 "Scientific, medical and technical persons" 45 "Nursing and health technicians" 46 "Economists, Accountants, auditors" ///
-	47 "Jurists" 51 "Administrative and executive officials government and local bodies" 52 "Working proprietors, directors, managers in mining, construction, manufacturing" ///
-	61 "Independent labour contractors" 71 "Clerical and other supervisors" 72 "Other clerical workers" 73 "Transport conductors and guards" 81 "Shop keepers (wholesale and retail)" ///
-	82 "Agri equipment sellers" 83 "Rent shop/ activities" 84 "Salesmen, shop assistants and related workers" 85 "Technical salesmen & commercial travellers" 86 "Money lenders and pawn brokers" ///
-	91 "Hotel and restaurant keepers" 92 "Cooks, waiters" 93 "Building caretakers, sweepers, cleaners" 94 "Maids and house keeping service workers" 95 "Hair dressers, barbers..." 96 "Private transportation" ///
-	97 "Other service workers" 101 "Performing artists" 102 "Astrologers" 111 "Public works/ NREGA"
-label value occup_sector occupation1
-
-tab occup_sector, m
-
+********** Check up
 preserve
 keep if occup_sector==.
 duplicates drop occupationname, force
@@ -564,23 +693,20 @@ sort occupationname
 list occupationname, clean noobs
 restore
 
-preserve
-rename occup_sector profession
-gen codepro=profession+1-1
-keep occupationname profession codepro
-duplicates drop
-sort occupationname
-restore
+
+
+
+
 
 * make occup_sector2 comparable to 2010 and 2016 and 2020
-gen kindofwork_old=kindofwork
+clonevar kindofwork_new=kindofwork
 
-replace kindofwork=3 if occup_sector2==2 & kindofwork==4
-replace kindofwork=4 if occup_sector2==3 & kindofwork==3
-replace kindofwork=4 if kindofwork==3 & occup_sector2==4
-replace kindofwork=4 if kindofwork==3 & occup_sector2==7
-replace kindofwork=4 if kindofwork==3 & occup_sector2==9
-replace kindofwork=2 if occup_sector2==10
+replace kindofwork_new=3 if occup_sector2==2 & kindofwork==4
+replace kindofwork_new=4 if occup_sector2==3 & kindofwork==3
+replace kindofwork_new=4 if kindofwork==3 & occup_sector2==4
+replace kindofwork_new=4 if kindofwork==3 & occup_sector2==7
+replace kindofwork_new=4 if kindofwork==3 & occup_sector2==9
+replace kindofwork_new=2 if occup_sector2==10
 * attention !!!! malgré ces changements, details des occupations restent dans catégorie initiale (SE, salaried)
 
 *recode handloom: recode to self-employed when job location is govulapuram or same village
@@ -591,9 +717,6 @@ replace kindofwork=2 if occup_sector==23 & kindofwork!=2 & joblocation=="Same vi
 | occup_sector==23 & kindofwork!=2 & joblocation=="Same villlage"
 
 **** attention: information about handloom workers will be in salaried workers module instead of self-employed module
-
-rename kindofwork kindofwork_new
-rename kindofwork_old kindofwork
 	
 	
 
