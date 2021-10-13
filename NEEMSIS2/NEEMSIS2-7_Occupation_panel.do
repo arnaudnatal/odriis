@@ -6,7 +6,7 @@ arnaud.natal@u-bordeaux.fr
 September 30, 2021
 -----
 TITLE: Occupation
-
+National Industrial Classification : http://mospi.nic.in/classification/national-industrial-classification
 -------------------------
 */
 
@@ -29,7 +29,13 @@ clear all
 ****************************************
 use"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3", clear
 
-merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v9.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel)
+*Verif occupation
+preserve
+use"$directory\CLEAN\NEEMSIS2-HH_v9.dta", clear
+fre classcompleted
+restore
+
+merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v9.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel caste)
 drop if _merge==2
 drop _merge
 
@@ -46,7 +52,7 @@ gen classcompleted10ormore=.
 replace classcompleted10ormore=0 if classcompleted<10 & classcompleted!=.
 replace classcompleted10ormore=1 if classcompleted>=10 & classcompleted!=.
 
-drop classcompleted
+*drop classcompleted
 
 gen agetowork=.
 replace agetowork=0 if age<=14 & age!=.
@@ -717,24 +723,167 @@ replace kindofwork=2 if occup_sector==23 & kindofwork!=2 & joblocation=="Same vi
 | occup_sector==23 & kindofwork!=2 & joblocation=="Same villlage"
 
 **** attention: information about handloom workers will be in salaried workers module instead of self-employed module
-	
-	
 
+
+
+********** réduire les colonnes
+gen occupcode2020=.
+
+order occupationname occup_sector occup_sector2 kindofwork annualincome salariedjobtype everattendedschool classcompleted10ormore occupcode2020
+sort occup_sector2 occup_sector occupationname kindofwork annualincome HHID_panel INDID_panel occupationnumber
+
+*salariedjobtype2 classcompleted 
+
+format occupationname %18s
+format occup_sector %18.0g
+format occup_sector2 %18.0g
+format kindofwork %20.0g
+format salariedjobtype %10.0g
+format salariedjobtype2 %5.0g
+format everattendedschool %3.0g
+format classcompleted10ormore %5.0g
+
+fre occup_sector occup_sector2 kindofwork salariedjobtype salariedwagetype, nowrap all
+/*
+occup_sector
+--------------------------------------------------------------------------------------------------------
+                                                           |      Freq.    Percent      Valid       Cum.
+-----------------------------------------------------------+--------------------------------------------
+Valid   11  Cultivators                                    |        322      15.44      15.52      15.52
+        12  Agricultural labourers                         |        553      26.51      26.65      42.17
+        13  Sugarcane plantation labourers                 |         29       1.39       1.40      43.57
+        14  Other farm workers                             |          8       0.38       0.39      43.95
+        22  Bricklayers and construction workers (chamber, |        230      11.03      11.08      55.04
+        23  Spinners, Weavers, Knitters, Dyers             |         23       1.10       1.11      56.14
+        24  Tailors, dress makers, sewers                  |         21       1.01       1.01      57.16
+        25  Clay workers, potters, sculptors, painters     |         12       0.58       0.58      57.73
+        26  Electrical workers                             |         18       0.86       0.87      58.60
+        27  Mechanic and machinery fitters/assemblers (exc |         19       0.91       0.92      59.52
+        28  Transport Equipment operators                  |         16       0.77       0.77      60.29
+        30  Material handling and related equipment operat |          4       0.19       0.19      60.48
+        31  Other Industrial workers (glass, mining, chemi |         25       1.20       1.20      61.69
+        32  Other craftsworkers (Carpenters, tiles workers |          2       0.10       0.10      61.78
+        33  Other labour                                   |         88       4.22       4.24      66.02
+        41  Teachers                                       |          6       0.29       0.29      66.31
+        42  Architects, Engineers, ...                     |          7       0.34       0.34      66.65
+        44  Scientific, medical and technical persons      |          3       0.14       0.14      66.80
+        45  Nursing and health technicians                 |         10       0.48       0.48      67.28
+        46  Economists, Accountants, auditors              |          1       0.05       0.05      67.33
+        47  Jurists                                        |          2       0.10       0.10      67.42
+        51  Administrative and executive officials governm |          8       0.38       0.39      67.81
+        52  Working proprietors, directors, managers in mi |          2       0.10       0.10      67.90
+        71  Clerical and other supervisors                 |         10       0.48       0.48      68.39
+        72  Other clerical workers                         |          8       0.38       0.39      68.77
+        73  Transport conductors and guards                |         12       0.58       0.58      69.35
+        81  Shop keepers (wholesale and retail)            |        101       4.84       4.87      74.22
+        82  Agri equipment sellers                         |          1       0.05       0.05      74.27
+        83  Rent shop/ activities                          |          1       0.05       0.05      74.31
+        84  Salesmen, shop assistants and related workers  |         17       0.81       0.82      75.13
+        85  Technical salesmen & commercial travellers     |          3       0.14       0.14      75.28
+        86  Money lenders and pawn brokers                 |          1       0.05       0.05      75.33
+        91  Hotel and restaurant keepers                   |          8       0.38       0.39      75.71
+        92  Cooks, waiters                                 |          8       0.38       0.39      76.10
+        93  Building caretakers, sweepers, cleaners        |          2       0.10       0.10      76.19
+        94  Maids and house keeping service workers        |          4       0.19       0.19      76.39
+        95  Hair dressers, barbers...                      |          1       0.05       0.05      76.43
+        96  Private transportation                         |         37       1.77       1.78      78.22
+        101 Performing artists                             |          9       0.43       0.43      78.65
+        102 Astrologers                                    |          1       0.05       0.05      78.70
+        111 Public works/ NREGA                            |        419      20.09      20.19      98.89
+        901 Food-processing industry                       |          3       0.14       0.14      99.04
+        902 Coolie non-agri                                |          3       0.14       0.14      99.18
+        903 Other salaried, non quali                      |          2       0.10       0.10      99.28
+        904 Textile industry/company                       |         10       0.48       0.48      99.76
+        905 Non agri regular qualified                     |          1       0.05       0.05      99.81
+        906 Fisherman                                      |          4       0.19       0.19     100.00
+        Total                                              |       2075      99.47     100.00           
+Missing .                                                  |         11       0.53                      
+Total                                                      |       2086     100.00                      
+--------------------------------------------------------------------------------------------------------
+
+occup_sector2
+--------------------------------------------------------------------------------------------------------
+                                                           |      Freq.    Percent      Valid       Cum.
+-----------------------------------------------------------+--------------------------------------------
+Valid   1  Cultivators                                     |        322      15.44      15.69      15.69
+        2  Agricultural and plantation labourers           |        590      28.28      28.75      44.44
+        3  Production workers, transport equipment operato |        458      21.96      22.32      66.76
+        4  Most qualified workers                          |         29       1.39       1.41      68.18
+        5  Administrative, executive and managerial worker |         10       0.48       0.49      68.66
+        7  Clerical workers                                |         30       1.44       1.46      70.13
+        8  Merchents and sellers                           |        124       5.94       6.04      76.17
+        9  Service workers                                 |         60       2.88       2.92      79.09
+        10 Artists and astrologers                         |         10       0.48       0.49      79.58
+        11 NREGA                                           |        419      20.09      20.42     100.00
+        Total                                              |       2052      98.37     100.00           
+Missing .                                                  |         34       1.63                      
+Total                                                      |       2086     100.00                      
+--------------------------------------------------------------------------------------------------------
+
+kindofwork -- ${namefromearlier3}: What kind of work is ${occupationname}?
+--------------------------------------------------------------------------------------------------------
+                                                           |      Freq.    Percent      Valid       Cum.
+-----------------------------------------------------------+--------------------------------------------
+Valid   1 Agricultural activity on own household farm      |        209      10.02      10.02      10.02
+        2 Self-employed, own account worker, an owner with |        126       6.04       6.04      16.06
+        3 Salaried job (agri in another farm)              |        659      31.59      31.59      47.65
+        4 Salaried job (non-agri, in industry, services... |        964      46.21      46.21      93.86
+        5 Unpaid worker in household business (non-agri)   |          9       0.43       0.43      94.30
+        6 Unpaid worker in other business (non-agri)       |          7       0.34       0.34      94.63
+        7 Unpaid worker in own farm                        |        106       5.08       5.08      99.71
+        8 Unpaid worker in another farm                    |          6       0.29       0.29     100.00
+        Total                                              |       2086     100.00     100.00           
+--------------------------------------------------------------------------------------------------------
+
+salariedjobtype -- : Is  occupation...
+--------------------------------------------------------------------------------------------------
+                                                     |      Freq.    Percent      Valid       Cum.
+-----------------------------------------------------+--------------------------------------------
+Valid   1 Permanent/ long term (i.e. government job) |        246      11.79      14.05      14.05
+        2 Fixed term (limited contract) (i.e. NREGA) |        417      19.99      23.81      37.86
+        3 Daily (i.e. agri coolie)                   |        900      43.14      51.40      89.26
+        4 Seasonal (i.e. brick kiln)                 |        188       9.01      10.74     100.00
+        Total                                        |       1751      83.94     100.00           
+Missing .                                            |        335      16.06                      
+Total                                                |       2086     100.00                      
+--------------------------------------------------------------------------------------------------
+
+salariedwagetype -- : Type of wage of  occupation :
+------------------------------------------------------------------
+                     |      Freq.    Percent      Valid       Cum.
+---------------------+--------------------------------------------
+Valid   1 Daily      |        792      37.97      45.23      45.23
+        2 Weekly     |        233      11.17      13.31      58.54
+        3 Monthly    |        504      24.16      28.78      87.32
+        4 Piece rate |        106       5.08       6.05      93.38
+        5 Unpaid     |        116       5.56       6.62     100.00
+        Total        |       1751      83.94     100.00           
+Missing .            |        335      16.06                      
+Total                |       2086     100.00                      
+------------------------------------------------------------------
+
+*/
 
 ************************ define occupcode2020 (replace occupcode)
 
 **"CULTIVATORS" 
-gen occupcode2020= 1 if occup_sector2==1
+replace occupcode2020=1 if occup_sector2==1
+
 
 **"AGRI COOLIE" (in occup sector 2 but not self-employed)
-replace occupcode2020= 2 if occup_sector2==2 & kindofwork!=2
+replace occupcode2020=2 if occup_sector2==2 & kindofwork!=2
+
 
 **"COOLIE NON-AGRI" (industry+service): employed, daily/seasonal/occasional job
 * industry workers (sector 3) 
 * coolies in shops	(sector 8)	
 * coolies in service (sector 9)
+replace occupcode2020=3 if ///
+  occup_sector2==3 & kindofwork!=2 & salariedjobtype>=3 ///
+| occup_sector2==8 & kindofwork!=2 & salariedjobtype>=3 ///
+| occup_sector2==9 & kindofwork!=2 & salariedjobtype>=3
 
-replace occupcode2020= 3 if occup_sector2==3 & kindofwork!=2 & salariedjobtype>=3 | occup_sector2==8 & kindofwork!=2 & salariedjobtype>=3 | occup_sector2==9 & kindofwork!=2 & salariedjobtype>=3
+
 
 **"REGULAR NON-QUALIFIED NON-AGRI" (industry+service): employed, fixed/permanent jobs, less than 10std or more than 10std but no monthly wage (only piece rate or daily)	
 * regular non qualified industry workers (sector 3): mostly in sector 22, 23= construction, handloom in thirupur)
@@ -742,136 +891,171 @@ replace occupcode2020= 3 if occup_sector2==3 & kindofwork!=2 & salariedjobtype>=
 * employed in shops (sector 8)		
 * employed service workers (sector 9)
 * qualified job but less than 10std (mid wife, assistant) (sector 4)
-	
-			
-replace occupcode2020=4 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted<10 | occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & everattendedschool==0 ///
-			| occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted>=10 & salariedwagetype!=3 ///
-			| occup_sector2==7 & classcompleted<10 | occup_sector2==7 & classcompleted>=10 & salariedwagetype!=3 ///
-			| occup_sector2==8 & kindofwork!=2 & salariedjobtype<3 | occup_sector2==9 & kindofwork!=2 & salariedjobtype<3 ///
-			| occup_sector2==4 & classcompleted<10 
+replace occupcode2020=4 if ///
+  occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted<10 ///
+| occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & everattendedschool==0 ///
+| occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted>=10 & salariedwagetype!=3 ///
+| occup_sector2==4 & classcompleted<10 ///
+| occup_sector2==7 & classcompleted<10 ///
+| occup_sector2==7 & classcompleted>=10 & salariedwagetype!=3 ///
+| occup_sector2==8 & kindofwork!=2 & salariedjobtype<3 ///
+| occup_sector2==9 & kindofwork!=2 & salariedjobtype<3 
+*On trouve ici, des gens qualifié, mais payé à la tache ou pas payé?
 
-			
 * créer sous catégorie de regular non qualified pour migrants (thiruppur et brick kiln) ??? quelle part représentent-ils dans cette catégorie ?
 * using job location
 * pour migrants: frontière coolie/regular est floue: une partie déclaré "permanent" jobs but all have piece rate/daily wages
+
+
 			
-		**"REGULAR QUALIFIED NON-AGRI" (industry+service): fixed/permanent jobs, more than 10std, and monthly wage
-			* qualified and regular industry workers (sector 3): mostly in sector 26, 27, 31= electrician, mechanic, private comp)
-			* Qualified jobs (sector 4), more than 10std
-			* Administrative, executive and managerial workers (sector 5): all more than 10 std
-
-replace occupcode2020=5 if occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted>=10 & salariedwagetype==3 ///
-			| occup_sector2==4 & classcompleted>=10 & salariedwagetype==3 | occup_sector2==5  ///
-
-		
-		**"SELF-EMPLOYMENT" 
-			*small farm self employment (sector 2)
-			*non-agri production business (tailoring, carpenter, handloom, pottery, electricians..) (sector 3)
-			*labour contractors (maistries) (sector 6)
-			*all kind of vendors/sellers (sector 8)
-			*service self-employed (sector 9)
-			*artists (sector 10)
-		
-replace occupcode2020=6 if kindofwork==2 & occup_sector2==2 | kindofwork==2 & occup_sector2==3 | occup_sector2==6 | kindofwork==2 & occup_sector2==8 | kindofwork==2 & occup_sector2==9 | occup_sector2==10
+**"REGULAR QUALIFIED NON-AGRI" (industry+service): fixed/permanent jobs, more than 10std, and monthly wage
+* qualified and regular industry workers (sector 3): mostly in sector 26, 27, 31= electrician, mechanic, private comp)
+* Qualified jobs (sector 4), more than 10std
+* Administrative, executive and managerial workers (sector 5): all more than 10 std
+replace occupcode2020=5 if ///
+  occup_sector2==3 & kindofwork!=2 & salariedjobtype<3 & classcompleted>=10 & salariedwagetype==3 ///
+| occup_sector2==4 & classcompleted>=10 & salariedwagetype==3 ///
+| occup_sector2==5 
 
 
-		**"NREGA" (sector 11)
+
+**"SELF-EMPLOYMENT" 
+*small farm self employment (sector 2)
+*non-agri production business (tailoring, carpenter, handloom, pottery, electricians..) (sector 3)
+*labour contractors (maistries) (sector 6)
+*all kind of vendors/sellers (sector 8)
+*service self-employed (sector 9)
+*artists (sector 10)
+replace occupcode2020=6 if ///
+  kindofwork==2 & occup_sector2==2 ///
+| kindofwork==2 & occup_sector2==3 ///
+| occup_sector2==6 ///
+| kindofwork==2 & occup_sector2==8 ///
+| kindofwork==2 & occup_sector2==9 ///
+| occup_sector2==10
+
+
+**"NREGA" (sector 11)
 replace occupcode2020=7 if occup_sector2==11
 
 
-* recode non-agri coolie unpaid in HH/other business (mostly pottery) to self-employed
-		* clay toys maker & petty shop, etc: recoded to self-employed (family business)
-replace occupcode2020=6 if occupcode2020==3 & kindofwork==5
-replace occupcode2020=6 if occupcode2020==3 & kindofwork==6
-replace occupcode2020=6 if occupcode2020==3 & kindofwork==7
-replace occupcode2020=6 if occupcode2020==4 & kindofwork==5
-replace occupcode2020=6 if occupcode2020==4 & kindofwork==6
-
-replace occupcode2020=6 if occupcode2020==3 & occup_sector2==8 & joblocation=="Own"
-
-
-*** pour indsutry sector: frontiere floue entre non-agri coolie et regular non-qualified 
-
-		*first step: all permanent jobs non-qualified coded in regular non-qualified
-			* & non-permanent in non-agri coolie (code occupcode2016 above)	
-		*second step: 
-			* sector 23-24-28-29 (handloom &tailors labour, drivers, powerloom operators), even if some daily workers => regular non-qualified
-			* sector 30 (loading), occasional tractor drivers (28), other coolie/helper, construction => non-agri coolie
-			
-			
-* recode from non-agri coolie to regular non-qualified (drivers(28), tailors(24), construction)
-
-tab occupationname if
-replace occupcode2020=4 if occupcode2020==3 & occup_sector2==9 & occupationname=="Driver"
-replace occupcode2020=4 if occupcode2020==3 & occup_sector2==3 & occup_sector==28 & salariedjobtype==3
-replace occupcode2020=4 if occupcode2020==3 & occup_sector2==3 & occup_sector==24 & salariedjobtype==3
-replace occupcode2020=4 if occupcode2020==3 & occupationname=="Masan"|occupcode2020==3 & occupationname=="Mason"| occupcode2020==3 & occupationname=="Painter" ///
-| occupcode2020==3 & occupationname=="Painting work" | occupcode2020==3 & occupationname=="Painting" | occupcode2020==3 & occupationname=="Painting worker" ///
-| occupcode2020==3 & occupationname=="Tiles work" | occupcode2020==3 & occupationname=="Construction mason"
-
-* recode from self-employed to regular non-qualified (carpentor): ***this job info will still be in SE!!
-replace occupcode2020=4 if occupcode2020==6 & occupationname=="Carpentor"
-
-* recode from self-employed to regular qualified (electricians, mechanics): ***this job info will still be in SE!!
-replace occupcode2020=5 if occupcode2020==6 & occupationname=="Elactetion work"|occupcode2020==6 & occupationname== "Electrician" ///
-|occupcode2020==6 & occupationname== "A/C Mechanic Own Shop at Chennai" ///
-|occupcode2020==6 & occupationname== "Tv mechanic self employed"
-
-* recode from regular qualified to regular non-qualified (tailoring, drivers, operators, other industry labour)
-replace occupcode2020=4 if occupcode2020==5 & occup_sector2==3 & occup_sector==24 |occupcode2020==5 & occup_sector2==3 & occup_sector>27
-
-* recode from non-agri coolie to qualified (electricians)
-replace occupcode2020=5 if occupcode2020==3 & occup_sector2==3 & occup_sector==26 & occupationname!="Wiring helper"
-* recode from regular non-qualified to qualified (electricians, mechanics)
-replace occupcode2020=5 if occupcode2020==4 & occup_sector2==3 & occup_sector==26
-replace occupcode2020=5 if occupcode2020==4 & occup_sector2==3 & occup_sector==27
-
-* recode from regular non-qualified to non-agri coolie (load man)
-replace occupcode2020=3 if occupcode2020==4 & occup_sector2==3 & occup_sector==30
-replace occupcode2020=3 if occupcode2020==4 & occup_sector2==3 & occupationname=="Sculpture (coolie)"
-
-
-* former label
-*label define occupcode 1 "Cultivators" 2 "Agri coolie" 3 "Non-agri coolie" 4 "Regular non-qualified" ///
-*5 "Regular qualified" 6 "SE" 7 "NREGA"
-
+********** Checkup Arnaud 1
+sort occupcode2020 occup_sector2 occup_sector occupationname kindofwork annualincome HHID_panel INDID_panel occupationnumber
 label define occupcode 1 "Agri self-employed" 2 "Agri casual workers" 3 "Non-agri casual workers" 4 "Non-agri regular non-qualified workers" ///
 5 "Non-agri regular qualified workers" 6 "Non-agri self-employed" 7 "Public employment scheme workers (NREGA)"
-
-
 label values occupcode2020 occupcode
 
-tab occupcode2020 if year==2020
+replace occupcode2020=5 if occup_sector2==7 & kindofwork==4 & classcompleted>=10 & salariedjobtype<3
+replace occupcode2020=3 if occup_sector2==. & kindofwork==4 & salariedjobtype==3
+replace occupcode2020=4 if occup_sector2==. & kindofwork==4 & salariedjobtype<3
+replace occupcode2020=6 if occup_sector2==. & kindofwork==2
 
 
+********** Checkup Arnaud 2
+sort occupcode2020 occup_sector2 occup_sector occupationname kindofwork annualincome HHID_panel INDID_panel occupationnumber
 
-* distinction non-agri coolie & regular non qualified pas très claire...
-	* using job location: new category for migrant construction workers
-	* shop labour: family business ? 5 are in non-agri coolies
-	* occup_sector 31-33: flou
+replace occupcode2020=1 if occup_sector2==. & kindofwork==1
 
+replace occupcode2020=2 if occup_sector2==. & kindofwork==3 & occupationname=="Aasari"
 
-bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2020==3 & occup_sector!=22
-* list job coolie non-agri industry hors construction
-tab occupationname occup_sector  if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedwagetype  if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedjobtype  if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
-tab occupationname annualincome if occupcode2020==3 & occup_sector2==3 & occup_sector!=22 
+replace kindofwork=4 if HHID_panel=="MAN31" & INDID_panel=="Ind_1" & occupationnumber=="1"
 
+replace kindofwork=4 if occupationname=="Building contractor"
 
-bys occup_sector2: tab occupationname  salariedwagetype  if occupcode2020==4 & occup_sector!=22
-* list job regular non-qualified industry hors construction
-tab occupationname occup_sector  if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedwagetype  if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
-tab occupationname salariedjobtype  if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
-tab occupationname annualincome if occupcode2020==4 & occup_sector2==3 & occup_sector!=22 
+replace occupcode2020=5 if occup_sector==85 & classcompleted>=10 
 
+replace occupcode2020=3 if HHID_panel=="ORA46" & INDID_panel=="Ind_3" & occupationnumber=="3"
 
+replace occupcode2020=3 if HHID_panel=="SEM36" & INDID_panel=="Ind_4" & occupationnumber=="1"
+
+replace occupcode2020=4 if HHID_panel=="MAN31" & INDID_panel=="Ind_1" & occupationnumber=="1"
 
 
 
 
+********** Checkup Arnaud 3
+gen annualincome10k=annualincome/10000
 
+gen typewage=.
+replace typewage=1 if kindofwork==1
+replace typewage=2 if kindofwork==2
+replace typewage=3 if salariedjobtype==1 | salariedjobtype==2
+replace typewage=4 if salariedjobtype==3 | salariedjobtype==4
+
+label define typewage 1"Agri SE" 2"SE" 3"Perm/fix" 4"Day/Seas"
+label values typewage typewage
+fre typewage
+
+label define occupcode 1 "Agri SE" 2 "Agri cas" 3 "Nagri cas" 4 "Nagri reg nqual" ///
+5 "Nagri reg qual" 6 "Nagri SE" 7 "NREGA", modify
+
+label define kindofwork 1"Agri SE" 2"SE" 3"SJ agri" 4"SJ nagri" 5"UW hh busi" 6"UW oth busi" 7"UW own agri" 8"UW oth agri", modify
+
+
+
+/*
+********** LOG
+set graph off
+log using "$git\Occupations\Stat2020.log", replace
+********** Insight
+fre occupcode2020
+********** Annual income by occupation and wagetype
+stripplot annualincome10k, over(occupcode2020) separate(typewage) ///
+cumul cumprob box centre refline vertical /// 
+xsize(3) xtitle("") xlabel(,angle(45))  ///
+ylabel() ymtick() ytitle("Annual income *10k") ///
+msymbol(oh oh oh oh) mcolor(plr1 plg1 ply1 pll1) ///
+legend(pos(6) col(4)) name(inc_occ, replace)
+graph export "$git\Occupations\income_2020.pdf", replace
+stripplot annualincome10k if annualincome10k<50, over(occupcode2020) separate(typewage) ///
+cumul cumprob box centre refline vertical /// 
+xsize(3) xtitle("") xlabel(,angle(45))  ///
+ylabel() ymtick() ytitle("Annual income *10k") ///
+msymbol(oh oh oh oh) mcolor(plr1 plg1 ply1 pll1) ///
+legend(pos(6) col(4)) name(inc_occ_50, replace)
+graph export "$git\Occupations\income50_2020.pdf", replace
+********** Education
+tab occupcode2020 edulevel, row col nofreq
+********** Type of wage
+tab occupcode2020 typewage, row col nofreq
+********** Caste
+tab occupcode2020 caste, row col nofreq
+********** Sex
+tab occupcode2020 sex, row col nofreq
+********** Sector
+tab occupcode2020 occup_sector2, row col nofreq
+********** Kow
+tab occupcode2020 kindofwork, row col nofreq
+
+log close
+graphlog using "$git\Occupations\Stat2020.log", lspacing(0.5) fsize(10) msize(.1) porientation(landscape) replace
+set graph on
+*/
+
+
+label define occupcode 1 "Agri SE" 2 "Agri casual" 3 "Non-agri casual" 4 "Non-agri regular non-qualified" ///
+5 "Non-agri regular qualified" 6 "Non-agri SE" 7 "NREGA", modify
+
+label define kindofwork 1"Agri SE" 2"SE" 3"Salaried job agri" 4"Salaried job non-agri" 5"Unpaid in HH business (non-agri)" 6"Unpaid in other business (non-agri)" 7"Unpaid in own farm" 8"Unpaid in another farm", modify
+
+
+********** Database for check
+preserve
+keep occupationname occup_sector occup_sector2 kindofwork annualincome classcompleted salariedjobtype salariedjobtype2 everattendedschool classcompleted occupcode2020 setofemployment HHID_panel INDID_panel occupationnumber sex caste
+order occupationname occup_sector occup_sector2 kindofwork annualincome everattendedschool classcompleted salariedjobtype salariedjobtype2 occupcode2020, first
+order HHID_panel INDID_panel occupationnumber sex caste setofemployment, last
+format occupationname %100s
+format occup_sector %100.0g
+format occup_sector2 %100.0g
+format salariedjobtype %100.0g
+format salariedjobtype2 %100.0g
+format everattendedschool %100.0g
+compress
+foreach x in occup_sector occup_sector2 occupcode2020{
+label var `x' "/!\ --> Construction for panel 2010-2016-2020"
+}
+save "Occupation2020.dta", replace
+restore 
 
 
 
@@ -882,24 +1066,7 @@ tab occupationname annualincome if occupcode2020==4 & occup_sector2==3 & occup_s
 gen occupcode2=occupcode2020 if year==2020
 label values occupcode2 occupcode
 
-replace occupcode2=5 if occupcode2==. & occupationname=="Advocate"
-replace occupcode2=4 if occupcode2==. & occupationname=="Bus driver"
-replace occupcode2=4 if occupcode2==. & occupationname=="Office assistant in Co-operative bank"
-replace occupcode2=4 if occupcode2==. & occupationname=="Water company private"
-replace occupcode2=4 if occupcode2==. & occupationname=="Accountant in ration (gov job) no contract yet"
-replace occupcode2=4 if occupcode2==. & occupationname=="Secretary(primary agriculture cooperative bank)"
-
-
-replace occupationid=. if occupationname=="No occupation"
-
-
 tab occupcode2 year, column
-
-
-
-
-
-
 
 
 
