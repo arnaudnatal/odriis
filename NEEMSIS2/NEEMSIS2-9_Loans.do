@@ -1012,9 +1012,6 @@ merge 1:m HHID_panel using "NEEMSIS2-HH_v11.dta", force
 
 
 
-
-
-
 *INDIV
 bysort HHID_panel INDID_panel: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
 bysort HHID_panel INDID_panel: egen imp1_is_tot_indiv=sum(imp1_interest_service)
