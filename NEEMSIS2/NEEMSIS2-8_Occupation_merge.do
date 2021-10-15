@@ -40,237 +40,481 @@ cd "$directory\CLEAN"
 
 
 
-
-
-
-
-
-
 ****************************************
 * Occupation
 ****************************************
+use"NEEMSIS_APPEND-occupations_v3.dta", clear
+
+
+**********Jobloc cleaning + ext
+tab joblocation
+
+forvalues i=1(1)7{
+gen jobloc_`i'=0
+}
+
+forvalues i=1(1)7{
+replace jobloc_`i'=1 if strpos(joblocation,"`i'")
+}
+
+rename jobloc_1 jobloc_samevil
+rename jobloc_2 jobloc_aroundvil
+rename jobloc_3 jobloc_ruralTN
+rename jobloc_4 jobloc_smalltownAR
+rename jobloc_5 jobloc_bigcitiesTN
+rename jobloc_6 jobloc_ruralOUT
+rename jobloc_7 jobloc_bigcitiesOUT
+
+
+gen ext=0
+foreach x in jobloc_aroundvil jobloc_ruralTN jobloc_smalltownAR jobloc_bigcitiesTN jobloc_ruralOUT jobloc_bigcitiesOUT {
+replace ext=1 if `x'==1
+}
+
+tab ext
+
+bysort parent_key: egen sum_ext_HH=sum(ext)
+
+
+********** Merger les var ego du questionnaire HH
+merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v9.dta", keepusing(mainoccuptype maxhoursayear selected_occupposition_ selected_occupname_ dummymainoccupation2 othermainoccupation2 workedpastyearfromearlier dummyworkedpastyear dummyego)
+keep if _merge==3
+drop _merge
+label values mainoccuptype kindofwork
+format mainoccuptype %20.0g
+
+**********Var
+gen mainocc=.
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab egoid, m
 /*
-Ajouter à la base HH une variable d'activité principale
-partant du principe que c'est l'activité où avec max hoursayear
+      egoid |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        423       25.21       25.21
+          1 |        566       33.73       58.94
+          2 |        459       27.35       86.29
+          3 |        230       13.71      100.00
+------------+-----------------------------------
+      Total |      1,678      100.00
 */
-use"NEEMSIS_APPEND-occupations.dta", clear
-split parent_key, p(/)
-drop parent_key parent_key2
-rename parent_key1 parent_key
-split setofoccupations, p([)
-drop setofoccupations1 setofoccupations3
-split setofoccupations2, p(])
-drop setofoccupations2 setofoccupations22
-rename setofoccupations21 INDID_total
-destring INDID_total, replace
-drop businessskill_2 businessskill_4 businessskill_1 businesslocation_1 businesslocation_2 businesslocation_4 joblocation_1 joblocation_2 joblocation_4 joblocation_5 joblocation_3 joblocation_7 joblocation_6 businesslocation_3 businesslocation_7 businesslocation_5 businesslocation_6
-destring occupationnumber, replace
-order parent_key INDID_total occupationnumber, first
-sort parent_key INDID
-	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
-	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
-	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
-	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
-	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
-	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
-	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
-	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
-gen countoccupation=1
-save"NEEMSIS_APPEND-occupations_v2.dta", replace
+restore
 
 
 **********EGO
-use"NEEMSIS_APPEND-occupations_v2.dta", clear
+sort HHID_panel INDID_panel occupationid
+order HHID_panel INDID_panel egoid occupationid kindofwork hoursayear dummymainoccup mainoccuptype maxhoursayear 
+
+*Moc
+destring hoursayear maxhoursayear, replace
+replace mainocc=1 if hoursayear==maxhoursayear & dummymainoccup==1
+tab mainocc
+*
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID_panel INDID_panel: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab mainok_indiv egoid, m
 /*
-   dummyego |      Freq.     Percent        Cum.
-------------+-----------------------------------
-          0 |      1,382       55.59       55.59
-          1 |      1,104       44.41      100.00
-------------+-----------------------------------
-      Total |      2,486      100.00
+mainok_ind |                    egoid
+        iv |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         0 |       423         30         20          3 |       476 
+         1 |         0        520        434        225 |     1,179 
+         2 |         0         15          5          2 |        22 
+         3 |         0          1          0          0 |         1 
+-----------+--------------------------------------------+----------
+     Total |       423        566        459        230 |     1,678  
 */
-merge m:m parent_key INDID_total using "NEEMSIS2-HH_v14.dta", keepusing(ego mainoccuptype maxhoursayear selected_occupposition_ selected_occupname_ dummymainoccupation2 othermainoccupation2 workedpastyearfromearlier dummyworkedpastyear dummyego)
-keep if _merge==3
-drop _merge
-
-*Ego moc
-destring hoursayear maxhoursayear selected_occupposition_, replace
-gen mainoccup=kindofwork if selected_occupposition_==occupationnumber & dummymainoccupation2==1
-gen mainoccupname=occupationname if selected_occupposition_==occupationnumber & dummymainoccupation2==1
-
-*If it is not?
-tab dummymainoccupation2
-gen _tempmocego=1 if othermainoccupation2==occupationname & dummymainoccupation2==0
-replace mainoccup=kindofwork if _tempmocego==1
-replace mainoccupname=occupationname if _tempmocego==1
-*Checking
-preserve
-bysort parent_key INDID_total: gen n=_n
-keep if n==1
-tab mainoccup dummyego, m
 restore
-*For the rest? mainoccuptype
-bysort parent_key INDID_total: egen mainok=max(mainoccup)
-tab mainok, m
-replace mainoccup=kindofwork if mainoccuptype==kindofwork & mainok==.
-replace mainoccupname=occupationname if mainoccuptype==kindofwork & mainok==.
-drop mainok
-bysort parent_key INDID_total: egen mainok=max(mainoccup)
-tab mainok ego, m
-*For the rest rest? Alamano
-sort parent_key INDID_total
-list parent_key INDID_total occupationnumber occupationname kindofwork othermainoccupation2 if dummymainoccupation2==0 & mainoccupname=="", clean noobs
-preserve
-keep if ego!=0 & mainok==. & othermainoccupation2!=""
-keep parent_key occupationnumber INDID_total othermainoccupation2 occupationname kindofwork mainoccuptype
-order parent_key INDID_total occupationnumber occupationname kindofwork mainoccuptype othermainoccupation2
-sort parent_key INDID_total occupationnumber
-*export excel using "NEEMSIS_APPEND-occupations_v2.xlsx", nolab replace firstrow(var)
-restore
-*À partir du fichier Excel
-replace mainoccup=4 if parent_key=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID_total==3 & occupationnumber==1
-replace mainoccup=7 if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==2 & occupationnumber==1
-replace mainoccup=4 if parent_key=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID_total==5 & occupationnumber==1
-replace mainoccup=4 if parent_key=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID_total==3 & occupationnumber==1
-replace mainoccup=2 if parent_key=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID_total==3 & occupationnumber==2
 
-replace mainoccupname="Car driver" if parent_key=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID_total==3 & occupationnumber==1
-replace mainoccupname="Agriculture activities in own farm unpaid" if parent_key=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID_total==2 & occupationnumber==1
-replace mainoccupname="NREGA" if parent_key=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID_total==5 & occupationnumber==1
-replace mainoccupname="NREGs work as coolie" if parent_key=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID_total==3 & occupationnumber==1
-replace mainoccupname="Tata ace driver (own vehicle)" if parent_key=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID_total==3 & occupationnumber==2
-drop mainok
-bysort parent_key INDID_total: egen mainok=max(mainoccup)
-tab mainok ego, m
+*À la main pour ceux qui n'ont pas la bonne main occupation (30+20+3)
+gen tokeep=1
+replace tokeep=0 if egoid!=0 & mainok_indiv==0
+preserve
+keep if tokeep==0
+duplicates drop HHID_panel INDID_panel, force
+tab tokeep, m
+restore
+gen moctokeep=.
+order HHID_panel INDID_panel occupationid occupationname hoursayear othermainoccup maxhoursayear moctokeep tokeep
+sort tokeep HHID_panel INDID_panel occupationid
+format occupationname %40s
+*edit
+/*
+Je fais correspondre occupationname et othermainoccup
+Je mets un 1 à moctokeep
+Du coup plus, il faut remplacer la mainoccup pour ceux qui ont 1 à moctokeep et 0 à tokeep 
+0 à tokeep c'est pour les égos qui n'ont pas encore de valeurs
+Normalement c'est ça:
+*/
+replace moctokeep = 1 in 2
+replace moctokeep = 1 in 5
+replace moctokeep = 1 in 6
+replace moctokeep = 1 in 11
+replace moctokeep = 1 in 12
+replace moctokeep = 1 in 16
+replace moctokeep = 1 in 18
+replace moctokeep = 1 in 20
+replace moctokeep = 1 in 22
+replace moctokeep = 1 in 24
+replace moctokeep = 1 in 26
+replace moctokeep = 1 in 30
+replace moctokeep = 1 in 33
+replace moctokeep = 1 in 34
+replace moctokeep = 1 in 36
+replace moctokeep = 1 in 39
+replace moctokeep = 1 in 42
+replace moctokeep = 1 in 45
+replace moctokeep = 1 in 46
+replace moctokeep = 1 in 49
+replace moctokeep = 1 in 51
+replace moctokeep = 1 in 54
+replace moctokeep = 1 in 57
+replace moctokeep = 1 in 60
+replace moctokeep = 1 in 61
+replace moctokeep = 1 in 64
+replace moctokeep = 1 in 66
+replace moctokeep = 1 in 68
+replace moctokeep = 1 in 70
+replace moctokeep = 1 in 74
+replace moctokeep = 1 in 75
+replace moctokeep = 1 in 78
+replace moctokeep = 1 in 80
+replace moctokeep = 1 in 85
+replace moctokeep = 1 in 86
+replace moctokeep = 1 in 88
+replace moctokeep = 1 in 91
+replace moctokeep = 1 in 95
+replace moctokeep = 1 in 97
+replace moctokeep = 1 in 99
+replace moctokeep = 1 in 100
+replace moctokeep = 1 in 102
+replace moctokeep = 1 in 104
+replace moctokeep = 1 in 106
+replace moctokeep = 1 in 108
+replace moctokeep = 1 in 111
+replace moctokeep = 1 in 113
+replace moctokeep = 1 in 114
+replace moctokeep = 1 in 119
+replace moctokeep = 1 in 121
+replace moctokeep = 1 in 123
+replace moctokeep = 1 in 124
+replace moctokeep = 1 in 127
+
+replace mainocc=1 if tokeep==0 & moctokeep==1
+drop moctokeep tokeep
+format othermainoccup %20s
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID_panel INDID_panel: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |                    egoid
+        iv |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         0 |       423          0          0          0 |       423 
+         1 |         0        550        454        228 |     1,232 
+         2 |         0         15          5          2 |        22 
+         3 |         0          1          0          0 |         1 
+-----------+--------------------------------------------+----------
+     Total |       423        566        459        230 |     1,678 
+*/
+restore
+
+
+*Correction des deux qui ont le même nb d'heure
+tab mainok_indiv
+sort mainok_indiv HHID_panel INDID_panel occupationid
+replace mainocc=. if mainok_indiv>1 & kindofwork!=mainoccuptype
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID_panel INDID_panel: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |                    egoid
+        iv |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         0 |       423          2          0          0 |       425 
+         1 |         0        557        457        230 |     1,244 
+         2 |         0          6          2          0 |         8 
+         3 |         0          1          0          0 |         1 
+-----------+--------------------------------------------+----------
+     Total |       423        566        459        230 |     1,678 
+*/
+restore
+/*
+6+2+1 strange
+*/
+
+
+*Correction des deux ego 1 qui ont sauté
+gen strange=0
+replace strange=1 if mainok_indiv==0 & egoid==1
+sort strange HHID_panel INDID_panel occupationid
+*Je choisis l'occup qui match avec mainoccuptype
+replace mainocc=1 if HHID_panel=="KAR11" & INDID_panel=="Ind_1" & occupationid==1
+replace mainocc=1 if HHID_panel=="MAN42" & INDID_panel=="Ind_2" & occupationid==3
+drop strange
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID_panel INDID_panel: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |                    egoid
+        iv |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         0 |       423          0          0          0 |       423 
+         1 |         0        559        457        230 |     1,246 
+         2 |         0          6          2          0 |         8 
+         3 |         0          1          0          0 |         1 
+-----------+--------------------------------------------+----------
+     Total |       423        566        459        230 |     1,678 
+*/
+restore
+
+
+
+*Dernière correction à la main pour les 9 qui ont des doublons (6+2+1)
+gen strange=0
+replace strange=1 if mainok_indiv>1
+sort strange HHID_panel INDID_panel occupationid
+order strange mainocc, first
+*Je décide que l'activité la plus ancienne constitue l'activité principale du coup
+bysort HHID_panel INDID_panel : egen min_datestartoccup=min(datestartoccup) if strange==1
+format min_datestartoccup %td
+sort strange HHID_panel INDID_panel occupationid
+order mainoccuptype, after(kindofwork)
+replace mainocc=. if strange==1
+replace mainocc=1 if min_datestartoccup==datestartoccup & kindofwork==mainoccuptype & strange==1
+*Il y en a toujours un qui pose pb, donc je décide de garder l'occupationid le plus petit
+replace mainocc=. if HHID_panel=="ORA2" & INDID_panel=="Ind_1" & occupationid==3
+drop strange
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID_panel INDID_panel: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |                    egoid
+        iv |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         0 |       423          0          0          0 |       423 
+         1 |         0        566        459        230 |     1,255 
+-----------+--------------------------------------------+----------
+     Total |       423        566        459        230 |     1,678 
+*/
+restore
+
+
 
 
 **********Indiv
+***MOC
+order HHID_panel INDID_panel egoid
 *max income or hours (income only for 2010)
-bysort parent_key INDID : egen maxhours_indiv=max(hoursayear)
+bysort HHID_panel INDID_panel : egen maxhours_indiv=max(hoursayear)
+replace maxhours_indiv=. if egoid==1 | egoid==2 | egoid==3
 *occup name and occup type with the max
-replace mainoccup=kindofwork if maxhours_indiv==hoursayear & mainok==.
-replace mainoccupname=occupationname if maxhours_indiv==hoursayear & mainok==.
-drop mainok
-bysort parent_key INDID_total: egen mainok=max(mainoccup)
-tab mainok ego, m
-gen dummymoc=0
-replace dummymoc=1 if mainoccup!=.
-tab dummymoc // 1135 normalement
-	*Check duplicates
-	duplicates tag parent_key INDID_total ego if dummymoc==1, gen(tag)
-	tab tag
-	sort tag parent_key INDID_total occupationnumber
-		*apply max income
-		bysort parent_key INDID_total: egen maxincome=max(annualincome) if tag>0
-		replace mainoccup=. if maxincome!=annualincome & tag>0
-		replace mainoccupname="" if maxincome!=annualincome & tag>0
-		drop mainok
-		drop dummymoc
-		drop tag
-		bysort parent_key INDID_total: egen mainok=max(mainoccup)
-		tab mainok ego, m
-		gen dummymoc=0
-		replace dummymoc=1 if mainoccup!=.
-		tab dummymoc // 1135 normalement
-		*Check duplicates
-		duplicates tag parent_key INDID_total ego if dummymoc==1, gen(tag)
-		tab tag
-		sort tag parent_key INDID_total occupationnumber
-			*apply occupation order
-			bysort parent_key INDID_total: egen minnumber=min(occupationnumber) if tag>0
-			replace mainoccup=. if minnumber!=occupationnumber & tag>0
-			replace mainoccupname="" if minnumber!=occupationnumber & tag>0
-			drop mainok
-			drop dummymoc
-			drop tag
-			bysort parent_key INDID_total: egen mainok=max(mainoccup)
-			tab mainok ego, m
-			gen dummymoc=0
-			replace dummymoc=1 if mainoccup!=.
-			tab dummymoc // 1135 normalement
-			drop mainok minnumber maxincome maxhours_indiv _tempmocego
+replace mainocc=1 if maxhours_indiv==hoursayear & egoid==0
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID_panel INDID_panel: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |                    egoid
+        iv |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         1 |       413        566        459        230 |     1,668 
+         2 |        10          0          0          0 |        10 
+-----------+--------------------------------------------+----------
+     Total |       423        566        459        230 |     1,678 
+*/
+restore
 
-*hours and income of main
-gen mainoccup_hours=.
-gen mainoccup_income=.
-replace mainoccup_hours=hoursayear if dummymoc==1
-replace mainoccup_income=annualincome if dummymoc==1
-	
-*encode name to simplify the procedure
-encode mainoccupname, gen(mainoccupnamenumeric)
-*put main occupation at indiv level
-bysort parent_key INDID : egen mainoccupation=max(mainoccup)
-bysort parent_key INDID : egen mainoccupationname=max(mainoccupnamenumeric)
-*put the label
-label values mainoccupation kindofwork
-label values mainoccupationname mainoccupnamenumeric
-*decode the name to compare between the waves
-decode mainoccupationname, gen(_mainoccupationname)
-drop mainoccupationname
-rename _mainoccupationname mainoccupationname
-*total income
-bysort parent_key INDID: egen annualincome_indiv=sum(annualincome)
-*nb of income sources
-fre kindofwork
-bysort parent_key INDID: egen nboccupation_indiv=sum(countoccupation)
 
-*cleaning
-rename mainoccupation mainoccupation_indiv
-rename mainoccupationname mainoccupationname_indiv
-rename mainoccup_hours mainoccupation_hours_indiv
-rename mainoccup_income mainoccupation_income_indiv
-drop mainoccup mainoccupname mainoccupnamenumeric countoccupation
+*Check duplicates
+gen strange=0
+replace strange=1 if mainok_indiv==2
+sort strange HHID_panel INDID_panel occupationid
+*Je décide de prendre l'occup avec l'id le plus petit comme main
+replace mainocc=. if strange==1
+bysort HHID_panel INDID_panel : egen min_occupationid=min(occupationid) if strange==1
+replace mainocc=1 if occupationid==min_occupationid & strange==1
+drop strange
+*
+drop mainok mainok_indiv
+gen mainok=0
+replace mainok=1 if mainocc!=.
+tab mainok egoid, m
+bysort HHID_panel INDID_panel: egen mainok_indiv=sum(mainok)
+tab mainok_indiv egoid, m
+preserve
+duplicates drop HHID_panel INDID_panel, force
+tab mainok_indiv egoid, m
+/*
+mainok_ind |                    egoid
+        iv |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         1 |       423        566        459        230 |     1,678 
+-----------+--------------------------------------------+----------
+     Total |       423        566        459        230 |     1,678 
+*/
+restore
+tab mainocc, m
+
+
+*Var to create at occupation level, so it is temporary var
+foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
+gen temp_mainocc_`x'=.
+}
+gen temp_mainocc_occupationname=""
+
+foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
+replace temp_mainocc_`x'=`x' if mainocc==1 
+}
+replace temp_mainocc_occupationname=occupationname if mainocc==1
+
+
+
+
+
+**********Individual level now
+foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
+bysort HHID_panel INDID_panel: egen mainocc_`x'=max(temp_mainocc_`x')
+}
+
+*More tricky for occupname:
+encode temp_mainocc_occupationname, gen(mainoccnamenum)
+bysort HHID_panel INDID_panel: egen _mainocc_occupationname=max(mainoccnamenum)
+label values _mainocc_occupationname mainoccnamenum
+decode _mainocc_occupationname, gen(mainocc_occupationname)
+
+*Clean
+drop mainocc maxhours_indiv mainok mainok_indiv temp_mainocc_* mainoccnamenum _mainocc_occupationname
+
+*Label
+label values mainocc_kindofwork kindofwork
+label values mainocc_profession occupation1
+label values mainocc_occupation occupcode
+label values mainocc_sector sector
+
+*Rename
+foreach x in mainocc_kindofwork mainocc_profession mainocc_occupation mainocc_sector mainocc_hoursayear mainocc_annualincome mainocc_jobdistance mainocc_occupationname {
+rename `x' `x'_indiv
+}
+
+
+*Nb occupation per indiv + annual income per indiv
+bysort HHID_panel INDID_panel: egen annualincome_indiv=sum(annualincome)
+bysort HHID_panel INDID_panel: egen nboccupation_indiv=sum(1)
+
+
+
+
 
 
 **********HH
-*max income or hours (income only for 2010)
-fre kindofwork
+***Max hoursayear with maxhours per kindofwork
 forvalues i=1(1)8{
-bysort parent_key : egen maxhours_`i'=sum(hoursayear) if kindofwork==`i'
-}
-forvalues i=1(1)8{
-bysort parent_key : egen maxhours2_`i'=max(maxhours_`i')
+bysort HHID_panel : egen maxhours_`i'=sum(hoursayear) if kindofwork==`i'
+bysort HHID_panel : egen maxhours2_`i'=max(maxhours_`i')
 recode maxhours2_`i' (.=0)
 drop maxhours_`i'
 }
-*occup type with the max
-egen mainoccup=rowmax(maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7 maxhours2_8)
-*occup name and occup type with the max
-gen mainoccup2=.
+*Maxhoursoccup
+egen maxhoursmainocc=rowmax(maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7 maxhours2_8)
+*Moc kindofwork
+gen mainocc_kindofwork_HH=.
 forvalues i=1(1)8{
-replace mainoccup2=`i' if maxhours2_`i'==mainoccup
+replace mainocc_kindofwork_HH=`i' if maxhours2_`i'==maxhoursmainocc
 }
-*put the label
-label values mainoccup2 kindofwork
-drop mainoccup maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7 maxhours2_8
-rename mainoccup2 mainoccupation_HH
-*total income
-bysort parent_key : egen annualincome_HH=sum(annualincome)
-*nb of income sources
+
+*Label
+label values mainocc_kindofwork_HH kindofwork
+drop maxhoursmainocc maxhours2_*
+
+
+
+***Max hoursayear with maxhours per occupation
+forvalues i=1(1)7{
+bysort HHID_panel : egen maxhours_`i'=sum(hoursayear) if occupation==`i'
+bysort HHID_panel : egen maxhours2_`i'=max(maxhours_`i')
+recode maxhours2_`i' (.=0)
+drop maxhours_`i'
+}
+*Maxhoursoccup
+egen maxhoursmainocc=rowmax(maxhours2_1 maxhours2_2 maxhours2_3 maxhours2_4 maxhours2_5 maxhours2_6 maxhours2_7)
+*Moc occupation
+gen mainocc_occupation_HH=.
+forvalues i=1(1)7{
+replace mainocc_occupation_HH=`i' if maxhours2_`i'==maxhoursmainocc
+}
+
+*Label
+label values mainocc_occupation_HH occupcode
+drop maxhoursmainocc maxhours2_*
+
+
+
+***Income  nb occ
+bysort HHID_panel: egen annualincome_HH=sum(annualincome)
+bysort HHID_panel: egen nboccupation_HH=sum(1)
+
+
+
+
+
+
+
+
+**********Agri vs non agri income?
+***Kindofwork
+forvalues i=1(1)8{
+gen kowinc_`i'=.
+}
+forvalues i=1(1)8{
+replace kowinc_`i'=annualincome if kindofwork==`i'
+recode kowinc_`i' (.=0)
+}
+forvalues i=1(1)8{
+bysort HHID_panel INDID_panel: egen kowinc_indiv_`i'=sum(kowinc_`i')
+bysort HHID_panel: egen kowinc_HH_`i'=sum(kowinc_`i')
+}
 fre kindofwork
-gen countoccupation=1
-bysort parent_key : egen nboccupation_HH=sum(countoccupation)
-drop countoccupation
-
-
-
-*Agri vs non agri income?
-fre kindofwork
-forvalues i=1(1)8{
-gen labourincome_`i'=.
-}
-
-forvalues i=1(1)8{
-replace labourincome_`i'=annualincome if kindofwork==`i'
-recode labourincome_`i' (.=0)
-}
-forvalues i=1(1)8{
-bysort parent_key INDID: egen labourincome_indiv_`i'=sum(labourincome_`i')
-bysort parent_key: egen labourincome_HH_`i'=sum(labourincome_`i')
-}
-
-
-foreach x in labourincome_indiv labourincome_HH{
+foreach x in kowinc_indiv kowinc_HH{
 rename `x'_1 `x'_agri
 rename `x'_2 `x'_selfemp
 rename `x'_3 `x'_sjagri
@@ -281,41 +525,32 @@ rename `x'_7 `x'_uwhhagri
 rename `x'_8 `x'_uwagri
 }
 
+***Occupation
+forvalues i=1(1)7{
+gen occinc_`i'=.
+}
+forvalues i=1(1)7{
+replace occinc_`i'=annualincome if occupation==`i'
+recode occinc_`i' (.=0)
+}
+forvalues i=1(1)7{
+bysort HHID_panel INDID_panel: egen occinc_indiv_`i'=sum(occinc_`i')
+bysort HHID_panel: egen occinc_HH_`i'=sum(occinc_`i')
+}
+fre occupation
+foreach x in occinc_indiv occinc_HH{
+rename `x'_1 `x'_agri
+rename `x'_2 `x'_agricasual
+rename `x'_3 `x'_nonagricasual
+rename `x'_4 `x'_nonagriregnonqual
+rename `x'_5 `x'_nonagriregqual
+rename `x'_6 `x'_selfemp
+rename `x'_7 `x'_nrega
+}
 
 
 
-**********Indiv base
-bysort parent_key INDID: gen n=_n 
-keep if n==1
-keep mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv mainoccupation_HH annualincome_HH nboccupation_HH parent_key INDID labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
-save"NEEMSIS_APPEND-occupations_v3.dta", replace
-
-bysort parent_key: gen n=_n 
-keep if n==1
-keep mainoccupation_HH annualincome_HH nboccupation_HH parent_key INDID labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri
 save"NEEMSIS_APPEND-occupations_v4.dta", replace
-
-
-**********Merge dans la base HH
-use"NEEMSIS2-HH_v14.dta", clear
-tab dummyworkedpastyear
-*1140 indiv ?
-
-merge m:1 parent_key INDID_total using "NEEMSIS_APPEND-occupations_v3.dta", keepusing(mainoccupation_indiv mainoccupation_hours_indiv mainoccupation_income_indiv mainoccupationname_indiv annualincome_indiv nboccupation_indiv labourincome_indiv_agri labourincome_indiv_selfemp labourincome_indiv_sjagri labourincome_indiv_sjnonagri labourincome_indiv_uwhhnonagri labourincome_indiv_uwnonagri labourincome_indiv_uwhhagri labourincome_indiv_uwagri)
-drop _merge
-
-merge m:1 parent_key using "NEEMSIS_APPEND-occupations_v4.dta", keepusing(mainoccupation_HH annualincome_HH nboccupation_HH labourincome_HH_agri labourincome_HH_selfemp labourincome_HH_sjagri labourincome_HH_sjnonagri labourincome_HH_uwhhnonagri labourincome_HH_uwnonagri labourincome_HH_uwhhagri labourincome_HH_uwagri)
-drop _merge
-
-recode mainoccupation_indiv mainoccupation_HH (.=0)
-
-preserve
-bysort parent_key: gen n=_n
-keep if n==1
-fre mainoccupation_HH
-restore
-
-save"NEEMSIS2-HH_v15.dta", replace
 ****************************************
 * END
 
@@ -324,6 +559,113 @@ save"NEEMSIS2-HH_v15.dta", replace
 
 
 
+
+
+
+****************************************
+* Occupation + non-worker
+****************************************
+use"NEEMSIS_APPEND-occupations_v4.dta", clear
+
+merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v9.dta", keepusing(egoid name sex caste jatis age villageid everattendedschool classcompleted relationshiptohead)
+
+
+rename _merge worker
+recode worker (2=0) (3=1)
+label define worker 0"No" 1"Yes"
+label values worker worker
+label var worker "Is the individual a worker?"
+fre worker
+
+
+*occupcode3 includes individuals counted in working pop but not working 
+gen occupa_unemployed=occupation 
+replace occupa_unemployed=0 if occupationid==.
+
+label define occupcode 0 "No occupation", modify
+label values occupa_unemployed occupcode
+label var occupa_unemployed "Occupations of workers + unoccupied individuals"
+
+
+**Generate and label occupation variable only for population on working age (15-60 included)
+gen occupa_unemployed_15_70=.
+replace occupa_unemployed_15_70=occupa_unemployed if age>14 & age<71
+label define occupcode 0 "Unoccupied working age individuals", modify
+label var occupa_unemployed_15_70 "Occupations of workers + unoccupied working age indiv (15-70)"
+label values occupa_unemployed_15_70 occupcode
+
+
+**Generate active and inactive population in the same variable
+gen working_pop=.
+replace working_pop = 1 if occupa_unemployed_15_70==.
+replace working_pop = 2 if occupa_unemployed_15_70==0	
+replace working_pop = 3 if occupa_unemployed_15_70>0 & occupa_unemployed_15_70!=.
+label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
+
+
+
+
+********** Tri
+order profession occupation occupa_unemployed occupa_unemployed_15_70, last
+fre profession occupation occupa_unemployed occupa_unemployed_15_70
+
+save"NEEMSIS_APPEND-occupations_v5.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Indiv dataset
+****************************************
+use"NEEMSIS_APPEND-occupations_v5.dta", clear
+preserve
+bysort HHID_panel INDID_panel: gen n=_n 
+keep if n==1
+keep HHID_panel INDID_panel mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
+save"NEEMSIS_APPEND-occupations_v5_indiv.dta", replace
+restore
+
+preserve
+bysort HHID_panel: gen n=_n 
+keep if n==1
+keep HHID_panel sum_ext_HH mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH kowinc_HH_agri kowinc_HH_selfemp kowinc_HH_sjagri kowinc_HH_sjnonagri kowinc_HH_uwhhnonagri kowinc_HH_uwnonagri kowinc_HH_uwhhagri kowinc_HH_uwagri occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
+save"NEEMSIS_APPEND-occupations_v5_HH.dta", replace
+restore
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+****************************************
+* Merge avec base HH
+****************************************
+use"NEEMSIS2-HH_v9.dta", clear
+
+merge 1:1 HHID_panel INDID_panel using "NEEMSIS_APPEND-occupations_v5_indiv.dta"
+drop _merge
+merge m:1 HHID_panel using "NEEMSIS_APPEND-occupations_v5_HH.dta"
+drop _merge
+
+save"NEEMSIS2-HH_v10.dta", replace
+****************************************
+* END
 
 
 
@@ -354,7 +696,7 @@ drop n
 save"NEEMSIS_APPEND-remreceived_indiv", replace
 
 
-use"NEEMSIS2-HH_v15.dta", clear
+use"NEEMSIS2-HH_v10.dta", clear
 merge m:1 setofremreceivedidgroup using "NEEMSIS_APPEND-remreceived_indiv"
 drop if _merge==2
 drop _merge
@@ -408,6 +750,6 @@ rename insurancetypetwo`i' insurancetype`i'
 tab version_HH 
 
 
-save"NEEMSIS2-HH_v16.dta", replace
+save"NEEMSIS2-HH_v11.dta", replace
 ****************************************
 * END

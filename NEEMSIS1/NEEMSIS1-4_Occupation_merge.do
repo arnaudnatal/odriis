@@ -71,7 +71,7 @@ tab occupationname if occupation==.
 
 
 ********** Merging 
-merge m:1 parent_key INDID2016 using "NEEMSIS1-HH_v5.dta", keepusing(egoid dummymainoccup mainoccuptype othermainoccup maxhoursayear_ego dummyworkedpastyear workedpastyear_ego)
+merge m:1 parent_key INDID2016 using "NEEMSIS1-HH_v5.dta", keepusing(egoid dummymainoccup mainoccuptype othermainoccup maxhoursayear_ego dummyworkedpastyear workedpastyear_ego name sex caste jatis age HHID_panel INDID_panel HHID2010 INDID2010 villageid villageareaid householdid dummynewHH dummydemonetisation interviewplace everattendedschool classcompleted)
 drop if _merge==2
 drop _merge
 rename maxhoursayear_ego maxhoursayear
@@ -94,6 +94,9 @@ tab egoid, m
 */
 restore
 
+/*
+1,324 individuals with occupation, 1,372 without.
+*/
 
 **********EGO
 sort HHID2010 INDID egoid occupationid
@@ -287,6 +290,7 @@ mainok_ind |              egoid
 restore
 tab mainocc, m
 
+
 *Var to create at occupation level, so it is temporary var
 foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
 gen temp_mainocc_`x'=.
@@ -299,7 +303,7 @@ replace temp_mainocc_`x'=`x' if mainocc==1
 replace temp_mainocc_occupationname=occupationname if mainocc==1
 
 
-*Individual level now
+**********Individual level now
 foreach x in kindofwork profession occupation sector hoursayear annualincome jobdistance {
 bysort HHID2010 INDID: egen mainocc_`x'=max(temp_mainocc_`x')
 }
@@ -430,22 +434,104 @@ rename `x'_7 `x'_nrega
 }
 
 
-**********Indiv and HH dataset
+save"NEEMSIS-occupation_allwide_v3.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Occupation + non-worker
+****************************************
+use"NEEMSIS-occupation_allwide_v3.dta", clear
+
+merge m:1 parent_key INDID2016 using "NEEMSIS1-HH_v5.dta", keepusing(egoid dummymainoccup mainoccuptype othermainoccup maxhoursayear_ego dummyworkedpastyear workedpastyear_ego name sex caste jatis age HHID_panel INDID_panel HHID2010 INDID2010 villageid villageareaid householdid dummynewHH dummydemonetisation interviewplace everattendedschool classcompleted relationshiptohead)
+
+drop INDID
+destring INDID2016, gen(INDID)
+
+rename _merge worker
+recode worker (2=0) (3=1)
+label define worker 0"No" 1"Yes"
+label values worker worker
+label var worker "Is the individual a worker?"
+fre worker
+
+
+
+*occupcode3 includes individuals counted in working pop but not working 
+gen occupa_unemployed=occupation 
+replace occupa_unemployed=0 if occupationid==.
+
+label define occupcode 0 "No occupation", modify
+label values occupa_unemployed occupcode
+label var occupa_unemployed "Occupations of workers + unoccupied individuals"
+
+
+**Generate and label occupation variable only for population on working age (15-60 included)
+gen occupa_unemployed_15_70=.
+replace occupa_unemployed_15_70=occupa_unemployed if age>14 & age<71
+label define occupcode 0 "Unoccupied working age individuals", modify
+label var occupa_unemployed_15_70 "Occupations of workers + unoccupied working age indiv (15-70)"
+label values occupa_unemployed_15_70 occupcode
+
+
+**Generate active and inactive population in the same variable
+gen working_pop=.
+replace working_pop = 1 if occupa_unemployed_15_70==.
+replace working_pop = 2 if occupa_unemployed_15_70==0	
+replace working_pop = 3 if occupa_unemployed_15_70>0 & occupa_unemployed_15_70!=.
+label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
+
+
+
+
+********** Tri
+order profession occupation occupa_unemployed occupa_unemployed_15_70, last
+fre profession occupation occupa_unemployed occupa_unemployed_15_70
+
+save"NEEMSIS-occupation_allwide_v4.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Indiv dataset
+****************************************
+use"NEEMSIS-occupation_allwide_v4.dta", clear
 preserve
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
 keep HHID2010 INDID mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
-save"NEEMSIS-occupation_allwide_indiv.dta", replace
+save"NEEMSIS-occupation_allwide_v4_indiv.dta", replace
 restore
 
 preserve
 bysort HHID2010: gen n=_n 
 keep if n==1
 keep HHID2010 sum_ext_HH mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH kowinc_HH_agri kowinc_HH_selfemp kowinc_HH_sjagri kowinc_HH_sjnonagri kowinc_HH_uwhhnonagri kowinc_HH_uwnonagri kowinc_HH_uwhhagri kowinc_HH_uwagri occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
-save"NEEMSIS-occupation_allwide_HH.dta", replace
+save"NEEMSIS-occupation_allwide_v4_HH.dta", replace
 restore
-
-save"NEEMSIS-occupation_allwide_v3.dta", replace
 ****************************************
 * END
 
@@ -463,9 +549,9 @@ save"NEEMSIS-occupation_allwide_v3.dta", replace
 use"NEEMSIS1-HH_v5.dta", clear
 
 destring INDID2016, gen(INDID)
-merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_allwide_indiv.dta"
+merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_allwide_v4_indiv.dta"
 drop _merge
-merge m:1 HHID2010 using "NEEMSIS-occupation_allwide_HH.dta"
+merge m:1 HHID2010 using "NEEMSIS-occupation_allwide_v4_HH.dta"
 drop _merge
 
 save"NEEMSIS1-HH_v6.dta", replace

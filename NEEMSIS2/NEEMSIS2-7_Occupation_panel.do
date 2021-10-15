@@ -17,8 +17,73 @@ cls
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global git ="C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
 
-cd"$directory"
+cd"$directory\CLEAN"
 clear all
+
+
+
+
+
+
+
+
+****************************************
+* Clean
+****************************************
+use"NEEMSIS_APPEND-occupations.dta", clear
+split parent_key, p(/)
+drop parent_key parent_key2
+rename parent_key1 parent_key
+split setofoccupations, p([)
+drop setofoccupations1 setofoccupations3
+split setofoccupations2, p(])
+drop setofoccupations2 setofoccupations22
+rename setofoccupations21 INDID_total
+destring INDID_total, replace
+drop businessskill_2 businessskill_4 businessskill_1 businesslocation_1 businesslocation_2 businesslocation_4 joblocation_1 joblocation_2 joblocation_4 joblocation_5 joblocation_3 joblocation_7 joblocation_6 businesslocation_3 businesslocation_7 businesslocation_5 businesslocation_6
+destring occupationnumber, replace
+order parent_key INDID_total occupationnumber, first
+sort parent_key INDID
+	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
+	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+gen countoccupation=1
+
+
+*Cleaning des key
+split key, p(/)
+egen setofemployment=concat(key1 key2), p(/)
+drop key key1 key2 key3
+order setofbusinesslabourers setofinfoemployer setofoccupations setofemployment, last
+drop keep_occupposition _2keep_occupposition _3keep_occupposition businesslabourers_count infoemployer_count salariedjobgroup2_count
+
+save"NEEMSIS_APPEND-occupations_v2.dta", replace
+/*
+rename occupationnumber occupationid
+tostring occupationid, gen(occupationnumber)
+sort setofemployment occupationid
+
+/*
+TEST
+*/
+merge 1:1 setofemployment occupationnumber using "NEEMSIS_APPEND-occupations_old", force
+sort _merge setofemployment occupationnumber
+*/
+****************************************
+* END
+
+
+
+
+
+
+
+
 
 
 
@@ -27,7 +92,7 @@ clear all
 ****************************************
 * Occupation
 ****************************************
-use"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3", clear
+use"$directory\CLEAN\NEEMSIS_APPEND-occupations_v2", clear
 
 *Verif occupation
 preserve
@@ -35,11 +100,15 @@ use"$directory\CLEAN\NEEMSIS2-HH_v9.dta", clear
 fre classcompleted
 restore
 
-merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v9.dta", keepusing(HHID_panel INDID_panel age sex jatis classcompleted everattendedschool canread edulevel caste)
+merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v9.dta", keepusing(HHID_panel INDID_panel egoid age sex jatis classcompleted everattendedschool canread edulevel caste name)
+list setofemployment if _merge==1, clean noobs
+/*
+                                                             setofemployment  
+    uuid:9ecbdaca-ffce-4bbc-a69d-455ea0411977/hhquestionnaire-employment[16]
+*/
+drop if _merge==1
 drop if _merge==2
 drop _merge
-
-drop keep_occupposition _2keep_occupposition _3keep_occupposition businesslabourers_count infoemployer_count salariedjobgroup2_count
 
 order HHID_panel INDID_panel
 destring hoursayear, replace
@@ -100,7 +169,9 @@ replace occup_sector= 11 if  ///
 replace occup_sector=11 if occupationname=="Farmer"
 replace occup_sector=11 if occupationname=="Fermar"
 replace occup_sector=11 if occupationname=="Agriculture"
-
+replace occup_sector=11 if occupationname=="Unpaid worker in own farm."
+replace occup_sector=11 if occupationname=="Working in own farm"
+replace occup_sector=11 if occupationname=="Working on lease land"
 
 * Agricultural labourers
 replace  occup_sector= 12  if  ///
@@ -133,7 +204,6 @@ replace occup_sector=12 if occupationname=="Plowing"
 
 
 
-
 * Sugarcane worker
 replace  occup_sector=13  if  ///
 (strpos(occupationname,"sugar") | strpos(occupationname,"Sugar")) ///
@@ -149,6 +219,7 @@ replace occup_sector=14 if occupationname=="Cow Rearing -own"
 replace occup_sector=14 if occupationname=="Land watcher"
 replace occup_sector=14 if occupationname=="Goat rearing"
 replace occup_sector=14 if occupationname=="Poultry"
+replace occup_sector=14 if occupationname=="Rearing cows and goats"
 
 
 		
@@ -177,8 +248,11 @@ replace occup_sector=22 if occupationname=="Kottanar worker"
 replace occup_sector=22 if strpos(occupationname,"Kothanar")
 replace occup_sector=22 if occupationname=="Tiles work"
 replace occup_sector=22 if occupationname=="Pointing  work"
+replace occup_sector=22 if occupationname=="Road work"
+replace occup_sector=22 if occupationname=="Rode work"
+replace occup_sector=22 if occupationname=="Cement slab worker"
+replace occup_sector=22 if occupationname=="Compound wall maker"
 
-		
 * Spinners, Weavers, Knitters, Dyers
 replace occup_sector=23 if ///
 strpos(occupationname,"Weaver") ///
@@ -224,7 +298,8 @@ replace occup_sector=27 if occupationname=="A.c machanice"
 replace occup_sector=27 if occupationname=="Technician"
 replace occup_sector=27 if occupationname=="Marunthu adithall mechine"
 replace occup_sector=27 if occupationname=="Motor repair work"
-
+replace occup_sector=27 if occupationname=="Fitter"
+replace occup_sector=27 if occupationname=="Salaried job ,own fitter paathur ur"
 
 
 	
@@ -238,6 +313,7 @@ replace occup_sector=28 if occupationname=="Container lorry driver"
 replace occup_sector=28 if occupationname=="Lowry driver"
 replace occup_sector=28 if occupationname=="Private lorry driver"
 replace occup_sector=28 if strpos(occupationname,"Bullock")
+replace occup_sector=28 if occupationname=="Tractor driver"
 
 
 	
@@ -262,10 +338,59 @@ replace occup_sector=31 if occupationname=="Work in private company"
 replace occup_sector=31 if occupationname=="Printing operator"
 replace occup_sector=31 if occupationname=="Printing worker in dubai"
 
-	
+replace occup_sector=31 if occupationname=="Private company"
+replace occup_sector=31 if occupationname=="Private company  cellphone delivery"
+replace occup_sector=31 if occupationname=="Private company (Abudhabi)"
+replace occup_sector=31 if occupationname=="Private company at Pondy"
+replace occup_sector=31 if occupationname=="Private company at Saudi Arabia"
+replace occup_sector=31 if occupationname=="Private company at chennai"
+replace occup_sector=31 if occupationname=="Private company at pantruti"
+replace occup_sector=31 if occupationname=="Private company cellphone  delivery"
+replace occup_sector=31 if occupationname=="Private company in pantruti"
+replace occup_sector=31 if occupationname=="Private company pantruti"
+replace occup_sector=31 if occupationname=="Private company worker"
+replace occup_sector=31 if occupationname=="Worker in a UCO4G COMPANY  "
+replace occup_sector=31 if occupationname=="Worker in a gas company"
+replace occup_sector=31 if occupationname=="Worker in private company"
+replace occup_sector=31 if occupationname=="Working at chemical company"
+replace occup_sector=31 if occupationname=="Working at computer centre"
+replace occup_sector=31 if occupationname=="Working at private company"
+replace occup_sector=31 if occupationname=="Working at tolgate"
+replace occup_sector=31 if occupationname=="Working in TVS company"
+replace occup_sector=31 if occupationname=="Working in cuddalore  sipcot"
+replace occup_sector=31 if occupationname=="Working in cuddalore sipcot"
+replace occup_sector=31 if occupationname=="Filter company"
+replace occup_sector=31 if occupationname=="Work at private company"
+replace occup_sector=31 if occupationname=="Work in Private company"
+replace occup_sector=31 if occupationname=="Working at banglore"
+replace occup_sector=31 if occupationname=="Working at chennai"
+replace occup_sector=31 if occupationname=="Working at chennai hundai company"
+replace occup_sector=31 if occupationname=="Working at private company in chennai"
+replace occup_sector=31 if occupationname=="Working at quatar"
+replace occup_sector=31 if occupationname=="Working in a private company"
+replace occup_sector=31 if occupationname=="Working in EB"
+replace occup_sector=31 if occupationname=="Working in eb"
+replace occup_sector=31 if occupationname=="Company wages"
+replace occup_sector=31 if occupationname=="Cooperative society worker"
+replace occup_sector=31 if occupationname=="Private company in Villupuram"
+replace occup_sector=31 if occupationname=="Salaried job, company work"
+replace occup_sector=31 if occupationname=="Company wages"
+replace occup_sector=31 if occupationname=="Private company work"
+replace occup_sector=31 if occupationname=="Salaried job  Chennai work"
+replace occup_sector=31 if occupationname=="Salaried job Chennai guduvanchery"
+replace occup_sector=31 if occupationname=="Salaried job non agri"
+replace occup_sector=31 if occupationname=="Salaried jop"
+replace occup_sector=31 if occupationname=="Salaried jop , Villupuram ."
+replace occup_sector=31 if occupationname=="Salaried jop, Panruti."
+replace occup_sector=31 if occupationname=="Salaried jop, Villupuram"
+
+
+
+
 * Other craftsworkers (Carpenters, tiles workers, Paper product makers)	
 replace occup_sector=32 if ///
 strpos(occupationname,"Carpent")
+replace occup_sector=32 if occupationname=="Working at tiles company"
  
 	
 * Other labour
@@ -275,38 +400,18 @@ replace occup_sector=33 if occupationname=="Coolie"
 replace occup_sector=33 if occupationname=="Coolie  worker"
 replace occup_sector=33 if occupationname=="Coolie worker"
 replace occup_sector=33 if occupationname=="Coolie worker in market"
+replace occup_sector=33 if occupationname=="Delecom cellphone network, thamparam  Chennai"
+replace occup_sector=33 if occupationname=="Working at software company"
+replace occup_sector=33 if occupationname=="Cinema Theater worker"
 
-replace occup_sector=33 if occupationname=="Private company"
-replace occup_sector=33 if occupationname=="Private company  cellphone delivery"
-replace occup_sector=33 if occupationname=="Private company (Abudhabi)"
-replace occup_sector=33 if occupationname=="Private company at Pondy"
-replace occup_sector=33 if occupationname=="Private company at Saudi Arabia"
-replace occup_sector=33 if occupationname=="Private company at chennai"
-replace occup_sector=33 if occupationname=="Private company at pantruti"
-replace occup_sector=33 if occupationname=="Private company cellphone  delivery"
-replace occup_sector=33 if occupationname=="Private company in pantruti"
-replace occup_sector=33 if occupationname=="Private company pantruti"
-replace occup_sector=33 if occupationname=="Private company worker"
-replace occup_sector=33 if occupationname=="Worker in a UCO4G COMPANY  "
-replace occup_sector=33 if occupationname=="Worker in a gas company"
-replace occup_sector=33 if occupationname=="Worker in private company"
-replace occup_sector=33 if occupationname=="Working at chemical company"
-replace occup_sector=33 if occupationname=="Working at computer centre"
-replace occup_sector=33 if occupationname=="Working at private company"
-replace occup_sector=33 if occupationname=="Working at textile"
-replace occup_sector=33 if occupationname=="Working at tirupur textile"
-replace occup_sector=33 if occupationname=="Working at tolgate"
-replace occup_sector=33 if occupationname=="Working in TVS company"
-replace occup_sector=33 if occupationname=="Working in cuddalore  sipcot"
-replace occup_sector=33 if occupationname=="Working in cuddalore sipcot"
-		
 	
 **** Qualified jobs
 * Teachers	
 replace occup_sector=41 if ///
 strpos(occupationname,"Teacher") ///
 | strpos(occupationname,"teacher") 
-
+replace occup_sector=41 if occupationname=="Pravite school system work , panruti"
+replace occup_sector=41 if occupationname=="Private school system work ,anguchetipalayam"
 
 * Architects, Engineers, ..
 replace occup_sector=42 if  ///
@@ -320,7 +425,7 @@ Engineer
 */
 
 * Engineering technicians
-*replace occup_sector=43 if ///
+replace occup_sector=43 if occupationname=="Technician in dubai"
 
 
 
@@ -340,18 +445,12 @@ replace occup_sector=45 if occupationname=="Anganwadi worker"
 
 	
 * Economists, Accountants, auditors
-/*
-replace occup_sector=46 if ///
-strpos(occupationname,"") ///
-*/
+*replace occup_sector=46 if occupationname==""
+
 
 
 * Jurists
 replace occup_sector=47 if strpos(occupationname,"Advo")
-
-	
-	
-	
 	
 	
 	
@@ -364,7 +463,9 @@ strpos(occupationname,"Police") ///
 replace occup_sector=52 if occupationname=="LIC agent"
 replace occup_sector=52 if occupationname=="Social Audit"
 replace occup_sector=52 if occupationname=="Project manager"
-
+replace occup_sector=52 if occupationname=="(Equitas Bank) loan collection work"
+replace occup_sector=52 if occupationname=="Collection executive"
+replace occup_sector=52 if occupationname=="Loan collection job (prayaan capital)"
 	
 	
 **** Independent labour contractors
@@ -394,6 +495,10 @@ strpos(occupationname,"assistant") ///
 | strpos(occupationname,"Assistant")
 replace occup_sector=72 if occupationname=="Data entry operator"
 replace occup_sector=72 if occupationname=="Govt. Job (Clerk in BDO Office)"
+replace occup_sector=72 if occupationname=="Government job (agri department)"
+replace occup_sector=72 if occupationname=="Government work( paalvadi Samaiyal)"
+replace occup_sector=72 if occupationname=="Icp Operator"
+replace occup_sector=72 if occupationname=="Browsing center"
 
 
 /*
@@ -413,6 +518,7 @@ replace occup_sector=73 if occupationname=="Security"
 replace occup_sector=73 if occupationname=="Watch man"
 replace occup_sector=73 if occupationname=="Bus driver"
 replace occup_sector=73 if occupationname=="Bus conductor"
+replace occup_sector=73 if occupationname=="Tamilnadu transport corporation driver"
 
 
 
@@ -435,6 +541,8 @@ replace occup_sector=81 if occupationname=="Fishmonger"
 replace occup_sector=81 if occupationname=="Milk man"
 replace occup_sector=81 if occupationname=="Mobile tea stall"
 replace occup_sector=81 if occupationname=="Mushroom stall"
+replace occup_sector=81 if occupationname=="Own Pettis hop"
+replace occup_sector=81 if occupationname=="Own photo studio"
 
 	 
 * Agri equipment sellers
@@ -452,6 +560,7 @@ strpos(occupationname,"Sales") ///
 | strpos(occupationname,"sales")
 replace occup_sector=84 if occupationname=="Cashier work"
 replace occup_sector=84 if occupationname=="Groundnut Sale Assistance"
+replace occup_sector=84 if occupationname=="Working in, supermarket, Chennai guduvanchery"
 
 
 * Technical salesmen & commercial travellers
@@ -478,6 +587,9 @@ strpos(occupationname,"catering") ///
 | strpos(occupationname,"Catering")
 replace occup_sector=92 if occupationname=="Hotel Master"
 replace occup_sector=92 if occupationname=="Tea master"
+replace occup_sector=92 if occupationname=="Cooking master"
+replace occup_sector=92 if occupationname=="Mid day meal maker"
+replace occup_sector=92 if occupationname=="Patti kadai"
 
 
 
@@ -505,6 +617,7 @@ replace occup_sector=96 if occupationname=="Driver"
 replace occup_sector=96 if occupationname=="Driver ( work in private company)"
 replace occup_sector=96 if occupationname=="Private  driver"
 replace occup_sector=96 if occupationname=="Own van driver"
+replace occup_sector=96 if occupationname=="Panruti own auto driver"
 
 
 	
@@ -513,6 +626,7 @@ replace occup_sector=101 if strpos(occupationname,"Drum")
 replace occup_sector=101 if strpos(occupationname,"drum")
 replace occup_sector=101 if strpos(occupationname,"Art's work")
 replace occup_sector=101 if strpos(occupationname,"Arts work")
+replace occup_sector=101 if strpos(occupationname,"Karagatam")
 
 
 		
@@ -556,6 +670,8 @@ sort occup_sector occupationname
 
 
 ***** Recoder kindofwork
+rename occupationnumber occupationid
+tostring occupationid, gen(occupationnumber)
 replace kindofwork=3 if HHID_panel=="KUV1" & INDID_panel=="Ind_2" & occupationnumber=="2"
 
 
@@ -565,37 +681,11 @@ replace occup_sector=11 if HHID_panel=="KAR17" & occupationname=="Agricultural c
 replace occup_sector=11 if HHID_panel=="ORA30" & occupationname=="Agricultural cooli in own farm"
 replace occup_sector=11 if HHID_panel=="ORA14" & occupationname=="Agricultural cooli on own land"
 
-replace occup_sector=46 if HHID_panel=="KUV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // LIC agent
-replace occup_sector=33 if HHID_panel=="MANAM26" & INDID_panel=="Ind_2" & occupationnumber=="2"  // SHG leader
-replace occup_sector=41 if HHID_panel=="GOV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // Assistant professor
-replace occup_sector=71 if HHID_panel=="KOR7" & INDID_panel=="Ind_5" & occupationnumber=="1"  // Govt. Job (Clerk in BDO Office)
+replace occup_sector=14 if occupationname=="Samanthi naduthal"
 
-
-replace occup_sector=901 if occupationname=="Cashew company"
-replace occup_sector=901 if occupationname=="Cashew nut company"
-replace occup_sector=901 if occupationname=="Cashew nuts company worker"
-label define occupation1 901 "Food-processing industry", modify
-
+replace occup_sector=26 if occupationname=="TNEB"
 
 replace occup_sector=28 if occupationname=="Cow driving"
-
-replace occup_sector=96 if occupationname=="Cooli driver"
-
-replace occup_sector=33 if occupationname=="Company"
-
-replace occup_sector=902 if occupationname=="Daily wager"
-label define occupation1 902 "Coolie non-agri", modify
-
-replace occup_sector=72 if occupationname=="Employee in finance company"
-replace occup_sector=72 if occupationname=="Loan officer"
-replace occup_sector=72 if occupationname=="Operator"
-
-replace occup_sector=903 if occupationname=="Function decoration labour"
-replace occup_sector=903 if occupationname=="Marriage decorator"
-label define occupation1 903 "Other salaried, non quali", modify
-
-replace occup_sector=92 if occupationname=="Home made items elladai"
-replace occup_sector=92 if occupationname=="Running a canteen in Villupuram private hospital"
 
 replace occup_sector=31 if occupationname=="Hundai company"
 replace occup_sector=31 if occupationname=="ITI company Sriram"
@@ -607,6 +697,55 @@ replace occup_sector=31 if occupationname=="Mosquito nets company"
 replace occup_sector=31 if occupationname=="Water purifier company"
 replace occup_sector=31 if occupationname=="Worker in a UCO4G COMPANY"
 replace occup_sector=31 if occupationname=="Godreje"
+replace occup_sector=31 if occupationname=="Company"
+
+replace occup_sector=33 if HHID_panel=="MANAM26" & INDID_panel=="Ind_2" & occupationnumber=="2"  // SHG leader
+
+replace occup_sector=41 if HHID_panel=="GOV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // Assistant professor
+
+replace occup_sector=44 if occupationname=="Pharmacy work"
+
+replace occup_sector=46 if HHID_panel=="KUV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // LIC agent
+
+replace occup_sector=51 if occupationname=="Municipality worker"
+replace occup_sector=51 if occupationname=="NLC Employer"
+
+replace occup_sector=71 if occupationname=="Thinathanthi newspaper"
+replace occup_sector=71 if HHID_panel=="KOR7" & INDID_panel=="Ind_5" & occupationnumber=="1"  // Govt. Job (Clerk in BDO Office)
+
+
+replace occup_sector=72 if occupationname=="Employee in finance company"
+replace occup_sector=72 if occupationname=="Loan officer"
+replace occup_sector=72 if occupationname=="Operator"
+
+replace occup_sector=73 if occupationname=="Metro Tracking"
+
+replace occup_sector=81 if occupationname=="Self employed"
+
+replace occup_sector=84 if occupationname=="Retailer"
+
+replace occup_sector=92 if occupationname=="Home made items elladai"
+replace occup_sector=92 if occupationname=="Running a canteen in Villupuram private hospital"
+
+replace occup_sector=96 if occupationname=="Cooli driver"
+replace occup_sector=96 if occupationname=="Driver (own car)"
+replace occup_sector=96 if occupationname=="Traiver"
+
+
+replace occup_sector=901 if occupationname=="Cashew company"
+replace occup_sector=901 if occupationname=="Cashew nut company"
+replace occup_sector=901 if occupationname=="Cashew nuts company worker"
+label define occupation1 901 "Food-processing industry", modify
+
+replace occup_sector=902 if occupationname=="Daily wager"
+label define occupation1 902 "Coolie non-agri", modify
+
+replace occup_sector=902 if occupationname=="Labour work"
+replace occup_sector=902 if occupationname=="Market"
+
+replace occup_sector=903 if occupationname=="Function decoration labour"
+replace occup_sector=903 if occupationname=="Marriage decorator"
+label define occupation1 903 "Other salaried, non quali", modify
 
 replace occup_sector=904 if occupationname=="Jeans company production"
 replace occup_sector=904 if occupationname=="Textile company @ Thiruppur"
@@ -616,41 +755,27 @@ replace occup_sector=904 if occupationname=="Thirupur company"
 replace occup_sector=904 if occupationname=="Panjumill"
 replace occup_sector=904 if occupationname=="Baniyan company"
 replace occup_sector=904 if occupationname=="Baniyan factory"
+replace occup_sector=904 if occupationname=="Working at textile"
+replace occup_sector=904 if occupationname=="Working at tirupur textile"
+replace occup_sector=904 if occupationname=="Private cloth company at chennai"
+replace occup_sector=904 if occupationname=="Leather company"
 label define occupation1 904 "Textile industry/company", modify
-
-replace occup_sector=902 if occupationname=="Labour work"
-
-replace occup_sector=902 if occupationname=="Market"
 
 replace occup_sector=905 if occupationname=="Market Labour"
 label define occupation1 905 "Non agri regular qualified", modify
 
-replace occup_sector=71 if occupationname=="Thinathanthi newspaper"
-
-replace occup_sector=44 if occupationname=="Pharmacy work"
-
-replace occup_sector=96 if occupationname=="Traiver"
-
-replace occup_sector=81 if occupationname=="Self employed"
-
 replace occup_sector=906 if occupationname=="Rewinding works"
+replace occup_sector=906 if occupationname=="Car wiping work"
 label define occupation1 906 "Automobile", modify
 
-replace occup_sector=84 if occupationname=="Retailer"
-
-replace occup_sector=26 if occupationname=="TNEB"
-
-replace occup_sector=14 if occupationname=="Samanthi naduthal"
-
-replace occup_sector=906 if occupationname=="Fisherman"
-label define occupation1 906 "Fisherman", modify
-
-replace occup_sector=51 if occupationname=="Municipality worker"
-replace occup_sector=51 if occupationname=="NLC Employer"
+replace occup_sector=907 if occupationname=="Fisherman"
+label define occupation1 907 "Fisherman", modify
 
 
-replace occup_sector=73 if occupationname=="Metro Tracking"
 
+********** 2e check
+format occup_sector %30.0g
+sort occup_sector occupationname HHID_panel INDID_panel occupationid
 
 
 
@@ -744,128 +869,10 @@ format everattendedschool %3.0g
 format classcompleted10ormore %5.0g
 
 fre occup_sector occup_sector2 kindofwork salariedjobtype salariedwagetype, nowrap all
-/*
-occup_sector
---------------------------------------------------------------------------------------------------------
-                                                           |      Freq.    Percent      Valid       Cum.
------------------------------------------------------------+--------------------------------------------
-Valid   11  Cultivators                                    |        322      15.44      15.52      15.52
-        12  Agricultural labourers                         |        553      26.51      26.65      42.17
-        13  Sugarcane plantation labourers                 |         29       1.39       1.40      43.57
-        14  Other farm workers                             |          8       0.38       0.39      43.95
-        22  Bricklayers and construction workers (chamber, |        230      11.03      11.08      55.04
-        23  Spinners, Weavers, Knitters, Dyers             |         23       1.10       1.11      56.14
-        24  Tailors, dress makers, sewers                  |         21       1.01       1.01      57.16
-        25  Clay workers, potters, sculptors, painters     |         12       0.58       0.58      57.73
-        26  Electrical workers                             |         18       0.86       0.87      58.60
-        27  Mechanic and machinery fitters/assemblers (exc |         19       0.91       0.92      59.52
-        28  Transport Equipment operators                  |         16       0.77       0.77      60.29
-        30  Material handling and related equipment operat |          4       0.19       0.19      60.48
-        31  Other Industrial workers (glass, mining, chemi |         25       1.20       1.20      61.69
-        32  Other craftsworkers (Carpenters, tiles workers |          2       0.10       0.10      61.78
-        33  Other labour                                   |         88       4.22       4.24      66.02
-        41  Teachers                                       |          6       0.29       0.29      66.31
-        42  Architects, Engineers, ...                     |          7       0.34       0.34      66.65
-        44  Scientific, medical and technical persons      |          3       0.14       0.14      66.80
-        45  Nursing and health technicians                 |         10       0.48       0.48      67.28
-        46  Economists, Accountants, auditors              |          1       0.05       0.05      67.33
-        47  Jurists                                        |          2       0.10       0.10      67.42
-        51  Administrative and executive officials governm |          8       0.38       0.39      67.81
-        52  Working proprietors, directors, managers in mi |          2       0.10       0.10      67.90
-        71  Clerical and other supervisors                 |         10       0.48       0.48      68.39
-        72  Other clerical workers                         |          8       0.38       0.39      68.77
-        73  Transport conductors and guards                |         12       0.58       0.58      69.35
-        81  Shop keepers (wholesale and retail)            |        101       4.84       4.87      74.22
-        82  Agri equipment sellers                         |          1       0.05       0.05      74.27
-        83  Rent shop/ activities                          |          1       0.05       0.05      74.31
-        84  Salesmen, shop assistants and related workers  |         17       0.81       0.82      75.13
-        85  Technical salesmen & commercial travellers     |          3       0.14       0.14      75.28
-        86  Money lenders and pawn brokers                 |          1       0.05       0.05      75.33
-        91  Hotel and restaurant keepers                   |          8       0.38       0.39      75.71
-        92  Cooks, waiters                                 |          8       0.38       0.39      76.10
-        93  Building caretakers, sweepers, cleaners        |          2       0.10       0.10      76.19
-        94  Maids and house keeping service workers        |          4       0.19       0.19      76.39
-        95  Hair dressers, barbers...                      |          1       0.05       0.05      76.43
-        96  Private transportation                         |         37       1.77       1.78      78.22
-        101 Performing artists                             |          9       0.43       0.43      78.65
-        102 Astrologers                                    |          1       0.05       0.05      78.70
-        111 Public works/ NREGA                            |        419      20.09      20.19      98.89
-        901 Food-processing industry                       |          3       0.14       0.14      99.04
-        902 Coolie non-agri                                |          3       0.14       0.14      99.18
-        903 Other salaried, non quali                      |          2       0.10       0.10      99.28
-        904 Textile industry/company                       |         10       0.48       0.48      99.76
-        905 Non agri regular qualified                     |          1       0.05       0.05      99.81
-        906 Fisherman                                      |          4       0.19       0.19     100.00
-        Total                                              |       2075      99.47     100.00           
-Missing .                                                  |         11       0.53                      
-Total                                                      |       2086     100.00                      
---------------------------------------------------------------------------------------------------------
 
-occup_sector2
---------------------------------------------------------------------------------------------------------
-                                                           |      Freq.    Percent      Valid       Cum.
------------------------------------------------------------+--------------------------------------------
-Valid   1  Cultivators                                     |        322      15.44      15.69      15.69
-        2  Agricultural and plantation labourers           |        590      28.28      28.75      44.44
-        3  Production workers, transport equipment operato |        458      21.96      22.32      66.76
-        4  Most qualified workers                          |         29       1.39       1.41      68.18
-        5  Administrative, executive and managerial worker |         10       0.48       0.49      68.66
-        7  Clerical workers                                |         30       1.44       1.46      70.13
-        8  Merchents and sellers                           |        124       5.94       6.04      76.17
-        9  Service workers                                 |         60       2.88       2.92      79.09
-        10 Artists and astrologers                         |         10       0.48       0.49      79.58
-        11 NREGA                                           |        419      20.09      20.42     100.00
-        Total                                              |       2052      98.37     100.00           
-Missing .                                                  |         34       1.63                      
-Total                                                      |       2086     100.00                      
---------------------------------------------------------------------------------------------------------
 
-kindofwork -- ${namefromearlier3}: What kind of work is ${occupationname}?
---------------------------------------------------------------------------------------------------------
-                                                           |      Freq.    Percent      Valid       Cum.
------------------------------------------------------------+--------------------------------------------
-Valid   1 Agricultural activity on own household farm      |        209      10.02      10.02      10.02
-        2 Self-employed, own account worker, an owner with |        126       6.04       6.04      16.06
-        3 Salaried job (agri in another farm)              |        659      31.59      31.59      47.65
-        4 Salaried job (non-agri, in industry, services... |        964      46.21      46.21      93.86
-        5 Unpaid worker in household business (non-agri)   |          9       0.43       0.43      94.30
-        6 Unpaid worker in other business (non-agri)       |          7       0.34       0.34      94.63
-        7 Unpaid worker in own farm                        |        106       5.08       5.08      99.71
-        8 Unpaid worker in another farm                    |          6       0.29       0.29     100.00
-        Total                                              |       2086     100.00     100.00           
---------------------------------------------------------------------------------------------------------
-
-salariedjobtype -- : Is  occupation...
---------------------------------------------------------------------------------------------------
-                                                     |      Freq.    Percent      Valid       Cum.
------------------------------------------------------+--------------------------------------------
-Valid   1 Permanent/ long term (i.e. government job) |        246      11.79      14.05      14.05
-        2 Fixed term (limited contract) (i.e. NREGA) |        417      19.99      23.81      37.86
-        3 Daily (i.e. agri coolie)                   |        900      43.14      51.40      89.26
-        4 Seasonal (i.e. brick kiln)                 |        188       9.01      10.74     100.00
-        Total                                        |       1751      83.94     100.00           
-Missing .                                            |        335      16.06                      
-Total                                                |       2086     100.00                      
---------------------------------------------------------------------------------------------------
-
-salariedwagetype -- : Type of wage of  occupation :
-------------------------------------------------------------------
-                     |      Freq.    Percent      Valid       Cum.
----------------------+--------------------------------------------
-Valid   1 Daily      |        792      37.97      45.23      45.23
-        2 Weekly     |        233      11.17      13.31      58.54
-        3 Monthly    |        504      24.16      28.78      87.32
-        4 Piece rate |        106       5.08       6.05      93.38
-        5 Unpaid     |        116       5.56       6.62     100.00
-        Total        |       1751      83.94     100.00           
-Missing .            |        335      16.06                      
-Total                |       2086     100.00                      
-------------------------------------------------------------------
-
-*/
 
 ************************ define occupcode2020 (replace occupcode)
-
 **"CULTIVATORS" 
 replace occupcode2020=1 if occup_sector2==1
 
@@ -962,6 +969,8 @@ replace kindofwork=4 if HHID_panel=="MAN31" & INDID_panel=="Ind_1" & occupationn
 
 replace kindofwork=4 if occupationname=="Building contractor"
 
+replace kindofwork=4 if occupationname=="Working at tirupur textile"
+
 replace occupcode2020=5 if occup_sector==85 & classcompleted>=10 
 
 replace occupcode2020=3 if HHID_panel=="ORA46" & INDID_panel=="Ind_3" & occupationnumber=="3"
@@ -970,10 +979,17 @@ replace occupcode2020=3 if HHID_panel=="SEM36" & INDID_panel=="Ind_4" & occupati
 
 replace occupcode2020=4 if HHID_panel=="MAN31" & INDID_panel=="Ind_1" & occupationnumber=="1"
 
+replace occupcode2020=4 if occupationname=="Working at tirupur textile"
+
+replace occupcode2020=3 if occupationname=="Tution centre"
+
+sort occupcode2020 occup_sector2 occup_sector occupationname HHID_panel INDID_panel occupationid
 
 
 
 ********** Checkup Arnaud 3
+/*
+preserve
 gen annualincome10k=annualincome/10000
 
 gen typewage=.
@@ -992,9 +1008,7 @@ label define occupcode 1 "Agri SE" 2 "Agri cas" 3 "Nagri cas" 4 "Nagri reg nqual
 label define kindofwork 1"Agri SE" 2"SE" 3"SJ agri" 4"SJ nagri" 5"UW hh busi" 6"UW oth busi" 7"UW own agri" 8"UW oth agri", modify
 
 
-
-/*
-********** LOG
+*** graph
 set graph off
 log using "$git\Occupations\Stat2020.log", replace
 ********** Insight
@@ -1030,16 +1044,15 @@ tab occupcode2020 kindofwork, row col nofreq
 log close
 graphlog using "$git\Occupations\Stat2020.log", lspacing(0.5) fsize(10) msize(.1) porientation(landscape) replace
 set graph on
+restore
 */
 
 
-label define occupcode 1 "Agri SE" 2 "Agri casual" 3 "Non-agri casual" 4 "Non-agri regular non-qualified" ///
-5 "Non-agri regular qualified" 6 "Non-agri SE" 7 "NREGA", modify
 
-label define kindofwork 1"Agri SE" 2"SE" 3"Salaried job agri" 4"Salaried job non-agri" 5"Unpaid in HH business (non-agri)" 6"Unpaid in other business (non-agri)" 7"Unpaid in own farm" 8"Unpaid in another farm", modify
 
 
 ********** Database for check
+/*
 preserve
 keep occupationname occup_sector occup_sector2 kindofwork annualincome classcompleted salariedjobtype salariedjobtype2 everattendedschool classcompleted occupcode2020 setofemployment HHID_panel INDID_panel occupationnumber sex caste
 order occupationname occup_sector occup_sector2 kindofwork annualincome everattendedschool classcompleted salariedjobtype salariedjobtype2 occupcode2020, first
@@ -1056,21 +1069,16 @@ label var `x' "/!\ --> Construction for panel 2010-2016-2020"
 }
 save "Occupation2020.dta", replace
 restore 
-
+*/
 
 
 
 
 ************************ same occupcode2 for 2010 & 2016 & 2020
- 
 gen occupcode2=occupcode2020 if year==2020
 label values occupcode2 occupcode
 
 tab occupcode2 year, column
-
-
-
-
 
 
 
@@ -1113,75 +1121,29 @@ ren cq construction_qualified
 tab construction_qualified year, column
 
 
-* occupcode3 includes individuals counted in working pop but not working 
-gen occupcode3=occupcode2 
-replace occupcode3=0 if occupationid==.
-
-label define occupcode 0 "No occupation", modify
-label values occupcode3 occupcode
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 * Labelisation of key variables of occupations
-	
-		**label PROFESSION of workers (occup_sector)
-	rename occup_sector occupation1
-	label var occupation1 "Detailed occupations of workers"
-	label define occupation1 11 "Cultivators" 12 "Agricultural labourers" 13"Sugarcane plantation labourers" 14 "Other farm workers" 22 "Bricklayers and construction workers (chamber, roads)" ///
-	23 "Spinners, Weavers, Knitters, Dyers" 24 "Tailors, dress makers, sewers" 25 "Clay workers, potters, sculptors, painters" 26 "Electrical workers" 27 "Mechanic and machinery fitters/assemblers (except electrical)" ///
-	28 "Transport Equipment operators" 29 "Stationery Engines and related equipment operators" 30 "Material handling and related equipment operators (loaders/unloaders)" ///
-	31 "Other Industrial workers (glass, mining, chemicals, printing, welders)" 32 "Other craftsworkers (Carpenters, tiles workers, Paper product makers)" 33 "Other labour" ///
-	41 "Teachers" 42 "Architects, Engineers, ..." 43 "Engineering technicians" 44 "Scientific, medical and technical persons" 45 "Nursing and health technicians" 46 "Economists, Accountants, auditors" ///
-	47 "Jurists" 51 "Administrative and executive officials government and local bodies" 52 "Working proprietors, directors, managers in mining, construction, manufacturing" ///
-	61 "Independent labour contractors" 71 "Clerical and other supervisors" 72 "Other clerical workers" 73 "Transport conductors and guards" 81 "Shop keepers (wholesale and retail)" ///
-	82 "Agri equipment sellers" 83 "Rent shop/ activities" 84 "Salesmen, shop assistants and related workers" 85 "Technical salesmen & commercial travellers" 86 "Money lenders and pawn brokers" ///
-	91 "Hotel and restaurant keepers" 92 "Cooks, waiters" 93 "Building caretakers, sweepers, cleaners" 94 "Maids and house keeping service workers" 95 "Hair dressers, barbers..." 96 "Private transportation" ///
-	97 "Other service workers" 101 "Performing artists" 102 "Astrologers" 111 "Public works/ NREGA"
-	label value occupation1 occupation1
+**label PROFESSION of workers (occup_sector)
+rename occup_sector occupation1
+label var occupation1 "Detailed occupations of workers"
 
-		**label Occupations of workers
-	rename occupcode2 occupation2
-	label var occupation2 "Occupations of workers"
-		
-		**label Occupations of workers + unoccupied individuals
-	rename occupcode3 occupation3
-	label var occupation3 "Occupations of workers + unoccupied individuals"
-
-		**Generate and label occupation variable only for population on working age (15-60 included)
-	gen occupation4=.
-	replace occupation4=occupation3 if age>14 & age<71
-	label define occupcode 0 "Unoccupied working age individuals", modify
-	label var occupation4 "Occupations of workers + unoccupied working age indiv (15-70)"
-	label values occupation4 occupcode
-
-		**Generate active and inactive population in the same variable
-		
-	gen working_pop=.
-	replace working_pop = 1 if occupation4==.
-	replace working_pop = 2 if occupation4==0	
-	replace working_pop = 3 if occupation4>0 & occupation4!=.
-	label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
-	label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
-	label values working_pop working_pop
-
+**label Occupations of workers
+rename occupcode2 occupation2
+label var occupation2 "Occupations of workers"
 
 rename occupation1 profession
 rename occupation2 occupation
-rename occupation3 occupa_unemployed
-rename occupation4 occupa_unemployed_15_70
+rename occup_sector2 sector
 
 
-save"NEEMSIS-occupation_alllong_v2.dta", replace
+
+*** Verif
+fre egoid
+sort egoid
+
+
+
+save"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3", replace
 ****************************************
 * END

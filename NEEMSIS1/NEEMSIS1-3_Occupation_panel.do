@@ -819,19 +819,13 @@ tab construction_qualified year, column
 
 
 * occupcode3 includes individuals counted in working pop but not working 
+/*
 gen occupcode3=occupcode2 
 replace occupcode3=0 if occupationid==.
 
 label define occupcode 0 "No occupation", modify
 label values occupcode3 occupcode
-
-
-
-
-
-
-
-
+*/
 
 
 
@@ -840,10 +834,10 @@ label values occupcode3 occupcode
 
 * Labelisation of key variables of occupations
 	
-		**label PROFESSION of workers (occup_sector)
-	rename occup_sector occupation1
-	label var occupation1 "Detailed occupations of workers"
-	label define occupation1 11 "Cultivators" 12 "Agricultural labourers" 13"Sugarcane plantation labourers" 14 "Other farm workers" 22 "Bricklayers and construction workers (chamber, roads)" ///
+**label PROFESSION of workers (occup_sector)
+rename occup_sector occupation1
+label var occupation1 "Detailed occupations of workers"
+label define occupation1 11 "Cultivators" 12 "Agricultural labourers" 13"Sugarcane plantation labourers" 14 "Other farm workers" 22 "Bricklayers and construction workers (chamber, roads)" ///
 	23 "Spinners, Weavers, Knitters, Dyers" 24 "Tailors, dress makers, sewers" 25 "Clay workers, potters, sculptors, painters" 26 "Electrical workers" 27 "Mechanic and machinery fitters/assemblers (except electrical)" ///
 	28 "Transport Equipment operators" 29 "Stationery Engines and related equipment operators" 30 "Material handling and related equipment operators (loaders/unloaders)" ///
 	31 "Other Industrial workers (glass, mining, chemicals, printing, welders)" 32 "Other craftsworkers (Carpenters, tiles workers, Paper product makers)" 33 "Other labour" ///
@@ -853,40 +847,48 @@ label values occupcode3 occupcode
 	82 "Agri equipment sellers" 83 "Rent shop/ activities" 84 "Salesmen, shop assistants and related workers" 85 "Technical salesmen & commercial travellers" 86 "Money lenders and pawn brokers" ///
 	91 "Hotel and restaurant keepers" 92 "Cooks, waiters" 93 "Building caretakers, sweepers, cleaners" 94 "Maids and house keeping service workers" 95 "Hair dressers, barbers..." 96 "Private transportation" ///
 	97 "Other service workers" 101 "Performing artists" 102 "Astrologers" 111 "Public works/ NREGA"
-	label value occupation1 occupation1
+label value occupation1 occupation1
 
-		**label Occupations of workers
-	rename occupcode2 occupation2
-	label var occupation2 "Occupations of workers"
-		
-		**label Occupations of workers + unoccupied individuals
-	rename occupcode3 occupation3
-	label var occupation3 "Occupations of workers + unoccupied individuals"
 
-		**Generate and label occupation variable only for population on working age (15-60 included)
-	gen occupation4=.
-	replace occupation4=occupation3 if age>14 & age<71
-	label define occupcode 0 "Unoccupied working age individuals", modify
-	label var occupation4 "Occupations of workers + unoccupied working age indiv (15-70)"
-	label values occupation4 occupcode
+**label Occupations of workers
+rename occupcode2 occupation2
+label var occupation2 "Occupations of workers"
 
-		**Generate active and inactive population in the same variable
-		
-	gen working_pop=.
-	replace working_pop = 1 if occupation4==.
-	replace working_pop = 2 if occupation4==0	
-	replace working_pop = 3 if occupation4>0 & occupation4!=.
-	label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
-	label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
-	label values working_pop working_pop
 
+**label Occupations of workers + unoccupied individuals
+/*
+rename occupcode3 occupation3
+label var occupation3 "Occupations of workers + unoccupied individuals"
+*/
+
+**Generate and label occupation variable only for population on working age (15-60 included)
+/*
+gen occupation4=.
+replace occupation4=occupation3 if age>14 & age<71
+label define occupcode 0 "Unoccupied working age individuals", modify
+label var occupation4 "Occupations of workers + unoccupied working age indiv (15-70)"
+label values occupation4 occupcode
+*/
+
+**Generate active and inactive population in the same variable
+/*
+gen working_pop=.
+replace working_pop = 1 if occupation4==.
+replace working_pop = 2 if occupation4==0	
+replace working_pop = 3 if occupation4>0 & occupation4!=.
+label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
 
 order occupation1 occupation2 occupation3 occupation4, last
-	
+*/
+
 rename occupation1 profession
 rename occupation2 occupation
+/*
 rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
+*/
 rename occup_sector2 sector
 
 
