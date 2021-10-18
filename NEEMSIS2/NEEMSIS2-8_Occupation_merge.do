@@ -628,23 +628,22 @@ save"NEEMSIS_APPEND-occupations_v5.dta", replace
 ****************************************
 * Indiv dataset
 ****************************************
-use"NEEMSIS_APPEND-occupations_v5.dta", clear
+use"NEEMSIS_APPEND-occupations_v4.dta", clear
 preserve
 bysort HHID_panel INDID_panel: gen n=_n 
 keep if n==1
 keep HHID_panel INDID_panel mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
-save"NEEMSIS_APPEND-occupations_v5_indiv.dta", replace
+save"NEEMSIS_APPEND-occupations_v4_indiv.dta", replace
 restore
 
 preserve
 bysort HHID_panel: gen n=_n 
 keep if n==1
 keep HHID_panel sum_ext_HH mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH kowinc_HH_agri kowinc_HH_selfemp kowinc_HH_sjagri kowinc_HH_sjnonagri kowinc_HH_uwhhnonagri kowinc_HH_uwnonagri kowinc_HH_uwhhagri kowinc_HH_uwagri occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
-save"NEEMSIS_APPEND-occupations_v5_HH.dta", replace
+save"NEEMSIS_APPEND-occupations_v4_HH.dta", replace
 restore
 ****************************************
 * END
-
 
 
 
@@ -658,14 +657,113 @@ restore
 ****************************************
 use"NEEMSIS2-HH_v14.dta", clear
 
-merge 1:1 HHID_panel INDID_panel using "NEEMSIS_APPEND-occupations_v5_indiv.dta"
+/*
+Verif de combien de personne je dois avoir
+*/
+order age_arnaud age agefromearlier1 agefromearlier2 agecalculation age_new age_newfromearlier age2010 age2016, after(sex)
+
+label var age_arnaud "age --> age2016+4 --> age2010+10 --> agefromearlier1"
+
+preserve
+*condition pour que le questionnaire se lance
+keep if livinghome==1 | livinghome==2
+drop if age<=10
+*condition à moi
+drop if INDID_left!=.
+*verdique
+ta dummyworkedpastyear, m  // 103
+restore
+
+
+
+
+
+preserve
+*condition pour que le questionnaire se lance
+keep if livinghome==1 | livinghome==2
+drop if agefromearlier2<=10
+*condition à moi
+drop if INDID_left!=.
+*verdique
+ta dummyworkedpastyear, m  // 0
+restore
+
+
+
+
+*103 stranges qui viennent d'un peu partout
+keep if dummyworkedpastyear==.
+ta age
+ta sex
+ta caste
+*un peu de tout
+*Ouf, l'éducation sûrement
+ta currentlyatschool, m
+
+restore
+
+
+merge 1:1 HHID_panel INDID_panel using "NEEMSIS_APPEND-occupations_v4_indiv.dta"
+gen dummyworker=0
+replace dummyworker=1 if _merge==3
 drop _merge
-merge m:1 HHID_panel using "NEEMSIS_APPEND-occupations_v5_HH.dta"
+merge m:1 HHID_panel using "NEEMSIS_APPEND-occupations_v4_HH.dta"
 drop _merge
+
+preserve
+duplicates drop HHID_panel, force
+tab version_HH mainocc_occupation_HH, m
+restore
+
+
+**Generate active and inactive population in the same variable
+gen working_pop=.
+replace working_pop=1 if (age<=14 & age!=.) | (age>=71 & age!=.)
+replace working_pop=2 if age>14 & age<71 & dummyworker==0
+replace working_pop=3 if age>14 & age<71 & dummyworker==1
+replace working_pop=. if INDID_left!=.
+label define working_pop 1 "Inactive" 2 "Unocc act" 3 "Occ act", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
+
+
+
+********** Remplacer occupation principale
+replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==. & INDID_left==.
+tab INDID_left
+fre mainocc_occupation_indiv
+label define occupcode 0 "No occupation", modify
+
+tab mainocc_occupation_indiv working_pop, m
+
+
+********** Verif les actifs non occupés
+preserve
+keep if working_pop==2
+tab version_HH
+
+**Generate and label occupation variable only for population on working age (15-60 included)
+gen occupa_unemployed_15_70=.
+replace occupa_unemployed_15_70=occupa_unemployed if age>14 & age<71
+label define occupcode 0 "Unoccupied working age individuals", modify
+label var occupa_unemployed_15_70 "Occupations of workers + unoccupied working age indiv (15-70)"
+label values occupa_unemployed_15_70 occupcode
+
+
+
+
+
+
 
 save"NEEMSIS2-HH_v15.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
 
 
 

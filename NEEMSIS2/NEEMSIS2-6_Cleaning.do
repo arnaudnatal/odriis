@@ -81,17 +81,21 @@ drop _merge
 
 destring sex, replace
 label values sex sex
+
 destring age, replace
-tab sex
-tab age
+*order age*, first
+
 replace sex=sex2016 if sex==.
 tab sex
-replace age=age2016+4 if age==.
-replace age=age2010+10 if age==.
+gen age_arnaud=age
+replace age_arnaud=age2016+4 if age==.
+replace age_arnaud=age2010+10 if age==.
 sort HHID_panel age
-destring agefromearlier1, replace
-replace age=agefromearlier1 if age==.
-tab age
+destring agefromearlier1 agefromearlier2 age_autofromearlier age_newfromearlier agecalculation agefromearlier, replace
+sort age HHID_panel INDID_panel
+replace age_arnaud=agefromearlier1 if age==.
+tab age,m
+
 
 order HHID_panel INDID_panel INDID2020 sex  age 
 
@@ -243,8 +247,8 @@ list HHID_panel INDID_panel	name age version_HH if livinghome==1 & edulevel==., 
        ELA52        In5            Rasu    69       NEEMSIS2_APRIL  
 */
 
-drop sex2010 age2010 HHID2010 dummyeverland2010 dummyHHlost2016
-drop canread2016 everattendedschool2016 classcompleted2016 after10thstandard2016 durationafter10th2016 typeofhigheredu2016 subjectsafter10th2016 othersubjectsafter10th2016 currentlyatschool2016 educationexpenses2016 amountschoolfees2016 bookscost2016 transportcost2016 reasonneverattendedschool2016 reasondropping2016 otherreasondroppingschool2016 dummyscholarship2016 scholarshipamount2016 scholarshipduration2016 converseinenglish2016 age2016 sex2016
+drop sex2010 HHID2010 dummyeverland2010 dummyHHlost2016
+drop canread2016 everattendedschool2016 classcompleted2016 after10thstandard2016 durationafter10th2016 typeofhigheredu2016 subjectsafter10th2016 othersubjectsafter10th2016 currentlyatschool2016 educationexpenses2016 amountschoolfees2016 bookscost2016 transportcost2016 reasonneverattendedschool2016 reasondropping2016 otherreasondroppingschool2016 dummyscholarship2016 scholarshipamount2016 scholarshipduration2016 converseinenglish2016 sex2016
 
 
 
