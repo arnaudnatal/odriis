@@ -77,7 +77,7 @@ bysort parent_key: egen sum_ext_HH=sum(ext)
 
 
 ********** Merger les var ego du questionnaire HH
-merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v9.dta", keepusing(mainoccuptype maxhoursayear selected_occupposition_ selected_occupname_ dummymainoccupation2 othermainoccupation2 workedpastyearfromearlier dummyworkedpastyear dummyego)
+merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v14.dta", keepusing(mainoccuptype maxhoursayear selected_occupposition_ selected_occupname_ dummymainoccupation2 othermainoccupation2 workedpastyearfromearlier dummyworkedpastyear dummyego)
 keep if _merge==3
 drop _merge
 label values mainoccuptype kindofwork
@@ -567,7 +567,7 @@ save"NEEMSIS_APPEND-occupations_v4.dta", replace
 ****************************************
 use"NEEMSIS_APPEND-occupations_v4.dta", clear
 
-merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v9.dta", keepusing(egoid name sex caste jatis age villageid everattendedschool classcompleted relationshiptohead)
+merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v14.dta", keepusing(egoid name sex caste jatis age villageid everattendedschool classcompleted relationshiptohead)
 
 
 rename _merge worker
@@ -656,14 +656,14 @@ restore
 ****************************************
 * Merge avec base HH
 ****************************************
-use"NEEMSIS2-HH_v9.dta", clear
+use"NEEMSIS2-HH_v14.dta", clear
 
 merge 1:1 HHID_panel INDID_panel using "NEEMSIS_APPEND-occupations_v5_indiv.dta"
 drop _merge
 merge m:1 HHID_panel using "NEEMSIS_APPEND-occupations_v5_HH.dta"
 drop _merge
 
-save"NEEMSIS2-HH_v10.dta", replace
+save"NEEMSIS2-HH_v15.dta", replace
 ****************************************
 * END
 
@@ -696,7 +696,7 @@ drop n
 save"NEEMSIS_APPEND-remreceived_indiv", replace
 
 
-use"NEEMSIS2-HH_v10.dta", clear
+use"NEEMSIS2-HH_v15.dta", clear
 merge m:1 setofremreceivedidgroup using "NEEMSIS_APPEND-remreceived_indiv"
 drop if _merge==2
 drop _merge
@@ -750,6 +750,6 @@ rename insurancetypetwo`i' insurancetype`i'
 tab version_HH 
 
 
-save"NEEMSIS2-HH_v11.dta", replace
+save"NEEMSIS2-HH_v16.dta", replace
 ****************************************
 * END

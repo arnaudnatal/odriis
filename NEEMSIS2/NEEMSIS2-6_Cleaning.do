@@ -655,8 +655,8 @@ use"NEEMSIS2-HH_v11.dta", clear
 *ta ego
 *ta version
 
-merge 1:1 HHID_panel INDID_panel using "D:\Documents\_Thesis\_DATA\ego2016"
-keep if _merge==3
+*merge 1:1 HHID_panel INDID_panel using "D:\Documents\_Thesis\_DATA\ego2016"
+*keep if _merge==3
 
 
 *Macro
@@ -989,7 +989,7 @@ split parent_key, p(/)
 drop parent_key2
 rename parent_key setofmigrationidgroup
 rename parent_key parent_key
-keep if migrationarea!=.
+keep if migrationarea!=""
 
 drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
 drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"

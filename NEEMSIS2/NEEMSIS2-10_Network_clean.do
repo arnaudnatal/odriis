@@ -356,10 +356,33 @@ save"$directory/_egotemp/NEEMSIS2_APRIL-`k'", replace
 
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 ********** INSTRUCTIONS:
 /*
 COPIER ET REMPLACER LES FICHIERS DE EGO RAW VERS EGO TEMP
 */
+
+
+
+
+
+
+
+
+
+
+
 
 
 ********** APPEND PAR VERSION

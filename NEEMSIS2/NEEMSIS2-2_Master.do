@@ -923,7 +923,7 @@ drop _merge
 
 
 
-
+destring numfamily, replace
 
 
 ********** INTERMEDIATE SAVING

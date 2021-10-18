@@ -82,14 +82,13 @@ Pour merger avec la base HH on utilise setofemployment
 */
 
 use"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3.dta", clear
-merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v17.dta"
+merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v18.dta"
 *Ok
 
 *Sortir setofoccupations pour ne pas induire en erreur
 use"$directory\CLEAN\NEEMSIS2-HH_v18.dta", clear
 drop setofoccupations
 save"$directory\CLEAN\NEEMSIS2-HH_v19.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v19.dta", replace
 *erase"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v17.dta"
 ****************************************
 * END
@@ -134,7 +133,7 @@ save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remreceivedsou
 *erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remreceivedsourceidgroup.dta"
 
 *Test
-merge m:m setofremreceivedidgroup using "$directory\CLEAN\NEEMSIS2-HH_v18.dta"
+merge m:m setofremreceivedidgroup using "$directory\CLEAN\NEEMSIS2-HH_v19.dta"
 *Ok
 
 
@@ -159,11 +158,10 @@ order setofremsentidgroup, last
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
 save"$directory\CLEAN\NEEMSIS_APPEND-remsentidgroup_v2.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remsentidgroup_v2.dta", replace
 *erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remsentidgroup.dta"
 
 *Test
-merge m:m setofremsentidgroup using "$directory\CLEAN\NEEMSIS2-HH_v18.dta"
+merge m:m setofremsentidgroup using "$directory\CLEAN\NEEMSIS2-HH_v19.dta"
 tab remsentid
 *Ok
 
