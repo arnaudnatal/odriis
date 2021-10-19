@@ -260,7 +260,7 @@ use"RUME-occupations_v3.dta", clear
 
 rename INDID INDID2010
 
-merge m:1 HHID2010 INDID2010 using "RUME-HH_v6.dta", keepusing(name sex caste jatis age villageid education edulevel relationshiptohead)
+merge m:1 HHID2010 INDID2010 using "RUME-HH_v6.dta", keepusing(name sex caste jatis age villageid education edulevel relationshiptohead HHID_panel INDID_panel)
 
 rename _merge worker
 recode worker (2=0) (3=1)

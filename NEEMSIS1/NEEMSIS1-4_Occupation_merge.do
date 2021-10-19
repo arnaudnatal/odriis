@@ -453,7 +453,7 @@ save"NEEMSIS-occupation_allwide_v3.dta", replace
 * Occupation + non-worker
 ****************************************
 use"NEEMSIS-occupation_allwide_v3.dta", clear
-
+drop caste
 merge m:1 parent_key INDID2016 using "NEEMSIS1-HH_v5.dta", keepusing(egoid dummymainoccup mainoccuptype othermainoccup maxhoursayear_ego dummyworkedpastyear workedpastyear_ego name sex caste jatis age HHID_panel INDID_panel HHID2010 INDID2010 villageid villageareaid householdid dummynewHH dummydemonetisation interviewplace everattendedschool classcompleted relationshiptohead)
 
 drop INDID
