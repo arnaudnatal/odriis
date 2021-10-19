@@ -1,0 +1,376 @@
+% arara: pdflatex 
+% arara: bibtex
+% arara: pdflatex
+% arara: pdflatex
+% arara: clean: {extensions: [ aux, bbl, out, toc, blg, thm ]}
+
+\documentclass[aspectratio=169]{beamer}
+
+\makeatletter
+\newskip\@bigflushglue \@bigflushglue = -100pt plus 1fil
+\def\bigcenter{\trivlist \bigcentering\item\relax}
+\def\bigcentering{\let\\\@centercr\rightskip\@bigflushglue%
+\leftskip\@bigflushglue
+\parindent\z@\parfillskip\z@skip}
+\def\endbigcenter{\endtrivlist}
+\makeatother
+
+
+\usetheme[lightmode, showmaxslides]{pureminimalistic}
+%darkmode
+\input{Preamble_beamer}
+
+
+
+% *****************************************************************
+% Title
+% *****************************************************************
+\title[Plan de thèse]{\textsc{Dette, Personnalité et Mariage en Inde rurale} \\ Plan de thèse à partir des données RUME \& NEEMSIS}
+\author[A. Natal]{\textcolor{darkgreen}{Arnaud Natal} \textcolor{lightgreen}{\scriptsize Univ. Bordeaux}}
+\institute{| \small 20 octobre 2021} 
+
+
+% ******************************************************************
+\begin{document}
+% has to be loaded outside of a frame to work!
+\maketitle
+
+
+
+% *******************
+ \begin{frame}{Déroulement de la présentation}
+   \tableofcontents
+   + \faCommentsO ~Évolution de l'emploi entre 2010 et 2020-21
+ \end{frame}
+% *******************
+
+
+\section{Contribution des traits de personnalité dans l'analyse de la dette individuelle}
+% *******************
+\begin{frame}{Comment les compétences cognitives et les traits de personnalité jouent sur l'endettement individuel ?}
+    \begin{vfilleditems}
+        \item[\faBook] Marché du travail, éducation \citep{Almlund2011}, finances des ménages \citep{Brown2014}. Dette en Inde \citep{Rajakumar2019, Guerin2014}. Inégalités de genre et de caste \citep{Sarkar2020}. 
+        \item[\faDatabase] NEEMSIS-1 et NEEMSIS-2.
+		\item[\faIndustry] Probit, MCO, quantiles et FE. Variables d'interraction.
+		\item[\faGift] Rôle limité du cognitif. OP-EX et CO plutôt bien. Femmes dalits bloquées, hommes non-dalits plus hétérogènes.
+    \end{vfilleditems}
+\end{frame}
+% *******************
+
+
+% *******************
+%\begin{frame}[plain, shrink=2]{Résultats}
+%\input{INPUT/AME_indebt.tex}
+%\end{frame}
+% *******************
+
+
+
+
+\section{Analyse de l'évolution des traits de personnalité dans le temps}
+% *******************
+\begin{frame}{Les traits de personnalité sont-ils stables dans le temps ?}
+    \begin{vfilleditems}
+        \item[\faBook] Stable dans le temps \citep{CobbClark2012}. Pas de consensus en psychologie \citep{Ardelt2000}. Big-5 peu adapté au PED \citep{Laajaj2019}. 
+        \item[\faDatabase] NEEMSIS-1 et NEEMSIS-2.
+		\item[\faIndustry] Statistiques descriptives, MCO, FE.
+		\item[\faGift] Instabilité dans le temps.
+    \end{vfilleditems}
+\end{frame}
+% *******************
+
+
+% *******************
+\begin{frame}[plain, shrink=1]{Questions du Big-5 \& corr. biais}
+\input{INPUT/Big5}
+\end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Correction 1 \citep{Rammstedt2013}}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=1]{INPUT/boxplotars.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Correction 2 "maison"}
+\begin{figure}[H]
+    \centering
+    \begin{columns}[T]
+        \begin{column}{.5\linewidth}
+            \includegraphics[width=\linewidth]{INPUT/boxplotars2016_det.pdf}
+        \end{column}
+        \begin{column}{.5\linewidth}
+            \includegraphics[width=\linewidth]{INPUT/boxplotars2020_det.pdf}
+        \end{column}
+    \end{columns}
+\end{figure}
+ \end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Rôle des enquêteurs en 2016-17}
+\input{INPUT/username2016}
+\end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Rôle des enquêteurs en 2020-21}
+\input{INPUT/username2020}
+\end{frame}
+% *******************
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Cohérence interne des données 1}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/omega_panel.pdf}
+\end{figure}
+ \end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Cohérence interne des données 2}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/omega_tot.pdf}
+\end{figure}
+ \end{frame}
+% *******************
+
+
+
+
+
+
+
+
+\section{Persistence du surendettement des ménages}
+% *******************
+\begin{frame}{Quels sont les déterminants du surendettement des ménages ? Les trajectoires de surendettement ?}
+    \begin{vfilleditems}
+        \item[\faBook] Rôle du Covid-19 \citep{Guerin2021}. Persistance du surendettement \citep{Chichaibelu2018}.
+        \item[\faDatabase] RUME, NEEMSIS-1 et NEEMSIS-2.
+		\item[\faIndustry] Statistiques descriptives, FE (RE, CRE ?).
+    \end{vfilleditems}
+\end{frame}
+% *******************
+
+
+
+
+
+
+
+\section{Finances des mariages}
+% *******************
+\begin{frame}{Finances des mariages}
+    \begin{vfilleditems}
+        \item[\faBook] Dépenses dans le mariage \citep{Bloch2004}. Rôle des gifts \citep{Guerin2020c}. Dot et épargne \citep{Anukriti2020}.
+        \item[\faDatabase] NEEMSIS-1, NEEMSIS-2 et enquêtes qualitatives.
+		\item[\faIndustry] Statistiques descriptives, Statistique exploratoire multidimensionnelle (?). 
+    \end{vfilleditems}
+\end{frame}
+% *******************
+
+
+
+
+
+
+% *******************
+\begin{frame}{\faCommentsO ~Évolution de l'emploi entre 2010 et 2020-21}
+    \begin{vfilleditems}
+        \item[2010] Agri; Coolie; Agri coolie; NREGS; Investment; Employee; SE; Pension.
+        \item[2016] Agri; SE; SJ agri; SJ non-agri; UW in HH business; UW in other business; UW in own farm; UW in another farm.
+        \item[2020] Agri; SE; SJ agri; SJ non-agri; UW in HH business; UW in other business; UW in own farm; UW in another farm.
+        \item[Panel] Agri SE; Agri casual; Casual; Regular non-quali; Regular quali; SE; NREGA.
+    \end{vfilleditems}
+\end{frame}
+% *******************
+
+
+
+%---------------- HH
+
+% *******************
+\begin{frame}[noframenumbering, plain, c]{\faCommentsO ~Évolution de l'emploi entre 2010 et 2020-21}
+    \centering
+    {\fontsize{20}{30}\selectfont À l'échelle des ménages}
+\end{frame}
+% *******************
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Occupation principale des ménages}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/evo_moc_HH.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Revenu total des ménages}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/inc_hh.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Revenu total des ménages 2}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/inc_hh500k.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+%---------------- Individus
+
+% *******************
+\begin{frame}[noframenumbering, plain, c]{\faCommentsO ~Évolution de l'emploi entre 2010 et 2020-21}
+    \centering
+    {\fontsize{20}{30}\selectfont À l'échelle des individus}
+\end{frame}
+% *******************
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Occupation principale des 15-70 ans}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/evo_moc_1570.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Occupation principale des 15-70 ans occupés}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/evo_moc_1570act.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Revenu total des 15-70 ans occupés}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/inc_indiv.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Revenu total des 15-70 ans occupés 2}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/inc_indiv500k.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+%---------------- Occupations
+
+% *******************
+\begin{frame}[noframenumbering, plain, c]{\faCommentsO ~Évolution de l'emploi entre 2010 et 2020-21}
+    \centering
+    {\fontsize{20}{30}\selectfont À l'échelle des occupations}
+\end{frame}
+% *******************
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Occupations des 15-70 ans occupés par caste}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/occ_year_caste.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Occupations des 15-70 ans occupés par sexe}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/occ_year_sex.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+% *******************
+\begin{frame}[plain, shrink=2]{Revenu des occupations}
+\begin{figure}[htpb]
+\centering
+\includegraphics[scale=0.9]{INPUT/inc_occ_panel.pdf}
+\end{figure}
+\end{frame}
+% *******************
+
+
+
+
+
+% *******************
+% \begin{frame}{Figures}
+%     \begin{figure}[H]
+%         \centering
+%         \begin{columns}[T]
+%             \begin{column}{.3\linewidth}
+%                 \includegraphics[width=\linewidth]{example-image-a}
+%                 \caption{Example A}
+%             \end{column}
+%             \begin{column}{.3\linewidth}
+%                 \includegraphics[width=\linewidth]{example-image-b}
+%                 \caption{Example B}
+%             \end{column}
+%         \end{columns}
+%     \end{figure}
+% \end{frame}
+% *******************
+
+
+% *******************
+\section*{References}
+\begin{frame}[noframenumbering, allowframebreaks]{References}
+\bibliographystyle{apacite}
+\bibliography{Ref_Arnaud}
+\end{frame}
+% *******************
+
+
+\end{document}

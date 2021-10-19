@@ -1,0 +1,64 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+
+\usepackage{appendixnumberbeamer}
+\renewcommand{\appendixname}{\texorpdfstring{\translate{appendix}}{appendix}}
+
+% References
+\usepackage[doi, natbibapa]{apacite}
+\renewcommand\bibliographytypesize{\tiny}
+\let\realcitep\citep
+\renewcommand*{\citep}[1]{{\small\realcitep{#1}}}
+\let\realcite\cite
+\renewcommand*{\cite}[1]{{\small\realcite{#1}}}
+
+% Change logo
+\renewcommand{\logotitle}{\vspace*{-20mm}\hspace*{-10.1mm}\includegraphics%
+  [width=\paperwidth]{header.jpeg}}
+\renewcommand{\logoheader}{}
+\renewcommand{\logoheader}{\vspace{0em}}
+\renewcommand{\logofooter}{\includegraphics%
+  [width=.4\linewidth]{neemsis.png}}
+
+% Color text
+\definecolor{darkgreen}{RGB}{80,151,68}
+\definecolor{lightgreen}{RGB}{164,204,76}
+\definecolor{brick}{RGB}{197,102,63}
+\definecolor{lightgray}{HTML}{A9A9A9}
+\definecolor{lightgray2}{RGB}{113,113,113}
+
+% Mail address
+\usepackage{hyperref}
+\hypersetup{colorlinks,linkcolor={lightgray2},citecolor={darkgreen},urlcolor={darkgreen}}
+
+% Math
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage{upgreek}
+
+% Rupee 
+\usepackage{tfrupee}
+
+% Change page word
+\renewcommand{\pageword}{}
+
+% Table
+\usepackage{array}
+\usepackage{booktabs}
+
+% Source for table
+\newcommand{\sourcetab}[1]{\vspace{1mm} \caption{{\tiny\textbf{Source}: {#1}}}}
+\newcommand{\sourcefig}[1]{\vspace{1mm} \caption{{\tiny\textbf{Source}: {#1}}}}
+
+% For shrink
+\usepackage{adjustbox}
+
+
+%\renewcommand{\beamertextcolor}{}
+%\renewcommand{\beamerbgcolor}{}
+%\renewcommand{\beamerfootertextcolor}{}
+\renewcommand{\beamertitlecolor}{brick}
+
+% Icones
+\usepackage{fontawesome}
