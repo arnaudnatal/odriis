@@ -701,6 +701,8 @@ label values working_pop working_pop
 order profession occupation occupa_unemployed occupa_unemployed_15_70, last
 fre profession occupation occupa_unemployed occupa_unemployed_15_70
 
+drop sum_ext_HH mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH kowinc_HH_agri kowinc_HH_selfemp kowinc_HH_sjagri kowinc_HH_sjnonagri kowinc_HH_uwhhnonagri kowinc_HH_uwnonagri kowinc_HH_uwhhagri kowinc_HH_uwagri occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
+
 save"NEEMSIS_APPEND-occupations_v5.dta", replace
 ****************************************
 * END
@@ -718,11 +720,11 @@ save"NEEMSIS_APPEND-occupations_v5.dta", replace
 ****************************************
 * Indiv dataset
 ****************************************
-use"NEEMSIS_APPEND-occupations_v5.dta", clear
+use"NEEMSIS_APPEND-occupations_v4.dta", clear
 preserve
 bysort HHID_panel INDID_panel: gen n=_n 
 keep if n==1
-keep HHID_panel INDID_panel mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega worker
+keep HHID_panel INDID_panel mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
 save"NEEMSIS_APPEND-occupations_v4_indiv.dta", replace
 restore
 
@@ -748,6 +750,9 @@ restore
 use"NEEMSIS2-HH_v14.dta", clear
 
 merge 1:1 HHID_panel INDID_panel using "NEEMSIS_APPEND-occupations_v4_indiv.dta"
+gen worker=.
+replace worker=1 if _merge==3
+replace worker=0 if _merge==1
 drop _merge
 merge m:1 HHID_panel using "NEEMSIS_APPEND-occupations_v4_HH.dta"
 drop _merge

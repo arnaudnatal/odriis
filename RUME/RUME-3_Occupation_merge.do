@@ -303,6 +303,9 @@ label values working_pop working_pop
 order profession occupation occupa_unemployed occupa_unemployed_15_70, last
 fre profession occupation occupa_unemployed occupa_unemployed_15_70
 
+
+drop mainocc_job_HH mainocc_occupation_HH annualincome_HH nboccupation_HH jobinc_HH_agri jobinc_HH_coolie jobinc_HH_agricoolie jobinc_HH_nregs jobinc_HH_invest jobinc_HH_employee jobinc_HH_selfemp jobinc_HH_pension occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
+
 save"RUME-occupations_v4.dta", replace
 ****************************************
 * END
@@ -318,19 +321,17 @@ save"RUME-occupations_v4.dta", replace
 ****************************************
 * Merge avec base HH
 ****************************************
-use"RUME-occupations_v4.dta", clear
-
+use"RUME-occupations_v3.dta", clear
+rename INDID INDID2010
 **********Indiv and HH dataset
 preserve
-bysort HHID2010 INDID: gen n=_n 
-keep if n==1
-keep HHID2010 INDID mainocc_job_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv jobinc_indiv_agri jobinc_indiv_coolie jobinc_indiv_agricoolie jobinc_indiv_nregs jobinc_indiv_invest jobinc_indiv_employee jobinc_indiv_selfemp jobinc_indiv_pension occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega worker
+duplicates drop HHID2010 INDID2010, force
+keep HHID2010 INDID2010 mainocc_job_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv jobinc_indiv_agri jobinc_indiv_coolie jobinc_indiv_agricoolie jobinc_indiv_nregs jobinc_indiv_invest jobinc_indiv_employee jobinc_indiv_selfemp jobinc_indiv_pension occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
 save"RUME-occupations_indiv.dta", replace
 restore
 
 preserve
-bysort HHID2010: gen n=_n 
-keep if n==1
+duplicates drop HHID2010, force
 keep HHID2010 mainocc_job_HH mainocc_occupation_HH annualincome_HH nboccupation_HH jobinc_HH_agri jobinc_HH_coolie jobinc_HH_agricoolie jobinc_HH_nregs jobinc_HH_invest jobinc_HH_employee jobinc_HH_selfemp jobinc_HH_pension occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
 save"RUME-occupations_HH.dta", replace
 restore
@@ -350,6 +351,9 @@ restore
 use"RUME-HH_v6.dta", clear
 
 merge 1:1 HHID2010 INDID2010 using "RUME-occupations_indiv.dta"
+gen worker=.
+replace worker=1 if _merge==3
+replace worker=0 if _merge==1
 drop _merge
 merge m:1 HHID2010 using "RUME-occupations_HH.dta"
 drop _merge
