@@ -367,11 +367,17 @@ label values working_pop working_pop
 
 
 ********** Remplacer occupation principale
+fre mainocc_occupation_indiv
 replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==.  & working_pop>1
 fre mainocc_occupation_indiv
 label define occupcode 0 "No occupation", modify
 
 tab mainocc_occupation_indiv working_pop, m
+
+*4 no occupation alors qu'occ act?
+tab mainocc_job_indiv if working_pop==3 & mainocc_occupation_indiv==0
+*des pension à recoder
+replace working_pop=1 if working_pop==3 & mainocc_occupation_indiv==0
 
 
 

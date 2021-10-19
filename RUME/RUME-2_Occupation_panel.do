@@ -426,38 +426,7 @@ replace occupcode2010=5 if occupcode2010==6 & occupationname=="AC MECHANIC" |occ
 *NREGA
 replace occupcode2010=7 if occupationtype==4
 
-*reste=pension 
-mdesc occupcode2010
-list occupationname if occupcode2010==. & occup_sector2!=999, clean noobs
-/*
-                    occupationname  
-                     HOUSE KEEPING  
-             COOLIE IN FANCY STORE  
-             COLLIE IN CLOTH STORE  
-             COOLIE IN FANCY STORE  
-             COOLIE IN SWEET STALL  
-                          SECURITY  
-                           PVT.CO.  
-                        CO-OP BANK  
-              PRIVATE COMPONY WORK  
-      HANDLOOM CO-OPRATIVE SOCIETY  
-                 HARTICULTURE WORK  
-                     GOVT.HOSPITAL  
-                    SERVICE ENG LG  
-    ENGINEER BUILDING CONSTRUCTION  
-                           PVT.CO.  
-                        CAR DRIVER  
-                  WATERMAN IN BSNL  
-                    TRACTOR driver  
-                       HOSTEL COOK  
-                  ACCOUNTS OFFICER  
-                           PVT. CO  
-                   PRIVATE COMPANY  
-                PVT.SCHOOL TEACHER  
-                PVT.SCHOOL TEACHER  
-                     HOUSE KEEPING  
-         SUPERVISOR IN PVT COMPANY 
-*/
+
 
 /*
 preserve
@@ -482,6 +451,27 @@ label define occupcode 1 "Agri self-employed" 2 "Agri casual workers" 3 "Non-agr
 5 "Non-agri regular qualified workers" 6 "Non-agri self-employed" 7 "Public employment scheme workers (NREGA)"
 
 label values occupcode2010 occupcode
+
+
+
+********** Verif 2
+*reste=pension 
+fre education
+fre occupationtype
+order occupationname occupationtype occupcode2010 education annualincome
+sort occupcode2010 HHID2010 INDID2010
+
+replace occupcode2010=3 if occupcode2010==. & occupationtype==2
+
+replace occupcode2010=4 if occupcode2010==. & occupationtype==6 & education==9
+replace occupcode2010=4 if occupcode2010==. & occupationtype==6 & education<3
+
+replace occupcode2010=0 if occupationtype==9
+
+replace occupcode2010=5 if occupcode2010==. & occupationtype==6 & education>=3 & education!=9 & education!=.
+
+
+
 
  
 gen occupcode2=occupcode2010 if year==2010

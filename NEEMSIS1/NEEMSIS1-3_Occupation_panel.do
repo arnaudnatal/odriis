@@ -367,11 +367,10 @@ replace  occup_sector= 11 if  occupationname == "Agriculture (own land )" |  occ
 		|  occupationname == "Data entry operater" ///
 		|  occupationname == "Post master" |  occupationname == "Mail Gard (central goverment railways dept)"
 
-	* Transport conductors and guards
-	replace  occup_sector= 73 if  occupationname == "Private bus conductor"  |  occupationname == "Bus conductor" |  occupationname == "Bus conductor (TN govt)" ///
+* Transport conductors and guards
+replace  occup_sector= 73 if  occupationname == "Private bus conductor"  |  occupationname == "Bus conductor" |  occupationname == "Bus conductor (TN govt)" ///
 	|  occupationname == "Bus driver" |  occupationname == "Bus driver (govt) Chennai" |  occupationname == "Van Driver(school)" ///
 	|  occupationname == "Toll gate worker" |  occupationname == "Security gaurd"
-	
 
 	
 **** Sales workers
@@ -689,56 +688,10 @@ label define occupcode 1 "Agri self-employed" 2 "Agri casual workers" 3 "Non-agr
 label values occupcode2016 occupcode
 
 
-mdesc occupcode2016
-list occupationname if occupcode2016==., clean noobs
-/*
-                                     occupationname  
-                                Data entry operater  
-                      Supervisor in private company  
-                                              Thari  
-                                     Thari (unpaid)  
-                                              Thari  
-                                              Thari  
-                                         Supervisor  
-                                        Post master  
-                                   Toll gate worker  
-                            Construction supervisor  
-                                 Van Driver(school)  
-                   Salaried work in Mascut (abroad)  
-                          Bus driver (govt) Chennai  
-                                Supervisor ( NREGA)  
-                              Water company private  
-                                         Bus driver  
-                            Transport company staff  
-                                           Advocate  
-                                         Bus driver  
-                                     Security gaurd  
-              Office assistant in Co-operative bank  
-                                    Private company  
-                                  Workshop training  
-                         Supervisor in construction  
-     Accountant in ration (gov job) no contract yet  
-                                      Billing staff  
-                              Cycles services  shop  
-                                                 88  
-                                                 88  
-                             Admin work(Feron tech)  
-                            Bus conductor (TN govt)  
-                                       Receptionist  
-    Secretary(primary agriculture cooperative bank)  
-                                           Advocats 
-*/
-
 * distinction non-agri coolie & regular non qualified pas très claire...
 	* using job location: new category for migrant construction workers
 	* shop labour: family business ? 5 are in non-agri coolies
 	* occup_sector 31-33: flou
-
-
-
-
-
-
 
 
 
@@ -764,8 +717,25 @@ replace occupationid=. if occupationname=="No occupation"
 
 tab occupcode2 year, column
 
-mdesc occupcode2
-list occupationname if occupcode2==., clean noobs
+********** Check up Arnaud
+fre occupcode2
+sort occupcode2 kindofwork occupationname
+order occupationname occupcode2 kindofwork annualincome classcompleted salariedjobtype
+
+
+replace occupcode2=3 if occupcode2==. & occupationname=="Thari"
+replace occupcode2=3 if occupcode2==. & occupationname=="Thari (unpaid)"
+replace occupcode2=3 if occupcode2==. & occupationname=="Workshop training"
+
+replace occupcode2=4 if occupcode2==. & occupationname=="Bus conductor (TN govt)"
+replace occupcode2=4 if occupcode2==. & occupationname=="Bus driver (govt) Chennai"
+replace occupcode2=4 if occupcode2==. & occupationname=="Toll gate worker"
+replace occupcode2=4 if occupcode2==. & occupationname=="Transport company staff"
+replace occupcode2=4 if occupcode2==. & occupationname=="Van Driver(school)"
+replace occupcode2=4 if occupcode2==. & occupationname=="Security gaurd"
+replace occupcode2=4 if occupcode2==. & occupationname=="Receptionist"
+replace occupcode2=4 if occupcode2==. & occupationname=="Salaried work in Mascut (abroad)"
+replace occupcode2=4 if occupcode2==. & occupationname=="Billing staff"
 
 
 
@@ -773,8 +743,19 @@ list occupationname if occupcode2==., clean noobs
 
 
 
+replace occupcode2=5 if occupcode2==. & occupationname=="Construction supervisor"
+replace occupcode2=5 if occupcode2==. & occupationname=="Data entry operater"
+replace occupcode2=5 if occupcode2==. & occupationname=="Post master"
+replace occupcode2=5 if occupcode2==. & occupationname=="Supervisor"
+replace occupcode2=5 if occupcode2==. & occupationname=="Supervisor ( NREGA)"
+replace occupcode2=5 if occupcode2==. & occupationname=="Supervisor in construction"
+replace occupcode2=5 if occupcode2==. & occupationname=="Supervisor in private company"
+replace occupcode2=5 if occupcode2==. & occupationname=="Private company"
+replace occupcode2=5 if occupcode2==. & occupationname=="Admin work(Feron tech)"
+replace occupcode2=5 if occupcode2==. & occupationname=="88"
 
 
+replace occupcode2=6 if occupcode2==. & kindofwork==2
 
 
 
