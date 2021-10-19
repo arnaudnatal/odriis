@@ -718,11 +718,11 @@ save"NEEMSIS_APPEND-occupations_v5.dta", replace
 ****************************************
 * Indiv dataset
 ****************************************
-use"NEEMSIS_APPEND-occupations_v4.dta", clear
+use"NEEMSIS_APPEND-occupations_v5.dta", clear
 preserve
 bysort HHID_panel INDID_panel: gen n=_n 
 keep if n==1
-keep HHID_panel INDID_panel mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
+keep HHID_panel INDID_panel mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjnonagri kowinc_indiv_uwhhnonagri kowinc_indiv_uwnonagri kowinc_indiv_uwhhagri kowinc_indiv_uwagri occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega worker
 save"NEEMSIS_APPEND-occupations_v4_indiv.dta", replace
 restore
 
@@ -748,8 +748,6 @@ restore
 use"NEEMSIS2-HH_v14.dta", clear
 
 merge 1:1 HHID_panel INDID_panel using "NEEMSIS_APPEND-occupations_v4_indiv.dta"
-gen dummyworker=0
-replace dummyworker=1 if _merge==3
 drop _merge
 merge m:1 HHID_panel using "NEEMSIS_APPEND-occupations_v4_HH.dta"
 drop _merge
@@ -763,8 +761,8 @@ restore
 **Generate active and inactive population in the same variable
 gen working_pop=.
 replace working_pop=1 if (age_arnaud<=14 & age_arnaud!=.) | (age_arnaud>=71 & age_arnaud!=.)
-replace working_pop=2 if age_arnaud>14 & age_arnaud<71 & dummyworker==0
-replace working_pop=3 if age_arnaud>14 & age_arnaud<71 & dummyworker==1
+replace working_pop=2 if age_arnaud>14 & age_arnaud<71 & worker==0
+replace working_pop=3 if age_arnaud>14 & age_arnaud<71 & worker==1
 replace working_pop=. if INDID_left!=.
 replace working_pop=. if livinghome>=3
 label define working_pop 1 "Inactive" 2 "Unocc act" 3 "Occ act", modify
@@ -774,7 +772,7 @@ label values working_pop working_pop
 
 
 ********** Remplacer occupation principale
-replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==. & INDID_left==. & livinghome<=2
+replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==. & INDID_left==. & livinghome<=2 & working_pop>1
 tab INDID_left
 fre mainocc_occupation_indiv
 label define occupcode 0 "No occupation", modify

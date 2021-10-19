@@ -248,7 +248,8 @@ save"RUME-occupations_v3.dta", replace
 
 
 
-use"RUME-HH_v6.dta", clear
+
+
 
 
 
@@ -317,13 +318,13 @@ save"RUME-occupations_v4.dta", replace
 ****************************************
 * Merge avec base HH
 ****************************************
-use"RUME-occupations_v3.dta", clear
+use"RUME-occupations_v4.dta", clear
 
 **********Indiv and HH dataset
 preserve
 bysort HHID2010 INDID: gen n=_n 
 keep if n==1
-keep HHID2010 INDID mainocc_job_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv jobinc_indiv_agri jobinc_indiv_coolie jobinc_indiv_agricoolie jobinc_indiv_nregs jobinc_indiv_invest jobinc_indiv_employee jobinc_indiv_selfemp jobinc_indiv_pension occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega
+keep HHID2010 INDID mainocc_job_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv jobinc_indiv_agri jobinc_indiv_coolie jobinc_indiv_agricoolie jobinc_indiv_nregs jobinc_indiv_invest jobinc_indiv_employee jobinc_indiv_selfemp jobinc_indiv_pension occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega worker
 save"RUME-occupations_indiv.dta", replace
 restore
 
@@ -348,11 +349,7 @@ restore
 ****************************************
 use"RUME-HH_v6.dta", clear
 
-rename INDID2010 INDID
-
-merge 1:1 HHID2010 INDID using "RUME-occupations_indiv.dta"
-gen dummyworker=0
-replace dummyworker=1 if _merge==3
+merge 1:1 HHID2010 INDID2010 using "RUME-occupations_indiv.dta"
 drop _merge
 merge m:1 HHID2010 using "RUME-occupations_HH.dta"
 drop _merge
@@ -361,8 +358,8 @@ drop _merge
 **Generate active and inactive population in the same variable
 gen working_pop=.
 replace working_pop=1 if (age<=14 & age!=.) | (age>=71 & age!=.)
-replace working_pop=2 if age>14 & age<71 & dummyworker==0
-replace working_pop=3 if age>14 & age<71 & dummyworker==1
+replace working_pop=2 if age>14 & age<71 & worker==0
+replace working_pop=3 if age>14 & age<71 & worker==1
 label define working_pop 1 "Inactive" 2 "Unocc act" 3 "Occ act", modify
 label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
 label values working_pop working_pop
@@ -370,7 +367,7 @@ label values working_pop working_pop
 
 
 ********** Remplacer occupation principale
-replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==.
+replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==.  & working_pop>1
 fre mainocc_occupation_indiv
 label define occupcode 0 "No occupation", modify
 
