@@ -10,7 +10,7 @@ TITLE: All RUME loans
 -------------------------
 */
 
-global directory = "D:\Documents\_Thesis\_DATA\RUMEmain"
+global directory = "D:\Documents\_Thesis\_DATA\RUME"
 cd "$directory"
 
 

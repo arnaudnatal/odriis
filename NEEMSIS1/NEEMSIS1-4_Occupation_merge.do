@@ -550,9 +550,39 @@ use"NEEMSIS1-HH_v5.dta", clear
 
 destring INDID2016, gen(INDID)
 merge 1:1 HHID2010 INDID using "NEEMSIS-occupation_allwide_v4_indiv.dta"
+gen dummyworker=0
+replace dummyworker=1 if _merge==3
 drop _merge
 merge m:1 HHID2010 using "NEEMSIS-occupation_allwide_v4_HH.dta"
 drop _merge
+
+
+
+**Generate active and inactive population in the same variable
+gen working_pop=.
+replace working_pop=1 if (age<=14 & age!=.) | (age>=71 & age!=.)
+replace working_pop=2 if age>14 & age<71 & dummyworker==0
+replace working_pop=3 if age>14 & age<71 & dummyworker==1
+replace working_pop=. if livinghome>=3
+label define working_pop 1 "Inactive" 2 "Unocc act" 3 "Occ act", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
+
+
+
+********** Remplacer occupation principale
+replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==. & livinghome<=2
+fre mainocc_occupation_indiv
+label define occupcode 0 "No occupation", modify
+
+tab mainocc_occupation_indiv working_pop, m
+tab livinghome
+dis 323+72
+
+
+
+
+
 
 save"NEEMSIS1-HH_v6.dta", replace
 ****************************************

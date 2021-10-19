@@ -546,20 +546,6 @@ ren cq construction_qualified
 tab construction_qualified year, column
 
 
-* occupcode3 includes individuals counted in working pop but not working 
-gen occupcode3=occupcode2 
-replace occupcode3=0 if occupationtype==10
-
-label define occupcode 0 "No occupation", modify
-label values occupcode3 occupcode
-
-
-
-
-
-
-
-
 
 * Labelisation of key variables of occupations
 	
@@ -582,32 +568,10 @@ label values occupcode3 occupcode
 	rename occupcode2 occupation2
 	label var occupation2 "Occupations of workers"
 		
-		**label Occupations of workers + unoccupied individuals
-	rename occupcode3 occupation3
-	label var occupation3 "Occupations of workers + unoccupied individuals"
-
-		**Generate and label occupation variable only for population on working age (15-60 included)
-	gen occupation4=.
-	replace occupation4=occupation3 if age>14 & age<71
-	label define occupcode 0 "Unoccupied working age individuals", modify
-	label var occupation4 "Occupations of workers + unoccupied working age indiv (15-70)"
-	label values occupation4 occupcode
-
-		**Generate active and inactive population in the same variable
-		
-	gen working_pop=.
-	replace working_pop = 1 if occupation4==.
-	replace working_pop = 2 if occupation4==0	
-	replace working_pop = 3 if occupation4>0 & occupation4!=.
-	label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
-	label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
-	label values working_pop working_pop
 
 
 rename occupation1 profession
 rename occupation2 occupation
-rename occupation3 occupa_unemployed
-rename occupation4 occupa_unemployed_15_70
 rename occup_sector2 sector
 
 save"RUME-occupations_v2.dta", replace

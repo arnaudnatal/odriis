@@ -548,11 +548,13 @@ rename `x'_6 `x'_selfemp
 rename `x'_7 `x'_nrega
 }
 
-
-
 save"NEEMSIS_APPEND-occupations_v4.dta", replace
 ****************************************
 * END
+
+
+
+
 
 
 
@@ -567,7 +569,95 @@ save"NEEMSIS_APPEND-occupations_v4.dta", replace
 ****************************************
 use"NEEMSIS_APPEND-occupations_v4.dta", clear
 
-merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v14.dta", keepusing(egoid name sex caste jatis age villageid everattendedschool classcompleted relationshiptohead)
+merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v14.dta", keepusing(egoid name sex caste jatis age_arnaud age agefromearlier1 agefromearlier2 agecalculation age_new age_newfromearlier age2010 age2016 villageid everattendedschool classcompleted edulevel relationshiptohead dummyworkedpastyear livinghome livinghomefromearlier1 livinghomefromearlier2 INDID_left)
+
+label var age_arnaud "age --> age2016+4 --> age2010+10 --> agefromearlier1"
+
+preserve
+*condition pour que le questionnaire se lance
+keep if livinghome==1 | livinghome==2
+drop if age_arnaud<=10
+*condition à moi
+drop if INDID_left!=.
+*verdique
+ta dummyworkedpastyear, m
+tab age_arnaud if dummyworkedpastyear==.
+tab agefromearlier2 if dummyworkedpastyear==.
+tab age_arnaud if dummyworkedpastyear==1
+tab agefromearlier2 if dummyworkedpastyear==1
+restore
+/*
+
+ age_arnaud |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         11 |         22       21.78       21.78
+         12 |         25       24.75       46.53
+         13 |         27       26.73       73.27
+         14 |         27       26.73      100.00
+------------+-----------------------------------
+      Total |        101      100.00
+
+agefromearl |
+       ier2 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          7 |         22       21.78       21.78
+          8 |         25       24.75       46.53
+          9 |         27       26.73       73.27
+         10 |         27       26.73      100.00
+------------+-----------------------------------
+      Total |        101      100.00
+
+Décalage de l'âge
+*/
+
+
+
+preserve
+*condition pour que le questionnaire se lance
+keep if livinghome==1 | livinghome==2
+drop if agefromearlier2<=10
+*condition à moi
+drop if INDID_left!=.
+*verdique
+ta dummyworkedpastyear, m
+restore
+
+
+preserve
+*101 mal codé de l'age
+keep if dummyworkedpastyear!=. & age_arnaud<20
+ta age_arnaud
+ta agefromearlier2
+ta age_arnaud dummyworkedpastyear 
+sort HHID_panel INDID_panel occupationid
+list sex age_arnaud agefromearlier2 edulevel kindofwork annualincome occupation if dummyworkedpastyear==1, clean noobs
+restore
+/*
+       sex   age_ar~d   agefro~2                        edulevel             kindofwork   annual~e                               occupation  
+    Female         19         15          High school (8th-10th)   Salaried job (non-ag      96000   Non-agri regular non-qualified workers  
+    Female         16         12          High school (8th-10th)   Salaried job (non-ag      90000   Non-agri regular non-qualified workers  
+    Female         15         11         HSC/Diploma (11th-12th)   Salaried job (non-ag      90000   Non-agri regular non-qualified workers  
+    Female         18         14   Post graduate (15th and more)   Salaried job (non-ag       6000                  Non-agri casual workers  
+      Male         18         14          High school (8th-10th)                      .          .                                        .  
+      Male         19         15          High school (8th-10th)   Salaried job (non-ag      60000                   Non-agri self-employed  
+      Male         19         15         HSC/Diploma (11th-12th)   Salaried job (non-ag     168000       Non-agri regular qualified workers  
+    Female         19         15          High school (8th-10th)   Salaried job (non-ag          0                  Non-agri casual workers  
+    Female         15         11          High school (8th-10th)                      .          .                                        .  
+      Male         16         12          High school (8th-10th)   Self-employed, own a     129000                   Non-agri self-employed  
+    Female         18         14         HSC/Diploma (11th-12th)   Salaried job (agri i      19200                      Agri casual workers  
+    Female         15         11          High school (8th-10th)   Salaried job (non-ag          0                  Non-agri casual workers
+
+Je pense que le plus simple sera de coder les 101 "0" à dummyworkedpastyear
+Mais le pb c'est que des questions ne seront pas remplis du coup
+Je ne touche à rien, il faudra juste noter ça pour les prochaines vagues
+*/
+
+
+
+
+
+
+
 
 
 rename _merge worker
@@ -589,7 +679,7 @@ label var occupa_unemployed "Occupations of workers + unoccupied individuals"
 
 **Generate and label occupation variable only for population on working age (15-60 included)
 gen occupa_unemployed_15_70=.
-replace occupa_unemployed_15_70=occupa_unemployed if age>14 & age<71
+replace occupa_unemployed_15_70=occupa_unemployed if age_arnaud>14 & age_arnaud<71
 label define occupcode 0 "Unoccupied working age individuals", modify
 label var occupa_unemployed_15_70 "Occupations of workers + unoccupied working age indiv (15-70)"
 label values occupa_unemployed_15_70 occupcode
@@ -657,52 +747,6 @@ restore
 ****************************************
 use"NEEMSIS2-HH_v14.dta", clear
 
-/*
-Verif de combien de personne je dois avoir
-*/
-order age_arnaud age agefromearlier1 agefromearlier2 agecalculation age_new age_newfromearlier age2010 age2016, after(sex)
-
-label var age_arnaud "age --> age2016+4 --> age2010+10 --> agefromearlier1"
-
-preserve
-*condition pour que le questionnaire se lance
-keep if livinghome==1 | livinghome==2
-drop if age<=10
-*condition à moi
-drop if INDID_left!=.
-*verdique
-ta dummyworkedpastyear, m  // 103
-restore
-
-
-
-
-
-preserve
-*condition pour que le questionnaire se lance
-keep if livinghome==1 | livinghome==2
-drop if agefromearlier2<=10
-*condition à moi
-drop if INDID_left!=.
-*verdique
-ta dummyworkedpastyear, m  // 0
-restore
-
-
-
-
-*103 stranges qui viennent d'un peu partout
-keep if dummyworkedpastyear==.
-ta age
-ta sex
-ta caste
-*un peu de tout
-*Ouf, l'éducation sûrement
-ta currentlyatschool, m
-
-restore
-
-
 merge 1:1 HHID_panel INDID_panel using "NEEMSIS_APPEND-occupations_v4_indiv.dta"
 gen dummyworker=0
 replace dummyworker=1 if _merge==3
@@ -718,10 +762,11 @@ restore
 
 **Generate active and inactive population in the same variable
 gen working_pop=.
-replace working_pop=1 if (age<=14 & age!=.) | (age>=71 & age!=.)
-replace working_pop=2 if age>14 & age<71 & dummyworker==0
-replace working_pop=3 if age>14 & age<71 & dummyworker==1
+replace working_pop=1 if (age_arnaud<=14 & age_arnaud!=.) | (age_arnaud>=71 & age_arnaud!=.)
+replace working_pop=2 if age_arnaud>14 & age_arnaud<71 & dummyworker==0
+replace working_pop=3 if age_arnaud>14 & age_arnaud<71 & dummyworker==1
 replace working_pop=. if INDID_left!=.
+replace working_pop=. if livinghome>=3
 label define working_pop 1 "Inactive" 2 "Unocc act" 3 "Occ act", modify
 label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
 label values working_pop working_pop
@@ -729,31 +774,19 @@ label values working_pop working_pop
 
 
 ********** Remplacer occupation principale
-replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==. & INDID_left==.
+replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==. & INDID_left==. & livinghome<=2
 tab INDID_left
 fre mainocc_occupation_indiv
 label define occupcode 0 "No occupation", modify
 
 tab mainocc_occupation_indiv working_pop, m
 
-
-********** Verif les actifs non occupés
 preserve
-keep if working_pop==2
-tab version_HH
-
-**Generate and label occupation variable only for population on working age (15-60 included)
-gen occupa_unemployed_15_70=.
-replace occupa_unemployed_15_70=occupa_unemployed if age>14 & age<71
-label define occupcode 0 "Unoccupied working age individuals", modify
-label var occupa_unemployed_15_70 "Occupations of workers + unoccupied working age indiv (15-70)"
-label values occupa_unemployed_15_70 occupcode
-
-
-
-
-
-
+*643 missings at working_pop, to check
+keep if working_pop==.
+keep if INDID_left==.  // 600
+keep if livinghome<=2  // 43
+restore
 
 save"NEEMSIS2-HH_v15.dta", replace
 ****************************************

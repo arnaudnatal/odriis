@@ -612,7 +612,7 @@ save"NEEMSIS2-loans_v6.dta", replace
 use"NEEMSIS2-loans_v6.dta", clear
 
 *Settled
-drop if loansettled==1
+*drop if loansettled==1
 
 *Change date format of submissiondate
 rename submissiondate submissiondate_o
@@ -911,25 +911,22 @@ replace monthlyinterestrate=(yratepaid/loanduration)*30.4167 if loanduration>30.
 
 *****
 /*
-ONLY NON SETTLED ONE
-
+ALL LOANS
 
      lender4 |         N      mean       p50       min       max
 -------------+--------------------------------------------------
-         WKP |       214  42.71183  34.66666  .8333333       600
-   Relatives |        17  27.54933  23.33333         2        72
-      Labour |        84  23.84127        20       2.4       108
- Shop keeper |         5  29.38424        30  .9212121        70
-Moneylenders |        21  12.91653  11.11111  .7272727        40
-     Friends |       325  23.22143  16.66667  .0057143       144
- Microcredit |        51  18.61319        10   .007875        80
-        Bank |        92  16.01129  12.33947       .21  86.66667
-     Thandal |        70   10.8256        10         2        60
+         WKP |       280  39.04335        30  .8333333       600
+   Relatives |        52  31.11878        25         2       144
+      Labour |        93  23.66846        20       2.4       108
+ Shop keeper |         6  30.54747        33  .9212121        70
+Moneylenders |        30  16.41337     13.16  .7272727  73.77333
+     Friends |       476  24.98467        18  .0057143       500
+ Microcredit |        86  18.80988        10   .007875       120
+        Bank |       145  20.37203    14.575       .21     122.4
+     Thandal |        98  10.93325        10         1        60
 -------------+--------------------------------------------------
-       Total |       879  25.88916        17  .0057143       600
+       Total |      1266  26.03706        18  .0057143       600
 ----------------------------------------------------------------
-
-
 */
 
 save"NEEMSIS2-loans_v11.dta", replace
@@ -958,6 +955,10 @@ save"NEEMSIS2-loans_v11.dta", replace
 ****************************************
 use"NEEMSIS2-loans_v11.dta", clear
 
+*Only non-settled loan
+fre loansettled
+drop if loansettled==1
+
 drop _merge
 merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v16.dta", keepusing(annualincome_indiv annualincome_HH) 
 drop if _merge==2
@@ -985,10 +986,10 @@ replace imp_principal=(loanamount-loanbalance)*365/loanduration if loanduration>
 
 *Imputation interest for moneylenders and microcredit
 gen imp1_interest=.
-replace imp1_interest=0.130*loanamount if lender4==6 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.130*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
-replace imp1_interest=0.186*loanamount if lender4==8 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.186*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
+replace imp1_interest=0.126*loanamount if lender4==6 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.126*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
+replace imp1_interest=0.188*loanamount if lender4==8 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.188*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
 replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
 
 *Imputation total
@@ -1026,9 +1027,7 @@ bysort HHID_panel: egen imp1_is_tot_HH=sum(imp1_interest_service)
 preserve
 gen DSR_HH=imp1_ds_tot_HH*100/annualincome_HH
 gen ISR_HH=imp1_is_tot_HH*100/annualincome_HH
-bysort householdid2020: gen n=_n
-keep if n==1
-drop n
+duplicates drop HHID_panel, force
 tabstat DSR_HH ISR_HH, stat(n mean sd q min max) long
 restore
 /*
@@ -1036,28 +1035,14 @@ Only non settled
 
    stats |    DSR_HH    ISR_HH
 ---------+--------------------
-       N |       485       485
-    mean |   58.4672  21.78276
-      sd |  117.3496  54.14935
-     p25 |  8.316608  1.709367
-     p50 |  19.81003  7.014595
-     p75 |  53.71967  17.32594
+       N |       613       613
+    mean |  60.03493   21.9559
+      sd |  122.0595  52.78241
+     p25 |  9.106176  1.471281
+     p50 |  21.31519  6.817211
+     p75 |  54.25462  17.47774
      min |         0         0
-     max |  1143.135  580.9362
-------------------------------
-
-With settled
-
-   stats |    DSR_HH    ISR_HH
----------+--------------------
-       N |       485       485
-    mean |  76.36775  24.33041
-      sd |  171.6649  57.55603
-     p25 |  11.86944  2.232143
-     p50 |   26.8339  7.370518
-     p75 |   74.2134  20.00603
-     min |         0         0
-     max |  2447.428  580.9362
+     max |  1146.086  581.2338
 ------------------------------
 
 */
@@ -1084,7 +1069,6 @@ save"NEEMSIS2-loans_v12.dta", replace
 ****************************************
 use"NEEMSIS2-loans_v12.dta", clear
 
-rename householdid2020 HHID
 
 *Focusing on marriage
 gen marriageloan=1 if loanreasongiven==8
@@ -1095,24 +1079,22 @@ gen loans=1
 
 *Details at higher scale
 foreach x in informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount marriageloan marriageloanamount dummyproblemtorepay dummyhelptosettleloan dummyinterest loans loanamount loanbalance {
-bysort HHID INDID2020: egen `x'_indiv=sum(`x')
-bysort HHID: egen `x'_HH=sum(`x')
+bysort HHID_panel INDID_panel: egen `x'_indiv=sum(`x')
+bysort HHID_panel: egen `x'_HH=sum(`x')
 }
 
 
 *Ratepaid
-bysort HHID INDID2020: egen mean_yratepaid_indiv=mean(yratepaid)
-bysort HHID INDID2020: egen mean_monthlyinterestrate_indiv=mean(monthlyinterestrate)
+bysort HHID_panel INDID_panel: egen mean_yratepaid_indiv=mean(yratepaid)
+bysort HHID_panel INDID_panel: egen mean_monthlyinterestrate_indiv=mean(monthlyinterestrate)
 
-bysort HHID: egen mean_yratepaid_HH=mean(yratepaid)
-bysort HHID: egen mean_monthlyinterestrate_HH=mean(monthlyinterestrate)
+bysort HHID_panel: egen mean_yratepaid_HH=mean(yratepaid)
+bysort HHID_panel: egen mean_monthlyinterestrate_HH=mean(monthlyinterestrate)
 
-
-rename HHID householdid2020
 
 *
 ta loans_indiv
-sort HHID_panel INDID2020 loans_indiv
+sort HHID_panel INDID_panel loans_indiv
 
 *Nb of ML/indiv/HH
 gen dummymainloans=0
@@ -1149,7 +1131,7 @@ gen borrowerservices_`i'=0
 }
 forvalues i=1(1)4{
 replace borrowerservices_`i'=1 if strpos(borrowerservices, "`i'")
-bysort householdid2020 INDID2020: egen sum_borrowerservices_`i'=sum(borrowerservices_`i')
+bysort HHID_panel INDID_panel: egen sum_borrowerservices_`i'=sum(borrowerservices_`i')
 replace borrowerservices_`i'=. if nbmainloans_indiv==0
 replace sum_borrowerservices_`i'=. if nbmainloans_indiv==0
 }
@@ -1170,7 +1152,7 @@ gen plantorepay_`i'=0
 }
 forvalues i=1(1)6{
 replace plantorepay_`i'=1 if strpos(plantorepay, "`i'")
-bysort householdid2020 INDID2020: egen sum_plantorepay_`i'=sum(plantorepay_`i')
+bysort HHID_panel INDID_panel: egen sum_plantorepay_`i'=sum(plantorepay_`i')
 replace plantorepay_`i'=. if nbmainloans_indiv==0
 replace sum_plantorepay_`i'=. if nbmainloans_indiv==0
 }
@@ -1191,7 +1173,7 @@ gen settleloanstrategy_`i'=0
 }
 forvalues i=1(1)10{
 replace settleloanstrategy_`i'=1 if strpos(settleloanstrategy, "`i'")
-bysort householdid2020 INDID2020: egen sum_settleloanstrategy_`i'=sum(settleloanstrategy_`i')
+bysort HHID_panel INDID_panel: egen sum_settleloanstrategy_`i'=sum(settleloanstrategy_`i')
 replace settleloanstrategy_`i'=. if nbmainloans_indiv==0
 replace sum_settleloanstrategy_`i'=. if nbmainloans_indiv==0
 }

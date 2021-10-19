@@ -241,6 +241,84 @@ rename `x'_7 `x'_nrega
 *Clean
 drop jobinc_indiv_todrop jobinc_HH_todrop
 
+
+save"RUME-occupations_v3.dta", replace
+****************************************
+* END
+
+
+
+use"RUME-HH_v6.dta", clear
+
+
+
+****************************************
+* Occupation + non-worker
+****************************************
+use"RUME-occupations_v3.dta", clear
+
+rename INDID INDID2010
+
+merge m:1 HHID2010 INDID2010 using "RUME-HH_v6.dta", keepusing(name sex caste jatis age villageid education edulevel relationshiptohead)
+
+rename _merge worker
+recode worker (2=0) (3=1)
+label define worker 0"No" 1"Yes"
+label values worker worker
+label var worker "Is the individual a worker?"
+fre worker
+
+
+*occupcode3 includes individuals counted in working pop but not working 
+gen occupa_unemployed=occupation 
+replace occupa_unemployed=0 if occupationname==""
+
+label define occupcode 0 "No occupation", modify
+label values occupa_unemployed occupcode
+label var occupa_unemployed "Occupations of workers + unoccupied individuals"
+
+
+**Generate and label occupation variable only for population on working age (15-60 included)
+gen occupa_unemployed_15_70=.
+replace occupa_unemployed_15_70=occupa_unemployed if age>14 & age<71
+label define occupcode 0 "Unoccupied working age individuals", modify
+label var occupa_unemployed_15_70 "Occupations of workers + unoccupied working age indiv (15-70)"
+label values occupa_unemployed_15_70 occupcode
+
+
+**Generate active and inactive population in the same variable
+gen working_pop=.
+replace working_pop = 1 if occupa_unemployed_15_70==.
+replace working_pop = 2 if occupa_unemployed_15_70==0	
+replace working_pop = 3 if occupa_unemployed_15_70>0 & occupa_unemployed_15_70!=.
+label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
+
+
+
+
+********** Tri
+order profession occupation occupa_unemployed occupa_unemployed_15_70, last
+fre profession occupation occupa_unemployed occupa_unemployed_15_70
+
+save"RUME-occupations_v4.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+****************************************
+* Merge avec base HH
+****************************************
+use"RUME-occupations_v3.dta", clear
+
 **********Indiv and HH dataset
 preserve
 bysort HHID2010 INDID: gen n=_n 
@@ -255,10 +333,9 @@ keep if n==1
 keep HHID2010 mainocc_job_HH mainocc_occupation_HH annualincome_HH nboccupation_HH jobinc_HH_agri jobinc_HH_coolie jobinc_HH_agricoolie jobinc_HH_nregs jobinc_HH_invest jobinc_HH_employee jobinc_HH_selfemp jobinc_HH_pension occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega
 save"RUME-occupations_HH.dta", replace
 restore
-
-save"RUME-occupations_v3.dta", replace
 ****************************************
 * END
+
 
 
 
@@ -274,9 +351,32 @@ use"RUME-HH_v6.dta", clear
 rename INDID2010 INDID
 
 merge 1:1 HHID2010 INDID using "RUME-occupations_indiv.dta"
+gen dummyworker=0
+replace dummyworker=1 if _merge==3
 drop _merge
 merge m:1 HHID2010 using "RUME-occupations_HH.dta"
 drop _merge
+
+
+**Generate active and inactive population in the same variable
+gen working_pop=.
+replace working_pop=1 if (age<=14 & age!=.) | (age>=71 & age!=.)
+replace working_pop=2 if age>14 & age<71 & dummyworker==0
+replace working_pop=3 if age>14 & age<71 & dummyworker==1
+label define working_pop 1 "Inactive" 2 "Unocc act" 3 "Occ act", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
+
+
+
+********** Remplacer occupation principale
+replace mainocc_occupation_indiv=0 if mainocc_occupation_indiv==.
+fre mainocc_occupation_indiv
+label define occupcode 0 "No occupation", modify
+
+tab mainocc_occupation_indiv working_pop, m
+
+
 
 save"RUME-HH_v7.dta", replace
 ****************************************
