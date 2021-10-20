@@ -223,6 +223,69 @@ gen ars2=ars-3
 gen ars3=abs(ars2)
 
 
+/*
+Regarde la correction par groupe de question.
+Ci-dessous l'ordre des questions avec les paires.
+
+Idée de correction qui aurait du sens par rapport à la façon dont les questions sont posées :
+Il y a une pause dans l'administration du questionnaire entre changemood et understandotherfeeling.
+Donc il peut être intéressant de corriger le biais par groupe de question.
+Pb: les reverses questions ne sont pas dans le même groupe, donc la moyenne n'a pas vraiment de sens........
+
+
+
+
+enjoypeople 
+curious (1+)
+organized
+managestress (6-)
+interestedbyart
+workwithother
+makeplans (2+)
+sharefeelings
+nervous (7+)
+repetitivetasks (1-)
+shywithpeople (4-)
+workhard
+changemood
+
+Total: 1(+-), 2(+), 3(), 4(-), 5(), 6(-), 7(+).
+
+-----------------------------
+
+understandotherfeeling
+inventive
+enthusiastic
+feeldepressed
+appointmentontime
+trustingofother
+easilyupset
+talktomanypeople (4+)
+liketothink
+putoffduties (3-)
+rudetoother (5-)
+toleratefaults
+worryalot (6+)
+easilydistracted (2-)
+completeduties (3+)
+talkative
+newideas
+staycalm (7-)
+forgiveother
+activeimagination
+expressingthoughts
+helpfulwithothers (5+)
+
+Total: 1(), 2(-), 3(+-), 4(+), 5(+-), 6(+), 7(-).
+*/
+
+
+
+
+
+
+
+
 
 
 

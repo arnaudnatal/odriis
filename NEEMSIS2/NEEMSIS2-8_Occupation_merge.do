@@ -573,6 +573,9 @@ merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v14.dta", keepusing(egoid na
 
 label var age_arnaud "age --> age2016+4 --> age2010+10 --> agefromearlier1"
 
+drop agetowork
+order HHID_panel INDID_panel age_arnaud age2010 age2016 age*
+
 preserve
 *condition pour que le questionnaire se lance
 keep if livinghome==1 | livinghome==2
