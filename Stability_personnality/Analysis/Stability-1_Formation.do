@@ -40,7 +40,7 @@ global wave3 "NEEMSIS2-HH_v20"
 
 
 
-
+global tokeep egoid name age sex edulevel jatis caste villageid  relationshiptohead maritalstatus year mainocc_kindofwork_indiv mainocc_occupation_indiv annualincome_indiv annualincome_HH assets aspirationminimumwage dummyaspirationmorehours aspirationminimumwage2
 
 
 
@@ -48,15 +48,15 @@ global wave3 "NEEMSIS2-HH_v20"
 * PANEL
 ***************************************
 use"$directory\\$wave2", clear
-keep HHID_panel INDID_panel egoid name age sex edulevel jatis caste villageid dummydemonetisation relationshiptohead maritalstatus year
-foreach x in egoid name age sex edulevel jatis caste villageid dummydemonetisation relationshiptohead maritalstatus year {
+keep HHID_panel INDID_panel $tokeep dummydemonetisation
+foreach x in $tokeep dummydemonetisation {
 rename `x' `x'_2016
 }
 save"$wave2-_tempego", replace
 
 use"$directory\\$wave3", clear
-keep HHID_panel INDID_panel egoid name age sex edulevel jatis caste villageid relationshiptohead maritalstatus year
-foreach x in egoid name age sex edulevel jatis caste villageid relationshiptohead maritalstatus year {
+keep HHID_panel INDID_panel $tokeep
+foreach x in $tokeep {
 rename `x' `x'_2020
 }
 save"$wave3-_tempego", replace
@@ -106,18 +106,30 @@ drop if _merge==2
 drop _merge
 recode panel (.=0)
 
-global tokeep age edulevel sex caste jatis name address villageid villageareaid villageid_new villageid_new_comments username ///
+global tokeep egoid name age sex edulevel jatis caste villageid  relationshiptohead maritalstatus year mainocc_kindofwork_indiv mainocc_occupation_indiv annualincome_indiv annualincome_HH assets aspirationminimumwage dummyaspirationmorehours aspirationminimumwage2 ///
 dummydemonetisation demotrustneighborhood demotrustemployees_ego demotrustbank_ego demonetworkpeoplehelping_ego demonetworkhelpkinmember_ego demogeneralperception demogoodexpectations demobadexpectations ///
-curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm tryhard stickwithgoals goaftergoal finishwhatbegin finishtasks keepworking username
-keep HHINDID HHID_panel INDID_panel panel egoid year $tokeep
+curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm tryhard stickwithgoals goaftergoal finishwhatbegin finishtasks keepworking ///
+canreadcard1a canreadcard1b canreadcard1c canreadcard2 numeracy1 numeracy2 numeracy3 numeracy4 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 ab1 ab2 ab3 ab4 ab5 ab6 ab7 ab8 ab9 ab10 ab11 ab12 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 ///
+ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt
+keep HHINDID villageareaid villageid_new HHID_panel INDID_panel panel egoid year username $tokeep
 
+*** Username
+replace username="Antoni" if username=="1"
+replace username="Antoni - Vivek Radja" if username=="1 2"
+replace username="Vivek Radja" if username=="2"
+replace username="Vivek Radja - Mayan" if username=="2 5"
+replace username="Vivek Radja - Raja Annamalai" if username=="2 6"
+replace username="Kumaresh" if username=="3"
+replace username="Kumaresh - Sithanantham" if username=="3 4"
+replace username="Kumaresh - Raja Annamalai" if username=="3 6"
+replace username="Sithanantham" if username=="4"
+replace username="Sithanantham - Raja Annamalai" if username=="4 6"
+replace username="Mayan" if username=="5"
+replace username="Mayan - Raja Annamalai" if username=="5 6"
+replace username="Raja Annamalai" if username=="6"
+replace username="Raja Annamalai - Pazhani" if username=="6 7"
+replace username="Pazhani" if username=="7"
 
-********** Rename 2016
-/*
-foreach x in $tokeep{
-rename `x' `x'2016
-}
-*/
 
 order HHINDID HHID_panel INDID_panel
 sort HHINDID
@@ -151,27 +163,22 @@ drop if _merge==2
 drop _merge
 recode panel (.=0)
 
-global tokeep age edulevel sex caste jatis name address villageid villageareaid username ///
-covsick ///
-curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm tryhard stickwithgoals goaftergoal finishwhatbegin finishtasks keepworking username
-keep HHINDID HHID_panel INDID_panel panel egoid year $tokeep
+global tokeep egoid name age sex edulevel jatis caste villageid  relationshiptohead maritalstatus year mainocc_kindofwork_indiv mainocc_occupation_indiv annualincome_indiv annualincome_HH assets aspirationminimumwage dummyaspirationmorehours aspirationminimumwage2 ///
+covsick covsellland covsubsistence covsubsistencereason covsubsistencesize covsubsistencenext covsubsistencereasonother covharvest covselfconsumption covharvestquantity covharvestprices covselllivestock covsellequipment covfoodenough covfoodquality covgenexpenses covexpensesdecrease covexpensesincrease covexpensesstable covplacepurchase covsellequipment_none covsellequipment_plowingmac covsellequipment_harvester covsellequipment_bullockcar covsellequipment_tractor covselllivestock_none covselllivestock_bullforploughin covselllivestock_bullock covselllivestock_chicken covselllivestock_goat covselllivestock_cow ///
+curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination organized makeplans workhard appointmentontime putoffduties easilydistracted completeduties enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople talkative expressingthoughts workwithother understandotherfeeling trustingofother rudetoother toleratefaults forgiveother helpfulwithothers managestress nervous changemood feeldepressed easilyupset worryalot staycalm tryhard stickwithgoals goaftergoal finishwhatbegin finishtasks keepworking ///
+canreadcard1a canreadcard1b canreadcard1c canreadcard2 numeracy1 numeracy2 numeracy3 numeracy4 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 ab1 ab2 ab3 ab4 ab5 ab6 ab7 ab8 ab9 ab10 ab11 ab12 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 ///
+ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt
+keep HHINDID villageareaid HHID_panel INDID_panel panel egoid year username $tokeep
 
-
-********** Rename 2020
-/*
-foreach x in $tokeep{
-rename `x' `x'2020
-}
-*/
-
-order HHINDID HHID_panel INDID_panel
-sort HHINDID
-
-*Username
-fre username
+***Username
 decode username, gen(username_str)
 drop username
 rename username_str username
+fre username
+
+
+order HHINDID HHID_panel INDID_panel
+sort HHINDID
 
 save"$wave3-_ego", replace
 ****************************************
@@ -191,21 +198,18 @@ save"$wave3-_ego", replace
 ****************************************
 use"$wave2-_ego", clear
 
-drop villageid_new_comments
 
 append using "$wave3-_ego"
 tab panel
 
-order HHINDID HHID_panel INDID_panel year egoid name sex age jatis caste edulevel address villageid villageareaid villageid_new username panel
-
-order dummydemonetisation demotrustneighborhood demotrustemployees_ego demotrustbank_ego demonetworkpeoplehelping_ego demonetworkhelpkinmember_ego demogeneralperception demogoodexpectations demobadexpectations covsick, after(panel)
+order HHINDID HHID_panel INDID_panel year egoid name sex age jatis caste edulevel villageid villageareaid villageid_new username panel
 
 order curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
 organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties ///
 enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts  ///
 workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers ///
 managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm ///
-tryhard  stickwithgoals   goaftergoal finishwhatbegin finishtasks  keepworking, after(covsick)
+tryhard  stickwithgoals   goaftergoal finishwhatbegin finishtasks  keepworking, after(panel)
 
 sort HHID_panel INDID_panel year
 
@@ -218,21 +222,6 @@ label values time time
 
 *Clean username 2016
 fre username
-replace username="Antoni" if username=="1"
-replace username="Antoni - Vivek Radja" if username=="1 2"
-replace username="Vivek Radja" if username=="2"
-replace username="Vivek Radja - Mayan" if username=="2 5"
-replace username="Vivek Radja - Raja Annamalai" if username=="2 6"
-replace username="Kumaresh" if username=="3"
-replace username="Kumaresh - Sithanantham" if username=="3 4"
-replace username="Kumaresh - Raja Annamalai" if username=="3 6"
-replace username="Sithanantham" if username=="4"
-replace username="Sithanantham - Raja Annamalai" if username=="4 6"
-replace username="Mayan" if username=="5"
-replace username="Mayan - Raja Annamalai" if username=="5 6"
-replace username="Raja Annamalai" if username=="6"
-replace username="Raja Annamalai - Pazhani" if username=="6 7"
-replace username="Pazhani" if username=="7"
 
 
 save"panel_stab_v1", replace
