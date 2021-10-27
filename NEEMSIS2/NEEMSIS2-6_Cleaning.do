@@ -23,7 +23,11 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global git = "C:\Users\anatal\Downloads\Github"
+global neemsis1 = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS1"
+
 cd "$directory\CLEAN"
 
 ********** SSC to install
@@ -75,7 +79,7 @@ restore
 *
 
 
-merge 1:m HHID_panel INDID2020 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_wide_v2", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_wide_v2", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
 drop if _merge==2
 drop _merge
 
@@ -136,11 +140,11 @@ save"NEEMSIS2-HH_v8.dta", replace
 ****************************************
 use"NEEMSIS2-HH_v8.dta", clear
 
-merge m:1 HHID_panel using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_HH", keepusing(jatis2010 jatis2016)
+merge m:1 HHID_panel using "$git\RUME-NEEMSIS\Individual_panel\code_HH", keepusing(jatis2010 jatis2016)
 drop if _merge==2
 drop _merge
 
-merge 1:1 HHID_panel INDID_panel using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\educ2016"
+merge 1:1 HHID_panel INDID_panel using "$git\RUME-NEEMSIS\Individual_panel\educ2016"
 drop if _merge==2
 drop _merge
 
@@ -502,7 +506,7 @@ recode goodtotalamount (.=0)
 */
 *goodtotalamount
 gen goodtotalamount_DVD=0
-gen goodtotalamount_camera=0
+*gen goodtotalamount_camera=0
 
 
 egen goodtotalamount2=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_DVD goodtotalamount_camera)
@@ -754,7 +758,7 @@ replace n=. if n>100
 tab ars3
 drop ars3_p n
 *histogram ars3, width(0.05) percent xtitle("Acquiesence bias") xlabel(0(0.5)2) xmtick(0(0.1)2) ylabel(0(1)14) ymtick(0(0.2)14) note("NEEMSIS-2 (2020-21)", size(small))
-*graph export "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\ars2_NEEMSIS2.pdf", replace
+*graph export "$git\RUME-NEEMSIS\ars2_NEEMSIS2.pdf", replace
 
 
 
@@ -961,17 +965,21 @@ drop reservationkind_4 reasonneverattendedschool_5 reasonneverattendedschool_4 r
 drop reasonnoland_1 reasonnoland_2 reasonnoland_3 reasonnoland_4 reasonnoland_77 drywetownland_2 drywetownland_1 waterfromownland_3 waterfromownland_5 drywetleaseland_1 drywetleaseland_2 waterfromleaseland_5 waterfromleaseland_3 landleaserrelation_8 productlist_1 productlist_2 productlist_3 productlist_4 productlist_5 productlist_6 productlist_7 productlist_8 productlist_9 productlist_10 productlist_11 productlist_12 productlist_13 productlist_14 productlist_77
 drop covexpensesdecrease_1 covexpensesdecrease_4 covexpensesdecrease_3 covexpensesdecrease_7 covexpensesdecrease_2 covexpensesdecrease_5 covexpensesdecrease_6 covexpensesdecrease_9 covexpensesdecrease_8 covexpensesincrease_3 covexpensesincrease_8 covexpensesincrease_1 covexpensesincrease_2 covexpensesincrease_9 covexpensesincrease_4 covexpensesincrease_7 covexpensesincrease_6 covexpensesstable_9 covexpensesstable_5 covexpensesstable_3 covexpensesstable_4 covexpensesstable_6 covexpensesstable_8 listgoods_1 listgoods_2 listgoods_3 listgoods_4 listgoods_5 listgoods_6 listgoods_7 listgoods_8 listgoods_9 listgoods_10 listgoods_11 listgoods_12 listgoods_77 listgoods_13
 drop howbuyhouse_2 howbuyhouse_7 howbuyhouse_5 howbuyhouse_4 howbuyhouse_1 schemeslist_2 schemeslist_3 schemeslist_4 schemeslist_5 schemeslist_6 schemeslist_7 schemeslist_8 schemeslist_9 schemeslist_18 schemeslist_19 schemeslist_21 schemeslist_23 covrationcarduse_2 covrationcarduse_1 covrationcarduse_3 waterfromownland_1 waterfromownland_2 waterfromownland_4 waterfromleaseland_2 waterfromleaseland_1 landpurchasedhowbuy_2 landpurchasedhowbuy_4 landpurchasedhowbuy_1 landpurchasedhowbuy_3 landleaserrelation_2 landleaserrelation_1 landleaserrelation_10 landleaserrelation_5 landleasingrelation_10 landleasingrelation_2 landleasingrelation_1 landleasingrelation_8 productlist_15 covsubsistencereason_1 covsubsistencereason_2 covsubsistencereason_3 covsubsistencereason_77 covexpensesincrease_5 covexpensesstable_1 covexpensesstable_7 covexpensesstable_2 howbuyhouse_3 howbuyhouse_6 rationcardreasonnouse_6 rationcardreasonnouse_2 rationcardreasonnouse_1
+ 
 dropmiss, force
 
-tab HHID_panel
+preserve
 duplicates tag HHID_panel INDID_panel, gen(tag)
 tab tag
-preserve
 keep if tag==1
 dropmiss, force
 restore
-drop tag
 
+
+********** Vérification des doublons apercu un peu plus tôt
+preserve
+keep if HHID_panel=="GOV59" | HHID_panel=="GOV61"
+restore
 
 save"NEEMSIS2-HH_v13.dta", replace
 ****************************************
@@ -1038,7 +1046,7 @@ use"NEEMSIS2-HH_v13.dta", clear
 
 rename livinghome livinghome2020
 
-merge 1:1 HHID_panel INDID_panel using "D:\Documents\_Thesis\_DATA\NEEMSIS1\NEEMSIS1-HH_v2.dta", keepusing(livinghome)
+merge 1:1 HHID_panel INDID_panel using "$neemsis1\NEEMSIS1-HH_v2.dta", keepusing(livinghome)
 
 drop if _merge==2
 drop _merge

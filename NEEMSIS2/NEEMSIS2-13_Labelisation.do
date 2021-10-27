@@ -13,7 +13,8 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 
 cd"$directory"
 clear all
@@ -50,7 +51,6 @@ drop nameego2fromearlier nameego1fromearlierhh nameego1fromearlier indexego2from
 
 drop familymembersindex educationindex employmentindex sex_new age_new username_str Chithra_and_Radhika Suganya_and_Malarvizhi Vivek_Radja HHID dummynewHH dummydemonetisation villageid_new villageid_new_comments tracked namefrompreload
 
-drop marriagepb adress
 
 foreach x in migrantlist remrecipientlist remsenderlist borrowerlist hhlenderlist recommendgivenlist marriedlist nregarecipientlist schemeslist chitfundbelongerid savingsownerid goldownerid insuranceownerid schemerecipientlist3 schemerecipientlist4 schemerecipientlist5 schemerecipientlist6 schemerecipientlist7 schemerecipientlist8 schemerecipientlist9 schemerecipientlist10 {
 rename `x'_ dummy_`x'

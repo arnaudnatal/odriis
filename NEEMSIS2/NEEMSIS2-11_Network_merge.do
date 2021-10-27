@@ -14,7 +14,8 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 
 cd"$directory"
 clear all
@@ -35,14 +36,15 @@ drop snrecommendasso_*
 
 * Type
 tab associationtype
-replace associationtype="4" if associationtype=="Farmer Union"
-replace associationtype="10" if associationtype=="Hobby club, sports group, cultural association"
-replace associationtype="12" if associationtype=="Other association"
-replace associationtype="6" if associationtype=="Political party"
-replace associationtype="7" if associationtype=="Professional (occupational) association"
 replace associationtype="2" if associationtype=="SHG Group"
 replace associationtype="3" if associationtype=="Trade Union"
+replace associationtype="4" if associationtype=="Farmer Union"
 replace associationtype="5" if associationtype=="Village council (panchayat)"
+replace associationtype="6" if associationtype=="Political party"
+replace associationtype="7" if associationtype=="Professional (occupational) association"
+replace associationtype="10" if associationtype=="Hobby club, sports group, cultural association"
+replace associationtype="11" if associationtype=="Alumni association"
+replace associationtype="12" if associationtype=="Other association"
 tab associationtype
 destring associationtype, replace
 label define associationtype 1"Youth Union" 2"SHG Group" 3"Trade Union" 4"Farmer Union" 5"Village council (panchayat)" 6"Political party" 7"Professional association" 8"Market committee" 9"Religious group" 10"Hobby club, sports group, cultural association" 11"Alumni association" 12"Other association" 13"None"
@@ -74,20 +76,21 @@ tab dummyassorecommendation
 destring associationid, replace
 fre associationtype
 /*
-------------------------------------------------------------------------------------
-                                       |      Freq.    Percent      Valid       Cum.
----------------------------------------+--------------------------------------------
-Valid   2  SHG Group                   |         62      43.06      43.06      43.06
-        3  Trade Union                 |          1       0.69       0.69      43.75
-        4  Farmer Union                |          9       6.25       6.25      50.00
-        5  Village council (panchayat) |         10       6.94       6.94      56.94
-        6  Political party             |         51      35.42      35.42      92.36
-        7  Professional association    |          8       5.56       5.56      97.92
-        10 Hobby club, sports group,   |          1       0.69       0.69      98.61
-           cultural association        |                                            
-        12 Other association           |          2       1.39       1.39     100.00
-        Total                          |        144     100.00     100.00           
-------------------------------------------------------------------------------------    
+associationtype
+-------------------------------------------------------------------------------------------------------
+                                                          |      Freq.    Percent      Valid       Cum.
+----------------------------------------------------------+--------------------------------------------
+Valid   2  SHG Group                                      |         76      44.44      44.44      44.44
+        3  Trade Union                                    |          1       0.58       0.58      45.03
+        4  Farmer Union                                   |         12       7.02       7.02      52.05
+        5  Village council (panchayat)                    |         10       5.85       5.85      57.89
+        6  Political party                                |         58      33.92      33.92      91.81
+        7  Professional association                       |         10       5.85       5.85      97.66
+        10 Hobby club, sports group, cultural association |          1       0.58       0.58      98.25
+        11 Alumni association                             |          1       0.58       0.58      98.83
+        12 Other association                              |          2       1.17       1.17     100.00
+        Total                                             |        171     100.00     100.00           
+-------------------------------------------------------------------------------------------------------
 */					
 
 * Wide
@@ -108,6 +111,7 @@ rename `x'5 `x'_village
 rename `x'6 `x'_politic
 rename `x'7 `x'_profess
 rename `x'10  `x'_hobby
+rename `x'11 `x'_alumni
 rename `x'12 `x'_other
 }
 

@@ -13,7 +13,8 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 
 cd"$directory"
 clear all
@@ -45,8 +46,6 @@ order setofoccupations, last
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
 save"$directory\CLEAN\NEEMSIS_APPEND-salaried-infoemployer_v2.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-salaried-infoemployer_v2.dta", replace
-*erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-salaried-infoemployer.dta"
 
 
 *Occupations
@@ -70,8 +69,7 @@ order setofemployment setofoccupations, last
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
 save"$directory\CLEAN\NEEMSIS_APPEND-occupations_v3.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-occupations_v3.dta", replace
-*erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-occupations.dta"
+
 
 
 *Tester le merging
@@ -89,7 +87,6 @@ merge m:m setofemployment using "$directory\CLEAN\NEEMSIS2-HH_v18.dta"
 use"$directory\CLEAN\NEEMSIS2-HH_v18.dta", clear
 drop setofoccupations
 save"$directory\CLEAN\NEEMSIS2-HH_v19.dta", replace
-*erase"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS2-HH_v17.dta"
 ****************************************
 * END
 
@@ -129,8 +126,6 @@ order setofremreceivedidgroup, last
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
 save"$directory\CLEAN\NEEMSIS_APPEND-remreceivedsourceidgroup_v2.dta", replace
-save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remreceivedsourceidgroup_v2.dta", replace
-*erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remreceivedsourceidgroup.dta"
 
 *Test
 merge m:m setofremreceivedidgroup using "$directory\CLEAN\NEEMSIS2-HH_v19.dta"
@@ -158,7 +153,6 @@ order setofremsentidgroup, last
 	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
 
 save"$directory\CLEAN\NEEMSIS_APPEND-remsentidgroup_v2.dta", replace
-*erase "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS2\NEEMSIS_APPEND-remsentidgroup.dta"
 
 *Test
 merge m:m setofremsentidgroup using "$directory\CLEAN\NEEMSIS2-HH_v19.dta"

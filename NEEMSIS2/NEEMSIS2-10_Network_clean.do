@@ -22,19 +22,18 @@ TITLE: Network
 ****************************************
 * LOOP pour prendre les long sn
 ****************************************
-foreach dbv in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSOS2_LAST NEEMSIS2_NEW_APRIL {
+foreach dbv in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSOS2_LAST NEEMSIS2_NEW_APRIL NEEMSIS2_NEW_JUNE {
 
 clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
-
-
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA"
 
 
 global preamble "`dbv'"
-*global preamble "NEEMSIS2_APRIL"
+global preamble "NEEMSIS2_NEW_JUNE"
 
 ********** AUTO CALCULATION
 set obs 1
@@ -209,7 +208,8 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 cd "$directory\ego_raw"
 
 ********** SSC to install
@@ -353,7 +353,7 @@ save"$directory/_egotemp/NEEMSIS2_FEB-`k'", replace
 save"$directory/_egotemp/NEEMSIS2_FEBRUARY-`k'", replace
 save"$directory/_egotemp/NEEMSIS2_NEW_APRIL-`k'", replace
 save"$directory/_egotemp/NEEMSIS2_APRIL-`k'", replace
-
+save"$directory/_egotemp/NEEMSIS2_NEW_JUNE-`k'", replace
 }
 
 
@@ -394,6 +394,7 @@ append using "$directory\_egotemp\NEEMSIS2_FEB-`k'", force
 append using "$directory\_egotemp\NEEMSIS2_FEBRUARY-`k'", force
 append using "$directory\_egotemp\NEEMSIS2_NEW_APRIL-`k'", force
 append using "$directory\_egotemp\NEEMSIS2_APRIL-`k'", force
+append using "$directory\_egotemp\NEEMSIS2_NEW_JUNE-`k'", force
 save "$directory/_egotemp/inprogress/NEEMSIS_APPEND-`k'", replace
 }
 

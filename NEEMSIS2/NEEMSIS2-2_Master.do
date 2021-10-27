@@ -20,7 +20,7 @@ USE Master_blankHH
 *APRIL
 
 /*
-foreach x in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST NEEMSIS2_NEW_APRIL {
+foreach x in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSIS2_LAST {
 cd"$directory\\`x'"
 do "import_`x'"
 }
@@ -33,7 +33,8 @@ clear all
 macro drop _all
 
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA"
 
 ********** Name of the NEEMSIS2 questionnaire version to clean
 global preamble "NEEMSIS2_LAST"

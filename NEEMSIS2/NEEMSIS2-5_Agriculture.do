@@ -23,7 +23,8 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 cd "$directory"
 
 ********** SSC to install
@@ -228,11 +229,210 @@ restore
 global username_dummy Suganya_and_Malarvizhi Raichal Rajalakschmi Chithra_and_Radhika Mayan Pazani
 ***
 rename householdid householdid2020
-merge m:1 householdid2020 using "$directory\do_not_drop\unique_identifier_panel.dta", keepusing(villageid villageareaid dummynewHH dummydemonetisation caste HHID2010 HHID_panel)
-keep if _merge==3
-drop _merge
+rename adress address
+sort version householdid2020 namenewhead
+order householdid2020 address namenewhead version
+
+
 save "$directory/CLEAN/NEEMSIS_Agriculture_APPEND.dta", replace
 
+
+********** Faire matcher la base agri avec la base HH pour les nouveaux HH
+preserve
+use"$directory\CLEAN\NEEMSIS2-HH_v6.dta", clear
+order HHID_panel householdid2020 version
+destring householdid2020, replace
+sort version householdid2020
+gen HHname=name if relationshiptohead==1
+sort HHID_panel
+bysort HHID_panel (HHname) : replace HHname=HHname[_N] if missing(HHname)
+duplicates drop parent_key, force
+duplicates tag householdid2020, gen(tag)
+tab tag
+sort householdid2020 HHname
+list householdid2020 HHID_panel HHname address tag if tag>1, clean noobs
+restore
+
+
+********** Ceux pour qui le merge fonctionne
+use "$directory/CLEAN/NEEMSIS_Agriculture_APPEND.dta", clear
+merge m:1 householdid2020 using "$directory\do_not_drop\unique_identifier_panel.dta", keepusing(villageid villageareaid dummynewHH dummydemonetisation caste HHID2010 HHID_panel)
+sort _merge
+drop if _merge==1
+save "$directory/CLEAN/NEEMSIS_Agriculture_APPEND_merge23.dta", replace
+
+
+
+********** Les nouveaux ménages pour lesquels le merge ne fonctionne pas car ils ont le même householid2020
+use "$directory/CLEAN/NEEMSIS_Agriculture_APPEND.dta", clear
+merge m:1 householdid2020 using "$directory\do_not_drop\unique_identifier_panel.dta", keepusing(villageid villageareaid dummynewHH dummydemonetisation caste HHID2010 HHID_panel)
+sort _merge
+keep if _merge==1
+sort householdid2020 namenewhead
+order householdid2020 HHID_panel namenewhead address
+gen attention=0
+
+replace HHID_panel="ELA55" if householdid2020==530 & namenewhead=="Asaimani"
+replace HHID_panel="ELA63" if householdid2020==530 & namenewhead=="Balu"
+replace HHID_panel="ELA54" if householdid2020==530 & namenewhead=="Kannan"
+replace HHID_panel="ELA58" if householdid2020==530 & namenewhead=="Silambarasi"
+replace HHID_panel="ELA56" if householdid2020==530 & namenewhead=="Sobana"
+replace HHID_panel="ELA60" if householdid2020==530 & namenewhead=="Theiveegam"
+replace HHID_panel="ELA65" if householdid2020==530 & namenewhead=="Velu"
+replace HHID_panel="ELA57" if householdid2020==531 & namenewhead=="Bremsheela"
+replace attention=1 if householdid2020==531 & namenewhead=="Bremsheela"
+replace HHID_panel="ELA59" if householdid2020==531 & namenewhead=="Kamalavalli"
+replace HHID_panel="ELA62" if householdid2020==531 & namenewhead=="Murugadass"
+replace HHID_panel="ELA64" if householdid2020==531 & namenewhead=="Pachaiyappan"
+replace HHID_panel="ELA61" if householdid2020==531 & namenewhead=="Padmavathi"
+replace HHID_panel="ELA53" if householdid2020==531 & namenewhead=="Raji"
+replace HHID_panel="GOV54" if householdid2020==532 & namenewhead=="Amutha"
+replace HHID_panel="GOV60" if householdid2020==532 & namenewhead=="Anusuya"
+replace HHID_panel="GOV55" if householdid2020==532 & namenewhead=="Duraimurugan"
+replace HHID_panel="GOV62" if householdid2020==532 & namenewhead=="Ezhumalai"
+replace HHID_panel="GOV57" if householdid2020==532 & namenewhead=="Inbaraja"
+replace HHID_panel="GOV64" if householdid2020==532 & namenewhead=="Kumar"
+replace HHID_panel="GOV63" if householdid2020==532 & namenewhead=="Manikandan"
+replace HHID_panel="GOV58" if householdid2020==532 & namenewhead=="Murugadass"
+replace HHID_panel="GOV56" if householdid2020==532 & namenewhead=="Murugavel"
+replace HHID_panel="GOV53" if householdid2020==532 & namenewhead=="Pannerselvam"
+replace HHID_panel="GOV59" if householdid2020==532 & namenewhead=="Sakthivel"
+replace attention=1 if householdid2020==532 & namenewhead=="Sakthivel"
+replace HHID_panel="KAR62" if householdid2020==534 & namenewhead=="Kanadhasan"
+replace HHID_panel="KAR66" if householdid2020==534 & namenewhead=="Karthikeyan"
+replace HHID_panel="KAR51" if householdid2020==534 & namenewhead=="Karunanidhi" & address=="Mariyamman Kovil street, karumbur colony"
+replace HHID_panel="KAR59" if householdid2020==534 & namenewhead=="Karunanidhi" & address=="Maariyamman koil street"
+replace HHID_panel="KAR52" if householdid2020==534 & namenewhead=="Keerthika"
+replace HHID_panel="KAR56" if householdid2020==534 & namenewhead=="Muralidharan"
+replace HHID_panel="KAR60" if householdid2020==534 & namenewhead=="Nagappan"
+replace HHID_panel="KAR61" if householdid2020==534 & namenewhead=="Radhakrishnan"
+replace HHID_panel="KAR65" if householdid2020==534 & namenewhead=="Vengatesan"
+replace HHID_panel="KAR55" if householdid2020==535 & namenewhead=="Ananthan"
+replace HHID_panel="KAR54" if householdid2020==535 & namenewhead=="Jayan"
+replace HHID_panel="KAR53" if householdid2020==535 & namenewhead=="Manimuthu"
+replace HHID_panel="KAR64" if householdid2020==535 & namenewhead=="Nirmal Kumar"
+replace HHID_panel="KAR63" if householdid2020==535 & namenewhead=="Pazhani"
+replace HHID_panel="KAR58" if householdid2020==535 & namenewhead=="Senthilmurugan"
+replace HHID_panel="KAR57" if householdid2020==535 & namenewhead=="Thirumalai"
+replace HHID_panel="KOR46" if householdid2020==536 & namenewhead=="Arumugam"
+replace HHID_panel="KOR47" if householdid2020==536 & namenewhead=="Jenifer"
+replace HHID_panel="KOR56" if householdid2020==536 & namenewhead=="Kuppu"
+replace HHID_panel="KOR53" if householdid2020==536 & namenewhead=="Rajagopal"
+replace HHID_panel="KOR54" if householdid2020==536 & namenewhead=="S.Murugan"
+replace HHID_panel="KOR57" if householdid2020==536 & namenewhead=="Thenaruvi"
+replace HHID_panel="KOR55" if householdid2020==537 & namenewhead=="Anandthavalli"
+replace HHID_panel="KOR51" if householdid2020==537 & namenewhead=="Jayapriya"
+replace HHID_panel="KOR49" if householdid2020==537 & namenewhead=="Kesavan"
+replace HHID_panel="KOR52" if householdid2020==537 & namenewhead=="Mangayarkarasi"
+replace HHID_panel="KOR48" if householdid2020==537 & namenewhead=="Ravichandran"
+replace HHID_panel="KOR50" if householdid2020==537 & namenewhead=="Shanthy"
+replace HHID_panel="KUV57" if householdid2020==538 & namenewhead=="Ananthi"
+replace HHID_panel="KUV61" if householdid2020==538 & namenewhead=="Arumugam"
+replace HHID_panel="KUV63" if householdid2020==538 & namenewhead=="Koothaiyan"
+replace HHID_panel="KUV55" if householdid2020==538 & namenewhead=="Krishnan"
+replace HHID_panel="KUV65" if householdid2020==538 & namenewhead=="Raja"
+replace HHID_panel="KUV54" if householdid2020==538 & namenewhead=="Settu"
+replace HHID_panel="KUV59" if householdid2020==538 & namenewhead=="Shalini"
+replace HHID_panel="KUV60" if householdid2020==539 & namenewhead=="Athilakshmi"
+replace HHID_panel="KUV58" if householdid2020==539 & namenewhead=="Ganesan"
+replace HHID_panel="KUV56" if householdid2020==539 & namenewhead=="Jayaraman"
+replace HHID_panel="KUV64" if householdid2020==539 & namenewhead=="Paranthaman"
+replace HHID_panel="KUV62" if householdid2020==539 & namenewhead=="Tamizselvi"
+replace HHID_panel="KUV53" if householdid2020==539 & namenewhead=="Venkatesan"
+replace HHID_panel="MAN69" if householdid2020==540 & namenewhead=="Bhoominathan"
+replace HHID_panel="MAN68" if householdid2020==540 & namenewhead=="Gayathri"
+replace HHID_panel="MAN65" if householdid2020==540 & namenewhead=="Govinthan"
+replace HHID_panel="MAN64" if householdid2020==540 & namenewhead=="Nirmala"
+replace HHID_panel="MAN57" if householdid2020==540 & namenewhead=="Nithiya"
+replace HHID_panel="MAN59" if householdid2020==540 & namenewhead=="Panjavarnam"
+replace HHID_panel="MAN58" if householdid2020==540 & namenewhead=="Priya"
+replace HHID_panel="MAN62" if householdid2020==540 & namenewhead=="Ramesh"
+replace HHID_panel="MAN61" if householdid2020==540 & namenewhead=="Senthamizhan"
+replace HHID_panel="MAN63" if householdid2020==540 & namenewhead=="Suganya"
+replace HHID_panel="MAN56" if householdid2020==540 & namenewhead=="Vadivel"
+replace HHID_panel="MAN66" if householdid2020==541 & namenewhead=="Arumugam"
+replace HHID_panel="MAN67" if householdid2020==541 & namenewhead=="Dhurai"
+replace HHID_panel="MAN54" if householdid2020==541 & namenewhead=="Jayaprakash"
+replace HHID_panel="MAN53" if householdid2020==541 & namenewhead=="Kalaiyarasi"
+replace HHID_panel="MAN60" if householdid2020==541 & namenewhead=="Kalpana"
+replace HHID_panel="MAN55" if householdid2020==541 & namenewhead=="Sekar"
+replace HHID_panel="MANAM55" if householdid2020==542 & namenewhead=="Dayal"
+replace HHID_panel="MANAM54" if householdid2020==542 & namenewhead=="Gomathi"
+replace HHID_panel="MANAM59" if householdid2020==542 & namenewhead=="Indhumathi"
+replace HHID_panel="MANAM52" if householdid2020==542 & namenewhead=="Kalaiselvan"
+replace HHID_panel="MANAM56" if householdid2020==542 & namenewhead=="Poomadevi"
+replace HHID_panel="MANAM62" if householdid2020==543 & namenewhead=="Datchnamoorthy"
+replace HHID_panel="MANAM58" if householdid2020==543 & namenewhead=="Janagiraman @arul"
+replace HHID_panel="MANAM53" if householdid2020==543 & namenewhead=="Kaliyaperumal"
+replace HHID_panel="MANAM60" if householdid2020==543 & namenewhead=="Narasingaperumal"
+replace HHID_panel="MANAM64" if householdid2020==543 & namenewhead=="Porkalai"
+replace HHID_panel="MANAM63" if householdid2020==543 & namenewhead=="Prakash"
+replace HHID_panel="MANAM61" if householdid2020==543 & namenewhead=="Rajasekar"
+replace HHID_panel="MANAM57" if householdid2020==543 & namenewhead=="Sivakozhundhu"
+replace HHID_panel="NAT63" if householdid2020==544 & namenewhead=="Gopi"
+replace HHID_panel="NAT58" if householdid2020==544 & namenewhead=="Gunasundari"
+replace HHID_panel="NAT56" if householdid2020==544 & namenewhead=="Perumal"
+replace HHID_panel="NAT61" if householdid2020==544 & namenewhead=="Praba"
+replace HHID_panel="NAT62" if householdid2020==544 & namenewhead=="Singaravelu"
+replace HHID_panel="NAT59" if householdid2020==544 & namenewhead=="Thamizhselvi"
+replace HHID_panel="NAT52" if householdid2020==545 & namenewhead=="Devi"
+replace HHID_panel="NAT53" if householdid2020==545 & namenewhead=="Kasinathan"
+replace HHID_panel="NAT54" if householdid2020==545 & namenewhead=="Lakshmi Narayan"
+replace HHID_panel="NAT55" if householdid2020==545 & namenewhead=="Osaimani"
+replace HHID_panel="NAT57" if householdid2020==545 & namenewhead=="Revathi"
+replace HHID_panel="NAT60" if householdid2020==545 & namenewhead=="Saranya"
+replace HHID_panel="ORA54" if householdid2020==546 & namenewhead=="Arunpandi"
+replace HHID_panel="ORA65" if householdid2020==546 & namenewhead=="Buvaneshwari"
+replace HHID_panel="ORA70" if householdid2020==546 & namenewhead=="Gopalakrishnan"
+replace HHID_panel="ORA59" if householdid2020==546 & namenewhead=="Manikandan"
+replace HHID_panel="ORA56" if householdid2020==546 & namenewhead=="Maruthavel"
+replace HHID_panel="ORA57" if householdid2020==546 & namenewhead=="Pichaikaran"
+replace HHID_panel="ORA68" if householdid2020==546 & namenewhead=="Priya@Banupriya"
+replace HHID_panel="ORA53" if householdid2020==546 & namenewhead=="Shakthivel"
+replace HHID_panel="ORA60" if householdid2020==546 & namenewhead=="Thandapani"
+replace HHID_panel="ORA69" if householdid2020==546 & namenewhead=="Thangadurai"
+replace HHID_panel="ORA55" if householdid2020==547 & namenewhead=="Arulnadhan"
+replace HHID_panel="ORA61" if householdid2020==547 & namenewhead=="Dhanapal"
+replace HHID_panel="ORA67" if householdid2020==547 & namenewhead=="Gajendiran"
+replace HHID_panel="ORA66" if householdid2020==547 & namenewhead=="Kandhan"
+replace HHID_panel="ORA63" if householdid2020==547 & namenewhead=="Kumar"
+replace HHID_panel="ORA58" if householdid2020==547 & namenewhead=="Surya"
+replace HHID_panel="ORA62" if householdid2020==547 & namenewhead=="Thanush"
+replace HHID_panel="ORA64" if householdid2020==547 & namenewhead=="Vijayakumar"
+replace HHID_panel="SEM65" if householdid2020==548 & namenewhead=="Ezhilvani"
+replace HHID_panel="SEM60" if householdid2020==548 & namenewhead=="Marimuthu"
+replace HHID_panel="SEM53" if householdid2020==548 & namenewhead=="Parimala"
+replace HHID_panel="SEM56" if householdid2020==548 & namenewhead=="Pichaiammal"
+replace HHID_panel="SEM55" if householdid2020==548 & namenewhead=="Sasireka"
+replace HHID_panel="SEM57" if householdid2020==548 & namenewhead=="Vishvanathan"
+replace HHID_panel="SEM62" if householdid2020==549 & namenewhead=="Beer Mohammed"
+replace HHID_panel="SEM54" if householdid2020==549 & namenewhead=="Jasmine roja"
+replace HHID_panel="SEM59" if householdid2020==549 & namenewhead=="Krishnamoorthy"
+replace HHID_panel="SEM63" if householdid2020==549 & namenewhead=="Mathina begam"
+replace HHID_panel="SEM61" if householdid2020==549 & namenewhead=="Paranthaman"
+replace HHID_panel="SEM64" if householdid2020==549 & namenewhead=="Sankar"
+replace HHID_panel="SEM58" if householdid2020==549 & namenewhead=="Valarmathi"
+
+save "$directory/CLEAN/NEEMSIS_Agriculture_APPEND_merge1.dta", replace
+
+
+********** APPEND les 2
+use"$directory/CLEAN/NEEMSIS_Agriculture_APPEND_merge1.dta", clear
+append using "$directory/CLEAN/NEEMSIS_Agriculture_APPEND_merge23.dta"
+
+
+*** Cleaning 
+rename _merge merge_HHID
+label define modif 1"Manually recoded" 2"Only HH" 3"Merging ok"
+label values merge_HHID modif
+
+
+*** Verif parent_key HHID_panel
+order HHID_panel parent_key
+sort HHID_panel
+
+
+save"$directory/CLEAN/NEEMSIS_Agriculture_APPEND_v2", replace
 ****************************************
 * END
 
@@ -285,14 +485,14 @@ drop setofdetailsgoods key
 reshape wide goodname numbergoods goodyearpurchased goodtotalamount goodbuying goodsourcecredit goodcreditsettled, i(parent_key) j(goodid)
 save"$directory\CLEAN\NEEMSIS_Agriculture_APPEND-consumptionandassets-detailsgoods_WIDE.dta", replace
 
-use"$directory\CLEAN\NEEMSIS_Agriculture_APPEND.dta", clear
-merge 1:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-agriculture-equipmentowned_WIDE.dta"
+use"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v2.dta", clear
+merge m:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-agriculture-equipmentowned_WIDE.dta"
 drop _merge
-merge 1:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-agriculture-landgroup-products_WIDE.dta"
+merge m:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-agriculture-landgroup-products_WIDE.dta"
 drop _merge
-merge 1:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-agriculture-livestock_WIDE.dta"
+merge m:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-agriculture-livestock_WIDE.dta"
 drop _merge
-merge 1:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-consumptionandassets-detailsgoods_WIDE.dta"
+merge m:1 parent_key using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND-consumptionandassets-detailsgoods_WIDE.dta"
 drop _merge
 drop setofproducts setoflivestock setofequipmentowned setofdetailsgoods
 
@@ -318,9 +518,16 @@ drop if householdid==361 & parent_key=="uuid:332b0700-6bdb-4e66-92ee-7f1e892dae6
 drop if householdid==391 & parent_key=="uuid:6854d50b-0b75-4b24-a3b8-ee031aa78668"
 drop if householdid==36 & parent_key=="uuid:244d058e-b68a-4271-bf5f-5332dca88f8f"
 
-drop parent_key
+foreach x in geopointlatitude geopointlongitude geopointaltitude geopointaccuracy villagename villagearea parent_key address {
+rename `x' `x'_BaseAgri
+}
 
-save"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v2.dta", replace
+sort householdid2020
+order householdid2020 namenewhead version
+sort version
+drop if version==""
+
+save"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v3.dta", replace
 ****************************************
 * END
 
@@ -342,7 +549,7 @@ tab version
 *drop if preload2016==2
 tostring castepreload2016, replace
 rename version version_HH
-merge m:1 householdid2020 using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v2.dta"
+merge m:1 HHID_panel using "$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v3.dta"
 rename _merge orga_HHagri
 label define orga 1"HH only" 2"Agri only" 3"Both"
 label values orga_HHagri orga

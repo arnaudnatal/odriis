@@ -17,8 +17,9 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\Individual_panel"
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -61,6 +62,8 @@ drop if householdid2020==.
 
 tab version
 
+
+
 save"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", replace
 ****************************************
 * END
@@ -68,5 +71,5 @@ save"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", replace
 
 
 /*
-PUIS ICI, IL FAUT CONTINUER LA FABRICATION DE INDID PANEL EN LANCANT LE FICHIER DO CODE INDID
+PUIS ICI, IL FAUT CONTINUER LA FABRICATION DE INDID PANEL EN LANCANT LE FICHIER DO code_indiv
 */

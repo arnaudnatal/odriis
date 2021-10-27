@@ -19,7 +19,8 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 cd"$directory"
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -46,8 +47,8 @@ cd"$directory"
 ********** TEMPORARY PANEL DATA BASE TO HAVE ALL INDIVIDUALS
 use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
 
-replace INDID=. if version=="NEEMSIS2_NEW_APRIL"
-replace INDIDpanel="" if version=="NEEMSIS2_NEW_APRIL"
+*replace INDID=. if version=="NEEMSIS2_NEW_APRIL"
+*replace INDIDpanel="" if version=="NEEMSIS2_NEW_APRIL"
 
 tostring INDID, replace
 drop sex age
@@ -85,7 +86,45 @@ sort HHID_panel marriagesomeoneelse
 list HHID_panel version if (marriedid=="31" | marriedid=="32" | marriedid=="33") & marriagesomeoneelse=="", clean noobs
 list HHID_panel marriedname marriagesomeoneelse marriedid version if marriagesomeoneelse!="" & (marriedid=="31" | marriedid=="32" | marriedid=="33"), clean noobs // & (version=="NEEMSIS2_APRIL" | version=="NEEMSIS2_NEW_APRIL" | version=="NEEMSIS2_FEBRUARY") , clean noobs
 
-
+/*
+    HHID_p~l      marriedname   marriagesomeon~e   marrie~d             version  
+       ELA12   Someone else 1            Lakshmi         31      NEEMSIS2_APRIL  
+       ELA14   Someone else 1           Anbarasi         31      NEEMSIS2_APRIL  
+        ELA4   Someone else 1              Selvi         31      NEEMSIS2_APRIL  
+       GOV11   Someone else 1      Bhuvaneshwari         31   NEEMSIS2_FEBRUARY  
+       GOV13   Someone else 1        Udhayakumar         31      NEEMSIS2_APRIL  
+       GOV27   Someone else 1              Deepa         31   NEEMSIS2_FEBRUARY  
+       GOV28   Someone else 1          Govinthan         31   NEEMSIS2_FEBRUARY  
+       GOV37   Someone else 1            Revathy         31      NEEMSIS2_APRIL  
+       GOV45   Someone else 1            Thamizh         31   NEEMSIS2_FEBRUARY  
+       GOV49   Someone else 1        Mahalakshmi         31   NEEMSIS2_FEBRUARY  
+       KAR27   Someone else 1        Sivashakthi         31   NEEMSIS2_FEBRUARY  
+       KAR29   Someone else 1         Mahalashmi         31   NEEMSIS2_FEBRUARY  
+       KAR47   Someone else 1            Nagamma         31   NEEMSIS2_FEBRUARY  
+        KAR8   Someone else 1            Kavitha         31   NEEMSIS2_FEBRUARY  
+        KAR8   Someone else 2            Savitha         33   NEEMSIS2_FEBRUARY  
+        KAR9   Someone else 1             Vijaya         31      NEEMSIS2_APRIL  
+       KOR26   Someone else 1       Bakyalakshmi         31   NEEMSIS2_FEBRUARY  
+       KOR31   Someone else 1     Santhosh Kumar         31   NEEMSIS2_FEBRUARY  
+       KOR37   Someone else 1        Porcheselvi         31   NEEMSIS2_FEBRUARY  
+       KOR43   Someone else 1          Banumathy         31   NEEMSIS2_FEBRUARY  
+       KOR43   Someone else 2   Santhosh kumarie         33   NEEMSIS2_FEBRUARY  
+       KUV47   Someone else 2        Mahalakshmi         33      NEEMSIS2_APRIL  
+       KUV47   Someone else 1       Mangalakshmi         31      NEEMSIS2_APRIL  
+       MAN17   Someone else 1        Manimegalai         31      NEEMSIS2_APRIL  
+        MAN2   Someone else 1           Santhiya         31      NEEMSIS2_APRIL  
+       MAN45   Someone else 1               Vasu         31   NEEMSIS2_FEBRUARY  
+     MANAM21   Someone else 1              Kuppu         31   NEEMSIS2_FEBRUARY  
+     MANAM38   Someone else 1            Lakshmi         31   NEEMSIS2_FEBRUARY  
+     MANAM43   Someone else 1          Kalaivani         31   NEEMSIS2_FEBRUARY  
+     MANAM51   Someone else 1           Vasantha         31   NEEMSIS2_FEBRUARY  
+        NAT2   Someone else 1       Thamizhselvi         31   NEEMSIS2_FEBRUARY  
+       NAT49   Someone else 1          Vadivelan         31      NEEMSIS2_APRIL  
+       ORA20   Someone else 1             Sarasu         31   NEEMSIS2_FEBRUARY  
+       ORA48   Someone else 1         Ajithkumar         31   NEEMSIS2_FEBRUARY  
+       SEM20   Someone else 1         Sagunthala         31   NEEMSIS2_FEBRUARY  
+       SEM34   Someone else 1             Geetha         31      NEEMSIS2_APRIL 
+*/
 
 
 
@@ -174,8 +213,8 @@ replace mar=1 if HHID_panel=="SEM34"
 preserve
 keep if mar==1
 sort HHID_panel
-*list HHID_panel INDID INDID_p16 INDID_left name_p16 name maritalstatus_p16 maritalstatus sex_p16, clean noobs
-*list HHID_panel INDID INDID_left reasonlefthome, clean noobs
+list HHID_panel INDID INDID_total INDID_former INDID_new INDID_left INDID_panel name sex maritalstatus reasonlefthome reasonlefthomeother, clean noobs
+list HHID_panel INDID INDID_left reasonlefthome, clean noobs
 restore
 
 
@@ -244,6 +283,8 @@ replace marriedid=4 if HHID_panel=="ORA48" & marriedid_o==31
 replace marriedid=3 if HHID_panel=="SEM20" & marriedid_o==31
 replace marriedid=4 if HHID_panel=="SEM34" & marriedid_o==31
 
+sort householdid2020
+
 clonevar INDID=marriedid
 order HHID_panel INDID marriedname marriagesomeoneelse
 sort HHID_panel INDID
@@ -269,9 +310,19 @@ save"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.d
 * MERGE MARRIAGE WITH HOUSEHOLD DATA BASE
 ****************************************
 use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
-drop INDID2010 INDIDpanel
+drop INDID2010
 
-merge 1:m INDID HHID_panel using "$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta"
+merge 1:m INDID parent_key using "$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta"
+
+preserve
+keep if _merge==2
+dropmiss, force
+/*
+Pb avec :
+MANAM25 -- 31
+KAR24  	-- 31
+*/
+restore
 
 rename _merge marriagepb
 label define marriagepb 1"No marriage" 2"Someone else" 3"Merge marriage ok"
