@@ -25,11 +25,11 @@ macro drop _all
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *cd "$directory\CLEAN"
 
-global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel"
+global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\Individual_panel"
 
-global directory "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
+global directory "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 
-global neemsis "NEEMSIS2-HH_v5.dta"
+global neemsis "NEEMSIS2-HH_v5"
 
 
 ********** SSC to install

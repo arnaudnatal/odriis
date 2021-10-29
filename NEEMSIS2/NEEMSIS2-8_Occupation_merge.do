@@ -92,12 +92,12 @@ tab egoid, m
 /*
       egoid |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |        423       25.21       25.21
-          1 |        566       33.73       58.94
-          2 |        459       27.35       86.29
-          3 |        230       13.71      100.00
+          0 |        433       25.23       25.23
+          1 |        575       33.51       58.74
+          2 |        469       27.33       86.07
+          3 |        239       13.93      100.00
 ------------+-----------------------------------
-      Total |      1,678      100.00
+      Total |      1,716      100.00
 */
 restore
 
@@ -123,12 +123,12 @@ tab mainok_indiv egoid, m
 mainok_ind |                    egoid
         iv |         0          1          2          3 |     Total
 -----------+--------------------------------------------+----------
-         0 |       423         30         20          3 |       476 
-         1 |         0        520        434        225 |     1,179 
-         2 |         0         15          5          2 |        22 
+         0 |       433         30         20          3 |       486 
+         1 |         0        528        444        234 |     1,206 
+         2 |         0         16          5          2 |        23 
          3 |         0          1          0          0 |         1 
 -----------+--------------------------------------------+----------
-     Total |       423        566        459        230 |     1,678  
+     Total |       433        575        469        239 |     1,716 
 */
 restore
 
@@ -152,59 +152,59 @@ Du coup plus, il faut remplacer la mainoccup pour ceux qui ont 1 à moctokeep et
 0 à tokeep c'est pour les égos qui n'ont pas encore de valeurs
 Normalement c'est ça:
 */
-replace moctokeep = 1 in 2
-replace moctokeep = 1 in 5
-replace moctokeep = 1 in 6
-replace moctokeep = 1 in 11
-replace moctokeep = 1 in 12
-replace moctokeep = 1 in 16
-replace moctokeep = 1 in 18
-replace moctokeep = 1 in 20
-replace moctokeep = 1 in 22
-replace moctokeep = 1 in 24
-replace moctokeep = 1 in 26
-replace moctokeep = 1 in 30
-replace moctokeep = 1 in 33
-replace moctokeep = 1 in 34
-replace moctokeep = 1 in 36
-replace moctokeep = 1 in 39
-replace moctokeep = 1 in 42
-replace moctokeep = 1 in 45
-replace moctokeep = 1 in 46
-replace moctokeep = 1 in 49
-replace moctokeep = 1 in 51
-replace moctokeep = 1 in 54
-replace moctokeep = 1 in 57
-replace moctokeep = 1 in 60
-replace moctokeep = 1 in 61
-replace moctokeep = 1 in 64
-replace moctokeep = 1 in 66
-replace moctokeep = 1 in 68
-replace moctokeep = 1 in 70
-replace moctokeep = 1 in 74
-replace moctokeep = 1 in 75
-replace moctokeep = 1 in 78
-replace moctokeep = 1 in 80
-replace moctokeep = 1 in 85
-replace moctokeep = 1 in 86
-replace moctokeep = 1 in 88
-replace moctokeep = 1 in 91
-replace moctokeep = 1 in 95
-replace moctokeep = 1 in 97
-replace moctokeep = 1 in 99
-replace moctokeep = 1 in 100
-replace moctokeep = 1 in 102
-replace moctokeep = 1 in 104
-replace moctokeep = 1 in 106
-replace moctokeep = 1 in 108
-replace moctokeep = 1 in 111
-replace moctokeep = 1 in 113
-replace moctokeep = 1 in 114
-replace moctokeep = 1 in 119
-replace moctokeep = 1 in 121
-replace moctokeep = 1 in 123
-replace moctokeep = 1 in 124
-replace moctokeep = 1 in 127
+replace moctokeep=1 if HHID_panel=="ELA18" & INDID_panel=="Ind_2" & occupationid==2
+replace moctokeep=1 if HHID_panel=="ELA35" & INDID_panel=="Ind_2" & occupationid==3
+replace moctokeep=1 if HHID_panel=="ELA50" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KAR1" & INDID_panel=="Ind_1" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KAR1" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KAR10" & INDID_panel=="Ind_1" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KAR10" & INDID_panel=="Ind_2" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KAR2" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KAR21" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KAR26" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KAR33" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KAR37" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KAR5" & INDID_panel=="Ind_4" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KOR11" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR18" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR20" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR20" & INDID_panel=="Ind_5" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR34" & INDID_panel=="Ind_1" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KOR4" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR42" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR42" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR43" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR43" & INDID_panel=="Ind_6" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KOR5" & INDID_panel=="Ind_2" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KOR51" & INDID_panel=="Ind_3" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KUV19" & INDID_panel=="Ind_2" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KUV25" & INDID_panel=="Ind_5" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KUV27" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KUV27" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KUV28" & INDID_panel=="Ind_1" & occupationid==2
+replace moctokeep=1 if HHID_panel=="KUV32" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KUV37" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KUV43" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="KUV9" & INDID_panel=="Ind_2" & occupationid==3
+replace moctokeep=1 if HHID_panel=="MAN13" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="MANAM13" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="MANAM3" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="MANAM35" & INDID_panel=="Ind_1" & occupationid==2
+replace moctokeep=1 if HHID_panel=="MANAM35" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="MANAM41" & INDID_panel=="Ind_5" & occupationid==1
+replace moctokeep=1 if HHID_panel=="MANAM45" & INDID_panel=="Ind_3" & occupationid==1
+replace moctokeep=1 if HHID_panel=="MANAM55" & INDID_panel=="Ind_1" & occupationid==2
+replace moctokeep=1 if HHID_panel=="MANAM9" & INDID_panel=="Ind_5" & occupationid==1
+replace moctokeep=1 if HHID_panel=="NAT39" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="NAT40" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="NAT40" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="ORA15" & INDID_panel=="Ind_3" & occupationid==1
+replace moctokeep=1 if HHID_panel=="ORA44" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="ORA46" & INDID_panel=="Ind_3" & occupationid==3
+replace moctokeep=1 if HHID_panel=="ORA58" & INDID_panel=="Ind_1" & occupationid==2
+replace moctokeep=1 if HHID_panel=="SEM1" & INDID_panel=="Ind_2" & occupationid==1
+replace moctokeep=1 if HHID_panel=="SEM42" & INDID_panel=="Ind_1" & occupationid==1
+replace moctokeep=1 if HHID_panel=="SEM50" & INDID_panel=="Ind_2" & occupationid==2
 
 replace mainocc=1 if tokeep==0 & moctokeep==1
 drop moctokeep tokeep
@@ -223,12 +223,12 @@ tab mainok_indiv egoid, m
 mainok_ind |                    egoid
         iv |         0          1          2          3 |     Total
 -----------+--------------------------------------------+----------
-         0 |       423          0          0          0 |       423 
-         1 |         0        550        454        228 |     1,232 
-         2 |         0         15          5          2 |        22 
+         0 |       432          0          0          0 |       432 
+         1 |         0        556        462        237 |     1,255 
+         2 |         0         16          5          2 |        23 
          3 |         0          1          0          0 |         1 
 -----------+--------------------------------------------+----------
-     Total |       423        566        459        230 |     1,678 
+     Total |       432        573        467        239 |     1,711 
 */
 restore
 
@@ -251,12 +251,12 @@ tab mainok_indiv egoid, m
 mainok_ind |                    egoid
         iv |         0          1          2          3 |     Total
 -----------+--------------------------------------------+----------
-         0 |       423          2          0          0 |       425 
-         1 |         0        557        457        230 |     1,244 
+         0 |       432          3          0          0 |       435 
+         1 |         0        563        465        239 |     1,267 
          2 |         0          6          2          0 |         8 
          3 |         0          1          0          0 |         1 
 -----------+--------------------------------------------+----------
-     Total |       423        566        459        230 |     1,678 
+     Total |       432        573        467        239 |     1,711 
 */
 restore
 /*
@@ -264,13 +264,14 @@ restore
 */
 
 
-*Correction des deux ego 1 qui ont sauté
+*Correction des 3 ego 1 qui ont sauté
 gen strange=0
 replace strange=1 if mainok_indiv==0 & egoid==1
 sort strange HHID_panel INDID_panel occupationid
 *Je choisis l'occup qui match avec mainoccuptype
 replace mainocc=1 if HHID_panel=="KAR11" & INDID_panel=="Ind_1" & occupationid==1
 replace mainocc=1 if HHID_panel=="MAN42" & INDID_panel=="Ind_2" & occupationid==3
+replace mainocc=1 if HHID_panel=="MANAM54" & INDID_panel=="Ind_1" & occupationid==3
 drop strange
 *
 drop mainok mainok_indiv
@@ -286,12 +287,12 @@ tab mainok_indiv egoid, m
 mainok_ind |                    egoid
         iv |         0          1          2          3 |     Total
 -----------+--------------------------------------------+----------
-         0 |       423          0          0          0 |       423 
-         1 |         0        559        457        230 |     1,246 
+         0 |       432          0          0          0 |       432 
+         1 |         0        566        465        239 |     1,270 
          2 |         0          6          2          0 |         8 
          3 |         0          1          0          0 |         1 
 -----------+--------------------------------------------+----------
-     Total |       423        566        459        230 |     1,678 
+     Total |       432        573        467        239 |     1,711 
 */
 restore
 
@@ -326,10 +327,10 @@ tab mainok_indiv egoid, m
 mainok_ind |                    egoid
         iv |         0          1          2          3 |     Total
 -----------+--------------------------------------------+----------
-         0 |       423          0          0          0 |       423 
-         1 |         0        566        459        230 |     1,255 
+         0 |       432          0          0          0 |       432 
+         1 |         0        573        467        239 |     1,279 
 -----------+--------------------------------------------+----------
-     Total |       423        566        459        230 |     1,678 
+     Total |       432        573        467        239 |     1,711
 */
 restore
 
@@ -358,10 +359,10 @@ tab mainok_indiv egoid, m
 mainok_ind |                    egoid
         iv |         0          1          2          3 |     Total
 -----------+--------------------------------------------+----------
-         1 |       413        566        459        230 |     1,668 
-         2 |        10          0          0          0 |        10 
+         1 |       421        573        467        239 |     1,700 
+         2 |        11          0          0          0 |        11 
 -----------+--------------------------------------------+----------
-     Total |       423        566        459        230 |     1,678 
+     Total |       432        573        467        239 |     1,711 
 */
 restore
 
@@ -389,12 +390,14 @@ tab mainok_indiv egoid, m
 mainok_ind |                    egoid
         iv |         0          1          2          3 |     Total
 -----------+--------------------------------------------+----------
-         1 |       423        566        459        230 |     1,678 
+         1 |       432        573        467        239 |     1,711
 -----------+--------------------------------------------+----------
-     Total |       423        566        459        230 |     1,678 
+     Total |       432        573        467        239 |     1,711
 */
 restore
 tab mainocc, m
+
+
 
 
 *Var to create at occupation level, so it is temporary var

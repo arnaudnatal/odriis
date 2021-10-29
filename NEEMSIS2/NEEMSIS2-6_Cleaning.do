@@ -695,18 +695,6 @@ completeduties putoffduties = max never, with 99 recoded as missing
 */
 
 
-********* Omega
-omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .7642
-
-omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .7040
-
-omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .6511
-
-omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .6126
-
-omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7295
-
-
 
 
 
@@ -752,14 +740,15 @@ tab ars
 gen ars2=ars-3  
 set graph on
 gen ars3=abs(ars2)
+/*
 pctile ars3_p=ars3, n(20)
 gen n=_n*5
 replace n=. if n>100
 tab ars3
 drop ars3_p n
-*histogram ars3, width(0.05) percent xtitle("Acquiesence bias") xlabel(0(0.5)2) xmtick(0(0.1)2) ylabel(0(1)14) ymtick(0(0.2)14) note("NEEMSIS-2 (2020-21)", size(small))
-*graph export "$git\RUME-NEEMSIS\ars2_NEEMSIS2.pdf", replace
-
+histogram ars3, width(0.05) percent xtitle("Acquiesence bias") xlabel(0(0.5)2) xmtick(0(0.1)2) ylabel(0(1)14) ymtick(0(0.2)14) note("NEEMSIS-2 (2020-21)", size(small))
+graph export "$git\RUME-NEEMSIS\ars2_NEEMSIS2.pdf", replace
+*/
 
 
 
@@ -775,6 +764,9 @@ label values `x' big5n2
 foreach var of varlist $big5 {
 gen cr_`var'=`var'-ars2 if ars!=. 
 }
+
+
+********** Sens
 /*
 completeduties_old putoffduties_old = max never, with 99 as cat
 raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
@@ -786,47 +778,34 @@ completeduties putoffduties = max always, with 99 recoded as missing and reverse
 */
 
 
-********** Internal consistency v2
 
+
+********** Internal consistency v2
+/*
 *OP
 omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .7642
-alpha curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination // .7624
-
 omega cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination, rev(cr_repetitivetasks) // .3684
-alpha cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination // .3189
 
 
 *CO
 omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .7040
-alpha organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties  // .7015
-
 omega cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties, rev(cr_putoffduties cr_easilydistracted)  // .4171
-alpha cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties  // .4723
 
 
 *EX
 omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .6511
-alpha enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts  // .6511
-
 omega cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts, rev(cr_shywithpeople)  // .4486
 
-alpha cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts  // .4480
 
 
 *AG
 omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .6126
-alpha workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers  // .5437
-
 omega cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers, rev(cr_rudetoother)  // .3076
-alpha cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers  // .2834
 
 *ES
 omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7295
-alpha managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm  // .7312
-
 omega cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot  cr_staycalm, rev(cr_managestress cr_staycalm)  // .7929
-alpha cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot  cr_staycalm  // .7939
-
+*/
 
 
 
@@ -867,6 +846,7 @@ recode `x' (5=1) (4=2) (3=3) (2=4) (1=5)
 
 
 ********** Imputation
+/*
 global big5rr rr_curious rr_interestedbyart rr_repetitivetasks rr_inventive rr_liketothink rr_newideas rr_activeimagination rr_organized rr_makeplans rr_workhard rr_appointmentontime rr_putoffduties rr_easilydistracted rr_completeduties rr_enjoypeople rr_sharefeelings rr_shywithpeople rr_enthusiastic rr_talktomanypeople rr_talkative rr_expressingthoughts rr_workwithother rr_understandotherfeeling rr_trustingofother rr_rudetoother rr_toleratefaults rr_forgiveother rr_helpfulwithothers rr_managestress rr_nervous rr_changemood rr_feeldepressed rr_easilyupset rr_worryalot rr_staycalm rr_tryhard rr_stickwithgoals rr_goaftergoal rr_finishwhatbegin rr_finishtasks rr_keepworking
 foreach x in $big5rr{
 gen im`x'=`x'
@@ -891,6 +871,9 @@ replace imcr_`x'=r(mean) if imcr_`x'==. & sex==`i' & caste==`j' & egoid!=0 & ego
 }
 }
 }
+*/
+
+
 /*
 completeduties_old putoffduties_old = max never, with 99 as cat
 raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
@@ -947,7 +930,7 @@ use"NEEMSIS2-HH_v12.dta", clear
 
 rename marriedid_o old_marriedid
 drop loandetails* loanlender* threemainloans_* 
-drop *_o
+drop *_o tag
 drop selected_index1 selected_index2 selected_index3 selected_name1 selected_name2 selected_name3 selected_index1_2 selected_index2_2 selected_index3_2 selected_name1_2 selected_name2_2 selected_name3_2 selected_index1_3 selected_index2_3 selected_index3_3 selected_name1_3 selected_name2_3 selected_name3_3 _3selected_index1 _3selected_index2 _3selected_index3 _3selected_name1 _3selected_name2 _3selected_name3 _3selected_index1_2 _3selected_index2_2 _3selected_index3_2 _3selected_name1_2 _3selected_name2_2 _3selected_name3_2 _3ego2random_3_2 _3selected_index1_3 _3selected_index2_3 _3selected_index3_3 _3selected_name1_3 _3selected_name2_3 _3selected_name3_3 _3ego2random_1_3 _3ego2random_2_3 _3ego2random_3_3
 drop joinnamehhmemberego1 joinnamehhmember join_1825 join_2635 join_36 _3join_1825 _3join_2635 _3join_36
 drop setofrandom_draws_3 setofrandom_draws_2 setofrandom_draws setof_3random_draws_3 setof_3random_draws_2 setof_3random_draws random_draws_count random_draws_3_count random_draws_2_count ego2random_3_3 ego2random_3_2 ego2random_3 ego2random_2_3 ego2random_2_2 ego2random_2 ego2random_1_3 ego2random_1_2 ego2random_1 _3random_draws_count _3random_draws_3_count _3random_draws_2_count _3ego2random_3 _3ego2random_2_2 _3ego2random_2 _3ego2random_1_2 _3ego2random_1
@@ -978,57 +961,40 @@ restore
 
 ********** Vérification des doublons apercu un peu plus tôt
 preserve
-keep if HHID_panel=="GOV59" | HHID_panel=="GOV61"
+duplicates drop parent_key, force
+ta caste, m  
+/*
+      caste |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     Dalits |        298       47.15       47.15
+     Middle |        268       42.41       89.56
+      Upper |         66       10.44      100.00
+------------+-----------------------------------
+      Total |        632      100.00
+*/
 restore
+
+preserve
+duplicates drop HHID_panel, force
+ta caste, m
+/*
+      caste |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     Dalits |        298       47.15       47.15
+     Middle |        268       42.41       89.56
+      Upper |         66       10.44      100.00
+------------+-----------------------------------
+      Total |        632      100.00
+*/
+restore
+
+
+
 
 save"NEEMSIS2-HH_v13.dta", replace
 ****************************************
 * END
 
-
-
-
-
-****************************************
-* Migration
-****************************************
-use"NEEMSIS_APPEND-migrationjobidgroup.dta", clear
-drop forauto
-drop key
-drop setofmigrationjobidgroup
-
-split parent_key, p(/)
-drop parent_key2
-rename parent_key setofmigrationidgroup
-rename parent_key parent_key
-keep if migrationarea!=""
-
-drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
-drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
-drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
-drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
-drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
-drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
-drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
-drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
-
-preserve
-use"NEEMSIS2-HH_v13.dta", clear
-keep dummymigration migrantlist migrantlist_ migrationgroup_count setofmigrationidgroup migrationjoblist migrationjobidgroup_count setofmigrationjobidgroup householdid2020 parent_key HHID_panel INDID_panel INDID2020 INDID_total INDID_former INDID_new INDID_left egoid name sex age caste jatis villageid villageid_new version_HH 
-keep if migrantlist_==1
-save"NEEMSIS2-HH_v13_temp.dta", replace
-restore
-
-merge m:1 setofmigrationidgroup using "NEEMSIS2-HH_v13_temp.dta"
-sort _merge
-drop if _merge==2
-drop _merge
-
-erase "NEEMSIS2-HH_v13_temp.dta"
-
-save"NEEMSIS2-migration.dta", replace
-****************************************
-* END
 
 
 

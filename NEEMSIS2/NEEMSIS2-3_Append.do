@@ -30,6 +30,8 @@ cls
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 
+global git = "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\_Miscellaneous"
+
 ********** SSC to install
 *ssc install dropmiss, replace
 *ssc install fre, replace
@@ -251,7 +253,7 @@ append using "$directory\rename\NEEMSIS2_FEBRUARY`k'", force
 append using "$directory\rename\NEEMSIS2_NEW_APRIL`k'", force
 append using "$directory\rename\NEEMSIS2_APRIL`k'", force
 append using "$directory\rename\NEEMSIS2_NEW_JUNE`k'", force
-do "$directory\do_not_drop\_1-3-datachoicelist_v2"
+do "$git\Datachoicelist_NEEMSIS2\NEEMSIS2-Label"
 save "$directory/CLEAN/NEEMSIS_APPEND`k'", replace
 }
 ****************************************
@@ -293,16 +295,19 @@ tab tag
 drop tag
 
 ********** DROP DUPLICATES (AGREE WITH CECILE)
-drop if householdid=="67" & key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
-drop if householdid=="124" & key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
-drop if householdid=="343" & key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
-drop if householdid=="348" & key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
-drop if householdid=="361" & key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
-drop if householdid=="246" & key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
-drop if householdid=="391" & key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
-drop if householdid=="36" & key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
-
-
+	***** Duplicates
+	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"  // householdid==36 & name1=="Natesan"
+	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"  // householdid==67 & name1=="Shankar"
+	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"  // householdid==124 & name1=="Subramani"
+	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"  // householdid==246 & name1=="Sornambal"
+	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"  // householdid==343 & name1=="Ramamoorthi"
+	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"  // householdid==348 & name1=="Govindan"
+	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"  // householdid==361 & name1=="Mallika"
+	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"  // householdid==391 & name1=="Balaji"
+	*
+	drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"  // householdid==532 & name1=="Shakthivel" & name2=="Revathy"
+	drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66"  // householdid==534 & name1=="Karunanidhi"
+	drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"  // householdid==547 & name1=="Surya" (duplicates with "uuid:ae72a34f-f968-45f4-acfa-91f571f54ea8")
 
 
 ********** USERNAME CLEANING (AGREE WITH CECILE)
@@ -345,7 +350,7 @@ global username_dummy Suganya_and_Malarvizhi Raichal Rajalakschmi Chithra_and_Ra
 
 
 ********** LABEL
-do "$directory\do_not_drop\_1-3-datachoicelist_v2"
+do "$git\Datachoicelist_NEEMSIS2\NEEMSIS2-Label"
 
 
 
@@ -409,7 +414,7 @@ drop tag
 
 
 ********** MERGE UNIQUE PANEL IDENTIFIER
-merge m:1 householdid2020 using "$directory\do_not_drop\unique_identifier_panel.dta", keepusing(villageid villageareaid HHID HHID2010 dummynewHH dummydemonetisation caste villageid_new villageid_new_comments tracked HHID_panel dummyHHlost2016 value_householdid_2020 householdid2020)
+merge m:1 householdid2020 using "$git\_Miscellaneous\unique_identifier_panel.dta", keepusing(villageid villageareaid HHID HHID2010 dummynewHH dummydemonetisation caste villageid_new villageid_new_comments tracked HHID_panel dummyHHlost2016 value_householdid_2020 householdid2020)
 drop if _merge==2
 *keep if _merge==3
 drop _merge
@@ -449,40 +454,6 @@ save"$directory\CLEAN\NEEMSIS2-HH_v4.dta", replace
 * END
 
 
-
-/*
-********** BIG CLEANING
-/*
-We drop all files that are already merge with the database
-We just put them together, but it is easier to drop file from here
-*/
-
-erase"$directory\CLEAN\NEEMSIS_APPEND-generalinformation-lefthome.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-individualid.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-familymembers.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-education.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-employment.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-migration-migrationidgroup.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-remittances-remreceived-remreceivedidgroup.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-remittances-remsent-remsentidgroup.dta"
-*erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-loans-loansbyborrower.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-lendingmoneygroup-lendingmoney.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-guaranteeandrecommendation-recommendationgiven.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-chitfundgroup-chitfund.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-savingsgroup-savings.dta"
-*erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-goldgroup-gold.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-insurancegroup-insurance.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-schemes-schemenrega-schemenregaind.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-schemes-cashassistancemarriage-cashassistancemarriagegroup.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-schemes-goldmarriage-goldmarriagegroup.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-memberlistpreload2016.dta"
-forvalues i=1(1)7{
-capture confirm file "$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-schemes-schemepension`i'-schemepension`i'group.dta"
-if _rc==0{
-erase"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-schemes-schemepension`i'-schemepension`i'group.dta"
-}
-}
-*/
 
 
 
@@ -560,15 +531,6 @@ save"$directory\CLEAN\NEEMSIS2-HH_v5.dta", replace
 
 
 
-/*
-********** BIG CLEANING
-erase"$directory\CLEAN\NEEMSIS_APPEND-detailschitfunds_wide.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-detailssavingaccounts_wide.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-detailsinsurance_wide.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-detailschitfunds.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-detailssavingaccounts.dta"
-erase"$directory\CLEAN\NEEMSIS_APPEND-detailsinsurance.dta"
-*/
 ****************************************
 * END
 

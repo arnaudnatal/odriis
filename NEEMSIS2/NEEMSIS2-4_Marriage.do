@@ -53,11 +53,17 @@ use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
 tostring INDID, replace
 drop sex age
 
-merge m:1 INDID HHID_panel using "$directory\do_not_drop\preload2016"
+preserve
+use"$git\_Miscellaneous\code_indiv_2010_2016.dta", clear
+keep if year==2016
+save"$git\_Miscellaneous\preload2016.dta", replace
+restore
+
+merge m:1 INDID HHID_panel using "$git\_Miscellaneous\preload2016.dta"
 drop _merge
 *
 save"$directory\CLEAN\NEEMSIS2-HH_v6.dta", replace
-
+erase "$git\_Miscellaneous\preload2016.dta"
 
 
 
@@ -316,11 +322,13 @@ merge 1:m INDID parent_key using "$directory\CLEAN\NEEMSIS_APPEND-hhquestionnair
 
 preserve
 keep if _merge==2
-dropmiss, force
+list HHID_panel INDID, clean noobs
+
 /*
 Pb avec :
-MANAM25 -- 31
-KAR24  	-- 31
+    HHID_p~l   INDID  
+     MANAM25      31  
+       KAR24      31 
 */
 restore
 

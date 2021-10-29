@@ -15,9 +15,14 @@ cls
 ********** Path to folder "data" folder.
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-
+global directorybis = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA"
 cd"$directory"
 clear all
+
+
+
+
+
 
 
 
@@ -36,8 +41,6 @@ drop age_newfromearlier age_autofromearlier agefromearlier1 agefromearlier2
 drop marriagegift_count 
 
 drop setofmarriagefinance setofmarriagegift
-
-drop imrr_curious imrr_interestedbyart imrr_repetitivetasks imrr_inventive imrr_liketothink imrr_newideas imrr_activeimagination imrr_organized imrr_makeplans imrr_workhard imrr_appointmentontime imrr_putoffduties imrr_easilydistracted imrr_completeduties imrr_enjoypeople imrr_sharefeelings imrr_shywithpeople imrr_enthusiastic imrr_talktomanypeople imrr_talkative imrr_expressingthoughts imrr_workwithother imrr_understandotherfeeling imrr_trustingofother imrr_rudetoother imrr_toleratefaults imrr_forgiveother imrr_helpfulwithothers imrr_managestress imrr_nervous imrr_changemood imrr_feeldepressed imrr_easilyupset imrr_worryalot imrr_staycalm imrr_tryhard imrr_stickwithgoals imrr_goaftergoal imrr_finishwhatbegin imrr_finishtasks imrr_keepworking imcr_curious imcr_interestedbyart imcr_repetitivetasks imcr_inventive imcr_liketothink imcr_newideas imcr_activeimagination imcr_organized imcr_makeplans imcr_workhard imcr_appointmentontime imcr_putoffduties imcr_easilydistracted imcr_completeduties imcr_enjoypeople imcr_sharefeelings imcr_shywithpeople imcr_enthusiastic imcr_talktomanypeople imcr_talkative imcr_expressingthoughts imcr_workwithother imcr_understandotherfeeling imcr_trustingofother imcr_rudetoother imcr_toleratefaults imcr_forgiveother imcr_helpfulwithothers imcr_managestress imcr_nervous imcr_changemood imcr_feeldepressed imcr_easilyupset imcr_worryalot imcr_staycalm imcr_tryhard imcr_stickwithgoals imcr_goaftergoal imcr_finishwhatbegin imcr_finishtasks imcr_keepworking
 
 drop raw_curious rr_curious raw_interestedbyart rr_interestedbyart raw_repetitivetasks rr_repetitivetasks raw_inventive rr_inventive raw_liketothink rr_liketothink raw_newideas rr_newideas raw_activeimagination rr_activeimagination raw_organized rr_organized raw_makeplans rr_makeplans raw_workhard rr_workhard raw_appointmentontime rr_appointmentontime raw_putoffduties rr_putoffduties raw_easilydistracted rr_easilydistracted raw_completeduties rr_completeduties raw_enjoypeople rr_enjoypeople raw_sharefeelings rr_sharefeelings raw_shywithpeople rr_shywithpeople raw_enthusiastic rr_enthusiastic raw_talktomanypeople rr_talktomanypeople raw_talkative rr_talkative raw_expressingthoughts rr_expressingthoughts raw_workwithother rr_workwithother raw_understandotherfeeling rr_understandotherfeeling raw_trustingofother rr_trustingofother raw_rudetoother rr_rudetoother raw_toleratefaults rr_toleratefaults raw_forgiveother rr_forgiveother raw_helpfulwithothers rr_helpfulwithothers raw_managestress rr_managestress raw_nervous rr_nervous raw_changemood rr_changemood raw_feeldepressed rr_feeldepressed raw_easilyupset rr_easilyupset raw_worryalot rr_worryalot raw_staycalm rr_staycalm raw_tryhard rr_tryhard raw_stickwithgoals rr_stickwithgoals raw_goaftergoal rr_goaftergoal raw_finishwhatbegin rr_finishwhatbegin raw_finishtasks rr_finishtasks raw_keepworking rr_keepworking
 
@@ -127,14 +130,7 @@ drop if livinghome==4
 drop if livinghome==3
 sort canread
 restore
-/*
-HHID_panel	submissiondate	year	INDID_panel
-SEM44	10apr2021 18:05:50	2020	Ind_5
-GOV5	09apr2021 11:35:51	2020	Ind_8
-SEM44	10apr2021 18:05:50	2020	Ind_6
-MAN23	11apr2021 19:34:01	2020	Ind_4
-GOV38	09apr2021 12:04:57	2020	Ind_6
-*/
+
 
 
 save"$directory\CLEAN\NEEMSIS2-HH_v20.dta", replace
@@ -146,12 +142,18 @@ save"$directory\CLEAN\NEEMSIS2-HH_v20.dta", replace
 
 
 
+
+
+
+
+
+
 ****************************************
 * Loans
 ****************************************
-use"$directory\CLEAN\NEEMSIS2-loans_v6", clear
+use"$directory\CLEAN\NEEMSIS2-loans_v11", clear
 
-drop _merge key3 key2 forauto loanreasongivenlabel
+drop _merge key3 key2 loanreasongivenlabel
 
 order setofmarriagefinance setofmarriagegroup setofloansbyborrower setofdetailsloanbyborrower setofmainloans, last
 
@@ -162,9 +164,124 @@ label variable `v' `"Arnaud `: variable label `v''"'
 order HHID_panel INDID_panel name sex age jatis edulevel egoid loan_database loanamount
 
 drop if HHID_panel==""
-drop caste
+drop caste informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount lender2 lender3 detailsloanbyborrower_count totalrepaid2 interestpaid2 principalpaid yratepaid monthlyinterestrate setofmarriagefinance setofmarriagegroup setofloansbyborrower setofdetailsloanbyborrower setofmainloans
 
-save"$directory\CLEAN\NEEMSIS2-loans_v6bis", replace
+save"$directory\CLEAN\NEEMSIS2-loans_v14", replace
+****************************************
+* END
 
+
+
+
+
+
+
+
+
+
+****************************************
+* Cleaning des fichiers CLEAN
+****************************************
+cd"$directory\CLEAN"
+clear all
+filelist, dir("$directory\CLEAN") pattern(*.dta)
+gen tomove=0
+gen todrop=0
+
+*To move
+split filename, p("-")
+replace tomove=1 if filename2=="hhquestionnaire"
+drop filename1 filename2 filename3 filename4 filename5 filename6
+forvalues i=4(1)18{
+replace tomove=1 if filename=="NEEMSIS2-HH_v`i'.dta"
+}
+replace tomove=1 if filename=="NEEMSIS_APPEND-generalinformation-lefthome.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-detailschitfunds.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-detailschitfunds_wide.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-detailsinsurance.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-detailsinsurance_wide.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-detailsloanbyborrower.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-detailssavingaccounts.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-detailssavingaccounts_wide.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-individualid.dta"
+replace tomove=1 if filename=="NEEMSIS2-HH_v5_bis.dta"
+replace tomove=1 if filename=="NEEMSIS2-HH_v5-_tocomp.dta"
+replace tomove=1 if filename=="NEEMSIS_Agriculture_APPEND.dta"
+replace tomove=1 if filename=="NEEMSIS_Agriculture_APPEND_v2.dta"
+replace tomove=1 if filename=="NEEMSIS_Agriculture_APPEND_v3.dta"
+forvalues i=1(1)13{
+replace tomove=1 if filename=="NEEMSIS2-loans_v`i'.dta"
+}
+replace tomove=1 if filename=="NEEMSIS2-loans.dta"
+foreach x in Agriculture APRIL DEC DECEMBER DEC_Agriculture DECEMBER_Agriculture FEB FEBRUARY FEB_NEW_Agriculture FEBRUARY_Agriculture LAST NEW_APRIL NEW_JUNE{
+replace tomove=1 if filename=="NEEMSIS2_`x'.dta"
+}
+replace tomove=1 if filename=="NEEMSIS_APPEND-occupations.dta"
+foreach i in 1 2 3 5 {
+replace tomove=1 if filename=="NEEMSIS_APPEND-occupations_v`i'.dta"
+}
+replace tomove=1 if filename=="NEEMSIS_APPEND-salaried-infoemployer.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-remsentidgroup.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-remreceivedsourceidgroup.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-marriagegift.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-memberlistpreload2016.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-migrationjobidgroup.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-selfemploy-labourers-businesslabourers.dta"
+replace tomove=1 if filename=="NEEMSIS_APPEND-marriagefinance.dta"
+
+*To drop
+replace todrop=1 if filename=="NEEMSIS_Agriculture_APPEND_merge1.dta"
+replace todrop=1 if filename=="NEEMSIS_Agriculture_APPEND_merge23.dta"
+replace todrop=1 if filename=="indiv2020.dta"
+replace todrop=1 if filename=="indiv2020_temp.dta"
+replace todrop=1 if filename=="indiv2020_temp2.dta"
+replace todrop=1 if filename=="indiv2020_v2.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-occupations_v4_HH.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-occupations_v4_indiv.dta"
+replace todrop=1 if filename=="NEEMSIS2-loans_v13_HH.dta"
+replace todrop=1 if filename=="NEEMSIS2-loans_v13_indiv.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-remreceived_indiv.dta"
+
+*Only one var
+gen status=.
+replace status=1 if tomove==0 & todrop==0
+replace status=2 if tomove==1 & todrop==0
+replace status=3 if tomove==0 & todrop==1
+label define status 1"Work with" 2"To move" 3"To drop"
+label values status
+fre status
+
+preserve
+keep if status==2
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local f = filename
+	use "$directory\CLEAN\\`f'", clear
+	save "$directory\CLEAN\_tomove\\`f'", replace	
+	erase "$directory\CLEAN\\`f'"
+	tempfile save`i'
+}
+restore
+
+preserve
+keep if status==3
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local f = filename
+	use "$directory\CLEAN\\`f'", clear
+	save "$directory\CLEAN\_todrop\\`f'", replace	
+	erase "$directory\CLEAN\\`f'"
+	tempfile save`i'
+}
+restore
 ****************************************
 * END

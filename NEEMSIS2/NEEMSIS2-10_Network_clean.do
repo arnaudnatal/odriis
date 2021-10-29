@@ -22,7 +22,7 @@ TITLE: Network
 ****************************************
 * LOOP pour prendre les long sn
 ****************************************
-foreach dbv in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSOS2_LAST NEEMSIS2_NEW_APRIL NEEMSIS2_NEW_JUNE {
+*foreach dbv in NEEMSIS2_APRIL NEEMSIS2_DEC NEEMSIS2_DECEMBER NEEMSIS2_FEB NEEMSIS2_FEBRUARY NEEMSOS2_LAST NEEMSIS2_NEW_APRIL NEEMSIS2_NEW_JUNE {
 
 clear all
 macro drop _all
@@ -142,7 +142,7 @@ forvalues i=1/`obs' {
 	tempfile save`i'
 	save "$directory\APPEND\ego_raw\\`fnew'", replace
 }
-}
+*}
 ****************************************
 * END
 
@@ -358,27 +358,10 @@ save"$directory/_egotemp/NEEMSIS2_NEW_JUNE-`k'", replace
 
 
 
-
-
-
-
-
-
-
-
-
-
 ********** INSTRUCTIONS:
 /*
 COPIER ET REMPLACER LES FICHIERS DE EGO RAW VERS EGO TEMP
 */
-
-
-
-
-
-
-
 
 
 
@@ -562,6 +545,20 @@ forvalues i=1/`obs' {
 	capture confirm v parent_key
 	if _rc==0{
 	drop if parent_key==""
+	
+		***** Duplicates
+	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"  // householdid==36 & name1=="Natesan"
+	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"  // householdid==67 & name1=="Shankar"
+	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"  // householdid==124 & name1=="Subramani"
+	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"  // householdid==246 & name1=="Sornambal"
+	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"  // householdid==343 & name1=="Ramamoorthi"
+	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"  // householdid==348 & name1=="Govindan"
+	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"  // householdid==361 & name1=="Mallika"
+	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"  // householdid==391 & name1=="Balaji"
+	*
+	drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"  // householdid==532 & name1=="Shakthivel" & name2=="Revathy"
+	drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66"  // householdid==534 & name1=="Karunanidhi"
+	drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"  // householdid==547 & name1=="Surya" (duplicates with "uuid:ae72a34f-f968-45f4-acfa-91f571f54ea8")
 	}
 	*save "$directory\CLEAN\\`f2'", replace
 	*tempfile save`i'
@@ -576,13 +573,3 @@ forvalues i=1/`obs' {
 }
 ****************************************
 * END
-
-
-
-
-
-/*
-****************************************
-* CLEANING
-****************************************
-use"$directory\APPEND\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2.dta", clear
