@@ -1,6 +1,0 @@
-global git = "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\_Miscellaneous"
-
-
-
-do "$directory\do_not_drop\_1-3-datachoicelist_v2"
-do "$git\Datachoicelist_NEEMSIS2\NEEMSIS2-Label"
