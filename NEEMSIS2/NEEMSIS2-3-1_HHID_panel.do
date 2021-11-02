@@ -19,7 +19,7 @@ cls
 ********** Path to folder "data" folder.
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\Individual_panel"
+global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\_Miscellaneous\Individual_panel"
 
 ********** SSC to install
 *ssc install dropmiss, replace

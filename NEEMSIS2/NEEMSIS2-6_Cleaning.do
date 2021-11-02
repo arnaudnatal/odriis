@@ -79,7 +79,7 @@ restore
 *
 
 
-merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_wide_v2", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v2", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
 drop if _merge==2
 drop _merge
 
@@ -140,11 +140,11 @@ save"NEEMSIS2-HH_v8.dta", replace
 ****************************************
 use"NEEMSIS2-HH_v8.dta", clear
 
-merge m:1 HHID_panel using "$git\RUME-NEEMSIS\Individual_panel\code_HH", keepusing(jatis2010 jatis2016)
+merge m:1 HHID_panel using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_HH", keepusing(jatis2010 jatis2016)
 drop if _merge==2
 drop _merge
 
-merge 1:1 HHID_panel INDID_panel using "$git\RUME-NEEMSIS\Individual_panel\educ2016"
+merge 1:1 HHID_panel INDID_panel using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\educ2016"
 drop if _merge==2
 drop _merge
 

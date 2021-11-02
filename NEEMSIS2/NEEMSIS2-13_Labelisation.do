@@ -52,7 +52,7 @@ drop indiv loanbalance_HH mean_yratepaid_HH mean_monthlyinterestrate_HH
 
 drop nameego2fromearlier nameego1fromearlierhh nameego1fromearlier indexego2fromearlier indexego2firststep indexego2 indexego1fromearlier indexego1firststep indexego1finalstep indexego1final indexego1 ego3positionname ego3position ego2position ego2index_36 ego2index_2635 ego2index_1825 ego2herefromearlier ego1herefromearlier
 
-drop familymembersindex educationindex employmentindex sex_new age_new username_str Chithra_and_Radhika Suganya_and_Malarvizhi Vivek_Radja HHID dummynewHH dummydemonetisation villageid_new villageid_new_comments tracked namefrompreload
+drop familymembersindex educationindex employmentindex sex_new age_new HHID dummynewHH dummydemonetisation villageid_new villageid_new_comments tracked namefrompreload
 
 
 foreach x in migrantlist remrecipientlist remsenderlist borrowerlist hhlenderlist recommendgivenlist marriedlist nregarecipientlist schemeslist chitfundbelongerid savingsownerid goldownerid insuranceownerid schemerecipientlist3 schemerecipientlist4 schemerecipientlist5 schemerecipientlist6 schemerecipientlist7 schemerecipientlist8 schemerecipientlist9 schemerecipientlist10 {
@@ -167,121 +167,5 @@ drop if HHID_panel==""
 drop caste informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount lender2 lender3 detailsloanbyborrower_count totalrepaid2 interestpaid2 principalpaid yratepaid monthlyinterestrate setofmarriagefinance setofmarriagegroup setofloansbyborrower setofdetailsloanbyborrower setofmainloans
 
 save"$directory\CLEAN\NEEMSIS2-loans_v14", replace
-****************************************
-* END
-
-
-
-
-
-
-
-
-
-
-****************************************
-* Cleaning des fichiers CLEAN
-****************************************
-cd"$directory\CLEAN"
-clear all
-filelist, dir("$directory\CLEAN") pattern(*.dta)
-gen tomove=0
-gen todrop=0
-
-*To move
-split filename, p("-")
-replace tomove=1 if filename2=="hhquestionnaire"
-drop filename1 filename2 filename3 filename4 filename5 filename6
-forvalues i=4(1)18{
-replace tomove=1 if filename=="NEEMSIS2-HH_v`i'.dta"
-}
-replace tomove=1 if filename=="NEEMSIS_APPEND-generalinformation-lefthome.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-detailschitfunds.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-detailschitfunds_wide.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-detailsinsurance.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-detailsinsurance_wide.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-detailsloanbyborrower.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-detailssavingaccounts.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-detailssavingaccounts_wide.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-individualid.dta"
-replace tomove=1 if filename=="NEEMSIS2-HH_v5_bis.dta"
-replace tomove=1 if filename=="NEEMSIS2-HH_v5-_tocomp.dta"
-replace tomove=1 if filename=="NEEMSIS_Agriculture_APPEND.dta"
-replace tomove=1 if filename=="NEEMSIS_Agriculture_APPEND_v2.dta"
-replace tomove=1 if filename=="NEEMSIS_Agriculture_APPEND_v3.dta"
-forvalues i=1(1)13{
-replace tomove=1 if filename=="NEEMSIS2-loans_v`i'.dta"
-}
-replace tomove=1 if filename=="NEEMSIS2-loans.dta"
-foreach x in Agriculture APRIL DEC DECEMBER DEC_Agriculture DECEMBER_Agriculture FEB FEBRUARY FEB_NEW_Agriculture FEBRUARY_Agriculture LAST NEW_APRIL NEW_JUNE{
-replace tomove=1 if filename=="NEEMSIS2_`x'.dta"
-}
-replace tomove=1 if filename=="NEEMSIS_APPEND-occupations.dta"
-foreach i in 1 2 3 5 {
-replace tomove=1 if filename=="NEEMSIS_APPEND-occupations_v`i'.dta"
-}
-replace tomove=1 if filename=="NEEMSIS_APPEND-salaried-infoemployer.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-remsentidgroup.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-remreceivedsourceidgroup.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-marriagegift.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-memberlistpreload2016.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-migrationjobidgroup.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-selfemploy-labourers-businesslabourers.dta"
-replace tomove=1 if filename=="NEEMSIS_APPEND-marriagefinance.dta"
-
-*To drop
-replace todrop=1 if filename=="NEEMSIS_Agriculture_APPEND_merge1.dta"
-replace todrop=1 if filename=="NEEMSIS_Agriculture_APPEND_merge23.dta"
-replace todrop=1 if filename=="indiv2020.dta"
-replace todrop=1 if filename=="indiv2020_temp.dta"
-replace todrop=1 if filename=="indiv2020_temp2.dta"
-replace todrop=1 if filename=="indiv2020_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-occupations_v4_HH.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-occupations_v4_indiv.dta"
-replace todrop=1 if filename=="NEEMSIS2-loans_v13_HH.dta"
-replace todrop=1 if filename=="NEEMSIS2-loans_v13_indiv.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-remreceived_indiv.dta"
-
-*Only one var
-gen status=.
-replace status=1 if tomove==0 & todrop==0
-replace status=2 if tomove==1 & todrop==0
-replace status=3 if tomove==0 & todrop==1
-label define status 1"Work with" 2"To move" 3"To drop"
-label values status
-fre status
-
-preserve
-keep if status==2
-tempfile myfiles
-save "`myfiles'"
-local obs=_N
-forvalues i=1/`obs' {
-	*set trace on
-	use "`myfiles'" in `i', clear
-	local f = filename
-	use "$directory\CLEAN\\`f'", clear
-	save "$directory\CLEAN\_tomove\\`f'", replace	
-	erase "$directory\CLEAN\\`f'"
-	tempfile save`i'
-}
-restore
-
-preserve
-keep if status==3
-tempfile myfiles
-save "`myfiles'"
-local obs=_N
-forvalues i=1/`obs' {
-	*set trace on
-	use "`myfiles'" in `i', clear
-	local f = filename
-	use "$directory\CLEAN\\`f'", clear
-	save "$directory\CLEAN\_todrop\\`f'", replace	
-	erase "$directory\CLEAN\\`f'"
-	tempfile save`i'
-}
-restore
 ****************************************
 * END

@@ -25,6 +25,7 @@ cls
 ********** Path to folder "data" folder.
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global git = "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
 cd "$directory"
 
 ********** SSC to install
@@ -171,7 +172,7 @@ append using "$directory\agri_raw\NEEMSIS2_DECEMBER_Agriculture`k'", force
 append using "$directory\agri_raw\NEEMSIS2_DEC_Agriculture`k'", force
 append using "$directory\agri_raw\NEEMSIS2_FEB_NEW_Agriculture`k'", force
 append using "$directory\agri_raw\NEEMSIS2_FEBRUARY_Agriculture`k'", force
-do "$git\Datachoicelist_NEEMSIS2\NEEMSIS2-Label"
+do "$git\_Miscellaneous\Datachoicelist_NEEMSIS2\NEEMSIS2-Label"
 save "$directory\CLEAN\NEEMSIS_Agriculture_APPEND`k'", replace
 }
 
@@ -184,7 +185,7 @@ append using "$directory\agri_raw\new-_NEEMSIS2_DECEMBER_Agriculture.dta", force
 append using "$directory\agri_raw\new-_NEEMSIS2_DEC_Agriculture.dta", force
 append using "$directory\agri_raw\new-_NEEMSIS2_FEB_NEW_Agriculture.dta", force
 append using "$directory\agri_raw\new-_NEEMSIS2_FEBRUARY_Agriculture.dta", force
-do "$git\Datachoicelist_NEEMSIS2\NEEMSIS2-Label"
+do "$git\_Miscellaneous\Datachoicelist_NEEMSIS2\NEEMSIS2-Label"
 
 
 
@@ -295,7 +296,7 @@ order tag householdid2020 submissiondate version parent_key namenewhead
 drop tag
 duplicates report householdid2020
 *
-merge m:1 householdid2020 using "$directory\do_not_drop\unique_identifier_panel.dta", keepusing(villageid villageareaid dummynewHH dummydemonetisation caste HHID2010 HHID_panel)
+merge m:1 householdid2020 using "$git\_Miscellaneous\Individual_panel\unique_identifier_panel.dta", keepusing(villageid villageareaid dummynewHH dummydemonetisation caste HHID2010 HHID_panel)
 sort _merge
 keep if _merge==3
 save "$directory/CLEAN/NEEMSIS_Agriculture_APPEND_merge23.dta", replace

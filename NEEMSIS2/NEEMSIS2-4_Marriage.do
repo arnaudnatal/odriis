@@ -21,6 +21,8 @@ cls
 ********** Path to folder "data" folder.
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
+
 cd"$directory"
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -54,16 +56,16 @@ tostring INDID, replace
 drop sex age
 
 preserve
-use"$git\_Miscellaneous\code_indiv_2010_2016.dta", clear
+use"$git\_Miscellaneous\Individual_panel\code_indiv_2010_2016.dta", clear
 keep if year==2016
-save"$git\_Miscellaneous\preload2016.dta", replace
+save"$git\_Miscellaneous\Individual_panel\preload2016.dta", replace
 restore
 
-merge m:1 INDID HHID_panel using "$git\_Miscellaneous\preload2016.dta"
+merge m:1 INDID HHID_panel using "$git\_Miscellaneous\Individual_panel\preload2016.dta"
 drop _merge
 *
 save"$directory\CLEAN\NEEMSIS2-HH_v6.dta", replace
-erase "$git\_Miscellaneous\preload2016.dta"
+erase "$git\_Miscellaneous\Individual_panel\preload2016.dta"
 
 
 

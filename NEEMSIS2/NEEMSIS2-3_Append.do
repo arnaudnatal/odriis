@@ -30,7 +30,7 @@ cls
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 
-global git = "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\_Miscellaneous"
+global git = "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -414,7 +414,7 @@ drop tag
 
 
 ********** MERGE UNIQUE PANEL IDENTIFIER
-merge m:1 householdid2020 using "$git\_Miscellaneous\unique_identifier_panel.dta", keepusing(villageid villageareaid HHID HHID2010 dummynewHH dummydemonetisation caste villageid_new villageid_new_comments tracked HHID_panel dummyHHlost2016 value_householdid_2020 householdid2020)
+merge m:1 householdid2020 using "$git\_Miscellaneous\Individual_panel\unique_identifier_panel.dta", keepusing(villageid villageareaid HHID HHID2010 dummynewHH dummydemonetisation caste villageid_new villageid_new_comments tracked HHID_panel dummyHHlost2016 value_householdid_2020 householdid2020)
 drop if _merge==2
 *keep if _merge==3
 drop _merge
