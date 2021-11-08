@@ -10,17 +10,24 @@ National Industrial Classification : http://mospi.nic.in/classification/national
 -------------------------
 */
 
+
+****************************************
+* INITIALIZATION
+****************************************
 clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global git ="C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global git = "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
+
+*global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global git ="C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
 
 cd"$directory\CLEAN"
 clear all
-
+****************************************
+* END
 
 
 

@@ -9,17 +9,27 @@ TITLE: Duplicates
 -------------------------
 */
 
+
+****************************************
+* INITIALIZATION
+****************************************
 clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
 global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directorybis = "D:\Docuements\_Thesis\_DATA\NEEMSIS2\DATA"
+global git = "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
+
 *global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *global directorybis = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA"
+*global git ="C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
+
+
 cd"$directory"
 clear all
-
-
+****************************************
+* END
 
 
 
@@ -300,7 +310,6 @@ drop livinghome2016 kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri k
 
 drop occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega 
 
-drop understandotherfeeling_recode expressingthoughts_recode helpfulwithothers_recode appointmentontime_recode activeimagination_recode talktomanypeople_recode easilydistracted_recode trustingofother_recode repetitivetasks_recode interestedbyart_recode finishwhatbegin_recode toleratefaults_recode stickwithgoals_recode completeduties_recode workwithother_recode shywithpeople_recode sharefeelings_recode feeldepressed_recode putoffduties_recode managestress_recode forgiveother_recode enthusiastic_recode rudetoother_recode liketothink_recode keepworking_recode goaftergoal_recode finishtasks_recode enjoypeople_recode easilyupset_recode changemood_recode worryalot_recode talkative_recode organized_recode makeplans_recode inventive_recode workhard_recode staycalm_recode newideas_recode tryhard_recode nervous_recode curious_recode
 
 drop username
 

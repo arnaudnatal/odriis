@@ -23,10 +23,11 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global git = "C:\Users\anatal\Downloads\Github"
-global neemsis1 = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS1"
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global git = "C:\Users\anatal\Downloads\Github"
+global git = "C:\Users\Arnaud\Documents\GitHub"
+global neemsis1 = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
 
 cd "$directory\CLEAN"
 
@@ -685,12 +686,12 @@ fre $big5
 
 ********** Recode 1
 foreach x in $big5 {
-clonevar `x'_old=`x'
+clonevar `x'_backup=`x'
 replace `x'=. if `x'==99 | `x'==6
 }
 fre completeduties putoffduties
 /*
-completeduties_old putoffduties_old = max never, with 99 as cat
+completeduties_backup putoffduties_backup = max never, with 99 as cat
 completeduties putoffduties = max never, with 99 recoded as missing
 */
 
@@ -700,20 +701,14 @@ completeduties putoffduties = max never, with 99 recoded as missing
 
 ********** Recode 2: all so that more is better! 
 foreach var of varlist $big5 {
-clonevar raw_`var'=`var' 
-clonevar raw_rec_`var'=`var' 	
 recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
-recode raw_rec_`var' (5=1) (4=2) (3=3) (2=4) (1=5)
 }
 label define big5n 1"5 - Almost never" 2"4 - Rarely" 3"3 - Sometimes" 4"2 - Quite often" 5"1 - Almost always"
 foreach x in $big5 {
 label values `x' big5n
-label values raw_rec_`x' big5n
 }
 /*
-completeduties_old putoffduties_old = max never, with 99 as cat
-raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
-raw_rec_completeduties raw_rec_putoffduties = max always, with 99 recoded as missing
+completeduties_backup putoffduties_backup = max never, with 99 as cat
 completeduties putoffduties = max always, with 99 recoded as missing
 */
 
@@ -740,15 +735,7 @@ tab ars
 gen ars2=ars-3  
 set graph on
 gen ars3=abs(ars2)
-/*
-pctile ars3_p=ars3, n(20)
-gen n=_n*5
-replace n=. if n>100
-tab ars3
-drop ars3_p n
-histogram ars3, width(0.05) percent xtitle("Acquiesence bias") xlabel(0(0.5)2) xmtick(0(0.1)2) ylabel(0(1)14) ymtick(0(0.2)14) note("NEEMSIS-2 (2020-21)", size(small))
-graph export "$git\RUME-NEEMSIS\ars2_NEEMSIS2.pdf", replace
-*/
+
 
 
 
@@ -764,130 +751,6 @@ label values `x' big5n2
 foreach var of varlist $big5 {
 gen cr_`var'=`var'-ars2 if ars!=. 
 }
-
-
-********** Sens
-/*
-completeduties_old putoffduties_old = max never, with 99 as cat
-raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
-raw_rec_completeduties raw_rec_putoffduties = max always, with 99 recoded as missing
-
-cr_completeduties cr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias
-
-completeduties putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5
-*/
-
-
-
-
-********** Internal consistency v2
-/*
-*OP
-omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .7642
-omega cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination, rev(cr_repetitivetasks) // .3684
-
-
-*CO
-omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .7040
-omega cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties, rev(cr_putoffduties cr_easilydistracted)  // .4171
-
-
-*EX
-omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .6511
-omega cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts, rev(cr_shywithpeople)  // .4486
-
-
-
-*AG
-omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .6126
-omega cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers, rev(cr_rudetoother)  // .3076
-
-*ES
-omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .7295
-omega cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot  cr_staycalm, rev(cr_managestress cr_staycalm)  // .7929
-*/
-
-
-
-
-
-********** Rename
-global big5 ///
-curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
-organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties ///
-enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts  ///
-workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers ///
-managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm ///
-tryhard  stickwithgoals   goaftergoal finishwhatbegin finishtasks  keepworking
-
-foreach x in $big5 {
-rename raw_rec_`x' rr_`x'
-}
-/*
-completeduties_old putoffduties_old = max never, with 99 as cat
-raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
-rr_completeduties rr_putoffduties = max always, with 99 recoded as missing
-
-cr_completeduties cr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias
-
-completeduties putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5
-*/
-
-
-
-
-********** Recode 4: from max=NE to max=ES
-foreach x in rr_managestress rr_nervous rr_changemood rr_feeldepressed rr_easilyupset rr_worryalot rr_staycalm {
-recode `x' (5=1) (4=2) (3=3) (2=4) (1=5)
-}
-
-
-
-
-
-********** Imputation
-/*
-global big5rr rr_curious rr_interestedbyart rr_repetitivetasks rr_inventive rr_liketothink rr_newideas rr_activeimagination rr_organized rr_makeplans rr_workhard rr_appointmentontime rr_putoffduties rr_easilydistracted rr_completeduties rr_enjoypeople rr_sharefeelings rr_shywithpeople rr_enthusiastic rr_talktomanypeople rr_talkative rr_expressingthoughts rr_workwithother rr_understandotherfeeling rr_trustingofother rr_rudetoother rr_toleratefaults rr_forgiveother rr_helpfulwithothers rr_managestress rr_nervous rr_changemood rr_feeldepressed rr_easilyupset rr_worryalot rr_staycalm rr_tryhard rr_stickwithgoals rr_goaftergoal rr_finishwhatbegin rr_finishtasks rr_keepworking
-foreach x in $big5rr{
-gen im`x'=`x'
-}
-forvalues j=1(1)3{
-forvalues i=1(1)2{
-foreach x in $big5rr{
-sum im`x' if sex==`i' & caste==`j' & egoid!=0 & egoid!=.
-replace im`x'=r(mean) if `x'==. & sex==`i' & caste==`j' & egoid!=0 & egoid!=.
-}
-}
-}
-
-foreach x in $big5{
-gen imcr_`x'=cr_`x'
-}
-forvalues j=1(1)3{
-forvalues i=1(1)2{
-foreach x in $big5i{
-sum imcr_`x' if sex==`i' & caste==`j' & egoid!=0 & egoid!=.
-replace imcr_`x'=r(mean) if imcr_`x'==. & sex==`i' & caste==`j' & egoid!=0 & egoid!=.
-}
-}
-}
-*/
-
-
-/*
-completeduties_old putoffduties_old = max never, with 99 as cat
-raw_completeduties raw_putoffduties = max never, with 99 recoded as missing
-rr_completeduties raw_rec_putoffduties = max always, with 99 recoded as missing
-
-cr_completeduties cr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias
-
-imrr_completeduties imrr_putoffduties = max always, with 99 recoded as missing and imputation to avoid missing
-
-imcr_completeduties imcr_putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5 corrected from acquiescence bias and imputation to avoid missing
-
-
-completeduties putoffduties = max always, with 99 recoded as missing and reverse questions recoded for Big-5
-*/
 
 
 
