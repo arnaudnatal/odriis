@@ -44,6 +44,10 @@ clear all
 ****************************************
 use "$directory\CLEAN\NEEMSIS_APPEND-marriagefinance.dta"
 keep if marriageloanlistsn!=.
+split parent_key, p(/)
+drop parent_key2
+rename parent_key setofmarriagegroup
+rename parent_key1 parent_key
 order parent_key
 gen position=ustrpos(setofmarriagegroup,"[")
 generate test = usubstr(setofmarriagegroup,position,.)
@@ -87,7 +91,7 @@ drop marriageloanid
 reshape wide loanmarriageuse , i( ALTERID) j( compteur)
 drop dup_ALTERID
 save "$directory\CLEAN\base_alter_B_complete.dta",replace
-merge m:1 parent_key INDID_total using "$directory\CLEAN\base_indexage.dta", keep (1 3)
+merge m:m parent_key INDID_total using "$directory\CLEAN\NEEMSIS2-HH_v20.dta", keep (1 3) keepusing(egoid)
 drop _merge
 replace egoid=0 if egoid==.
 replace loanmarriageuse1=20 if egoid==0
@@ -757,7 +761,7 @@ clear
 ****************************************
 * MERGING
 ****************************************
-use "$directory\CLEAN\base_alter_VF1.dta"
+use "$directory\CLEAN\base_alter_VF1.dta", clear
 merge 1:1 ALTERID using "$directory\CLEAN\base_alter_B_complete.dta", keep(1 3)
 drop _merge
 merge 1:1 ALTERID using "$directory\CLEAN\base_alter_C_complete.dta", keep(1 3)
@@ -796,7 +800,7 @@ merge 1:1 ALTERID using "$directory\CLEAN\base_alter_J_complete_ego2.dta", keep(
 drop _merge
 merge 1:1 ALTERID using "$directory\CLEAN\base_alter_J_complete_ego3.dta", keep(1 3)
 drop _merge
-merge 1:1 ALTERID using "$directory\CLEAN\base_alter_K_complete_ego1.dta", keep(1 3)
+merge 1:m ALTERID using "$directory\CLEAN\base_alter_K_complete_ego1.dta", keep(1 3)
 drop _merge
 merge 1:1 ALTERID using "$directory\CLEAN\base_alter_K_complete_ego2.dta", keep(1 3)
 drop _merge
@@ -845,14 +849,18 @@ drop if hhmember!=.
 * Retrait des prêteurs institutionnels pour les auto-entrepreneurs
 drop if businesslender>9&businesslender!=.
 * Retrait des ménages dupliqués - Information fournie par Arnaud (à actualiser)
-drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
-drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
-drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
-drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
-drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
-drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"
-drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
-drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"  // householdid==36 & name1=="Natesan"
+drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"  // householdid==67 & name1=="Shankar"
+drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"  // householdid==124 & name1=="Subramani"
+drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"  // householdid==246 & name1=="Sornambal"
+drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"  // householdid==343 & name1=="Ramamoorthi"
+drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"  // householdid==348 & name1=="Govindan"
+drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"  // householdid==361 & name1=="Mallika"
+drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"  // householdid==391 & name1=="Balaji"
+*
+drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"  // householdid==532 & name1=="Shakthivel" & name2=="Revathy"
+drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66"  // householdid==534 & name1=="Karunanidhi"
+drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"  // householdid==547 & name1=="Surya" (duplicates with "uuid:ae72a34f-f968-45f4-acfa-91f571f54ea8")
 save "$directory\CLEAN\base_alter_VF2.dta", replace
 
 

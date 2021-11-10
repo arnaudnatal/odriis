@@ -158,7 +158,7 @@ clear
 * Récupération du egoid pour les Egos
 use "$directory\CLEAN\base_alter_A.dta"
 destring *, replace
-merge m:m parent_key INDID_total using "$directory\CLEAN\base_indexage.dta", keep (3)
+merge m:m parent_key INDID_total using "$directory\CLEAN\NEEMSIS2-HH_v20.dta", keep (3) keepusing(egoid)
 drop _merge
 rename lendername namealter
 keep parent_key INDID_total INDID_v2 egoid loanid loanlender namealter dummyfam friend wkp labourrelation sex age labourtype castes castesother educ occup employertype occupother living ruralurban district livingname compared duration meet meetfrequency invite reciprocity1 intimacy phonenb photo meetother snlist n1 letter ALTERID

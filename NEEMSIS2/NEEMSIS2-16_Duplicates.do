@@ -53,6 +53,7 @@ egen file=concat(dirname filename),p(\)
 split dirname, p(/)
 drop if dirname2=="LAST"
 
+********** HH datatsets
 preserve
 keep if agri==0
 tempfile myfiles
@@ -92,6 +93,7 @@ forvalues i=1/`obs' {
 restore
 
 
+********** AGRI datasets
 preserve
 keep if agri==1
 tempfile myfiles
