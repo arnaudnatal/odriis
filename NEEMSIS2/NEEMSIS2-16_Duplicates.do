@@ -554,6 +554,176 @@ foreach x in $arnaud {
 label var `x' "Arnaud"
 }
 
+********** New variables Gaston
+*** Automatic part
+* Son daughter
+gen sondaughter=""
+replace sondaughter="Daughter" if householdid2020==534 & namenewhead=="Kanadhasan"
+replace sondaughter="Son" if householdid2020==549 & namenewhead=="Valarmathi"
+replace sondaughter="Daughter" if householdid2020==536 & namenewhead=="Jenifer"
+replace sondaughter="Daughter" if householdid2020==544 & namenewhead=="Gunasundari"
+replace sondaughter="Daughter" if householdid2020==545 & namenewhead=="Devi"
+replace sondaughter="Son" if householdid2020==542 & namenewhead=="Kalaiselvan"
+replace sondaughter="Daughter" if householdid2020==530 & namenewhead=="Sobana"
+replace sondaughter="Daughter" if householdid2020==530 & namenewhead=="Theiveegam"
+replace sondaughter="Son" if householdid2020==530 & namenewhead=="Asaimani"
+replace sondaughter="Daughter" if householdid2020==531 & namenewhead=="Bremsheela"
+replace sondaughter="Daughter" if householdid2020==531 & namenewhead=="Padmavathi"
+replace sondaughter="Daughter" if householdid2020==531 & namenewhead=="Kamalavalli"
+replace sondaughter="Daughter" if householdid2020==532 & namenewhead=="Inbaraja"
+replace sondaughter="Son" if householdid2020==532 & namenewhead=="Murugavel"
+replace sondaughter="Daughter" if householdid2020==532 & namenewhead=="Amutha"
+replace sondaughter="Son" if householdid2020==532 & namenewhead=="Duraimurugan"
+replace sondaughter="Daughter" if householdid2020==532 & namenewhead=="Anusuya"
+replace sondaughter="Son" if householdid2020==534 & namenewhead=="Karthikeyan"
+replace sondaughter="Daughter" if householdid2020==534 & namenewhead=="Radhakrishnan"
+replace sondaughter="Daughter" if householdid2020==534 & namenewhead=="Keerthika"
+replace sondaughter="Son" if householdid2020==535 & namenewhead=="Senthil murugan"
+replace sondaughter="Son" if householdid2020==535 & namenewhead=="Jayan"
+replace sondaughter="Son" if householdid2020==535 & namenewhead=="Nirmal Kumar"
+replace sondaughter="Daughter" if householdid2020==536 & namenewhead=="Thenaruvi"
+replace sondaughter="Daughter" if householdid2020==537 & namenewhead=="Anandthavalli"
+replace sondaughter="Daughter" if householdid2020==537 & namenewhead=="Mangayarkarasi"
+replace sondaughter="Daughter" if householdid2020==537 & namenewhead=="Jayapriya"
+replace sondaughter="Daughter" if householdid2020==538 & namenewhead=="shalini"
+replace sondaughter="Daughter" if householdid2020==538 & namenewhead=="Krishnan"
+replace sondaughter="Daughter" if householdid2020==538 & namenewhead=="Ananthi"
+replace sondaughter="Daughter" if householdid2020==539 & namenewhead=="Venkatesan"
+replace sondaughter="Daughter" if householdid2020==539 & namenewhead=="Athilakshmi"
+replace sondaughter="Daughter" if householdid2020==539 & namenewhead=="Tamizselvi"
+replace sondaughter="Daughter" if householdid2020==542 & namenewhead=="Indhumathi"
+replace sondaughter="Daughter" if householdid2020==542 & namenewhead=="Gomathi"
+replace sondaughter="Son" if householdid2020==543 & namenewhead=="Prakash"
+replace sondaughter="Daughter" if householdid2020==543 & namenewhead=="Narasingaperumal"
+replace sondaughter="Daughter" if householdid2020==543 & namenewhead=="Sivakozhundhu"
+replace sondaughter="Daughter" if householdid2020==540 & namenewhead=="Nithiya"
+replace sondaughter="Daughter" if householdid2020==540 & namenewhead=="Suganya"
+replace sondaughter="Daughter" if householdid2020==540 & namenewhead=="Priya"
+replace sondaughter="Daughter" if householdid2020==540 & namenewhead=="Gayathri"
+replace sondaughter="Daughter" if householdid2020==540 & namenewhead=="Nirmala"
+replace sondaughter="Daughter" if householdid2020==540 & namenewhead=="Panjavarnam"
+replace sondaughter="Son" if householdid2020==540 & namenewhead=="Senthamizhan"
+replace sondaughter="Daughter" if householdid2020==541 & namenewhead=="Kalpana"
+replace sondaughter="Son" if householdid2020==541 & namenewhead=="Jayaprakash"
+replace sondaughter="Daughter" if householdid2020==544 & namenewhead=="Thamizhselvi"
+replace sondaughter="Daughter" if householdid2020==544 & namenewhead=="Praba"
+replace sondaughter="Daughter" if householdid2020==545 & namenewhead=="Saranya"
+replace sondaughter="Daughter" if householdid2020==545 & namenewhead=="Revathi"
+replace sondaughter="Son" if householdid2020==546 & namenewhead=="Arunpandi"
+replace sondaughter="Daughter" if householdid2020==546 & namenewhead=="Buvaneshwari"
+replace sondaughter="Daughter" if householdid2020==546 & namenewhead=="Priya@Banupriya"
+replace sondaughter="Son" if householdid2020==546 & namenewhead=="Marudavel"
+replace sondaughter="Son" if householdid2020==547 & namenewhead=="Vijayakumar"
+replace sondaughter="Daughter" if householdid2020==548 & namenewhead=="Sasireka"
+replace sondaughter="Daughter" if householdid2020==548 & namenewhead=="Ezhilvani"
+replace sondaughter="Daughter" if householdid2020==549 & namenewhead=="Jasmine roja"
+replace sondaughter="Daughter" if householdid2020==549 & namenewhead=="Mathina begam"
+
+* Name
+gen sondaughtername=""
+label var sondaughtername "(in parents records)"
+replace sondaughtername="Nanthini" if householdid2020==534 & namenewhead=="Kanadhasan"
+replace sondaughtername="Chandru" if householdid2020==549 & namenewhead=="Valarmathi"
+replace sondaughtername="Jenifer" if householdid2020==536 & namenewhead=="Jenifer"
+replace sondaughtername="Gunasundari" if householdid2020==544 & namenewhead=="Gunasundari"
+replace sondaughtername="Devi" if householdid2020==545 & namenewhead=="Devi"
+replace sondaughtername="Kalaiselvan " if householdid2020==542 & namenewhead=="Kalaiselvan"
+replace sondaughtername="Sobana" if householdid2020==530 & namenewhead=="Sobana"
+replace sondaughtername="Theivigam" if householdid2020==530 & namenewhead=="Theiveegam"
+replace sondaughtername="Asaimani" if householdid2020==530 & namenewhead=="Asaimani"
+replace sondaughtername="Bremasheela" if householdid2020==531 & namenewhead=="Bremsheela"
+replace sondaughtername="Padmavathy" if householdid2020==531 & namenewhead=="Padmavathi"
+replace sondaughtername="Kamalavalli" if householdid2020==531 & namenewhead=="Kamalavalli"
+replace sondaughtername="Umamaheshwari" if householdid2020==532 & namenewhead=="Inbaraja"
+replace sondaughtername="Murugavel" if householdid2020==532 & namenewhead=="Murugavel"
+replace sondaughtername="Amutha" if householdid2020==532 & namenewhead=="Amutha"
+replace sondaughtername="Duraimurugan" if householdid2020==532 & namenewhead=="Duraimurugan"
+replace sondaughtername="Anusiya" if householdid2020==532 & namenewhead=="Anusuya"
+replace sondaughtername="Karthikeyan" if householdid2020==534 & namenewhead=="Karthikeyan"
+replace sondaughtername="Nandhini" if householdid2020==534 & namenewhead=="Radhakrishnan"
+replace sondaughtername="Keerthiga" if householdid2020==534 & namenewhead=="Keerthika"
+replace sondaughtername="Senthilmurugan" if householdid2020==535 & namenewhead=="Senthil murugan"
+replace sondaughtername="Jeyan" if householdid2020==535 & namenewhead=="Jayan"
+replace sondaughtername="Nimalkumar" if householdid2020==535 & namenewhead=="Nirmal Kumar"
+replace sondaughtername="Thenaruvi" if householdid2020==536 & namenewhead=="Thenaruvi"
+replace sondaughtername="Anandhavalli" if householdid2020==537 & namenewhead=="Anandthavalli"
+replace sondaughtername="Mangayarkarasi" if householdid2020==537 & namenewhead=="Mangayarkarasi"
+replace sondaughtername="Jayapriya" if householdid2020==537 & namenewhead=="Jayapriya"
+replace sondaughtername="Shalini" if householdid2020==538 & namenewhead=="shalini"
+replace sondaughtername="Anusuya @ Ashwiniya" if householdid2020==538 & namenewhead=="Krishnan"
+replace sondaughtername="Anandhi" if householdid2020==538 & namenewhead=="Ananthi"
+replace sondaughtername="Sudha" if householdid2020==539 & namenewhead=="Venkatesan"
+replace sondaughtername="Athilakshmi" if householdid2020==539 & namenewhead=="Athilakshmi"
+replace sondaughtername="Tamizhselvi" if householdid2020==539 & namenewhead=="Tamizselvi"
+replace sondaughtername="Indumathi" if householdid2020==542 & namenewhead=="Indhumathi"
+replace sondaughtername="Gomathi" if householdid2020==542 & namenewhead=="Gomathi"
+replace sondaughtername="Prakash" if householdid2020==543 & namenewhead=="Prakash"
+replace sondaughtername="Kuppu" if householdid2020==543 & namenewhead=="Narasingaperumal"
+replace sondaughtername="Rubanya" if householdid2020==543 & namenewhead=="Sivakozhundhu"
+replace sondaughtername="Nithiya" if householdid2020==540 & namenewhead=="Nithiya"
+replace sondaughtername="Suganya" if householdid2020==540 & namenewhead=="Suganya"
+replace sondaughtername="Priya" if householdid2020==540 & namenewhead=="Priya"
+replace sondaughtername="Gayathri" if householdid2020==540 & namenewhead=="Gayathri"
+replace sondaughtername="Nirmala" if householdid2020==540 & namenewhead=="Nirmala"
+replace sondaughtername="Panchavarnam" if householdid2020==540 & namenewhead=="Panjavarnam"
+replace sondaughtername="Senthamizhan" if householdid2020==540 & namenewhead=="Senthamizhan"
+replace sondaughtername="Kalpana" if householdid2020==541 & namenewhead=="Kalpana"
+replace sondaughtername="Jayapraksh" if householdid2020==541 & namenewhead=="Jayaprakash"
+replace sondaughtername="Thamizselvi" if householdid2020==544 & namenewhead=="Thamizhselvi"
+replace sondaughtername="Praba" if householdid2020==544 & namenewhead=="Praba"
+replace sondaughtername="Saranya" if householdid2020==545 & namenewhead=="Saranya"
+replace sondaughtername="Revathi" if householdid2020==545 & namenewhead=="Revathi"
+replace sondaughtername="Arunpandi" if householdid2020==546 & namenewhead=="Arunpandi"
+replace sondaughtername="Buvaneshvari" if householdid2020==546 & namenewhead=="Buvaneshwari"
+replace sondaughtername="Priya" if householdid2020==546 & namenewhead=="Priya@Banupriya"
+replace sondaughtername="Marudhavelu" if householdid2020==546 & namenewhead=="Marudavel"
+replace sondaughtername="Vijaya kumar" if householdid2020==547 & namenewhead=="Vijayakumar"
+replace sondaughtername="Sasiraka" if householdid2020==548 & namenewhead=="Sasireka"
+replace sondaughtername="Ezhilvani" if householdid2020==548 & namenewhead=="Ezhilvani"
+replace sondaughtername="Jasmin Roja" if householdid2020==549 & namenewhead=="Jasmine roja"
+replace sondaughtername="Marina begam" if householdid2020==549 & namenewhead=="Mathina begam"
+
+* Clean
+encode sondaughter, gen(sondaughter_encode)
+drop sondaughter
+rename sondaughter_encode sondaughter
+
+
+*** Issue part
+gen issue_new=.
+replace issue_new=0 if householdidparent!=""
+
+replace issue_new=1 if householdid2020==536 & namenewhead=="Jenifer"
+replace issue_new=1 if householdid2020==544 & namenewhead=="Gunasundari"
+replace issue_new=1 if householdid2020==545 & namenewhead=="Devi"
+replace issue_new=1 if householdid2020==542 & namenewhead=="Kalaiselvan"
+replace issue_new=2 if householdid2020==534 & namenewhead=="Kanadhasan"
+replace issue_new=2 if householdid2020==549 & namenewhead=="Valarmathi"
+
+label define issue_new 0"No problem" 1"Real parent household different (error during input in tablet)" 2"Child name in new household (nickname, etc.)"
+label values issue_new issue_new
+fre issue_new
+
+* Real parent household different
+destring householdidparent, replace
+clonevar householdidparent_backup=householdidparent
+replace householdidparent=152 if householdid2020==536 & namenewhead=="Jenifer"
+replace householdidparent=240 if householdid2020==544 & namenewhead=="Gunasundari"
+replace householdidparent=459 if householdid2020==545 & namenewhead=="Devi"
+replace householdidparent=64  if householdid2020==542 & namenewhead=="Kalaiselvan"
+
+* Child name in new household
+gen childname_modif=""
+replace childname_modif="Nagananthi" if householdid2020==534 & namenewhead=="Kanadhasan"
+replace childname_modif="Ramachandran" if householdid2020==549 & namenewhead=="Valarmathi"
+
+order newfrompanel namenewhead householdidparent_backup householdidparent sondaughter sondaughtername issue_new childname_modif, after(value_householdid_2020)
+
+preserve
+drop if issue_new==.
+drop if issue_new==0
+list householdid2020 newfrompanel namenewhead householdidparent_backup householdidparent sondaughter sondaughtername issue_new childname_modif, clean noobs
+restore
 
 save"$directory\CLEAN\LAST\NEEMSIS2-HH_v21.dta", replace
 ****************************************
