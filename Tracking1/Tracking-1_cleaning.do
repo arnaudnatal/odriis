@@ -600,12 +600,12 @@ save"NEEMSIS-tracking_comp_v3.dta", replace
 
 
 /*
-C'est avec la base version 3 que je fais correspondre l'INDID panel 
+With v3 version I merge INDID_panel
+
+In code_indiv of _Misc/Individual panel
+I create INDID_panel & HHID_panel
+
 */
-
-
-
-
 
 
 
