@@ -599,36 +599,175 @@ save"NEEMSIS-tracking_comp_v3.dta", replace
 
 
 
-/*
-With v3 version I merge INDID_panel
 
-In code_indiv of _Misc/Individual panel
-I create INDID_panel & HHID_panel
-
-*/
 
 
 
 
 ****************************************
-* Deuxième cleaning (en juin pour faire coller avec les autres bases)
+* CLEAN November to panel after
 ****************************************
 use"NEEMSIS-tracking_comp_v3.dta", clear
 
-order HHID name
-rename HHID HHID2010
-decode householdvillageoriginal, gen(villageid)
+
+********** Migration address
+preserve
+duplicates drop migrationaddress, force
+sort migrationaddress
+list migrationaddress, clean noobs
+export excel "address_temp.xlsx", replace
+restore
+
+rename migrationaddress address
+
+gen villageid=""
+replace villageid="Tiruppur" if address=="12,periya theru karimaruthanpatti, thirupur"
+replace villageid="Chennai" if address=="12,rajamani street,VGP nagar,thiruvanmayur,chennai"
+replace villageid="Panruti" if address=="136, periyar nagar, panruti"
+replace villageid="Bangalore" if address=="138/17, 4th cross, KEB colony, hoodi, bangalore"
+replace villageid="Tiruppur" if address=="138/4, KVR NAGAR, somanur, thiruppur"
+replace villageid="" if address=="156,next to lenovo"
+replace villageid="" if address=="160,kalathumettu street"
+replace villageid="Bangalore" if address=="167, 4th street,J.K nagar,Kappan park,Bangalore"
+replace villageid="Bangalore" if address=="167,4th street,J.K nagar near kappan park,Bangalore"
+replace villageid="Chennai" if address=="167,RVK nagar, Tambaram, Chennai"
+replace villageid="Thotti" if address=="217, palur main road, thotti"
+replace villageid="Chennai" if address=="217,2nd cross near police station pudupet"
+replace villageid="Chennai" if address=="231/14, ambattur industrial estate campus,ambattur,chennai"
+replace villageid="Chennai" if address=="267, rajaji street, arumbakkam, chennai"
+replace villageid="Chennai" if address=="267,rajaji street, arumbakam, chennai"
+replace villageid="Tiruppur" if address=="268,nehru nagar,2nd street near Om parish hospital"
+replace villageid="Tiruppur" if address=="268,nehru nagar,2nd street near on garish hospital,tirupur"
+replace villageid="" if address=="293,"
+replace villageid="Panruti" if address=="31 panjavarnan nagar panruti"
+replace villageid="Vellore" if address=="317,RKC nagar,walaja road,walaja,vellore district"
+replace villageid="Chennai" if address=="317/12, Vandalur main road, near perumal temple, kelampakkam, Chennai."
+replace villageid="Chennai" if address=="318/67,sozhinganallur main road perumbakkam,chennai"
+replace villageid="Villupuram" if address=="321Santhana gopalapuram,villupuram"
+replace villageid="Chennai" if address=="364, 3rd cross, GKR complex, near chindadiripet, chennai"
+replace villageid="Bangalore" if address=="367, Barack bara street, ghandi nagar, bangalore"
+replace villageid="Chennai" if address=="367,Durgaiyamman koil street,pallavaram main road,chennai"
+replace villageid="Villupuram" if address=="437,thiru vi ka street,villupuram."
+replace villageid="Trichy" if address=="45, ponnagar, sangillyandpuram, Trichy"
+replace villageid="Villupuram" if address=="5, mariyamman koil street, villupuram"
+replace villageid="Chennai" if address=="5, pallikaranai street, Perungalathur, chennai"
+replace villageid="Chennai" if address=="527,RKV nagar,sriperambuthur, chennai"
+replace villageid="Kozhipakkam" if address=="67, murugan koil street, kozhipakkam, Anna gramam"
+replace villageid="Villupuram" if address=="67/18, 4th cross, rajaji nagar, villupuram"
+replace villageid="Chennai" if address=="676,neelangarai,thiruvanmiyur main road,Chennai"
+replace villageid="Chennai" if address=="7,periya veteran theru, red hills chennai"
+replace villageid="Kelambakkam" if address=="89/24, shalimar company, RKN estate,kelambakkam,Tiruvallur district."
+replace villageid="" if address=="All over Tamil nadu"
+replace villageid="Coimbatore" if address=="Coimbatore"
+replace villageid="Trichy" if address=="Dairy farm, bhel, trichy."
+replace villageid="Chengalpet" if address=="EEK chambers, villiyambakkam, chengalpet"
+replace villageid="Vellore" if address=="EKS chamber,sellenjeri,walaja,vellore district"
+replace villageid="Villiyambakkam" if address=="ESK chamber, palur, villiyambakkam"
+replace villageid="Chengalpet" if address=="ESK chamber, villiyambakkam, chengalpet, kanchipuram district"
+replace villageid="Chengalpet" if address=="ESK chamber, villiyambakkam,pazhayaseevaram,chengalpet"
+replace villageid="Trichy" if address=="Engineering college campus, trichy."
+replace villageid="Chennai" if address=="Escort constructions, kelambakkam, chennai"
+replace villageid="Chennai" if address=="Geetha Krishna archeri, poonamalli, Chennai"
+replace villageid="Chennai" if address=="Geetha metals,ambathur real estate,chennai"
+replace villageid="Velankkanni" if address=="Hotel paradise,ariyanattu street,velankkanni"
+replace villageid="Chennai" if address=="Industrial estate, ambattur, chennai"
+replace villageid="Chennai" if address=="KRS travels, nungambakkam, chennai"
+replace villageid="Chennai" if address=="Lotus construction,OMR road,kelambakkam, chennai"
+replace villageid="Chennai" if address=="Neelangarai,chennai"
+replace villageid="MANAM" if address=="No 54 kulathu mettu street manamthavizhnthaputur"
+replace villageid="Kallakurichi" if address=="No, 262, valluvar street, veers sozhapuram, kallakurichi"
+replace villageid="Chengalpet" if address=="No,17, pudhu street, villiyambakkam, chengalpet, kanchipuram district"
+replace villageid="Tiruchirappalli" if address=="Office quarters, Gun industries defence colony, Tiruchirappalli"
+replace villageid="Chennai" if address=="Oragadam chennai"
+replace villageid="Chennai" if address=="R.S construction,kelambakkam, chennai"
+replace villageid="Vellore" if address=="RMK chamber,walajabad,vellore district"
+replace villageid="Chennai" if address=="Raj mansion, kodambakkam main road, chennai"
+replace villageid="Chennai" if address=="Raj mansion, kodambakkam, chennai"
+replace villageid="Chengalpet" if address=="SKS chamber,pazhayaseevaram,villiyambakkam,chengalpet"
+replace villageid="Chengalpet" if address=="SKS chamber,villiyambakkam,pazhayaseevaram,chengalpet"
+replace villageid="Chengalpet" if address=="SKS chambers, palur, chengalpet"
+replace villageid="Chengalpet" if address=="SKS chambers,villiyambakkam,paalur,chengalpet"
+replace villageid="Chennai" if address=="Saligramam chennai"
+replace villageid="" if address=="Same village"
+replace villageid="Selam" if address=="Selam"
+replace villageid="Chennai" if address=="Siruseri industrial estate,chennai"
+replace villageid="Villupuram" if address=="Sumathi hospital, villupuram"
+replace villageid="Panruti" if address=="Thirukammu street panruti"
+replace villageid="Trichy" if address=="Trichy"
+replace villageid="Chengalpet" if address=="VSK chamber,pazhayaseevaram, villiyampakkam,chengalpet"
+replace villageid="Villupuram" if address=="Villupuram"
+
+
+********** Origin village
+decode householdvillageoriginal, gen(hhvillageorigin)
+replace hhvillageorigin="ELA" if hhvillageorigin=="ELANTHALMPATTU"
+replace hhvillageorigin="GOV" if hhvillageorigin=="GOVULAPURAM"
+replace hhvillageorigin="KAR" if hhvillageorigin=="KARUMBUR"
+replace hhvillageorigin="KOR" if hhvillageorigin=="KORATTORE"
+replace hhvillageorigin="KUV" if hhvillageorigin=="KUVAGAM"
+replace hhvillageorigin="MAN" if hhvillageorigin=="MANAPAKKAM"
+replace hhvillageorigin="ORA" if hhvillageorigin=="ORAIYURE"
+replace hhvillageorigin="MANAM" if hhvillageorigin=="MANAMTHAVIZHINTHAPUTHUR"
+replace hhvillageorigin="NAT" if hhvillageorigin=="NATHAM"
+replace hhvillageorigin="SEM" if hhvillageorigin=="SEMAKOTTAI"
+
 drop householdvillageoriginal householdidoriginal
 
-order HHID2010 villageid name
+replace villageid=hhvillageorigin if address=="Same village"
 
-drop HHINDIDn
 
-rename submissiondate submissiondate_o
-gen submissiondate=dofc(submissiondate_o)
-format submissiondate %td
-drop submissiondate_o
-sort HHID2010
+********** Key
+rename HHID HHID2010
+rename key HHID2019
+encode HHID2019, gen(code)
+order HHID2010 HHID2019 code namemigrant, last
+gen test=1 if HHID2019!=""
+bysort HHID2010 namemigrant: egen count=sum(test)
+tab count
+drop test count
+bysort HHID2010 namemigrant: egen HHID2019_max=max(code)
+bysort HHID2010 namemigrant: egen HHID2019_min=min(code)
+label list
+label values HHID2019_max code
+label values HHID2019_min code
+decode HHID2019_max, gen(HHID2019_main)
+decode HHID2019_min, gen(HHID2019_sec)
+drop HHID2019_max HHID2019_min
+replace HHID2019_sec="" if HHID2019_main==HHID2019_sec
+drop HHID2019
+rename HHID2019_main HHID2019
+rename HHID2019_sec HHID2019other
+
+order HHID2019 HHID2019other HHID2010 address villageid hhvillageorigin namemigrant
+
+replace villageid=hhvillageorigin if address==""
+replace villageid=hhvillageorigin if villageid==""
+
+
+save"NEEMSIS-tracking_comp_v4.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+/*
+LAUNCH CODE_HH part on tracking here
+*/
+
+
+****************************************
+* HHID_panel
+****************************************
+use"NEEMSIS-tracking_comp_v4.dta", clear
+
 
 foreach x in submissiondate interviewdate migdatestartoccup_1_1 migdatestartoccup_1_2 migdatestartoccup_2_1 migdatestartoccup_3_1 migdatestartoccup_4_1 migdatestartoccup_5_1 {
 bysort HHID2010: egen max_`x'=max(`x')
@@ -647,7 +786,6 @@ drop migmigration1helprelationship_1 migmigration1helprelationship_1_ migmigrati
 
 drop migmigration1helpfindjobhow_1_1 migmigration1helpfindjobhow_2_1 migmigration1helpfindjobhow_3_1 migmigration1helpfindjobhow_4_1 migmigration1helpfindjobhow_77_1
 
-order HHID2010 strange name namenumber sex age relationshiptohead maritalstatus caste religion familymembers_coun comefrom everattendedschool classcompleted currentlyatschool educationexpenses employment_coun relationshiptoheadother casteother dummyworkedpastyear
 
 
 ********** Pb avec les remittances
@@ -659,21 +797,60 @@ foreach x in remittancessentid remittancessentname remittancessentrelation remit
 rename `x'_1 `x'
 }
 
-order HHID2010 INDIDtracking name
-sort HHID2010 INDIDtracking
 
+********** Rename
+rename dummyego egoid
 rename INDIDtracking INDID2019
 tostring INDID2019, replace
+rename hhvillageorigin hhvillage_origin
 
 
 ********** Merger les id
-merge m:m HHID2010 using "$git\_Miscellaneous\Individual_panel\code_HH", keepusing(HHID_panel)
+merge m:m HHID2019 using "$git\unique_identifier_panel_v3.dta", keepusing(HHID_panel)
 keep if _merge==3
 drop _merge
 
 order HHID_panel
-compress HHID2010
+compress 
 
+
+********** Merger les id for 2010
+rename HHID_panel HHID_panel_real
+merge m:m HHID2010 using "$git\unique_identifier_panel_v3.dta", keepusing(HHID_panel)
+keep if _merge==3
+drop _merge
+
+rename HHID2010 HHID2010_origin
+rename HHID_panel HHID_panel_origin
+rename HHID_panel_real HHID_panel
+
+order HHID_panel HHID2019 HHID2019other INDID2019 namemigrant name age sex relationshiptohead caste address villageid
+order HHID2010_origin HHID_panel_origin hhvillage_origin, after(villageid)
+
+save"NEEMSIS-tracking_comp_v5.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+/*
+LAUNCH CODE_indiv part on tracking here
+*/
+
+
+
+
+
+
+
+
+****************************************
+* INDID_panel
+****************************************
+use"NEEMSIS-tracking_comp_v5.dta", clear
 merge m:m HHID_panel INDID2019 using "$git\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_tracking2019_wide"
 drop if _merge==2
 tab HHID_panel
@@ -694,6 +871,6 @@ preserve
 restore
 
 
-save"$directory\NEEMSIS-tracking_comp_v4.dta", replace
+save"$directory\NEEMSIS-tracking_comp_v5.dta", replace
 ****************************************
 * END

@@ -25,12 +25,13 @@ macro drop _all
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *cd "$directory\CLEAN"
 
-global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\Individual_panel"
+global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel"
 
 global directory "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 
 global neemsis "NEEMSIS2-HH_v5"
 
+global tracking1 "D:\Documents\_Thesis\_DATA\Tracking2019\DATA"
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -135,5 +136,72 @@ label var HHID_panel "Unique for RUME & NEEMSIS HH (with n2)"
 
 *Save
 save "$git\unique_identifier_panel_v2.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Tracking 2019
+****************************************
+use"$tracking1\NEEMSIS-tracking_comp_v4.dta", clear
+keep HHID2019 HHID2019other address villageid hhvillageorigin namemigrant 
+duplicates drop
+rename villageid villageid_str2
+save"$tracking1\NEEMSIS-tracking_comp_v4_HH_temp.dta", replace
+
+
+********** Append la base
+use"$git\unique_identifier_panel_v2", clear
+decode villageid, gen(villageid_str2)
+append using "$tracking1\NEEMSIS-tracking_comp_v4_HH_temp.dta"
+
+********** Continuer code Cécile
+sort villageid_str2 n2 HHID2019
+
+*Max ?
+bysort villageid_str2: egen max_n2=max(n2)
+order HHID_panel_n1 HHID_panel villageid_str2 n1 max_n1 ntemp n2 max_n2
+
+*On continue
+drop ntemp
+bysort villageid_str2 n2: gen ntemp=_n
+replace ntemp=. if n2!=.
+order HHID_panel_n1 HHID_panel villageid_str2 n1 max_n1 n2 max_n2 ntemp
+gen n3=.
+replace n3=n2 if n2!=.
+recode max_n2 (.=0)
+replace n3=max_n2 + ntemp if n2==.
+order HHID_panel_n1 HHID_panel villageid_str2 n1 max_n1 n2 max_n2 ntemp n3
+fre HHID_panel
+
+*Nouveau HHID_panel
+egen HHID_panel_n2=concat(villageid_str2 n3)
+order HHID_panel_n2 HHID_panel_n1 HHID_panel villageid_str2 n1 max_n1 n2 max_n2 ntemp n3
+
+*Verif
+gen pb=0
+replace pb=1 if (HHID_panel_n2!=HHID_panel) & (HHID_panel!="" & HHID_panel_n2!="")
+tab pb, m 
+drop pb
+
+*Ok
+rename HHID_panel HHID_panel_n3
+rename HHID_panel_n2 HHID_panel
+label var HHID_panel "Unique for RUME & NEEMSIS HH (with n2)"
+
+
+*Save
+save "$git\unique_identifier_panel_v3.dta", replace
 ****************************************
 * END

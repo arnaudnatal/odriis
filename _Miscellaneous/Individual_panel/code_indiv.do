@@ -359,61 +359,34 @@ OK
 
 
 
+
+
+
+
 ****************************************
-* Ajouter les nouveaux du tracking 2019
+* Tracking 2019
 ****************************************
-use"$data\Tracking2019\DATA\NEEMSIS-tracking_comp_v3.dta", clear
-
-order HHID name
-rename HHID HHID2010
-decode householdvillageoriginal, gen(villageid)
-drop householdvillageoriginal householdidoriginal
-
-order HHID2010 villageid name
-
-drop HHINDIDn
-
-rename submissiondate submissiondate_o
-gen submissiondate=dofc(submissiondate_o)
-format submissiondate %td
-drop submissiondate_o
-sort HHID2010
-
-foreach x in submissiondate interviewdate {
-bysort HHID2010: egen max_`x'=max(`x')
-drop `x'
-rename max_`x' `x'
-}
+use"$data\Tracking2019\DATA\NEEMSIS-tracking_comp_v5.dta", clear
 
 
-keep HHID2010 villageid name namemigrant year sex relationshiptohead relationshiptoheadother age caste dummyego maritalstatus INDIDtracking
+keep HHID_panel HHID2019 HHID2019other INDID2019 namemigrant name age sex relationshiptohead caste address villageid HHID2010_origin HHID_panel_origin hhvillage_origin
 
-rename INDIDtracking INDID
-tostring INDID, replace
+rename HHID_panel HHID_panel_real
+rename HHID_panel_origin HHID_panel
 
 save"$data\Tracking2019\DATA\NEEMSIS-tracking_indiv.dta", replace
 
 
 
 ********** Merger les id
-*HHID_panel
-merge m:m HHID2010 using "$git\code_HH", keepusing(HHID_panel)
-bysort HHID_panel: egen max_merge=max(_merge)
-label define max_merge 2"Other than tracking" 3"HH tracking"
-label values max_merge max_merge
-*drop if _merge==2
-tab max_merge
-tab HHID_panel
-drop _merge
-sort HHID_panel
-order HHID_panel HHID2010 namemigrant
 gen INDID_panel=""
 order HHID_panel HHID2010 INDID_panel namemigrant
 
 
 *INDID_panel
-merge m:m HHID_panel INDID_panel using "$git\code_indiv_2010_2016_2020_v2"
-tab year
+merge m:m HHID_panel using "$git\code_indiv_2010_2016_2020_v2"
+keep if _merge==3
+drop _merge
 
 gen HHok=1 if dummyego!=.
 bysort HHID_panel: egen max_HHok=max(HHok)
