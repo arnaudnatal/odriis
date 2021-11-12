@@ -22,9 +22,9 @@ macro drop _all
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *cd "$directory\CLEAN"
 
-global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS\Individual_panel"
+global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel"
 
-global data "C:\Users\anatal\Downloads\_Thesis\_DATA"
+global data "D:\Documents\_Thesis\_DATA"
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -362,7 +362,7 @@ OK
 ****************************************
 * Ajouter les nouveaux du tracking 2019
 ****************************************
-use"$data\Tracking2016\DATA\NEEMSIS-tracking_comp_v3.dta", clear
+use"$data\Tracking2019\DATA\NEEMSIS-tracking_comp_v3.dta", clear
 
 order HHID name
 rename HHID HHID2010
@@ -385,12 +385,13 @@ drop `x'
 rename max_`x' `x'
 }
 
+
 keep HHID2010 villageid name namemigrant year sex relationshiptohead relationshiptoheadother age caste dummyego maritalstatus INDIDtracking
 
 rename INDIDtracking INDID
 tostring INDID, replace
 
-save"$data\Tracking2016\DATA\NEEMSIS-tracking_indiv.dta", replace
+save"$data\Tracking2019\DATA\NEEMSIS-tracking_indiv.dta", replace
 
 
 

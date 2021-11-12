@@ -16,9 +16,11 @@ Tracking cleaning
 * INITIALIZATION
 ****************************************
 clear all
-global directory "D:\Documents\_Thesis\_DATA\Tracking2016\DATA"
+global directory "D:\Documents\_Thesis\_DATA\Tracking2019\DATA"
 
 global dropbox "C:\Users\Arnaud\Dropbox\RUME-NEEMSIS"
+
+global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
 
 cd"$directory"
 ****************************************
@@ -665,14 +667,14 @@ tostring INDID2019, replace
 
 
 ********** Merger les id
-merge m:m HHID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_HH", keepusing(HHID_panel)
+merge m:m HHID2010 using "$git\_Miscellaneous\Individual_panel\code_HH", keepusing(HHID_panel)
 keep if _merge==3
 drop _merge
 
 order HHID_panel
 compress HHID2010
 
-merge m:m HHID_panel INDID2019 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_tracking2019_wide"
+merge m:m HHID_panel INDID2019 using "$git\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_tracking2019_wide"
 drop if _merge==2
 tab HHID_panel
 drop _merge
@@ -692,7 +694,6 @@ preserve
 restore
 
 
-save"$dropbox\Tracking1\NEEMSIS-tracking_comp_v4.dta", replace
-
+save"$directory\NEEMSIS-tracking_comp_v4.dta", replace
 ****************************************
 * END
