@@ -725,6 +725,141 @@ drop if issue_new==0
 list householdid2020 newfrompanel namenewhead householdidparent_backup householdidparent sondaughter sondaughtername issue_new childname_modif, clean noobs
 restore
 
+
+********** Change householdid2020 to parent_key
+preserve
+keep if householdidparent!=.
+duplicates drop householdidparent, force
+sort householdidparent
+list householdidparent, clean noobs
+restore
+
+preserve
+gen tokeep=.
+replace tokeep=1 if householdid2020==6
+replace tokeep=1 if householdid2020==12
+replace tokeep=1 if householdid2020==24
+replace tokeep=1 if householdid2020==33
+replace tokeep=1 if householdid2020==42
+replace tokeep=1 if householdid2020==43
+replace tokeep=1 if householdid2020==44
+replace tokeep=1 if householdid2020==53
+replace tokeep=1 if householdid2020==64
+replace tokeep=1 if householdid2020==65
+replace tokeep=1 if householdid2020==87
+replace tokeep=1 if householdid2020==89
+replace tokeep=1 if householdid2020==104
+replace tokeep=1 if householdid2020==123
+replace tokeep=1 if householdid2020==126
+replace tokeep=1 if householdid2020==130
+replace tokeep=1 if householdid2020==134
+replace tokeep=1 if householdid2020==145
+replace tokeep=1 if householdid2020==152
+replace tokeep=1 if householdid2020==165
+replace tokeep=1 if householdid2020==166
+replace tokeep=1 if householdid2020==180
+replace tokeep=1 if householdid2020==191
+replace tokeep=1 if householdid2020==193
+replace tokeep=1 if householdid2020==206
+replace tokeep=1 if householdid2020==238
+replace tokeep=1 if householdid2020==240
+replace tokeep=1 if householdid2020==246
+replace tokeep=1 if householdid2020==252
+replace tokeep=1 if householdid2020==271
+replace tokeep=1 if householdid2020==272
+replace tokeep=1 if householdid2020==279
+replace tokeep=1 if householdid2020==280
+replace tokeep=1 if householdid2020==298
+replace tokeep=1 if householdid2020==302
+replace tokeep=1 if householdid2020==314
+replace tokeep=1 if householdid2020==341
+replace tokeep=1 if householdid2020==354
+replace tokeep=1 if householdid2020==364
+replace tokeep=1 if householdid2020==369
+replace tokeep=1 if householdid2020==375
+replace tokeep=1 if householdid2020==396
+replace tokeep=1 if householdid2020==401
+replace tokeep=1 if householdid2020==402
+replace tokeep=1 if householdid2020==411
+replace tokeep=1 if householdid2020==443
+replace tokeep=1 if householdid2020==458
+replace tokeep=1 if householdid2020==459
+replace tokeep=1 if householdid2020==481
+replace tokeep=1 if householdid2020==487
+replace tokeep=1 if householdid2020==488
+replace tokeep=1 if householdid2020==502
+replace tokeep=1 if householdid2020==525
+replace tokeep=1 if householdid2020==527
+
+keep if tokeep==1
+duplicates drop HHID_panel, force
+sort householdid2020
+keep HHID_panel householdid2020 parent_key
+export excel "$directory\CLEAN\LAST\_temp.xlsx", firstrow(var) replace
+restore
+
+
+gen householdidparent_key=""
+
+replace householdidparent_key="uuid:8de7eea7-19ac-4aa1-aea9-8165a083e930" if householdidparent==6
+replace householdidparent_key="uuid:f368294d-6102-484a-890c-908832cfd187" if householdidparent==12
+replace householdidparent_key="uuid:6515c11e-c6e5-4ddc-beae-e7811b20d3a2" if householdidparent==24
+replace householdidparent_key="uuid:9a535bcb-47f5-476b-825b-be28ba90623b" if householdidparent==33
+replace householdidparent_key="uuid:468ce2ef-ccef-49b8-bad0-475f9dd2dbdb" if householdidparent==42
+replace householdidparent_key="uuid:ceff71c1-cfd4-49c1-89bb-f936c09e7b10" if householdidparent==43
+replace householdidparent_key="uuid:03eae81d-b4be-4200-b6f1-bcae0b8e2aa3" if householdidparent==44
+replace householdidparent_key="uuid:45a248eb-a0b9-436a-b70a-732abe18db04" if householdidparent==53
+replace householdidparent_key="uuid:782a507d-89bc-4df6-a516-4a7a96354c00" if householdidparent==64
+replace householdidparent_key="uuid:d4cfb2d2-f05a-447a-97f0-0deb2f1e0198" if householdidparent==65
+replace householdidparent_key="uuid:e9f06e5a-ed16-4fb4-97cf-7578ba9c7ab9" if householdidparent==87
+replace householdidparent_key="uuid:496a8ebe-1d87-4dd8-886a-24ec26514474" if householdidparent==89
+replace householdidparent_key="uuid:f49db603-49ba-4f05-8c79-8a6e3c36bcb8" if householdidparent==104
+replace householdidparent_key="uuid:e13a8809-41a2-4a64-892d-1fb93ead21d2" if householdidparent==123
+replace householdidparent_key="uuid:bf220e69-6145-4536-9237-2912eb1dda5e" if householdidparent==126
+replace householdidparent_key="uuid:a32a2846-daca-4e51-9e9f-16a902864a52" if householdidparent==130
+replace householdidparent_key="uuid:e5fd3b85-de2e-4842-908e-027bd523d002" if householdidparent==134
+replace householdidparent_key="uuid:d2589cc6-b2a6-4e55-a544-75bfc561d101" if householdidparent==145
+replace householdidparent_key="uuid:40c80fef-29fb-469a-93ec-a88c805e2df4" if householdidparent==152
+replace householdidparent_key="uuid:b311d822-6486-4be6-8134-de502f98c6f7" if householdidparent==165
+replace householdidparent_key="uuid:1944c65c-4f4c-4d6a-be8a-b97086e7a0b0" if householdidparent==166
+replace householdidparent_key="uuid:7b70f238-d8fa-471b-8cd7-f89a30c1f9f4" if householdidparent==180
+replace householdidparent_key="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" if householdidparent==191
+replace householdidparent_key="uuid:3d04313d-f28c-40c0-8e54-a21a96e9113e" if householdidparent==193
+replace householdidparent_key="uuid:9e2d228c-9b26-4e9c-aabb-89711ec2c3c7" if householdidparent==206
+replace householdidparent_key="uuid:31c52e14-e00c-4dcd-a2eb-eed5e6210815" if householdidparent==238
+replace householdidparent_key="uuid:fe1b825c-8150-4585-aa0f-875c716387c4" if householdidparent==240
+replace householdidparent_key="uuid:d7e0a08f-7602-45b0-951c-6d231c1e5dbd" if householdidparent==246
+replace householdidparent_key="uuid:27d37126-3655-45f9-a79a-ec4f875bf3bd" if householdidparent==252
+replace householdidparent_key="uuid:4d0712ef-e78d-4199-8498-874050c0aee4" if householdidparent==271
+replace householdidparent_key="uuid:30bed241-30bc-4213-81c6-0487cb913ca8" if householdidparent==272
+replace householdidparent_key="uuid:f238747c-1918-4a7c-a7ed-0f508f756e4f" if householdidparent==279
+replace householdidparent_key="uuid:73f28c3e-e5f1-4951-954a-7ddfc933a11e" if householdidparent==280
+replace householdidparent_key="uuid:293e3839-e5bb-4086-9bab-1490859678fb" if householdidparent==298
+replace householdidparent_key="uuid:0ab75f6b-4722-465b-89e3-1a22951e3ea1" if householdidparent==302
+replace householdidparent_key="uuid:af856b4c-1192-4691-8006-819d613ed77b" if householdidparent==314
+replace householdidparent_key="uuid:0b312a9f-9795-423d-8002-e62fdc684775" if householdidparent==341
+replace householdidparent_key="uuid:f8c72d7c-f21a-4c4b-889d-0196f3c0eabe" if householdidparent==354
+replace householdidparent_key="uuid:42c4fc6d-fa57-4e26-9b0f-c66d268e48c1" if householdidparent==364
+replace householdidparent_key="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" if householdidparent==369
+replace householdidparent_key="uuid:876a38fa-468b-40b7-a169-967f9d095ee8" if householdidparent==375
+replace householdidparent_key="uuid:fb3e15f2-aede-49d5-8eee-514affc34b1a" if householdidparent==396
+replace householdidparent_key="uuid:32e3039b-2c8c-4140-a5e0-a163f2b4e23c" if householdidparent==401
+replace householdidparent_key="uuid:1d5dfec4-06f0-480f-a2de-1d4829bbd36b" if householdidparent==402
+replace householdidparent_key="uuid:c73e8633-ddd2-4cc6-bf39-f25b281b146d" if householdidparent==411
+replace householdidparent_key="uuid:f241d1f9-5d79-47b7-87ed-6b23f8b6aae5" if householdidparent==443
+replace householdidparent_key="uuid:e0070a7a-e763-4c3b-9fa1-5b3a18f6b45e" if householdidparent==458
+replace householdidparent_key="uuid:47ee7f6a-5875-4579-bd96-cfcefadd2f5c" if householdidparent==459
+replace householdidparent_key="uuid:145fe4e0-2c7a-48a2-af98-8c20b0c8c300" if householdidparent==481
+replace householdidparent_key="uuid:286b7eed-e160-458a-9e35-52a2507ed467" if householdidparent==487
+replace householdidparent_key="uuid:04f2095d-a6dd-4251-9763-75e24bf9ba3a" if householdidparent==488
+replace householdidparent_key="uuid:bd716ce9-7b96-4eae-a972-88c46dadc45b" if householdidparent==502
+replace householdidparent_key="uuid:521d316a-3324-4bf7-b4c6-471e58e42962" if householdidparent==525
+replace householdidparent_key="uuid:9e173be6-bc80-49e2-bd66-6909ef2a9ced" if householdidparent==527
+
+sort householdidparent
+order householdidparent_key, after(householdidparent)
+
+
 save"$directory\CLEAN\LAST\NEEMSIS2-HH_v21.dta", replace
 ****************************************
 * END

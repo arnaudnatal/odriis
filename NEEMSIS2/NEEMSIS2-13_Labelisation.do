@@ -119,6 +119,7 @@ drop if livinghome==3
 sort canread
 restore
 
+*** householdid to parent_key for parent hh
 
 
 save"$directory\CLEAN\NEEMSIS2-HH_v20.dta", replace
