@@ -103,6 +103,14 @@ gen submissionyear="2010"
 order HHID_panel INDID_panel HHID2010 INDID2010 wave year submissionyear name age sex relationshiptohead jatis caste address villageid
 compress
 
+foreach x in * {
+rename `x' `x'_2010
+}
+
+foreach x in HHID_panel INDID_panel HHID2010 INDID2010 {
+rename `x'_2010 `x'
+}
+
 save"$git\RUME-HH_indiv.dta", replace
 
 
@@ -139,6 +147,15 @@ desc
 * Order
 order HHID_panel INDID_panel HHID2016 INDID2016 wave year submissionyear name age sex relationshiptohead jatis caste address villageid
 compress
+
+foreach x in * {
+rename `x' `x'_2016
+}
+
+foreach x in HHID_panel INDID_panel HHID2016 INDID2016 {
+rename `x'_2016 `x'
+}
+
 
 save"$git\NEEMSIS1-HH_indiv.dta", replace
 
@@ -185,6 +202,15 @@ desc
 * Order
 order HHID_panel INDID_panel HHID2020 INDID2020 wave year submissionyear name age sex relationshiptohead relationshiptoheadother dummyleft jatis caste address villageid
 compress
+
+foreach x in * {
+rename `x' `x'_2020
+}
+
+foreach x in HHID_panel INDID_panel HHID2020 INDID2020 {
+rename `x'_2020 `x'
+}
+
 
 save"$git\NEEMSIS2-HH_indiv.dta", replace
 
@@ -250,13 +276,30 @@ save"$git\Tracking1-HH_indiv.dta", replace
 ****************************************
 use"$git\RUME-HH_indiv.dta", clear
 
-append using "$git\NEEMSIS1-HH_indiv.dta"
-append using "$git\NEEMSIS2-HH_indiv.dta"
-append using "$git\Tracking1-HH_indiv.dta"
+merge 1:1 HHID_panel INDID_panel using "$git\NEEMSIS1-HH_indiv.dta"
+drop _merge
 
-order HHID_panel INDID_panel HHID2010 HHID2016 HHID2020 HHID2019
+merge 1:1 HHID_panel INDID_panel using "$git\NEEMSIS2-HH_indiv.dta"
+drop _merge
 
-save"$git\ODRIIS-HH_indiv.dta", replace
+order HHID_panel INDID_panel wave_2010 wave_2016 wave_2020
+fre wave_2010 wave_2016 wave_2020
+
+* Indiv
+gen indivpanel_10_16_20="No"
+replace indivpanel_10_16_20="Yes" if wave_2010=="RUME" & wave_2016=="NEEMSIS-1" & wave_2020=="NEEMSIS-2"
+save"$git\ODRIIS-indiv.dta", replace
+
+* HH
+preserve
+duplicates drop HHID_panel, force
+gen hhpanel_10_16_20="No"
+replace hhpanel_10_16_20="Yes" if wave_2010=="RUME" & wave_2016=="NEEMSIS-1" & wave_2020=="NEEMSIS-2"
+drop name_2010 age_2010 sex_2010 relationshiptohead_2010 name_2016 age_2016 sex_2016 relationshiptohead_2016 name_2020 age_2020 sex_2020 relationshiptohead_2020 relationshiptoheadother_2020 dummyleft_2020 indivpanel_10_16_20
+save"$git\ODRIIS-HH.dta", replace
+restore
+
+*save"$git\ODRIIS-HH_indiv.dta", replace
 ****************************************
 * END
 

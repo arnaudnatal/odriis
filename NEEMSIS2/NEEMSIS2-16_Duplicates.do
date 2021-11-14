@@ -386,7 +386,7 @@ forvalues i=1/`obs' {
 ****************************************
 * Cleaning HH
 ****************************************
-use "$directory\CLEAN\LAST\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\LAST\NEEMSIS2-HH_v21.dta", clear
 
 *age
 drop age agecalculation
@@ -860,7 +860,7 @@ sort householdidparent
 order householdidparent_key, after(householdidparent)
 
 
-save"$directory\CLEAN\LAST\NEEMSIS2-HH_v21.dta", replace
+save"$directory\CLEAN\LAST\NEEMSIS2-HH_v22.dta", replace
 ****************************************
 * END
 
@@ -968,7 +968,7 @@ restore
 ****************************************
 * Check Gaston issues with missings values
 ****************************************
-use "$directory\CLEAN\_ANALYSIS_HH\NEEMSIS2-HH_v21.dta", clear
+use "$directory\CLEAN\_ANALYSIS_HH\NEEMSIS2-HH_v22.dta", clear
 
 * Drop indiv who not live in the HH
 drop if INDID_left!=.
@@ -1037,16 +1037,6 @@ for the rest it is ok!
 
 
 
-
-
-
-****************************************
-* Check Gaston issues with missings values
-****************************************
-use "$directory\CLEAN\LAST\NEEMSIS2-HH_v19.dta", clear
-
-keep if version_HH==8
-fre villageid villagearea villagename villagenameparent villageareaparent comefrom villageareaid villageid_new villageid_new_comments villagename_BaseAgri villagearea_BaseAgri
 
 
 

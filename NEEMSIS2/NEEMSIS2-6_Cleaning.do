@@ -359,6 +359,8 @@ bysort HHID_panel : egen goldquantityamount2=max(goldquantityamount)
 drop goldquantityamount
 rename goldquantityamount2 goldquantityamount
 recode goldquantityamount (.=0)
+label var goldquantityamount "Arnaud"
+
 
 **********Land
 tab drywetownland
@@ -366,7 +368,17 @@ tab drywetownland
 replace sizedryownland=sizeownland if drywetownland=="1" & sizedryownland==. & sizeownland!=.
 replace sizewetownland=sizeownland if drywetownland=="2" & sizewetownland==. & sizeownland!=.
 
+egen sizeownland_temp=rowtotal(sizedryownland sizewetownland)
+replace sizeownland=sizeownland_temp if sizeownland==. & sizeownland_temp!=0
+drop sizeownland_temp
+
+ta villageid villagename
+destring villagename, gen(village)
+label values village villageid
+drop villageid
+rename village villageid
 fre villageid
+
 gen amountownlanddry=.
 replace amountownlanddry=sizedryownland*900000 if villageid==3 | villageid==9 | villageid==6
 replace amountownlanddry=sizedryownland*1000000 if villageid==10 | villageid==7 | villageid==1 | villageid==8
@@ -378,11 +390,17 @@ replace amountownlandwet=sizewetownland*1500000 if villageid==10 | villageid==7 
 replace amountownlandwet=sizewetownland*1200000 if villageid==4 | villageid==5 | villageid==2
 
 
-gen amountownland=amountownlanddry+amountownlandwet
+egen amountownland=rowtotal(amountownlanddry amountownlandwet)
 *if both half
 replace amountownland=sizeownland*1250000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==3 | villageid==9 | villageid==6)
 replace amountownland=sizeownland*1250000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==10 | villageid==7 | villageid==1 | villageid==8)
 replace amountownland=sizeownland*1000000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==4 | villageid==5 | villageid==2)
+
+fre ownland
+desc sizeownland amountownlanddry amountownlandwet amountownland ownland
+foreach x in sizeownland amountownlanddry amountownlandwet amountownland {
+replace `x'=. if `x'==0 & ownland=="0"
+}
 
 
 
