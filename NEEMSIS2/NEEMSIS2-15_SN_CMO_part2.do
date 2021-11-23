@@ -874,6 +874,16 @@ keep if egoid==0
 save "$directory\CLEAN\base_alter_VF2_egoid_0.dta", replace
 use "$directory\CLEAN\base_alter_VF2.dta", clear
 keep if egoid!=0
+
+preserve
+use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+keep parent_key INDID_total egoid
+keep if INDID_total!=.
+keep if egoid!=0
+duplicates drop
+save "$directory\CLEAN\base_indexage_egoid!=0.dta", replace
+restore
+
 merge m:1 parent_key egoid using "$directory\CLEAN\base_indexage_egoid!=0.dta"
 
 /* 

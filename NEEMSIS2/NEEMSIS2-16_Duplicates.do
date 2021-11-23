@@ -319,20 +319,29 @@ replace todrop=1 if filename=="base_alter_N_complete_ego1.dta"
 replace todrop=1 if filename=="base_alter_N_complete_ego2.dta"
 replace todrop=1 if filename=="base_alter_N_complete_ego3.dta"
 
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemployment-businesspaymentinkindgroup_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+replace todrop=1 if filename=="base_indexage_egoid!=0.dta"
+replace todrop=1 if filename=="base_alter_VF2_egoid_0.dta"
+replace todrop=1 if filename=="base_alter_VF1_singlelist.dta"
+
+
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemployment-businesspaymentinkindgroup_v2.dta"
+//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentsourceinvestment-businessloandetails_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indwagejob-wagejobpaymentinkindgroup_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-covoccupationfield_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-covoccupationfieldlist_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-mainoccupschedule-indoccupmonths_v2.dta"
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indwagejob-wagejobpaymentinkindgroup_v2.dta"
+//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-covoccupationfield_v2.dta"
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-covoccupationfieldlist_v2.dta"
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-mainoccupschedule-indoccupmonths_v2.dta"
+
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-snrecommendassogroup_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-snrecommendassoid_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2_wide.dta"
+//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-snrecommendassoid_v2.dta"
+
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2.dta"
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2_wide.dta"
+
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-covsnhelpgivengroup_v2.dta"
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-covsnhelpgivenid_v2.dta"
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-covsnhelpreceivedgroup_v2.dta"
@@ -353,7 +362,8 @@ replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-snrecommendforjobid_v2.dta"
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-sntalkthemostgroup_v2.dta"
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-informalsocialcapitalwageworker-sntalkthemostid_v2.dta"
-replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-networkresources-contactgroup_v2.dta"
+
+*replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-networkresources-contactgroup_v2.dta"
 
 
 keep if todrop==1
