@@ -285,12 +285,37 @@ clear
 ****************************************
 * 4. HELP TO RECRUIT WORKER
 ****************************************
+use "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+destring *, replace
+save "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid_v2.dta", replace
+clear
+
+use "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+destring *, replace
+append using "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+save "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-snrecruitworkerid.dta", replace
+clear
+
+use "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+destring *, replace
+save "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta", replace
+clear
+
+use "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+destring *, replace
+append using "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+save "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-snrecruitworkergroup.dta", replace
+clear
+
+
+
 use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
 tab snrecruitworker
 destring snrecruitworkernamelist, replace
 tab snrecruitworkernamelist
 clear
-use "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+
+use "$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-individualemployment-snrecruitworkergroup.dta"
 destring *, replace
 gen position=ustrpos(key,"[")
 generate test2 = usubstr(key,position,.)

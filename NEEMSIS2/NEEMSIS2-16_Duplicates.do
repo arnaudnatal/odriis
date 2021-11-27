@@ -325,19 +325,22 @@ replace todrop=1 if filename=="base_alter_VF1_singlelist.dta"
 
 
 *replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemployment-businesspaymentinkindgroup_v2.dta"
-//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
-//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentinformalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-snrecruitworkerid.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-snrecruitworkergroup.dta"
+
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indselfemploymentsourceinvestment-businessloandetails_v2.dta"
 *replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-indwagejob-wagejobpaymentinkindgroup_v2.dta"
-//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
-//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkergroup_v2.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-characteristicsmainjob-informalsocialcapitalselfemp-snrecruitworkerid_v2.dta"
 
 *replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-covoccupationfield_v2.dta"
 *replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-covoccupationfieldlist_v2.dta"
 *replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-individualemployment-mainoccupschedule-indoccupmonths_v2.dta"
 
 replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-snrecommendassogroup_v2.dta"
-//replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-snrecommendassoid_v2.dta"
+replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-snrecommendassoid_v2.dta"
 
 *replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2.dta"
 *replace todrop=1 if filename=="NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2_wide.dta"
@@ -973,7 +976,7 @@ restore
 
 
 
-
+/*
 
 ****************************************
 * Check Gaston issues with missings values
