@@ -37,10 +37,14 @@ clear all
 ****************************************
 use"$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2.dta", clear
 
+global tokeep parent_key egoid associationid associationtype associationname assodegreeparticip assosize dummyassorecommendation snrecommendasso dummyassohelpjob assohelpjob assocotherhelpjob dummyassohelpbusiness assohelpbusiness assootherhelpbusiness key setof_2snrecommendassoid setof_2snrecommendassogroup setof_2formalsocialcapital setofsnrecommendassoid setofsnrecommendassogroup setofformalsocialcapital setof_3snrecommendassoid setof_3snrecommendassogroup setof_3formalsocialcapital snrecommendassogroup_count
+keep $tokeep
+order $tokeep
 keep if associationname!=""
-dropmiss, force
-tab snrecommendasso
-drop snrecommendasso_*
+destring assodegreeparticip assosize dummyassorecommendation snrecommendasso dummyassohelpjob assohelpjob dummyassohelpbusiness assohelpbusiness assohelpjob associationid, replace
+drop setof_2snrecommendassoid setof_2snrecommendassogroup setof_2formalsocialcapital setofsnrecommendassoid setofsnrecommendassogroup setofformalsocialcapital setof_3snrecommendassoid setof_3snrecommendassogroup setof_3formalsocialcapital snrecommendassogroup_count
+sort parent_key egoid associationid
+
 
 * Type
 tab associationtype
@@ -78,50 +82,53 @@ tab dummyassorecommendation
 destring dummyassorecommendation, replace
 label define yesno 0"No" 1"Yes"
 label values dummyassorecommendation yesno
-tab dummyassorecommendation
+label values dummyassohelpjob yesno
+label values dummyassohelpbusiness yesno
+fre dummyassorecommendation dummyassohelpjob dummyassohelpbusiness
 
-* Id
-destring associationid, replace
-fre associationtype
-/*
-associationtype
--------------------------------------------------------------------------------------------------------
-                                                          |      Freq.    Percent      Valid       Cum.
-----------------------------------------------------------+--------------------------------------------
-Valid   2  SHG Group                                      |         76      44.44      44.44      44.44
-        3  Trade Union                                    |          1       0.58       0.58      45.03
-        4  Farmer Union                                   |         12       7.02       7.02      52.05
-        5  Village council (panchayat)                    |         10       5.85       5.85      57.89
-        6  Political party                                |         58      33.92      33.92      91.81
-        7  Professional association                       |         10       5.85       5.85      97.66
-        10 Hobby club, sports group, cultural association |          1       0.58       0.58      98.25
-        11 Alumni association                             |          1       0.58       0.58      98.83
-        12 Other association                              |          2       1.17       1.17     100.00
-        Total                                             |        171     100.00     100.00           
--------------------------------------------------------------------------------------------------------
-*/					
+
+* Asso job
+ta assohelpjob
+foreach i in 1 2 3 4 77 {
+gen assohelpjob_`i'=.
+}
+foreach i in 1 2 3 4 77 {
+replace assohelpjob_`i'=0 if dummyassohelpjob==1
+replace assohelpjob_`i'=1 if strpos(assohelpjob,"`i'")
+label values assohelpjob_`i' yesno
+}
+rename assohelpjob_1 assohelpjob_hiredyou
+rename assohelpjob_2 assohelpjob_referredyou
+rename assohelpjob_3 assohelpjob_sharedjob
+rename assohelpjob_4 assohelpjob_helpwithappli
+rename assohelpjob_77 assohelpjob_other
+fre assohelpjob_hiredyou
+
+order assohelpjob_hiredyou assohelpjob_referredyou assohelpjob_sharedjob assohelpjob_helpwithappli assohelpjob_other, after(assohelpjob)
+
+* Asso helpbusiness
+fre assohelpbusiness
+label define assohelpbusiness 1"Advice on how to run business (managerial support, accounting)" 2"New information useful for business" 3"New customers/suppliers" 4"Find/Improve premises" 5"Financial support" 6"Other material support" 7"Emotional support" 77"Other"
+label values assohelpbusiness assohelpbusiness
+fre assohelpbusiness
+
 
 * Wide
 tostring egoid, replace
 gen indiv=parent_key + "ego" + egoid
-keep associationtype associationname assodegreeparticip assosize dummyassorecommendation indiv associationid
-reshape wide associationtype associationname assodegreeparticip assosize dummyassorecommendation, i(indiv) j(associationid)
-split indiv, p(ego)
-rename indiv1 parent_key
-rename indiv2 egoid
-destring egoid, replace
+drop key
+drop associationid
+bysort indiv: gen associationid=_n
+fre associationid
+order indiv parent_key egoid associationid
+sort indiv associationid
 
-foreach x in associationtype associationname assodegreeparticip assosize dummyassorecommendation{
-rename `x'2 `x'_shg
-rename `x'3 `x'_trade
-rename `x'4 `x'_farmer
-rename `x'5 `x'_village
-rename `x'6 `x'_politic
-rename `x'7 `x'_profess
-rename `x'10  `x'_hobby
-rename `x'11 `x'_alumni
-rename `x'12 `x'_other
-}
+reshape wide associationtype associationname assodegreeparticip assosize dummyassorecommendation snrecommendasso dummyassohelpjob assohelpjob assohelpjob_hiredyou assohelpjob_referredyou assohelpjob_sharedjob assohelpjob_helpwithappli assohelpjob_other assocotherhelpjob dummyassohelpbusiness assohelpbusiness assootherhelpbusiness, i(indiv) j(associationid)
+drop indiv
+destring egoid, replace
+order parent_key egoid
+sort parent_key egoid
+
 
 save"$directory\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-formalsocialcapital_v2_wide.dta", replace
 ****************************************

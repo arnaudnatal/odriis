@@ -91,7 +91,7 @@ drop marriageloanid
 reshape wide loanmarriageuse , i( ALTERID) j( compteur)
 drop dup_ALTERID
 save "$directory\CLEAN\base_alter_B_complete.dta",replace
-merge m:m parent_key INDID_total using "$directory\CLEAN\NEEMSIS2-HH_v20.dta", keep (1 3) keepusing(egoid)
+merge m:m parent_key INDID_total using "$directory\CLEAN\NEEMSIS2-HH_v21.dta", keep (1 3) keepusing(egoid)
 drop _merge
 replace egoid=0 if egoid==.
 replace loanmarriageuse1=20 if egoid==0
@@ -164,7 +164,7 @@ clear
 ****************************************
 * 4. RECRUIT WORKER
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta"
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta"
 destring snrecruitworkernamelist, replace
 drop if snrecruitworkernamelist==888
 keep if snrecruitworkernamelist!=.
@@ -240,7 +240,7 @@ clear
 ****************************************
 * 6. CURRENT MAIN OCCUPATION
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snfindcurrentjobnamelist
 split snfindcurrentjobnamelist
 foreach var of varlist snfindcurrentjobnamelist1- snfindcurrentjobnamelist3{
@@ -300,7 +300,7 @@ clear
 ****************************************
 * 7. HELP TO FIND JOB IN THE FUTURE
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snfindjobnamelist
 split snfindjobnamelist
 foreach var of varlist snfindjobnamelist1- snfindjobnamelist5{
@@ -359,7 +359,7 @@ clear
 ****************************************
 * 8. RECOMMEND FOR A JOB
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 split snrecommendforjobnamelist
 foreach var of varlist snrecommendforjobnamelist1- snrecommendforjobnamelist4{
 destring `var', replace
@@ -415,7 +415,7 @@ clear
 ****************************************
 * 9. RECOMMEND SUCCESS
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snrecojobsuccessnamelist
 split snrecojobsuccessnamelist
 foreach var of varlist snrecojobsuccessnamelist1- snrecojobsuccessnamelist4{
@@ -472,7 +472,7 @@ clear
 ****************************************
 * 10. TALK THE MOST
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab sntalkthemost
 split sntalkthemost
 foreach var of varlist sntalkthemost1- sntalkthemost4{
@@ -530,7 +530,7 @@ clear
 ****************************************
 * 11. MEDICAL EMERGENCY
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 ta snhelpemergency
 split snhelpemergency
 foreach var of varlist snhelpemergency1- snhelpemergency4{
@@ -587,7 +587,7 @@ clear
 ****************************************
 * 12. CLOSE RELATIVES OUTSIDE HH
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab sncloserelouthh
 split sncloserelouthh
 foreach var of varlist sncloserelouthh1- sncloserelouthh4{
@@ -645,7 +645,7 @@ clear
 ****************************************
 * 13. RECEIVED HELP DURING COVID-19
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab covsnhelpreceivedlist
 split covsnhelpreceivedlist
 foreach var of varlist covsnhelpreceivedlist1- covsnhelpreceivedlist5{
@@ -703,7 +703,7 @@ clear
 ****************************************
 * 14. GIVEN HELP COVID-19
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab covsnhelpgiven
 tab covsnhelpgivenlist
 split covsnhelpgivenlist
@@ -876,7 +876,7 @@ use "$directory\CLEAN\base_alter_VF2.dta", clear
 keep if egoid!=0
 
 preserve
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 keep parent_key INDID_total egoid
 keep if INDID_total!=.
 keep if egoid!=0
@@ -913,6 +913,5 @@ keep if _merge==3
 drop _merge
 append using "$directory\CLEAN\base_alter_VF2_egoid_0.dta"
 save "$directory\CLEAN\base_alter_VF3.dta", replace
-clear
 ****************************************
 * END

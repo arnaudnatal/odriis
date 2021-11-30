@@ -158,7 +158,7 @@ clear
 * Récupération du egoid pour les Egos
 use "$directory\CLEAN\base_alter_A.dta"
 destring *, replace
-merge m:m parent_key INDID_total using "$directory\CLEAN\NEEMSIS2-HH_v20.dta", keep (3) keepusing(egoid)
+merge m:m parent_key INDID_total using "$directory\CLEAN\NEEMSIS2-HH_v21.dta", keep (3) keepusing(egoid)
 drop _merge
 rename lendername namealter
 keep parent_key INDID_total INDID_v2 egoid loanid loanlender namealter dummyfam friend wkp labourrelation sex age labourtype castes castesother educ occup employertype occupother living ruralurban district livingname compared duration meet meetfrequency invite reciprocity1 intimacy phonenb photo meetother snlist n1 letter ALTERID
@@ -202,7 +202,7 @@ tab marriageloanlistsn
 ****************************************
 * 3. BUSINESS LOANS
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta" 
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta" 
 destring *, replace
 keep if mainoccuptype==2
 tab businesssourceinvest
@@ -309,7 +309,7 @@ clear
 
 
 
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snrecruitworker
 destring snrecruitworkernamelist, replace
 tab snrecruitworkernamelist
@@ -367,7 +367,7 @@ clear
 ****************************************
 * 5. HELP TO JOIN ASSOCIATION
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab associationlist
 replace associationlist="" if associationlist=="13"|associationlist=="2 13"
 split associationlist
@@ -501,7 +501,7 @@ clear
 ****************************************
 * 6. CURRENT MAIN OCCUPATION
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snfindcurrentjob
 tab snfindcurrentjobnamelist
 clear
@@ -561,7 +561,7 @@ clear
 ****************************************
 * 7. HELP TO FIND JOB IN THE FUTURE
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snfindjob
 tab snfindjobnamelist
 clear
@@ -619,7 +619,7 @@ clear
 ****************************************
 * 8. RECOMMEND FOR A JOB
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snrecommendforjob
 tab snrecommendforjobnamelist
 clear
@@ -678,7 +678,7 @@ clear
 ****************************************
 * 9. RECOMMEND SUCCESS
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab snrecojobsuccess
 tab snrecojobsuccessnamelist
 clear
@@ -737,7 +737,7 @@ clear
 ****************************************
 * 10. TALK THE MOST
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab sntalkthemost
 clear
 
@@ -792,7 +792,7 @@ clear
 ****************************************
 * 11. MEDICAL EMERGENCY
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 ta snhelpemergency
 clear
 
@@ -849,7 +849,7 @@ clear
 ****************************************
 * 12. CLOSE RELATIVE OUTSIDE HH
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab sncloserelouthh
 clear
 
@@ -902,7 +902,7 @@ clear
 ****************************************
 * 13. RECEIVED HELP COVID-19
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab covsnhelpreceived
 tab covsnhelpreceivedlist
 clear
@@ -962,7 +962,7 @@ clear
 ****************************************
 * 14. GIVEN HELP COVID-19
 ****************************************
-use "$directory\CLEAN\NEEMSIS2-HH_v20.dta", clear
+use "$directory\CLEAN\NEEMSIS2-HH_v21.dta", clear
 tab covsnhelpgiven
 tab covsnhelpgivenlist
 clear
