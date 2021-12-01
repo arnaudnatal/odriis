@@ -434,9 +434,9 @@ use"$directory\CLEAN\LAST\NEEMSIS2-HH_v24.dta", clear
 save"$directory\CLEAN\LAST\NEEMSIS2-HH", replace
 erase"$directory\CLEAN\LAST\NEEMSIS2-HH_v24.dta"
 
-use"$directory\CLEAN\LAST\NEEMSIS2-loans.dta", clear
-save"$directory\CLEAN\LAST\NEEMSIS2-loans.dta", replace
-erase"$directory\CLEAN\LAST\NEEMSIS2-loans.dta"
+*use"$directory\CLEAN\LAST\NEEMSIS2-loans.dta", clear
+*save"$directory\CLEAN\LAST\NEEMSIS2-loans.dta", replace
+*erase"$directory\CLEAN\LAST\NEEMSIS2-loans.dta"
 
 use"$directory\CLEAN\LAST\NEEMSIS2-loans_v14.dta", clear
 save"$directory\CLEAN\LAST\NEEMSIS2-all_loans.dta", replace
