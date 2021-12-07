@@ -215,8 +215,19 @@ tostring INDID2016, replace
 drop if loansettled==1
 
 *Change date format of submissiondate
+preserve
+use "NEEMSIS1-HH_v7.dta", clear
+duplicates drop HHID_panel, force
+keep parent_key submissiondate
+duplicates report parent_key
+rename parent_key HHID2016
+save"NEEMSIS1-HH_date.dta", replace
+restore
+
 drop submissiondate
-merge m:1 HHID2016 INDID2010 using "NEEMSIS1-HH_v7.dta", keepusing(submissiondate) keep(3) nogen
+merge m:1 HHID2016 using "NEEMSIS1-HH_date.dta", keepusing(submissiondate)
+keep if _merge==3
+drop _merge
 rename submissiondate submissiondate_o
 gen submissiondate=dofc(submissiondate_o)
 format submissiondate %td
