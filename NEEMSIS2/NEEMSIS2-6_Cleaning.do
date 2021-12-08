@@ -353,12 +353,10 @@ rename `x'5 `x'none
 **********Gold
 tab goldquantity
 replace goldquantity=25 if goldquantity==120000  //120 000 / 4800 = 25
-
-gen goldquantityamount=goldquantity*4800
-bysort HHID_panel : egen goldquantityamount2=max(goldquantityamount)
-drop goldquantityamount
-rename goldquantityamount2 goldquantityamount
-recode goldquantityamount (.=0)
+bysort HHID_panel: egen s_goldquantity=sum(goldquantity)
+gen goldquantityamount=s_goldquantity*4800
+order goldquantity s_goldquantity goldquantityamount HHID_panel INDID_panel
+sort HHID_panel INDID_panel
 label var goldquantityamount "Arnaud"
 
 
@@ -534,7 +532,7 @@ recode goodtotalamount2 (.=0)
 
 **********ASSETS
 egen assets=rowtotal(amountownland livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock livestockamount_bullforploughing housevalue goldquantityamount goodtotalamount2)
-egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock housevalue goldquantityamount goodtotalamount2)
+egen assets_noland=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock livestockamount_bullforploughing housevalue goldquantityamount goodtotalamount2)
 
 
 save"NEEMSIS2-HH_v10.dta", replace

@@ -38,7 +38,7 @@ drop _merge
 *indiv panel
 rename INDID INDID2016
 tostring INDID2016, replace
-merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_2020_wide.dta", keepusing(INDID_panel)
+merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide.dta", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge
 
@@ -125,11 +125,14 @@ save"NEEMSIS1-HH_v3.dta", replace
 use"NEEMSIS1-HH_v3.dta", clear
 
 **********Gold
-gen goldquantityamount=goldquantity*2700
-bysort HHID2010 : egen goldquantityamount2=max(goldquantityamount)
-drop goldquantityamount
-rename goldquantityamount2 goldquantityamount
+bysort parent_key: egen s_goldquantity=sum(goldquantity)
+order parent_key HHID_panel goldquantity s_goldquantity
+sort parent_key
+
+gen goldquantityamount=s_goldquantity*2700
 recode goldquantityamount (.=0)
+
+order parent_key HHID_panel goldquantity s_goldquantity goldquantityamount
 
 **********Land
 replace drywetownland="3" if drywetownland=="1 2"

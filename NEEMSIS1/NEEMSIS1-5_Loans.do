@@ -736,65 +736,7 @@ gen imp1_interest_service_wm=interest_service_wm
 replace imp1_interest_service_wm=imp1_interest if interest_service_wm==.
 
 
-*INDIV
-bysort HHID2016 INDID2016: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
-bysort HHID2016 INDID2016: egen imp1_is_tot_indiv=sum(imp1_interest_service)
 
-bysort HHID2016 INDID2016: egen imp1_ds_tot_wm_indiv=sum(imp1_debt_service_wm)
-bysort HHID2016 INDID2016: egen imp1_is_tot_wm_indiv=sum(imp1_interest_service_wm)
-
-
-*HH
-bysort HHID2016: egen imp1_ds_tot_HH=sum(imp1_debt_service)
-bysort HHID2016: egen imp1_is_tot_HH=sum(imp1_interest_service)
-
-bysort HHID2016: egen imp1_ds_tot_wm_HH=sum(imp1_debt_service_wm)
-bysort HHID2016: egen imp1_is_tot_wm_HH=sum(imp1_interest_service_wm)
-
-
-*HH
-preserve
-gen DSR_HH=imp1_ds_tot_HH*100/annualincome_HH
-gen ISR_HH=imp1_is_tot_HH*100/annualincome_HH
-
-gen DSR_wm_HH=imp1_ds_tot_wm_HH*100/annualincome_HH
-gen ISR_wm_HH=imp1_is_tot_wm_HH*100/annualincome_HH
-
-bysort HHID2016: gen n=_n
-keep if n==1
-drop n
-tabstat DSR_HH ISR_HH DSR_wm_HH ISR_wm_HH, stat(n mean sd q min max) long
-restore
-/*
-Only non settled
-
-   stats |    DSR_HH    ISR_HH  DSR_wm~H  ISR_wm~H
----------+----------------------------------------
-       N |       486       486       486       486
-    mean |  48.09548  21.44677  53.76636  21.58648
-      sd |  85.67427  50.78117  98.94624  50.91975
-     p25 |  8.028946  1.491175  9.846769  1.491175
-     p50 |  22.31943  6.392086   25.2124  6.419739
-     p75 |  52.28332   20.0688  56.98266   20.0688
-     min |         0         0         0         0
-     max |  1138.452  700.2764  1437.524  700.2764
---------------------------------------------------
-
-
-With settled
-   stats |    DSR_HH    ISR_HH  DSR_wm~H  ISR_wm~H
----------+----------------------------------------
-       N |       486       486       486       486
-    mean |   49.5813  21.57556  55.25218  21.71527
-      sd |  88.37651  50.91988  102.1565  51.05772
-     p25 |  8.356437  1.627819  10.30047  1.627819
-     p50 |  22.52219  6.392086  25.28792  6.419739
-     p75 |  52.98203   20.0688  57.62724   20.0688
-     min |         0         0         0         0
-     max |  1138.452  700.2764  1437.524  700.2764
---------------------------------------------------
-
-*/
 
 save"NEEMSIS1-loans_v10.dta", replace
 *************************************
@@ -814,22 +756,51 @@ save"NEEMSIS1-loans_v10.dta", replace
 ****************************************
 use"NEEMSIS1-loans_v10.dta", clear
 
+*INDIV
+bysort HHID2016 INDID2016: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
+bysort HHID2016 INDID2016: egen imp1_is_tot_indiv=sum(imp1_interest_service)
 
-*Focusing on marriage
-gen marriageloan=1 if loanreasongiven==8
-gen marriageloanamount=loanamount_wm if marriageloan==1
+*bysort HHID2016 INDID2016: egen imp1_ds_tot_wm_indiv=sum(imp1_debt_service_wm)
+*bysort HHID2016 INDID2016: egen imp1_is_tot_wm_indiv=sum(imp1_interest_service_wm)
+
+
+*HH
+bysort HHID2016: egen imp1_ds_tot_HH=sum(imp1_debt_service)
+bysort HHID2016: egen imp1_is_tot_HH=sum(imp1_interest_service)
+
+*bysort HHID2016: egen imp1_ds_tot_wm_HH=sum(imp1_debt_service_wm)
+*bysort HHID2016: egen imp1_is_tot_wm_HH=sum(imp1_interest_service_wm)
+
 
 
 *Total loan
-gen loans=1
+gen loans=1 if loan_database=="FINANCE"
+gen loans_gm=1
+
+*Total amount
+ta loansettled
+ta loan_database
+ta loanamount,m
+ta loanamount_wm,m
+
+rename loanamount_wm loanamount_gm
+rename loanamount loanamount_g
+
+clonevar loanamount=loanamount_gm
+replace loanamount=. if loan_database=="MARRIAGE"
+replace loanamount=. if loan_database=="GOLD"
+
+ta loanamount, m
+
 
 
 *Details at higher scale
-foreach x in informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount marriageloan marriageloanamount dummyproblemtorepay dummyhelptosettleloan dummyinterest loans loanamount loanbalance loanamount_wm {
+foreach x in loans loans_gm loanamount_g loanamount_gm loanamount {
 bysort HHID2016 INDID2016: egen `x'_indiv=sum(`x')
 bysort HHID2016: egen `x'_HH=sum(`x')
 }
 
+/*
 *Ratepaid
 bysort HHID2016 INDID2016: egen mean_yratepaid_indiv=mean(yratepaid)
 bysort HHID2016 INDID2016: egen mean_monthlyinterestrate_indiv=mean(monthlyinterestrate)
@@ -913,7 +884,7 @@ bysort HHID2016 INDID2016: egen sum_settleloanstrategy_`i'=sum(settleloanstrateg
 10 selling the harvest in advance
 */
 fre sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10
-
+*/
 
 save"NEEMSIS1-loans_v11.dta", replace
 *************************************
@@ -943,7 +914,7 @@ use"NEEMSIS1-loans_v11.dta", clear
 preserve
 bysort HHID2016 INDID2016: gen n=_n
 keep if n==1
-keep HHID2016 INDID2016 imp1_ds_tot_indiv imp1_is_tot_indiv imp1_ds_tot_wm_indiv imp1_is_tot_wm_indiv informal_indiv semiformal_indiv formal_indiv economic_indiv current_indiv humancap_indiv social_indiv house_indiv incomegen_indiv noincomegen_indiv economic_amount_indiv current_amount_indiv humancap_amount_indiv social_amount_indiv house_amount_indiv incomegen_amount_indiv noincomegen_amount_indiv informal_amount_indiv formal_amount_indiv semiformal_amount_indiv marriageloan_indiv marriageloanamount_indiv dummyproblemtorepay_indiv dummyhelptosettleloan_indiv dummyinterest_indiv loans_indiv loanamount_indiv loanbalance_indiv loanamount_wm_indiv mean_yratepaid_indiv mean_monthlyinterestrate_indiv sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4 sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6 sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10 sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5
+keep HHID2016 INDID2016 imp1_ds_tot_indiv imp1_is_tot_indiv loans_indiv loans_gm_indiv loanamount_g_indiv loanamount_gm_indiv loanamount_indiv
 save"NEEMSIS1-loans_v11_indiv.dta", replace
 restore
 
@@ -951,7 +922,7 @@ restore
 preserve
 bysort HHID2016: gen n=_n
 keep if n==1
-keep HHID2016 imp1_ds_tot_HH imp1_is_tot_HH imp1_ds_tot_wm_HH imp1_is_tot_wm_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH loanamount_wm_HH mean_yratepaid_HH mean_monthlyinterestrate_HH
+keep HHID2016 imp1_ds_tot_HH imp1_is_tot_HH loans_HH loanamount_g_HH loanamount_gm_HH loanamount_HH loans_gm_HH
 save"NEEMSIS1-loans_v11_HH.dta", replace
 restore
 
