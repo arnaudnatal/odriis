@@ -146,7 +146,7 @@ drop _merge key3 key2 loanreasongivenlabel
 
 order setofmarriagefinance setofmarriagegroup setofloansbyborrower setofdetailsloanbyborrower setofmainloans, last
 
-foreach v in loan_database version_HH loanlender_new2020 edulevel {
+foreach v in loan_database version_HH edulevel {
 label variable `v' `"Arnaud `: variable label `v''"'
 }
 

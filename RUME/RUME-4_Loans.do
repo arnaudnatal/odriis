@@ -164,7 +164,7 @@ use "RUME-loans_v3.dta", clear
 
 
 *Settled
-drop if loansettled==1
+*drop if loansettled==1
 
 ********** Submission darte
 gen submissiondate=mdy(03,01,2010)

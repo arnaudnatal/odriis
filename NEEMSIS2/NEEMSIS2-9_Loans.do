@@ -20,8 +20,10 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 global git = "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
+
+cd"$directory"
 
 *global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *global git ="C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
@@ -499,8 +501,47 @@ keep parent_key HHID_panel INDID_panel submissiondate version_HH householdid2020
 
 
 append using "NEEMSIS2-loans_v4.dta"
+fre loan_database
 
-*Lenders
+preserve
+keep if loan_database=="FINANCE"
+*select_one lenders
+fre loanlender
+restore
+
+preserve
+keep if loan_database=="GOLD"
+*select_one lenders
+fre loanlender
+restore
+
+preserve
+keep if loan_database=="MARRIAGE"
+*select_one lenders
+fre loanlender
+restore
+
+ta loanlender version_HH
+
+/*
+lenders	1	Well known people
+lenders	2	Relatives
+lenders	3	Employer
+lenders	4	Maistry
+lenders	5	Colleague
+lenders	6	Pawn broker
+lenders	7	Shop keeper
+lenders	8	Finance (moneylenders)
+lenders	9	Friends
+lenders	10	SHG 
+lenders	11	Banks
+lenders	12	Coop bank
+lenders	13	Sugar mill loan
+lenders	14	Group finance
+lenders	15	Thandal
+*/
+
+
 tab loanlender, m
 label define loanlender 1"Well known people" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance (moneylenders)" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mill loan" 14"Group finance" 15"Thandal", replace
 label values loanlender loanlender
@@ -544,25 +585,6 @@ drop _merge
 order householdid2020 HHID2010 INDID namefromearlier villageid caste 
 */
 gen year=2020
-tab loanlender, m
-clonevar loanlender_new2020=loanlender
-replace loanlender=1 if loanlender_new2020==1
-replace loanlender=2 if loanlender_new2020==2
-replace loanlender=3 if loanlender_new2020==4
-replace loanlender=4 if loanlender_new2020==5
-replace loanlender=5 if loanlender_new2020==6
-replace loanlender=6 if loanlender_new2020==7
-replace loanlender=7 if loanlender_new2020==8
-replace loanlender=8 if loanlender_new2020==12
-replace loanlender=8 if loanlender_new2020==13
-replace loanlender=8 if loanlender_new2020==9
-replace loanlender=8 if loanlender_new2020==10
-replace loanlender=9 if loanlender_new2020==3
-replace loanlender=10 if loanlender_new2020==11
-replace loanlender=11 if loanlender_new2020==14
-replace loanlender=12 if loanlender_new2020==15
-
-tab loanlender loanlender_new2020
 
 *Order
 global all HHID_panel INDID caste jatis borrowername nbloansbyborrower loanid loanamount loandate loanreasongiven loanreasongiven2 loaneffectivereason loaneffectivereason2 loanotherreasongiven loanothereffectivereason loanlender lendername snmoneylenderdummyfam snmoneylenderfriend snmoneylenderwkp snmoneylenderlabourrelation snmoneylendersex snmoneylenderage snmoneylenderlabourtype snmoneylendercastes snmoneylendercastesother snmoneylendereduc snmoneylenderoccup snmoneylender2 snmoneylenderemployertype snmoneylenderoccupother snmoneylender3 snmoneylenderliving snmoneylenderruralurban snmoneylendermapdistrict snmoneylenderdistrict snmoneylenderlivingname snmoneylendercompared snmoneylenderduration snmoneylendermeet snmoneylendermeetfrequency snmoneylenderinvite snmoneylenderreciprocity1 snmoneylenderintimacy snmoneylenderphonenb snmoneylenderphoto snmoneylendermeetother otherlenderservices guarantee allloans3 guaranteeother otherlenderservicesother guaranteetype loansettled dummyinterest interestpaid covfrequencyinterest covamountinterest alloans4 loanbalance totalrepaid covfrequencyrepayment covrepaymentstop mainloanid mainloanname lenderfirsttime additionalloan borrowerservices borrowerservicesother plantorepay plantorepayother termsofrepayment repayduration1 repayduration2 dummyinteret interestfrequency interestloan dummyproblemtorepay problemdelayrepayment problemdelayrepaymentother settleloanstrategy settleloanstrategyother loanproductpledge loanproductpledgeother loanproductpledgeaamount dummyhelptosettleloan helptosettleloan dummyrecommendation dummyguarantor recommenddetailscaste recommendloanrelation guarantordetailscaste guarantorloanrelation dummyincomeassets incomeassets
@@ -1212,7 +1234,7 @@ duplicates drop HHID_panel INDID_panel, force
 sum sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5 sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4
 restore
 
-tab loanlender_new2020 lenderscaste, m
+
 fre lenderscaste
 gen lenderscaste_recode=.
 foreach i in 2 3{
