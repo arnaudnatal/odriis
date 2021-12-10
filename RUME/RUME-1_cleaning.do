@@ -19,7 +19,7 @@ cd "$directory"
 ****************************************
 use"Rume.dta", clear
 
-keep HHID2010 _1_1_village _1_1_village_code _1_2_ur_colony _1_4_head_of_family _1_5_address _1_6_a_religion _1_6_b_caste _1_6_b_caste_code _1_7_lived _1_8_village_out year code_id_member name sex _1_d_relation age _1_f_stay _1_g_education _1_h_student_at_present _1_i_skills nuclear_family _18_1_1_a_land_type1 _18_1_2_a_land_type1 _18_1_b_nber_acres1 _18_1_c_water_from_11 _18_1_c_water_from_21 _18_1_1_a_land_type2 _18_1_2_a_land_type2 _18_1_b_nber_acres2 _18_1_c_water_from_12 _18_1_c_water_from_22 _18_1_1_a_land_type3 _18_1_2_a_land_type3 _18_1_b_nber_acres3 _18_1_c_water_from_13 _18_1_c_water_from_23 _15_1_a_house _15_1_d_estimated_value_house _15_1_e_type_house _16_1_c_house_title _16_1_d_own_other_house _13_1_a_quantity_gold__gram_ food_expenses_week__rs_ education_expenses_year__rs_ health_expenses_year__rs_ ceremonies_expenses_year__rs_ death_expenses_year__rs_ _15_1_a_house _15_1_b_how_buy_1 _15_1_b_how_buy_2 _15_1_b_how_buy_3 _15_1_c_rental_amount _15_1_d_estimated_value_house _15_1_e_type_house _15_1_f_size__room_ _16_1_a_electricity _16_1_b_water _16_1_c_house_title _16_1_d_own_other_house _16_1_e_if_yes__rented_income _16_1_e_if_yes__rented_income_co _21__a_goods1 _21__b_nber1 _21__c_year_of_purchase1 _21__d_payment_type1 _21__a_goods10 _21__b_nber10 _21__c_year_of_purchase10 _21__d_payment_type10 _21__a_goods2 _21__b_nber2 _21__c_year_of_purchase2 _21__d_payment_type2 _21__a_goods3 _21__b_nber3 _21__c_year_of_purchase3 _21__d_payment_type3 _21__a_goods4 _21__b_nber4 _21__c_year_of_purchase4 _21__d_payment_type4 _21__a_goods5 _21__b_nber5 _21__c_year_of_purchase5 _21__d_payment_type5 _21__a_goods6 _21__b_nber6 _21__c_year_of_purchase6 _21__d_payment_type6 _21__a_goods7 _21__b_nber7 _21__c_year_of_purchase7 _21__d_payment_type7 _21__a_goods8 _21__b_nber8 _21__c_year_of_purchase8 _21__d_payment_type8 _21__a_goods9 _21__b_nber9 _21__c_year_of_purchase9 _21__d_payment_type9
+keep HHID2010 _1_1_village _1_1_village_code _1_2_ur_colony _1_4_head_of_family _1_5_address _1_6_a_religion _1_6_b_caste _1_6_b_caste_code _1_7_lived _1_8_village_out year code_id_member name sex _1_d_relation age _1_f_stay _1_g_education _1_h_student_at_present _1_i_skills nuclear_family _18_1_1_a_land_type1 _18_1_2_a_land_type1 _18_1_b_nber_acres1 _18_1_c_water_from_11 _18_1_c_water_from_21 _18_1_1_a_land_type2 _18_1_2_a_land_type2 _18_1_b_nber_acres2 _18_1_c_water_from_12 _18_1_c_water_from_22 _18_1_1_a_land_type3 _18_1_2_a_land_type3 _18_1_b_nber_acres3 _18_1_c_water_from_13 _18_1_c_water_from_23 _15_1_a_house _15_1_d_estimated_value_house _15_1_e_type_house _16_1_c_house_title _16_1_d_own_other_house _13_1_a_quantity_gold__gram_ food_expenses_week__rs_ education_expenses_year__rs_ health_expenses_year__rs_ ceremonies_expenses_year__rs_ death_expenses_year__rs_ _15_1_a_house _15_1_b_how_buy_1 _15_1_b_how_buy_2 _15_1_b_how_buy_3 _15_1_c_rental_amount _15_1_d_estimated_value_house _15_1_e_type_house _15_1_f_size__room_ _16_1_a_electricity _16_1_b_water _16_1_c_house_title _16_1_d_own_other_house _16_1_e_if_yes__rented_income _16_1_e_if_yes__rented_income_co _21__a_goods1 _21__b_nber1 _21__c_year_of_purchase1 _21__d_payment_type1 _21__a_goods10 _21__b_nber10 _21__c_year_of_purchase10 _21__d_payment_type10 _21__a_goods2 _21__b_nber2 _21__c_year_of_purchase2 _21__d_payment_type2 _21__a_goods3 _21__b_nber3 _21__c_year_of_purchase3 _21__d_payment_type3 _21__a_goods4 _21__b_nber4 _21__c_year_of_purchase4 _21__d_payment_type4 _21__a_goods5 _21__b_nber5 _21__c_year_of_purchase5 _21__d_payment_type5 _21__a_goods6 _21__b_nber6 _21__c_year_of_purchase6 _21__d_payment_type6 _21__a_goods7 _21__b_nber7 _21__c_year_of_purchase7 _21__d_payment_type7 _21__a_goods8 _21__b_nber8 _21__c_year_of_purchase8 _21__d_payment_type8 _21__a_goods9 _21__b_nber9 _21__c_year_of_purchase9 _21__d_payment_type9 _1_6_b_caste_code
 
 rename _1_1_village village
 rename _1_1_village_code villageid
@@ -28,7 +28,6 @@ rename _1_4_head_of_family headname
 rename _1_5_address address
 rename _1_6_a_religion religion
 rename _1_6_b_caste jatis
-drop _1_6_b_caste_code
 rename _1_7_lived living
 rename _1_8_village_out comefrom
 rename code_id_member INDID
@@ -75,6 +74,7 @@ rename education_expenses_year__rs_ educationexpenses
 rename health_expenses_year__rs_ healthexpenses
 rename ceremonies_expenses_year__rs_ ceremoniesexpenses
 rename death_expenses_year__rs_ deathexpenses
+rename _1_6_b_caste_code caste
 
 
 *Relation
@@ -93,23 +93,15 @@ rename livinghome livinghome2
 
 *Caste
 destring jatis, replace
-gen caste=.
-foreach x in 2 3{
-replace caste=1 if jatis==`x'
-}
-foreach x in 1 5 7 8 10 12 15 16{
-replace caste=2 if jatis==`x'
-}
-foreach x in 4 6 9 11 13 17{
-replace caste=3 if jatis==`x'
-}
-replace caste=77 if jatis==77
-label define castecat 1"Dalits" 2"Middle" 3"Upper" 77"Other", replace
-label values caste castecat
-tab caste
+label define jatis 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"Mudaliar" 12"Kulalar" 13"Chettiyar" 14"Marwari" 15"Muslims" 16"Padayachi" 17"Yathavar" 77"Other", replace
+label values jatis jatis
 
-label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"Mudaliar" 12"Kulalar" 13"Chettiyar" 14"Marwari" 15"Muslims" 16"Padayachi" 17"Yathavar" 77"Other", replace
-label values jatis caste
+destring caste, replace
+label define castecat 1"Dalits" 2"Middle" 3"Upper"
+label values caste castecat
+
+ta jatis caste
+
 
 *Edulevel
 gen edulevel=.
@@ -654,7 +646,7 @@ Check if INDID=0 are in tracking2016
 **********
 drop INDID name_p16
 rename INDID_o INDID2010
-merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\Individual_panel\code_indiv_2010_2016_wide", keepusing(INDID_panel)
+merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_wide", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge
 sort HHID_panel INDID_panel
