@@ -546,9 +546,16 @@ tab loanlender, m
 label define loanlender 1"Well known people" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance (moneylenders)" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mill loan" 14"Group finance" 15"Thandal", replace
 label values loanlender loanlender
 
+/*
+Dans les analyses, recoder les gold en pawnbroker
+*/
+
 tab loanlender loan_database
 label variable loanlender "From whom did you get loan?"
 tab loanlender
+
+clonevar loanlender_rec=loanlender
+replace loanlender_rec=6 if loan_database=="GOLD"
 
 *drop if loansettled==1
 tab loanlender loan_database
@@ -682,6 +689,7 @@ label define loanreasongiven 1"Agriculture" 2"Family" 3"Health" 4"Repay previous
 label values loanreasongiven loanreasongiven
 tab loanreasongiven
 
+/*
 gen economic=.
 gen current=.
 gen humancap=.
@@ -719,6 +727,7 @@ replace noincomegen=1 if current==1 | humancap==1 | social==1 | house==1
 foreach x in economic current humancap social house incomegen noincomegen informal formal semiformal{
 gen `x'_amount=loanamount if `x'==1
 }
+*/
 
 save"NEEMSIS2-loans_v7.dta", replace
 ****************************************
@@ -1107,14 +1116,20 @@ save"NEEMSIS2-loans_v12.dta", replace
 ****************************************
 use"NEEMSIS2-loans_v12.dta", clear
 
+ta loansettled
 
+/*
 *Focusing on marriage
 gen marriageloan=1 if loanreasongiven==8
 gen marriageloanamount=loanamount if marriageloan==1
+*/
 
 *Total loan
 gen loans=1
+bysort HHID_panel INDID_panel: egen loans_indiv=sum(loans)
+bysort HHID_panel: egen loans_HH=sum(loans)
 
+/*
 *Details at higher scale
 foreach x in informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount marriageloan marriageloanamount dummyproblemtorepay dummyhelptosettleloan dummyinterest loans loanamount loanbalance {
 bysort HHID_panel INDID_panel: egen `x'_indiv=sum(`x')
@@ -1128,7 +1143,7 @@ bysort HHID_panel INDID_panel: egen mean_monthlyinterestrate_indiv=mean(monthlyi
 
 bysort HHID_panel: egen mean_yratepaid_HH=mean(yratepaid)
 bysort HHID_panel: egen mean_monthlyinterestrate_HH=mean(monthlyinterestrate)
-
+*/
 
 *
 ta loans_indiv
@@ -1145,6 +1160,12 @@ tab nbmainloans_HH
 tab nbmainloans_indiv
 
 
+*Amount
+bysort HHID_panel INDID_panel: egen loanamount_indiv=sum(loanamount)
+bysort HHID_panel: egen loanamount_HH=sum(loanamount)
+
+
+/*
 *ALL LOANS: Otherlenderservices
 fre otherlenderservices
 forvalues i=1(1)5{
@@ -1261,6 +1282,7 @@ tab sum_debtrelation_shame
 restore
 
 tab lenderscaste_recode caste
+*/
 
 save"NEEMSIS2-loans_v13.dta", replace
 *************************************
@@ -1287,11 +1309,12 @@ save"NEEMSIS2-loans_v13.dta", replace
 use"NEEMSIS2-loans_v13.dta", clear
 
 *Indiv
+preserve
 bysort HHID_panel INDID_panel: gen n=_n
 
 keep if n==1
 
-keep HHID_panel INDID_panel INDID2020 imp1_ds_tot_indiv imp1_is_tot_indiv informal_indiv semiformal_indiv formal_indiv economic_indiv current_indiv humancap_indiv social_indiv house_indiv incomegen_indiv noincomegen_indiv economic_amount_indiv current_amount_indiv humancap_amount_indiv social_amount_indiv house_amount_indiv incomegen_amount_indiv noincomegen_amount_indiv informal_amount_indiv formal_amount_indiv semiformal_amount_indiv marriageloan_indiv marriageloanamount_indiv dummyproblemtorepay_indiv dummyhelptosettleloan_indiv dummyinterest_indiv loans_indiv loanamount_indiv loanbalance_indiv mean_yratepaid_indiv mean_monthlyinterestrate_indiv imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH mean_yratepaid_HH mean_monthlyinterestrate_HH sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4 sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6 sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10 sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5 sum_debtrelation_shame
+keep HHID_panel INDID_panel INDID2020 imp1_ds_tot_indiv imp1_is_tot_indiv loans_indiv nbmainloans_indiv loanamount_indiv
 
 
 duplicates tag HHID_panel INDID_panel, gen(tag)
@@ -1299,21 +1322,22 @@ tab tag
 sort tag HHID_panel INDID_panel
 
 save"NEEMSIS2-loans_v13_indiv.dta", replace
+restore
 
 *HH
 bysort HHID_panel: gen n=_n
 keep if n==1
-keep HHID_panel imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH mean_yratepaid_HH mean_monthlyinterestrate_HH
+keep HHID_panel imp1_ds_tot_HH imp1_is_tot_HH loans_HH nbmainloans_HH loanamount_HH
 
 save"NEEMSIS2-loans_v13_HH.dta", replace
 
 *********** Merge
 use"NEEMSIS2-HH_v16.dta", clear
 
-merge 1:1 HHID_panel INDID_panel using "NEEMSIS2-loans_v13_indiv.dta", keepusing(imp1_ds_tot_indiv imp1_is_tot_indiv informal_indiv semiformal_indiv formal_indiv economic_indiv current_indiv humancap_indiv social_indiv house_indiv incomegen_indiv noincomegen_indiv economic_amount_indiv current_amount_indiv humancap_amount_indiv social_amount_indiv house_amount_indiv incomegen_amount_indiv noincomegen_amount_indiv informal_amount_indiv formal_amount_indiv semiformal_amount_indiv marriageloan_indiv marriageloanamount_indiv dummyproblemtorepay_indiv dummyhelptosettleloan_indiv dummyinterest_indiv loans_indiv loanamount_indiv loanbalance_indiv mean_yratepaid_indiv mean_monthlyinterestrate_indiv sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4 sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6 sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10 sum_otherlenderservices_1 sum_otherlenderservices_2 sum_otherlenderservices_3 sum_otherlenderservices_4 sum_otherlenderservices_5 sum_debtrelation_shame)
+merge 1:1 HHID_panel INDID_panel using "NEEMSIS2-loans_v13_indiv.dta", keepusing(imp1_ds_tot_indiv imp1_is_tot_indiv loans_indiv nbmainloans_indiv loanamount_indiv)
 drop _merge
 
-merge m:1 HHID_panel using "NEEMSIS2-loans_v13_HH.dta", keepusing(imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyhelptosettleloan_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH mean_yratepaid_HH mean_monthlyinterestrate_HH)
+merge m:1 HHID_panel using "NEEMSIS2-loans_v13_HH.dta", keepusing(imp1_ds_tot_HH imp1_is_tot_HH loans_HH nbmainloans_HH loanamount_HH)
 drop _merge
 
 drop if parent_key==""
