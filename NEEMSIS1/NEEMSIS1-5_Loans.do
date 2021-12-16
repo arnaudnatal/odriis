@@ -212,7 +212,7 @@ rename INDID INDID2016
 tostring INDID2016, replace
 
 *Settled
-drop if loansettled==1
+*drop if loansettled==1
 
 *Change date format of submissiondate
 preserve
@@ -237,6 +237,7 @@ gen loanduration=submissiondate-loandate
 replace loanduration=1 if loanduration<1
 
 *Type of loan
+/*
 gen informal=.
 gen semiformal=.
 gen formal=.
@@ -323,7 +324,7 @@ replace social=1 	if loan_id=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919{}1{}2" 
 replace social=1 	if loan_id=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919{}1{}3"  // 1 19 25 
 replace social=1 	if loan_id=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919{}1{}4"  // 1 19 25 
 replace house=1		if loan_id=="uuid:f313dd8b-1b26-4059-b40a-b101a0acfdcb{}1{}1"  // 22
-
+*/
 save"NEEMSIS1-loans_v5.dta", replace
 ****************************************
 * END
@@ -724,18 +725,22 @@ gen imp1_totalrepaid_year=imp_principal+imp1_interest
 gen imp1_debt_service=debt_service
 replace imp1_debt_service=imp1_totalrepaid_year if debt_service==.
 
-gen imp1_debt_service_wm=debt_service_wm
-replace imp1_debt_service_wm=imp1_totalrepaid_year if debt_service_wm==.
+replace imp1_debt_service=. if loansettled==1
+replace imp1_debt_service=. if loan_database=="MARRIAGE"
+
+*gen imp1_debt_service_wm=debt_service_wm
+*replace imp1_debt_service_wm=imp1_totalrepaid_year if debt_service_wm==.
 
 
 *Calcul service des interets pour tout
 gen imp1_interest_service=interest_service
 replace imp1_interest_service=imp1_interest if interest_service==.
 
-gen imp1_interest_service_wm=interest_service_wm
-replace imp1_interest_service_wm=imp1_interest if interest_service_wm==.
+*gen imp1_interest_service_wm=interest_service_wm
+*replace imp1_interest_service_wm=imp1_interest if interest_service_wm==.
 
-
+replace imp1_interest_service=. if loansettled==1
+replace imp1_interest_service=. if loan_database=="MARRIAGE"
 
 
 save"NEEMSIS1-loans_v10.dta", replace
@@ -755,22 +760,6 @@ save"NEEMSIS1-loans_v10.dta", replace
 * Other measure
 ****************************************
 use"NEEMSIS1-loans_v10.dta", clear
-
-*INDIV
-bysort HHID2016 INDID2016: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
-bysort HHID2016 INDID2016: egen imp1_is_tot_indiv=sum(imp1_interest_service)
-
-*bysort HHID2016 INDID2016: egen imp1_ds_tot_wm_indiv=sum(imp1_debt_service_wm)
-*bysort HHID2016 INDID2016: egen imp1_is_tot_wm_indiv=sum(imp1_interest_service_wm)
-
-
-*HH
-bysort HHID2016: egen imp1_ds_tot_HH=sum(imp1_debt_service)
-bysort HHID2016: egen imp1_is_tot_HH=sum(imp1_interest_service)
-
-*bysort HHID2016: egen imp1_ds_tot_wm_HH=sum(imp1_debt_service_wm)
-*bysort HHID2016: egen imp1_is_tot_wm_HH=sum(imp1_interest_service_wm)
-
 
 
 *Total loan
@@ -799,6 +788,28 @@ foreach x in loans loans_gm loanamount_g loanamount_gm loanamount {
 bysort HHID2016 INDID2016: egen `x'_indiv=sum(`x')
 bysort HHID2016: egen `x'_HH=sum(`x')
 }
+
+
+*drop if loansettled==1
+*drop if loan_database=="MARRIAGE"
+
+*INDIV
+bysort HHID2016 INDID2016: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
+bysort HHID2016 INDID2016: egen imp1_is_tot_indiv=sum(imp1_interest_service)
+
+*bysort HHID2016 INDID2016: egen imp1_ds_tot_wm_indiv=sum(imp1_debt_service_wm)
+*bysort HHID2016 INDID2016: egen imp1_is_tot_wm_indiv=sum(imp1_interest_service_wm)
+
+
+*HH
+bysort HHID2016: egen imp1_ds_tot_HH=sum(imp1_debt_service)
+bysort HHID2016: egen imp1_is_tot_HH=sum(imp1_interest_service)
+
+*bysort HHID2016: egen imp1_ds_tot_wm_HH=sum(imp1_debt_service_wm)
+*bysort HHID2016: egen imp1_is_tot_wm_HH=sum(imp1_interest_service_wm)
+
+
+
 
 /*
 *Ratepaid
