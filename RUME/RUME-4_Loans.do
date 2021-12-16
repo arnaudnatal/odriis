@@ -617,7 +617,7 @@ bysort HHID2010: egen `x'_HH=sum(`x')
 }
 
 rename loanamount_fin_HH loanamount_HH
-drop loans
+drop loans loanamount_fin
 
 *** Services
 bysort HHID2010: egen imp1_ds_tot_HH=sum(imp1_debt_service)
@@ -643,7 +643,7 @@ save"RUME-loans_v10.dta", replace
 
 
 
-/*
+
 
 
 
@@ -653,7 +653,12 @@ save"RUME-loans_v10.dta", replace
 ****************************************
 use"RUME-loans_v10.dta", clear
 
-
+*HH
+preserve
+duplicates drop HHID2010, force
+keep HHID2010 loans_HH imp1_ds_tot_HH imp1_is_tot_HH loanamount_HH
+save"RUME-loans_v10_HH.dta", replace
+restore
 
 
 *********** Merge
