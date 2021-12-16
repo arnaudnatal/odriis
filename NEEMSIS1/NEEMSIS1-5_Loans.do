@@ -203,18 +203,18 @@ save "NEEMSIS1-loans_v4.dta", replace
 
 
 
+
+
 ****************************************
-* CLEANING 2
+* CAT VAR
 ****************************************
 use"NEEMSIS1-loans_v4.dta", clear
 rename parent_key HHID2016
 rename INDID INDID2016
 tostring INDID2016, replace
 
-*Settled
-*drop if loansettled==1
 
-*Change date format of submissiondate
+*** Change date format of submissiondate
 preserve
 use "NEEMSIS1-HH_v7.dta", clear
 duplicates drop HHID_panel, force
@@ -232,102 +232,65 @@ rename submissiondate submissiondate_o
 gen submissiondate=dofc(submissiondate_o)
 format submissiondate %td
 
-*Loan duration
+
+
+*** Loan duration
 gen loanduration=submissiondate-loandate
 replace loanduration=1 if loanduration<1
 
-*Type of loan
-/*
-gen informal=.
-gen semiformal=.
-gen formal=.
+
+
+
+*** Type of loan
+gen lender_cat=.
+label define lender_cat 1"Informal" 2"Semi formal" 3"Formal"
+label values lender_cat lender_cat
+
 foreach i in 1 2 3 4 5 7 9 13{
-replace informal=1 if loanlender==`i'
+replace lender_cat=1 if loanlender==`i'
 }
 foreach i in 6 10{
-replace semiformal=1 if loanlender==`i'
+replace lender_cat=2 if loanlender==`i'
 }
 foreach i in 8 11 12 14{
-replace formal=1 if loanlender==`i'
+replace lender_cat=3 if loanlender==`i'
 }
+fre lender_cat
 
-*Purpose of loan
-replace loanreasongiven=loanreasongiven2 if loanreasongiven==. & loanreasongiven2!=.
 
-*label define loanreasongiven 1"Agriculture" 2"Family" 3"Health" 4"Repay previous loan" 5"House expenses" 6"Investment" 7"Ceremonies" 8"Marriage" 9"Education" 10"Relatives" 11"Death" 12"No reason" 77"Other"
+
+*** Purpose of loan
+drop loanreasongiven2 loanreasongiven3
+label define loanreasongiven 1"Agriculture" 2"Family" 3"Health" 4"Repay previous loan" 5"House expenses" 6"Investment" 7"Ceremonies" 8"Marriage" 9"Education" 10"Relatives" 11"Death" 12"No reason" 77"Other", replace
 label values loanreasongiven loanreasongiven
 tab loanreasongiven
 
-gen economic=.
-gen current=.
-gen humancap=.
-gen social=.
-gen house=.
+fre loanreasongiven
+gen reason_cat=.
+label define reason_cat 1"Economic" 2"Current" 3"Human capital" 4"Social" 5"Housing" 6"No reason" 77"Other"
+label values reason_cat reason_cat
 foreach i in 1 6{
-replace economic=1 if loanreasongiven==`i'
+replace reason_cat=1 if loanreasongiven==`i'
 }
 foreach i in 2 4 10{
-replace current=1 if loanreasongiven==`i'
+replace reason_cat=2 if loanreasongiven==`i'
 }
 foreach i in 3 9{
-replace humancap=1 if loanreasongiven==`i'
+replace reason_cat=3 if loanreasongiven==`i'
 }
 foreach i in 7 8 11{
-replace social=1 if loanreasongiven==`i'
+replace reason_cat=4 if loanreasongiven==`i'
 }
-foreach i in 5{
-replace house=1 if loanreasongiven==`i'
-}
+replace reason_cat=5 if loanreasongiven==5
+replace reason_cat=6 if loanreasongiven==12
+replace reason_cat=77 if loanreasongiven==77
 
-*Verif
-egen test=rowtotal(informal semiformal formal economic current humancap social house)
-tab test
-sort test
-drop test
+fre reason_cat
 
-*Purpose of loan 2
-gen incomegen=.
-gen noincomegen=.
-replace incomegen=1 if economic==1
-replace noincomegen=1 if current==1 | humancap==1 | social==1 | house==1
-
-*In amount
-foreach x in economic current humancap social house incomegen noincomegen informal formal semiformal{
-gen `x'_amount=loanamount if `x'==1
-}
-
-*Other
-egen loan_id=concat(HHID2016 INDID2016 loanid), p({})
-replace economic=1 	if loan_id=="uuid:0e0ee627-fa19-4c61-a9c4-cf84afbeecd4{}1{}1"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:c54ffe33-2754-40cf-8eed-8770af2aaecd{}3{}1"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:6bc67b6a-49ef-40ca-89f8-5442f14df1fb{}2{}3"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:bb1bf1a0-5f1c-4070-9d32-b93b07f45e97{}1{}1"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:a455df85-e5c8-4fc8-9ade-1ab4d04e9185{}4{}8"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:609efbfc-453a-48d6-a7c1-e7d35e57bfb8{}1{}6"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:f20291ba-73ca-46d4-902c-40bab02e68ec{}1{}3"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb{}1{}2"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:609efbfc-453a-48d6-a7c1-e7d35e57bfb8{}1{}7"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:0e0ee627-fa19-4c61-a9c4-cf84afbeecd4{}1{}2"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:6bc67b6a-49ef-40ca-89f8-5442f14df1fb{}2{}2"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace economic=1 	if loan_id=="uuid:72b2a3d4-01fc-4e07-b7c6-32a3c86ac31a{}3{}2"  // 2 3 4 5 7 14 15 16 20 23 27 28 
-replace current=1 	if loan_id=="uuid:75d61016-374e-48fa-b53c-2b36b3408b52{}2{}1"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:318a9c1c-e92a-4c81-bafe-eb1973e94702{}2{}1"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:1f120ace-1042-4eec-a398-851491a11b30{}1{}4"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:15a2311a-c10d-462d-8a50-29a67b91b739{}1{}1"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:525b2bab-4c97-4479-b8d5-562e3880c56b{}1{}2"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:0742a50d-0a67-46f7-ba6b-b65092b7761b{}4{}1"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:75d61016-374e-48fa-b53c-2b36b3408b52{}1{}1"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:63ad0082-190d-4924-b71c-e40ec4158604{}1{}1"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:c9e92ee0-e449-4d35-ad60-2a3196ba4de6{}1{}2"  // 6 8 9 11 13 17 18 24 26 30
-replace current=1 	if loan_id=="uuid:24b8133a-edef-46f2-8b3f-ec350c7b1632{}1{}1"  // 6 8 9 11 13 17 18 24 26 30
-replace social=1 	if loan_id=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919{}1{}2"  // 1 19 25
-replace social=1 	if loan_id=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919{}1{}3"  // 1 19 25 
-replace social=1 	if loan_id=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919{}1{}4"  // 1 19 25 
-replace house=1		if loan_id=="uuid:f313dd8b-1b26-4059-b40a-b101a0acfdcb{}1{}1"  // 22
-*/
 save"NEEMSIS1-loans_v5.dta", replace
 ****************************************
 * END
+
 
 
 
@@ -347,7 +310,9 @@ save"NEEMSIS1-loans_v5.dta", replace
 ****************************************
 use "NEEMSIS1-loans_v5.dta", clear
 fre loanlender
-*Recode loanlender pour que les intérêts soient plus justes
+
+
+***Recode loanlender pour que les intérêts soient plus justes
 gen lender2=.
 replace lender2=1 if loanlender==1
 replace lender2=2 if loanlender==2
@@ -593,11 +558,16 @@ save"NEEMSIS1-loans_v9.dta", replace
 
 
 
+
+
+
+
 ****************************************
 * MARRIAGE LOANS
 ****************************************
 use"NEEMSIS1-loans_v9.dta", clear
 
+/*
 tab loan_database
 tab loanreasongiven if loan_database=="FINANCE"
 /*
@@ -649,6 +619,7 @@ replace loanduration_wm=1400 if loan_database=="MARRIAGE"
 replace totalrepaid2_wm=loanamount_wm*0.21*0.95 if loan_database=="MARRIAGE"
 replace interestpaid2_wm=loanamount_wm*0.233*0.95 if loan_database=="MARRIAGE" & lender4==6
 replace interestpaid2_wm=loanamount_wm*0.139*0.95 if loan_database=="MARRIAGE" & lender4==8
+*/
 
 save"NEEMSIS1-loans_v9-bis.dta", replace
 *************************************
@@ -669,46 +640,40 @@ save"NEEMSIS1-loans_v9-bis.dta", replace
 * IMPUTATION
 ****************************************
 use"NEEMSIS1-loans_v9-bis.dta", clear
-*drop num
-*rename namenumber INDID
+
+
+********** Add income
 merge m:1 HHID2016 INDID2010 using "NEEMSIS1-HH_v7.dta", keepusing(annualincome_indiv annualincome_HH)
 drop if _merge==2
 drop _merge
 
-*Debt service pour ML
+
+
+*** Debt service pour ML
 gen debt_service=.
 replace debt_service=totalrepaid2 if loanduration<=365
 replace debt_service=totalrepaid2*365/loanduration if loanduration>365
 replace debt_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==0 & totalrepaid2==.
 
-gen debt_service_wm=.
-replace debt_service_wm=totalrepaid2_wm if loanduration_wm<=365
-replace debt_service_wm=totalrepaid2_wm*365/loanduration_wm if loanduration_wm>365
-replace debt_service_wm=0 if loanduration_wm==0 & totalrepaid2_wm==0 | loanduration_wm==0 & totalrepaid2_wm==.
 
 
-*Interest service pour ML
+*** Interest service pour ML
 gen interest_service=.
 replace interest_service=interestpaid2 if loanduration<=365
 replace interest_service=interestpaid2*365/loanduration if loanduration>365
 replace interest_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==0 & totalrepaid2==.
 replace interest_service=0 if dummyinterest==0 & interestpaid2==0 | dummyinterest==0 & interestpaid2==.
 
-gen interest_service_wm=.
-replace interest_service_wm=interestpaid2_wm if loanduration_wm<=365
-replace interest_service_wm=interestpaid2_wm*365/loanduration_wm if loanduration_wm>365
-replace interest_service_wm=0 if loanduration_wm==0 & totalrepaid2_wm==0 | loanduration_wm==0 & totalrepaid2_wm==.
-replace interest_service_wm=0 if dummyinterest==0 & interestpaid2_wm==0 | dummyinterest==0 & interestpaid2_wm==.
 
 
-
-*Imputation du principal
+*** Imputation du principal
 gen imp_principal=.
 replace imp_principal=loanamount-loanbalance if loanduration<=365 & debt_service==.
 replace imp_principal=(loanamount-loanbalance)*365/loanduration if loanduration>365 & debt_service==.
 
 
-*Imputation interest for moneylenders and microcredit
+
+*** Imputation interest for moneylenders and microcredit
 gen imp1_interest=.
 replace imp1_interest=0.233*loanamount if lender4==6 & loanduration<=365 & debt_service==.
 replace imp1_interest=0.233*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
@@ -717,30 +682,31 @@ replace imp1_interest=0.139*loanamount*365/loanduration if lender4==8 & loandura
 replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
 
 
-*Imputation total
+
+
+*** Imputation total
 gen imp1_totalrepaid_year=imp_principal+imp1_interest
 
 
-*Calcul service de la dette pour tout
+
+
+*** Calcul service de la dette pour tout
 gen imp1_debt_service=debt_service
 replace imp1_debt_service=imp1_totalrepaid_year if debt_service==.
 
 replace imp1_debt_service=. if loansettled==1
 replace imp1_debt_service=. if loan_database=="MARRIAGE"
 
-*gen imp1_debt_service_wm=debt_service_wm
-*replace imp1_debt_service_wm=imp1_totalrepaid_year if debt_service_wm==.
 
 
-*Calcul service des interets pour tout
+*** Calcul service des interets pour tout
 gen imp1_interest_service=interest_service
 replace imp1_interest_service=imp1_interest if interest_service==.
 
-*gen imp1_interest_service_wm=interest_service_wm
-*replace imp1_interest_service_wm=imp1_interest if interest_service_wm==.
-
 replace imp1_interest_service=. if loansettled==1
 replace imp1_interest_service=. if loan_database=="MARRIAGE"
+
+drop totalrepaid2 interestpaid2 principalpaid2
 
 
 save"NEEMSIS1-loans_v10.dta", replace
@@ -757,145 +723,62 @@ save"NEEMSIS1-loans_v10.dta", replace
 
 
 ****************************************
-* Other measure
+* Indiv level
 ****************************************
 use"NEEMSIS1-loans_v10.dta", clear
 
 
-*Total loan
-gen loans=1 if loan_database=="FINANCE"
+*** Nber of loan
 gen loans_gm=1
+ 
+gen loans=0
+replace loans=1 if loan_database=="FINANCE"
 
-*Total amount
-ta loansettled
-ta loan_database
-ta loanamount,m
-ta loanamount_wm,m
+gen loans_g=1
+replace loans_g=0 if loan_database=="MARRIAGE"
 
-rename loanamount_wm loanamount_gm
-rename loanamount loanamount_g
+ta loans_gm
+ta loans_g
+ta loans
 
-clonevar loanamount=loanamount_gm
-replace loanamount=. if loan_database=="MARRIAGE"
-replace loanamount=. if loan_database=="GOLD"
+*** Loan amount
+clonevar loanamount_gm=loanamount
+replace loanamount_gm=. if loansettled==1
 
-ta loanamount, m
+clonevar loanamount_g=loanamount
+replace loanamount_g=. if loan_database=="MARRIAGE"
+replace loanamount_g=. if loansettled==1
+
+clonevar loanamount_fin=loanamount
+replace loanamount_fin=. if loan_database=="MARRIAGE"
+replace loanamount_fin=. if loan_database=="GOLD"
+replace loanamount_fin=. if loansettled==1
+
+ta loanamount_fin loan_database, m
+ta loanamount_g loan_database, m
+ta loanamount_gm loan_database, m
 
 
-
-*Details at higher scale
-foreach x in loans loans_gm loanamount_g loanamount_gm loanamount {
+*** Indiv + HH level
+foreach x in loans loans_gm loans_g loanamount_g loanamount_gm loanamount_fin {
 bysort HHID2016 INDID2016: egen `x'_indiv=sum(`x')
 bysort HHID2016: egen `x'_HH=sum(`x')
 }
 
+rename loanamount_fin_indiv loanamount_indiv
+rename loanamount_fin_HH loanamount_HH
 
-*drop if loansettled==1
-*drop if loan_database=="MARRIAGE"
+drop loanamount_fin loans_gm loanamount_gm loans_gm loans loans_g loanamount_g
 
-*INDIV
+*** Services
+ta imp1_debt_service loan_database, m
+
 bysort HHID2016 INDID2016: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
 bysort HHID2016 INDID2016: egen imp1_is_tot_indiv=sum(imp1_interest_service)
 
-*bysort HHID2016 INDID2016: egen imp1_ds_tot_wm_indiv=sum(imp1_debt_service_wm)
-*bysort HHID2016 INDID2016: egen imp1_is_tot_wm_indiv=sum(imp1_interest_service_wm)
-
-
-*HH
 bysort HHID2016: egen imp1_ds_tot_HH=sum(imp1_debt_service)
 bysort HHID2016: egen imp1_is_tot_HH=sum(imp1_interest_service)
 
-*bysort HHID2016: egen imp1_ds_tot_wm_HH=sum(imp1_debt_service_wm)
-*bysort HHID2016: egen imp1_is_tot_wm_HH=sum(imp1_interest_service_wm)
-
-
-
-
-/*
-*Ratepaid
-bysort HHID2016 INDID2016: egen mean_yratepaid_indiv=mean(yratepaid)
-bysort HHID2016 INDID2016: egen mean_monthlyinterestrate_indiv=mean(monthlyinterestrate)
-
-bysort HHID2016: egen mean_yratepaid_HH=mean(yratepaid)
-bysort HHID2016: egen mean_monthlyinterestrate_HH=mean(monthlyinterestrate)
-
-
-*Otherlenderservices
-fre otherlenderservices
-forvalues i=1(1)5{
-gen otherlenderservices_`i'=0
-}
-forvalues i=1(1)5{
-replace otherlenderservices_`i'=1 if strpos(otherlenderservices, "`i'")
-bysort HHID2016 INDID2016: egen sum_otherlenderservices_`i'=sum(otherlenderservices_`i')
-}
-/*
-1 political support
-2 financial support
-3 guarantor
-4 general informant
-5 none
-*/
-
-*Borrowerservice
-fre borrowerservices
-forvalues i=1(1)4{
-gen borrowerservices_`i'=0
-}
-forvalues i=1(1)4{
-replace borrowerservices_`i'=1 if strpos(borrowerservices, "`i'")
-bysort HHID2016 INDID2016: egen sum_borrowerservices_`i'=sum(borrowerservices_`i')
-}
-/*
-1 free service
-2 work for less wage
-3 provide support whenever he need
-4 none
-*/
-fre sum_borrowerservices_1 sum_borrowerservices_2 sum_borrowerservices_3 sum_borrowerservices_4
-
-*Plantorepay
-fre plantorepay
-forvalues i=1(1)6{
-gen plantorepay_`i'=0
-}
-forvalues i=1(1)6{
-replace plantorepay_`i'=1 if strpos(plantorepay, "`i'")
-bysort HHID2016 INDID2016: egen sum_plantorepay_`i'=sum(plantorepay_`i')
-}
-/*
-1 joining chit fund
-2 someone from the HH working more
-3 someone from the HH migrating
-4 selling assets
-5 using normal income from labour
-6 borrowing elsewhere
-*/
-fre sum_plantorepay_1 sum_plantorepay_2 sum_plantorepay_3 sum_plantorepay_4 sum_plantorepay_5 sum_plantorepay_6
-
-*Settleloanstrategy
-fre settleloanstrategy
-forvalues i=1(1)10{
-gen settleloanstrategy_`i'=0
-}
-forvalues i=1(1)10{
-replace settleloanstrategy_`i'=1 if strpos(settleloanstrategy, "`i'")
-bysort HHID2016 INDID2016: egen sum_settleloanstrategy_`i'=sum(settleloanstrategy_`i')
-}
-/*
-1 using normal income from labour
-2 using income from scheme
-3 borrowing elsewhere
-4 selling something which was not planned
-5 lease land
-6 consumption reduction
-7 take an additional job
-8 work more
-9 relative or friend support
-10 selling the harvest in advance
-*/
-fre sum_settleloanstrategy_1 sum_settleloanstrategy_2 sum_settleloanstrategy_3 sum_settleloanstrategy_4 sum_settleloanstrategy_5 sum_settleloanstrategy_6 sum_settleloanstrategy_7 sum_settleloanstrategy_8 sum_settleloanstrategy_9 sum_settleloanstrategy_10
-*/
 
 save"NEEMSIS1-loans_v11.dta", replace
 *************************************
@@ -923,20 +806,17 @@ use"NEEMSIS1-loans_v11.dta", clear
 
 *Indiv
 preserve
-bysort HHID2016 INDID2016: gen n=_n
-keep if n==1
-keep HHID2016 INDID2016 imp1_ds_tot_indiv imp1_is_tot_indiv loans_indiv loans_gm_indiv loanamount_g_indiv loanamount_gm_indiv loanamount_indiv
+duplicates drop HHID2016 INDID2016, force
+keep HHID2016 INDID2016 loans_indiv loans_g_indiv loans_gm_indiv loanamount_gm_indiv  loanamount_g_indiv loanamount_indiv imp1_ds_tot_indiv imp1_is_tot_indiv
 save"NEEMSIS1-loans_v11_indiv.dta", replace
 restore
 
 *HH
 preserve
-bysort HHID2016: gen n=_n
-keep if n==1
-keep HHID2016 imp1_ds_tot_HH imp1_is_tot_HH loans_HH loanamount_g_HH loanamount_gm_HH loanamount_HH loans_gm_HH
+duplicates drop HHID2016, force
+keep HHID2016 loans_HH loans_gm_HH loans_g_HH loanamount_gm_HH loanamount_g_HH imp1_ds_tot_HH imp1_is_tot_HH loanamount_HH
 save"NEEMSIS1-loans_v11_HH.dta", replace
 restore
-
 
 
 *********** Merge
@@ -951,6 +831,5 @@ merge m:1 HHID2016 using "NEEMSIS1-loans_v11_HH.dta"
 drop _merge
 
 save"NEEMSIS1-HH_v8.dta", replace
-*save"C:\Users\Arnaud\Dropbox\RUME-NEEMSIS\NEEMSIS1\NEEMSIS1-HH_v8.dta", replace
 *************************************
 * END

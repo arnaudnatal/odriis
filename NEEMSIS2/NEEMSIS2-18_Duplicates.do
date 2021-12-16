@@ -512,7 +512,6 @@ forvalues i=1/`obs' {
 	local d = dirname
 	local f = filename
 	use "`d'\\`f'", clear
-
 	keep if ///
 	parent_key=="uuid:f2ce512f-1640-4719-90e0-921980fc6514" || ///
 	parent_key=="uuid:1d1d2df6-0b97-4490-b2e1-1a218d665abd" || ///

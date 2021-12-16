@@ -175,52 +175,51 @@ format submissiondate %d
 gen loanduration=submissiondate-loandate
 replace loanduration=1 if loanduration<1
 
-*Type of loan
-gen informal=.
-gen semiformal=.
-gen formal=.
+*** Type of loan
+fre loanlender
+gen lender_cat=.
+label define lender_cat 1"Informal" 2"Semi formal" 3"Formal"
+label values lender_cat lender_cat
+
 foreach i in 1 2 3 4 5 7 9 13{
-replace informal=1 if loanlender==`i'
+replace lender_cat=1 if loanlender==`i'
 }
-foreach i in 6 10{
-replace semiformal=1 if loanlender==`i'
+foreach i in 6 10 15{
+replace lender_cat=2 if loanlender==`i'
 }
 foreach i in 8 11 12 14{
-replace formal=1 if loanlender==`i'
+replace lender_cat=3 if loanlender==`i'
 }
+fre lender_cat
 
-*Purposes
-gen economic=.
-gen current=.
-gen humancap=.
-gen social=.
-gen house=.
+
+
+*** Purpose of loan
+label define loanreasongiven 1"Agriculture" 2"Family" 3"Health" 4"Repay previous loan" 5"House expenses" 6"Investment" 7"Ceremonies" 8"Marriage" 9"Education" 10"Relatives" 11"Death" 12"No reason" 77"Other", replace
+label values loanreasongiven loanreasongiven
+tab loanreasongiven
+
+fre loanreasongiven
+gen reason_cat=.
+label define reason_cat 1"Economic" 2"Current" 3"Human capital" 4"Social" 5"Housing" 6"No reason" 77"Other"
+label values reason_cat reason_cat
 foreach i in 1 6{
-replace economic=1 if loanreasongiven==`i'
+replace reason_cat=1 if loanreasongiven==`i'
 }
 foreach i in 2 4 10{
-replace current=1 if loanreasongiven==`i'
+replace reason_cat=2 if loanreasongiven==`i'
 }
 foreach i in 3 9{
-replace humancap=1 if loanreasongiven==`i'
+replace reason_cat=3 if loanreasongiven==`i'
 }
 foreach i in 7 8 11{
-replace social=1 if loanreasongiven==`i'
+replace reason_cat=4 if loanreasongiven==`i'
 }
-foreach i in 5{
-replace house=1 if loanreasongiven==`i'
-}
+replace reason_cat=5 if loanreasongiven==5
+replace reason_cat=6 if loanreasongiven==12
+replace reason_cat=77 if loanreasongiven==77
 
-*Purpose of loan 2
-gen incomegen=.
-gen noincomegen=.
-replace incomegen=1 if economic==1
-replace noincomegen=1 if current==1 | humancap==1 | social==1 | house==1
-
-*In amount
-foreach x in economic current humancap social house incomegen noincomegen informal formal semiformal{
-gen `x'_amount=loanamount if `x'==1
-}
+fre reason_cat
 
 save"RUME-loans_v4.dta", replace
 ****************************************
@@ -509,6 +508,7 @@ save"RUME-loans_v8.dta", replace
 ****************************************
 use"RUME-loans_v8.dta", clear
 
+*** Add income
 preserve
 use"RUME-HH_v7.dta", clear
 duplicates drop HHID2010, force
@@ -520,25 +520,32 @@ merge m:1 HHID using "RUME-HH_annualincome.dta", keepusing(annualincome_HH)
 drop if _merge==2
 drop _merge
 
-*Debt service pour ML
+*** Debt service pour ML
 gen debt_service=.
 replace debt_service=totalrepaid2 if loanduration<=365
 replace debt_service=totalrepaid2*365/loanduration if loanduration>365
 replace debt_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==0 & totalrepaid2==.
 
-*Interest service pour ML
+
+
+*** Interest service pour ML
 gen interest_service=.
 replace interest_service=interestpaid2 if loanduration<=365
 replace interest_service=interestpaid2*365/loanduration if loanduration>365
 replace interest_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==0 & totalrepaid2==.
 replace interest_service=0 if dummyinterest==0 & interestpaid2==0 | dummyinterest==0 & interestpaid2==.
 
-*Imputation du principal
+
+
+*** Imputation du principal
 gen imp_principal=.
 replace imp_principal=loanamount-loanbalance if loanduration<=365 & debt_service==.
 replace imp_principal=(loanamount-loanbalance)*365/loanduration if loanduration>365 & debt_service==.
 
-*Imputation interest for moneylenders and microcredit
+
+
+
+*** Imputation interest for moneylenders and microcredit
 gen imp1_interest=.
 replace imp1_interest=0.299*loanamount if lender4==6 & loanduration<=365 & debt_service==.
 replace imp1_interest=0.299*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
@@ -546,60 +553,25 @@ replace imp1_interest=0.149*loanamount if lender4==8 & loanduration<=365 & debt_
 replace imp1_interest=0.149*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
 replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
 
-*Imputation total
+
+
+
+*** Imputation total
 gen imp1_totalrepaid_year=imp_principal+imp1_interest
 
-*Calcul service de la dette pour tout
+
+
+*** Calcul service de la dette pour tout
 gen imp1_debt_service=debt_service
 replace imp1_debt_service=imp1_totalrepaid_year if debt_service==.
+replace imp1_debt_service=. if loansettled==1
 
-*Calcul service des interets pour tout
+
+*** Calcul service des interets pour tout
 gen imp1_interest_service=interest_service
 replace imp1_interest_service=imp1_interest if interest_service==.
+replace imp1_interest_service=. if loansettled==1
 
-
-*HH
-bysort HHID2010: egen imp1_ds_tot_HH=sum(imp1_debt_service)
-bysort HHID2010: egen imp1_is_tot_HH=sum(imp1_interest_service)
-
-
-*HH
-preserve
-gen DSR_HH=imp1_ds_tot_HH*100/annualincome_HH
-gen ISR_HH=imp1_is_tot_HH*100/annualincome_HH
-bysort HHID2010: gen n=_n
-keep if n==1
-drop n
-tabstat DSR_HH ISR_HH, stat(n mean sd q min max) long
-restore
-/*
-Only non settled
-   stats |    DSR_HH    ISR_HH
----------+--------------------
-       N |       405       405
-    mean |  39.05001  12.43955
-      sd |  45.52468  17.46401
-     p25 |  10.99848  2.944444
-     p50 |  24.72566  8.427083
-     p75 |  55.71865  15.84043
-     min |         0         0
-     max |  404.4052  238.3235
-------------------------------
-
-With settled
-   stats |    DSR_HH    ISR_HH
----------+--------------------
-       N |       405       405
-    mean |  54.56406  13.86754
-      sd |  84.65473  19.91545
-     p25 |   18.8913  3.976024
-     p50 |  35.46809  9.272045
-     p75 |  69.92503  16.70735
-     min |         0         0
-     max |  1433.384  238.3235
-------------------------------
-
-*/
 
 save"RUME-loans_v9.dta", replace
 *************************************
@@ -622,28 +594,45 @@ save"RUME-loans_v9.dta", replace
 ****************************************
 use"RUME-loans_v9.dta", clear
 
-rename HHID2010 HHID
 
-*Focusing on marriage
-gen marriageloan=1 if loanreasongiven==8
-gen marriageloanamount=loanamount if marriageloan==1
+*Nb of ML/indiv/HH
+gen dummymainloans=0
+replace dummymainloans=1 if lendername!=""
+tab dummymainloans
 
 
-*Total loan
+*** Nber of loan
 gen loans=1
+replace loans=0 if loansettled==1
+ta loans
 
 
-*Details at higher scale
-foreach x in informal semiformal formal economic current humancap social house incomegen noincomegen economic_amount current_amount humancap_amount social_amount house_amount incomegen_amount noincomegen_amount informal_amount formal_amount semiformal_amount marriageloan marriageloanamount  dummyproblemtorepay dummyinterest loans loanamount loanbalance  {
-bysort HHID: egen `x'_HH=sum(`x')
+*** Amount
+clonevar loanamount_fin=loanamount
+replace loanamount_fin=. if loansettled==1
+
+*** Indiv + HH level
+foreach x in loans loanamount_fin {
+bysort HHID2010: egen `x'_HH=sum(`x')
 }
 
-*Ratepaid
-bysort HHID: egen mean_yratepaid_HH=mean(yratepaid)
-bysort HHID: egen mean_monthlyinterestrate_HH=mean(monthlyinterestrate)
+rename loanamount_fin_HH loanamount_HH
+drop loans
+
+*** Services
+bysort HHID2010: egen imp1_ds_tot_HH=sum(imp1_debt_service)
+bysort HHID2010: egen imp1_is_tot_HH=sum(imp1_interest_service)
 
 
-rename HHID HHID2010
+
+********** Clean
+drop totalrepaid2 interestpaid2 principalpaid2
+
+global arnaud loanduration lender_cat reason_cat lender2 lender3 lender4 yratepaid monthlyinterestrate debt_service interest_service imp_principal imp1_interest imp1_totalrepaid_year imp1_debt_service imp1_interest_service dummymainloans loans_HH loanamount_HH imp1_ds_tot_HH imp1_is_tot_HH
+
+foreach x in $arnaud {
+label var `x' "Construction -- Arnaud"
+}
 
 save"RUME-loans_v10.dta", replace
 *************************************
@@ -654,8 +643,7 @@ save"RUME-loans_v10.dta", replace
 
 
 
-
-
+/*
 
 
 
@@ -666,13 +654,7 @@ save"RUME-loans_v10.dta", replace
 use"RUME-loans_v10.dta", clear
 
 
-*HH
-preserve
-bysort HHID2010: gen n=_n
-keep if n==1
-keep HHID2010 imp1_ds_tot_HH imp1_is_tot_HH informal_HH semiformal_HH formal_HH economic_HH current_HH humancap_HH social_HH house_HH incomegen_HH noincomegen_HH economic_amount_HH current_amount_HH humancap_amount_HH social_amount_HH house_amount_HH incomegen_amount_HH noincomegen_amount_HH informal_amount_HH formal_amount_HH semiformal_amount_HH marriageloan_HH marriageloanamount_HH dummyproblemtorepay_HH dummyinterest_HH loans_HH loanamount_HH loanbalance_HH mean_yratepaid_HH mean_monthlyinterestrate_HH
-save"RUME-loans_v10_HH.dta", replace
-restore
+
 
 *********** Merge
 use"RUME-HH_v7.dta", clear
