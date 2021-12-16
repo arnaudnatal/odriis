@@ -787,7 +787,11 @@ replace lender4=10 if strpos(lendername, "thandal")
  replace lender4=10 if strpos(lendername, "Thandal")
 label values lender4 lender3
 label var lender4 "version def (lendername)"
+
 fre lender4
+clonevar lender4_rec=lender4
+replace lender4_rec=4 if loan_database=="GOLD"
+ta loanlender_rec lender4_rec
 
 save "NEEMSIS2-loans_v8.dta", replace
 ****************************************
