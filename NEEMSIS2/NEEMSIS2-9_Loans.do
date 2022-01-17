@@ -20,7 +20,7 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 global git = "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
 
 cd"$directory"
@@ -161,8 +161,6 @@ drop if _merge==2
 rename _merge merge_mainloans
 *rename borrowerid INDID
 fre loansettled  // 428
-*drop if loansettled==1
-*drop if loanamount==.
 tab loanbalance, m  // 428 ok
 gen loan_database="FINANCE"
 
@@ -228,8 +226,6 @@ replace loanreasongiven=2 if loanotherreasongiven=="Two wheeler loan"
 replace loanreasongiven=6 if loanotherreasongiven=="Van perches"
 tab loanreasongiven, m
 sort loanreasongiven
-*label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
-*label values loanlender lenders
 tab loanlender
 
 order INDID_panel , first
@@ -261,20 +257,19 @@ foreach x in snmoneylenderdummyfam snmoneylenderfriend snmoneylenderwkp snmoneyl
 destring `x', replace
 }
 
-*Duplicates 
-	***** Duplicates
-	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"  // householdid==36 & name1=="Natesan"
-	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"  // householdid==67 & name1=="Shankar"
-	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"  // householdid==124 & name1=="Subramani"
-	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"  // householdid==246 & name1=="Sornambal"
-	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"  // householdid==343 & name1=="Ramamoorthi"
-	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"  // householdid==348 & name1=="Govindan"
-	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"  // householdid==361 & name1=="Mallika"
-	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"  // householdid==391 & name1=="Balaji"
-	*
-	drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"  // householdid==532 & name1=="Shakthivel" & name2=="Revathy"
-	drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66"  // householdid==534 & name1=="Karunanidhi"
-	drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"  // householdid==547 & name1=="Surya" (duplicates with "uuid:ae72a34f-f968-45f4-acfa-91f571f54ea8")
+* Duplicates
+drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f" 
+drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+*
+drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"
+drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66" 
+drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"
 
 save "NEEMSIS2-loans_v3.dta", replace
 ****************************************
@@ -300,21 +295,21 @@ split setofmarriagefinance, p(/)
 drop setofmarriagefinance2 setofmarriagefinance3
 rename setofmarriagefinance1 parent_key
 
-*Duplicates 
-	***** Duplicates
-	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"  // householdid==36 & name1=="Natesan"
-	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"  // householdid==67 & name1=="Shankar"
-	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"  // householdid==124 & name1=="Subramani"
-	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"  // householdid==246 & name1=="Sornambal"
-	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"  // householdid==343 & name1=="Ramamoorthi"
-	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"  // householdid==348 & name1=="Govindan"
-	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"  // householdid==361 & name1=="Mallika"
-	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"  // householdid==391 & name1=="Balaji"
-	*
-	drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"  // householdid==532 & name1=="Shakthivel" & name2=="Revathy"
-	drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66"  // householdid==534 & name1=="Karunanidhi"
-	drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"  // householdid==547 & name1=="Surya" (duplicates with "uuid:ae72a34f-f968-45f4-acfa-91f571f54ea8")
+* Duplicates
+drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f" 
+drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"
+drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"
+drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"
+*
+drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"
+drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66" 
+drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"
 
+* Merge
 replace setofmarriagefinance=substr(setofmarriagefinance,1,strlen(setofmarriagefinance)-3)
 
 merge m:m setofmarriagefinance using "NEEMSIS2-HH_v16.dta", keepusing(HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis)
@@ -344,26 +339,13 @@ rename parent_key setofmarriagegroup
 split key, p(/)
 rename key1 parent_key
 drop key2 key3
-*merge m:m setofmarriagegroup using "NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta", keepusing(marriedid marriedname)
-*keep if _merge==3
-*drop _merge
-*tab loanbalance, m  // 12 ok
-*rename marriedname namefromearlier
-*destring marriedid, replace
+
 destring loanid, replace
-*rename marriedid INDID
-
-
-
-*split setofmarriagegroup, p(/)
-*drop setofmarriagegroup2
-*rename setofmarriagegroup1 parent_key
 
 append using "NEEMSIS2-loans_v3.dta"
 tab loanbalance, m  // 12 + 428 = 440 ok
 tab loanlender
-*label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
-*label values loanlender lenders
+
 tab loanlender, m
 
 save"NEEMSIS2-loans_v4.dta", replace
@@ -383,25 +365,21 @@ save"NEEMSIS2-loans_v4.dta", replace
 ****************************************
 * GOLD
 ****************************************
-*6. Gold
 use"NEEMSIS_APPEND-hhquestionnaire-financialpracticesgroup-goldgroup-gold.dta", clear
-gen loan_database="GOLD"
-keep if loanamount!=.
+keep if goldquantity!=.
 
 *Duplicates 
-	***** Duplicates
-	drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"  // householdid==36 & name1=="Natesan"
-	drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"  // householdid==67 & name1=="Shankar"
-	drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"  // householdid==124 & name1=="Subramani"
-	drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f"  // householdid==246 & name1=="Sornambal"
-	drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"  // householdid==343 & name1=="Ramamoorthi"
-	drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"  // householdid==348 & name1=="Govindan"
-	drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"  // householdid==361 & name1=="Mallika"
-	drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"  // householdid==391 & name1=="Balaji"
-	*
-	drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b"  // householdid==532 & name1=="Shakthivel" & name2=="Revathy"
-	drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66"  // householdid==534 & name1=="Karunanidhi"
-	drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"  // householdid==547 & name1=="Surya" (duplicates with "uuid:ae72a34f-f968-45f4-acfa-91f571f54ea8")
+drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d"
+drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433"
+drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f" 
+drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3" 
+drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3" 
+drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231" 
+drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b" 
+drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66"
+drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc" 
 
 
 merge 1:m setofgold using "NEEMSIS2-HH_v16.dta", keepusing(HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis)
@@ -412,8 +390,131 @@ drop _merge
 order HHID_panel INDID_panel, first
 sort HHID_panel INDID_panel
 
+
+********** Cleaning Elena
+
+g goldquantitypledge2=goldquantitypledge
+g goldamountpledge2=goldamountpledge
+g loanamountgold2=loanamountgold
+g goldquantity2=goldquantity
+
+*** check consistency total gold / pledged gold
+g	unpledged_goldquantity=goldquantity - goldquantitypledge
+ta unpledged
+ta goldquantity goldquantitypledge if unpledged_g<0 
+ta goldamountpledge if goldquantitypledge==140000
+* 1 cas ou quantité et montant gagés ont été inversés (l inversion est cohérente avec loanamountgold)
+replace goldquantitypledge2=48 if HHID_panel=="KOR48" & INDID_panel=="Ind_2"
+replace goldamountpledge2=140000 if HHID_panel=="KOR48" & INDID_panel=="Ind_2"
+
+g gold_rate=goldamountpledge2/goldquantitypledge2
+ta gold_rate
+su gold_rate, d
+
+list HHID_panel INDID_panel goldquantity  goldquantitypledge2 goldamountpledge2  loanamountgold loanbalance gold_rate if unpledged_g<0 
+*la solution la plus "conservative" consiste à considérer que le goldquantity declaré correspond à unpledged gold au lieu de totalgold (sinon il faut soit multiplier par 8 en considérant que c'est des sovereign, bof)
+replace goldquantity2=goldquantity+goldquantitypledge2
+
+
+*** check loanamountgold 
+ta loanamountgold if goldamountpledge!=., mis
+//66 peut etre soit une quantité,  soit une NR => vote pour le NR
+replace loanamountgold2=goldamountpledge2 if HHID_panel=="KAR59" & INDID_panel=="Ind_2" //celui la est marqué missing dans le fichier all loans
+//le 8 ici correspond probablement à la quantité
+replace loanamountgold2=goldamountpledge2 if HHID_panel=="KOR19" & INDID_panel=="Ind_2"
+//99 n est probablement pas une quantité;  on remplace par goldamountpledged
+replace loanamountgold2=goldamountpledge2 if loanamountgold==99
+
+// 24 loanamount ?
+*br if HHID_panel=="ELA23" & INDID_panel=="Ind_2"
+replace loanamountgold=goldamountpledge if HHID_panel=="ELA23" & INDID_panel=="Ind_2"
+replace loanamountgold2=loanamountgold if HHID_panel=="ELA23" & INDID_panel=="Ind_2"
+
+// 48
+*br if HHID_panel=="SEM23" & INDID_panel=="Ind_2"
+replace loanamountgold=goldamountpledge if HHID_panel=="SEM23" & INDID_panel=="Ind_2"
+replace loanamountgold2=loanamountgold if HHID_panel=="SEM23" & INDID_panel=="Ind_2"
+
+*** check consistency goldamountpledge goldquantitypled
+ta goldamountpledge2
+ta goldamountpledge2 goldquantitypledge2 if goldamountpledge2<2000
+*on considere que répondu en lakh (on a bien des loanamountgold en milliers)
+replace goldamountpledge2=8000 if goldamountpledge==8
+replace goldamountpledge2=16000 if goldamountpledge==16
+replace goldamountpledge2=40000 if goldamountpledge==40
+* pour ceux qui ne renseignent pas goldamountpledge: soit on impute sur la base d'une valeur pour l or (difficile vu la variabilité), soit on attribue la value du loanamountgold => c est ce qu on fait ici
+replace goldamountpledge2=loanamountgold if goldamountpledge==0 & loanamountgold!=.
+
+
+*** check problems of 0
+g temp=goldamountpledge2/loanamountgold
+g test=0
+replace test=1 if loanamountgold!=. & goldamountpledge2!=. & (goldamountpledge2==10*loanamountgold | loanamountgold==10*goldamountpledge2)
+
+list HHID_panel INDID_panel goldquantity  goldquantitypledge2 goldamountpledge2  loanamountgold gold_rate temp if test==1
+*vu le goldrate, on peut considérer que goldamountpl a un 0 en trop
+replace goldamountpledge2=goldamountpledge2/10 if HHID_panel=="GOV8"  & INDID_panel=="Ind_2" | HHID_panel=="KUV34" & INDID_panel=="Ind_2" | HHID_panel=="ORA47" & INDID_panel=="Ind_2"
+* et vice versa, 0 en trop pour loanamount
+replace loanamountgold2=loanamountgold2/10 if HHID_panel=="KOR51"  & INDID_panel=="Ind_4" | HHID_panel=="ELA47"  & INDID_panel=="Ind_2"
+
+drop temp test
+
+
+
+********** Cleaning Arnaud
+
+*** Balance à corriger
+fre loansettledgold
+gen loanbalancegold2=.
+replace loanbalancegold2=0 if loansettledgold==1
+replace loanbalancegold2=loanamountgold2 if loansettledgold==0
+
+*** Forme
 rename goldownername namefromearlier 
 rename goldnumber INDID
+
+drop goldreasonpledge_1 goldreasonpledge_2 goldreasonpledge_3 goldreasonpledge_4 goldreasonpledge_5 goldreasonpledge_6 goldreasonpledge_7 goldreasonpledge_8 goldreasonpledge_9 goldreasonpledge_10 goldreasonpledge_11 goldreasonpledge_12 goldreasonpledge_77
+
+*** Reste of amount pledge
+gen diff_pledge=goldamountpledge2-loanamountgold2
+gen pb=0
+replace pb=1 if diff_pledge<0
+drop diff_pledge
+ta pb
+/*
+pb bc loanamount>pledge
+*/
+
+*** Inverser amount pledge et loanamount si loanamount>pledge
+gen loanamountgold3=loanamountgold2
+replace loanamountgold3=goldamountpledge2 if pb==1
+
+gen goldamountpledge3=goldamountpledge2
+replace goldamountpledge3=loanamountgold2 if pb==1
+
+gen diff_pledge2=goldamountpledge2-loanamountgold2
+gen diff_pledge3=goldamountpledge3-loanamountgold3
+ta diff_pledge2
+ta diff_pledge3
+drop diff_pledge2 diff_pledge3
+
+
+*** New loan with diff loan pledge
+gen loanamountgoldrest=goldamountpledge3-loanamountgold3
+
+*** Order
+sort HHID_panel INDID_panel
+
+save"NEEMSIS2-gold.dta", replace
+
+
+
+********** Prepa pour base all loans
+use"NEEMSIS2-gold.dta", clear
+
+gen loan_database="GOLD"
+drop if loanamountgold==.
+
 rename loanamountgold loanamount
 rename loanlendergold loanlender
 rename loandategold loandate
@@ -422,16 +523,17 @@ rename loanbalancegold loanbalance
 rename loansettledgold loansettled
 rename lenderfromgold lenderfrom
 rename lenderscastegold lenderscaste
+
 destring INDID, replace
-fre loansettled  // 18 
-*drop if loansettled==1
+fre loansettled 
+
 tab loanbalance, m  
 tab loanbalance loansettled, m  //  314 loanbalance .
 tab loanreasongiven_MCQ
 split loanreasongiven_MCQ
 destring loanreasongiven_MCQ1, replace
 rename loanreasongiven_MCQ1 loanreasongiven
-drop loanreasongiven_MCQ2 loanreasongiven_MCQ3 loanreasongiven_MCQ4 loanreasongiven_MCQ5 loanreasongiven_MCQ6 loanreasongiven_MCQ7 loanreasongiven_MCQ8
+drop loanreasongiven_MCQ2 loanreasongiven_MCQ3 loanreasongiven_MCQ4 loanreasongiven_MCQ5 loanreasongiven_MCQ6 loanreasongiven_MCQ7 loanreasongiven_MCQ8 loanreasongiven_MCQ9 loanreasongiven_MCQ10
 replace loanreasongiven=2 if loanreasongiven_MCQ=="1 2 3 4"
 replace loanreasongiven=2 if loanreasongiven_MCQ=="1 2 3 4 5 6 9 10"
 replace loanreasongiven=4 if loanreasongiven_MCQ=="1 2 4"
@@ -487,18 +589,73 @@ replace loanreasongiven=9 if loanreasongiven_MCQ=="9 11"
 replace loanreasongiven=9 if loanreasongiven_MCQ=="9 77"
 tab loanreasongiven, m
 tab loanlender, m
-*label define lenders 1"Well-know people" 2"Relatives" 3"Friend" 4"Employer" 5"Maistry" 6"Colleague" 7"Pawnbroker" 8"Shop keeper" 9"Microcredit: individual loan" 10"Microcredit: non-SHG group loan" 11"Microcredit: SHG" 12"Finance: daily finance/thandal" 13"Finance: other type of finance" 14"Bank: no coop" 15"Bank: coop" 16"Sugar mill loan", replace
-*label values loanlender lenders
+
+label list
+label define loanlendergold 15"Thandal", modify
+ta loanlender, m
+
 tab loanlender, m
 
 clonevar loaneffectivereason=loanreasongiven
 rename lenderscaste snmoneylendercastes
 rename lenderfrom snmoneylenderliving
 
-order loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database
+*** Var to keep
+keep parent_key HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis key loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database loanamountgold2 pb loanamountgold3 loanamountgoldrest loanbalancegold2
 
-keep parent_key HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis key loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database
+order HHID_panel INDID_panel loanamount loanamountgold2 loanamountgold3 loanamountgoldrest loanlender snmoneylendercastes loansettled loanbalance loanbalancegold2
 
+sort loanamountgold3
+
+*** Reshape
+foreach x in loanamount loanlender snmoneylendercastes loansettled loanbalance loandate pb loanreasongiven loaneffectivereason {
+rename `x' `x'1
+}
+rename loanamountgold2 loanamount_b1
+rename loanamountgold3 loanamount_c1
+rename loanbalancegold2 loanbalance_b1
+
+rename loanamountgoldrest loanamount2
+
+gen loandate2=loandate1
+
+egen HHINDID=concat(HHID_panel INDID_panel), p(/)
+
+reshape long loanamount loanlender snmoneylendercastes loansettled loanbalance loandate pb loanreasongiven loaneffectivereason loanamount_b loanamount_c loanbalance_b, i(HHINDID) j(num)
+
+*** Order
+rename loanamount_b loanamount2
+rename loanamount_c loanamount3
+rename loanbalance_b loanbalance2
+
+drop if loanamount==0 & num==2
+drop HHINDID
+
+rename num rest
+replace rest=rest-1
+label define rest 0"Main gold loan" 1"Rest of pledge"
+label values rest rest
+
+order HHID_panel INDID_panel jatis caste rest loanamount* 
+order submissiondate parent_key key householdid2020, last
+order loanbalance2, after(loanbalance)
+
+*** Label
+label list
+label values loanlender loanlendergold
+label values loanreasongiven goldreasonpledgemain
+label values loaneffectivereason goldreasonpledgemain
+label values snmoneylendercastes casteemployer
+
+*** Date
+format loandate %td
+
+*** Rest replace loan
+replace loanamount2=loanamount if rest==1
+replace loanamount3=loanamount if rest==1
+replace loanbalance2=loanamount if rest==1
+
+save"NEEMSIS2-goldloans.dta", replace
 
 append using "NEEMSIS2-loans_v4.dta"
 fre loan_database
@@ -522,25 +679,6 @@ fre loanlender
 restore
 
 ta loanlender version_HH
-
-/*
-lenders	1	Well known people
-lenders	2	Relatives
-lenders	3	Employer
-lenders	4	Maistry
-lenders	5	Colleague
-lenders	6	Pawn broker
-lenders	7	Shop keeper
-lenders	8	Finance (moneylenders)
-lenders	9	Friends
-lenders	10	SHG 
-lenders	11	Banks
-lenders	12	Coop bank
-lenders	13	Sugar mill loan
-lenders	14	Group finance
-lenders	15	Thandal
-*/
-
 
 tab loanlender, m
 label define loanlender 1"Well known people" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance (moneylenders)" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mill loan" 14"Group finance" 15"Thandal", replace
@@ -576,24 +714,18 @@ save"NEEMSIS2-loans_v5.dta", replace
 
 
 ****************************************
-* CLEAN
+* CLEAN + ORDER
 ****************************************
 use"NEEMSIS2-loans_v5.dta", clear
 
 tab loandate, m
-tab loanbalance, m  // 314 miss pour l'or, le reste pour settled
+tab loanbalance, m
 
 tab caste
 
-/*
-merge m:1 householdid using "C:\Users\Arnaud\Desktop\NEEMSIS2\dofileNEEMSIS2cleaning\unique_identifier_panel.dta", keepusing(villageid villageareaid dummynewHH dummydemonetisation caste HHID2010)
-keep if _merge==3
-drop _merge
-order householdid2020 HHID2010 INDID namefromearlier villageid caste 
-*/
 gen year=2020
 
-*Order
+********** Order
 global all HHID_panel INDID caste jatis borrowername nbloansbyborrower loanid loanamount loandate loanreasongiven loanreasongiven2 loaneffectivereason loaneffectivereason2 loanotherreasongiven loanothereffectivereason loanlender lendername snmoneylenderdummyfam snmoneylenderfriend snmoneylenderwkp snmoneylenderlabourrelation snmoneylendersex snmoneylenderage snmoneylenderlabourtype snmoneylendercastes snmoneylendercastesother snmoneylendereduc snmoneylenderoccup snmoneylender2 snmoneylenderemployertype snmoneylenderoccupother snmoneylender3 snmoneylenderliving snmoneylenderruralurban snmoneylendermapdistrict snmoneylenderdistrict snmoneylenderlivingname snmoneylendercompared snmoneylenderduration snmoneylendermeet snmoneylendermeetfrequency snmoneylenderinvite snmoneylenderreciprocity1 snmoneylenderintimacy snmoneylenderphonenb snmoneylenderphoto snmoneylendermeetother otherlenderservices guarantee allloans3 guaranteeother otherlenderservicesother guaranteetype loansettled dummyinterest interestpaid covfrequencyinterest covamountinterest alloans4 loanbalance totalrepaid covfrequencyrepayment covrepaymentstop mainloanid mainloanname lenderfirsttime additionalloan borrowerservices borrowerservicesother plantorepay plantorepayother termsofrepayment repayduration1 repayduration2 dummyinteret interestfrequency interestloan dummyproblemtorepay problemdelayrepayment problemdelayrepaymentother settleloanstrategy settleloanstrategyother loanproductpledge loanproductpledgeother loanproductpledgeaamount dummyhelptosettleloan helptosettleloan dummyrecommendation dummyguarantor recommenddetailscaste recommendloanrelation guarantordetailscaste guarantorloanrelation dummyincomeassets incomeassets
 foreach x in $all{
 capture confirm v `x'
@@ -607,9 +739,11 @@ order $all, first
 dropmiss $all, force
 
 
-*new var for panel
+********** New var for panel
+*** Caste
 clonevar lenderscaste=snmoneylendercastes
 
+*** Relation
 fre snmoneylenderdummyfam snmoneylenderfriend snmoneylenderwkp snmoneylenderlabourrelation
 gen lenderrelation=.
 replace lenderrelation=2 if snmoneylenderdummyfam==1
@@ -617,6 +751,7 @@ replace lenderrelation=10 if snmoneylenderfriend==1
 replace lenderrelation=8 if snmoneylenderwkp==1
 replace lenderrelation=1 if snmoneylenderlabourrelation==1
 
+*** Living
 fre snmoneylenderliving
 gen lenderfrom=.
 replace lenderfrom=1 if snmoneylenderliving==1
@@ -626,11 +761,14 @@ replace lenderfrom=2 if snmoneylenderliving==4
 replace lenderfrom=2 if snmoneylenderliving==5
 replace lenderfrom=2 if snmoneylenderliving==6
 
-*tab lendername loan_database, m
+*** Sex
 clonevar lendersex=snmoneylendersex
+
+*** Occupation
 clonevar lenderoccup=snmoneylenderoccup
 
-*Add caste, etc
+
+********** Add caste, etc
 merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v16.dta", keepusing(egoid name sex age edulevel)
 drop if _merge==2
 
@@ -653,7 +791,7 @@ save"NEEMSIS2-loans_v6.dta", replace
 
 
 ****************************************
-* CLEANING 2
+* DATE + DURATION + PURPOSE
 ****************************************
 use"NEEMSIS2-loans_v6.dta", clear
 
@@ -662,8 +800,6 @@ use"NEEMSIS2-loans_v6.dta", clear
 rename submissiondate submissiondate_o
 gen submissiondate=dofc(submissiondate_o)
 format submissiondate %td
-
-
 
 *** Loan duration
 gen loanduration=submissiondate-loandate
@@ -684,8 +820,6 @@ foreach i in 8 11 12 14{
 replace lender_cat=3 if loanlender_rec==`i'
 }
 fre lender_cat
-
-
 
 *** Purpose of loan
 replace loanreasongiven=loanreasongiven2 if loanreasongiven==.
@@ -793,39 +927,452 @@ save "NEEMSIS2-loans_v8.dta", replace
 
 
 ****************************************
-* COHERENCE
+* ORDER + DUPLICATES + BALANCE and AMOUNT for everyone
 ****************************************
 use"NEEMSIS2-loans_v8.dta", clear
-*label define loanreasongiven 1"Agriculture" 2"Family expenses" 3"Health" 4"Repay previous" 5"House" 6"Investment" 7"Ceremonies" 8"Marriage" 9"Education" 10"Relatives" 11"Death" 12"No reason" 77"Other"
-*label values loanreasongiven loanreasongiven
+
+*** Order
+order HHID_panel INDID_panel loan_database loanamount loanamount2 loanamount3
+sort HHID_panel INDID_panel loan_database loanamount3
+
 gen loanduration_month=loanduration/30.467
 replace loanduration_month=1 if loanduration_month<1
 tab loanduration_month
 
 dropmiss, force
 
-*As Elena, for gold
-replace loanbalance=loanamount if loan_database=="GOLD"
+*** After clean gold, replace in 2 and 3 version
+replace loanbalance2=loanbalance if loan_database!="GOLD"
+replace loanamount2=loanamount if loan_database!="GOLD"
+replace loanamount3=loanamount if loan_database!="GOLD"
 
-*66 as .
+*** Drop
+drop if jatis==.
+drop guarantorloanrelation_10 helptosettleloan_5 helptosettleloan_10 recommendloanrelation_4 recommendloanrelation_66 recommendloanrelation_7 recommendloanrelation_11 guarantorloanrelation_4 guarantorloanrelation_66 guarantorloanrelation_7
+
+
+********** Duplicates
+***
+preserve
+***
+duplicates tag HHID_panel INDID_panel loanamount loanlender loanreasongiven loandate, gen(tag)
+
+bysort HHID_panel INDID_panel: egen tokeep=sum(tag)
+drop if tokeep==0
+drop tokeep
+
+gen gold=0
+replace gold=1 if loan_database=="GOLD" & tag!=0 & tag!=.
+bysort HHID_panel INDID_panel: egen tokeep=sum(gold)
+drop if tokeep==0
+drop tokeep
+
+ta tag
+drop if tag==0
+sort HHID_panel INDID_panel tag loanamount loan_database loandate
+order HHID_panel INDID_panel loan_database tag
+
+ta tag
+drop if HHID_panel=="KOR42" & INDID_panel=="Ind_2" & loan_database=="FINANCE" & tag==1 & loanamount==45000
+drop if HHID_panel=="NAT30" & INDID_panel=="Ind_5" & loan_database=="FINANCE" & tag==1 & loanamount==100000
+drop if HHID_panel=="NAT42" & INDID_panel=="Ind_1" & loan_database=="FINANCE" & tag==1 & loanamount==50000
+drop if HHID_panel=="NAT50" & INDID_panel=="Ind_1" & loan_database=="FINANCE" & tag==1 & loanamount==30000 & loandate==td(01jan2020)
+
+drop if tag==2
+
+gen duplicates=1
+gen duplicatestodrop=0
+replace duplicatestodrop=1 if loan_database=="GOLD"
+
+drop tag
+
+save"NEEMSIS2-loans_duplicates.dta", replace
+
+***
+restore
+***
+
+ta _merge
+drop _merge
+
+merge 1:1 HHID_panel INDID_panel loan_database loanamount loandate loanreasongiven loanlender loanid using "NEEMSIS2-loans_duplicates.dta", keepusing(duplicates duplicatestodrop)
+
+drop _merge
+ta duplicates 
+recode duplicates (.=0)
+recode duplicatestodrop (.=0)
+
+ta duplicates
+ta duplicatestodrop loan_database
+
+save "NEEMSIS2-loans_v9.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* COHERENCE
+****************************************
+use"NEEMSIS2-loans_v9.dta", clear
+
+
+********** Sample size test + 66 recode
+*** Interest
+ta dummyinterest
+ta interestpaid if loan_database=="FINANCE"
+*2819 --> 1442 as 66 --> 1377
 replace interestpaid=. if interestpaid==55 | interestpaid==66
+
+*** Repaid
+ta loansettled if loan_database=="FINANCE"
+*4303 loans
+ta dummyinterest if loansettled==0 & loan_database=="FINANCE"
+* 2512 loans non settled with interest........
+* =2512 loans with totalrepaid
+/*
+Il y a une erreur dans le questionnaire ici je suppose, la question ne doit être conditionnée que aux prêts non settled
+Même si la personne ne paye pas d'intérêts, la question aurait quand même due être posée
+Parce que, du coup, nous ne pouvons pas faire la double vérification pour pas mal de prêts
+*/
+ta totalrepaid if loan_database=="FINANCE"
+*2512 --> 39 as 66 --> 2473
 replace totalrepaid=. if totalrepaid==66
+
+*** Loan amount
 replace loanamount=. if loanamount==66
-*drop if loanamount==.
+
+
+
+
+
+********** Principalpaid creation
+*** Generique
+g principalpaid=.
+replace principalpaid=totalrepaid-interestpaid
+ta principalpaid
+
+*** Cas ou total repaid=0 mais interestpaid>0
+replace principalpaid=0 if totalrepaid==0 
+ta totalrepaid
+ta interestpaid
+
+*** Cas ou il n'y a pas d'intérêts (à voir après)
+*replace principalpaid=totalrepaid if principalpaid==. & dummyinterest==1 & totalrepaid!=.
+
+
+
+
+
+********** Small amount of loanbalance
+list HHID_panel INDID_panel loanamount loanbalance totalrepaid interestpaid loan_database loanid if loanbalance<100 & loanbalance>0, clean noobs
+
+* totalrepaid - interestpaid = 11115, ie principal left=8885
+replace loanbalance2=8885 if HHID_panel=="KAR56" & INDID_panel=="Ind_2" & loanid==2
+*si valeurs  bizarres: on garde loanamount
+replace loanbalance2=loanamount if ///
+(HHID_panel=="SEM65" & INDID_panel=="Ind_4" & loanid==2) | ///
+(HHID_panel=="ORA11" & INDID_panel=="Ind_1" & loanid==5) | ///
+(HHID_panel=="NAT39" & INDID_panel=="Ind_2" & loanid==2) | ///
+(HHID_panel=="MAN67" & INDID_panel=="Ind_1" & loanid==3) | ///
+(HHID_panel=="SEM49" & INDID_panel=="Ind_1" & loanid==5) 
+
+
+
+
+
+
+
+********** Consistency totalrepaid et loanbalance
+
+*** Intéret théorique
+g months_diff = round((submissiondate-loandate)/(365/12))
+g years_diff=round((submissiondate-loandate)/365)
+g weeks_diff=round((submissiondate-loandate)/(365/53))
+g th_interest=.
+replace th_interest=weeks_diff*interestloan if interestfreq==1
+replace th_interest=months_diff*interestloan if interestfreq==2
+replace th_interest=years_diff*interestloan if interestfreq==3
+
+
+*** Recodage 
+* Interestpaid
+g interestpaid2=interestpaid
+/*(semble souvent repondu comme interestloan) - mais on ne peut pas savoir de toute facon;..
+replace interestpaid2=. if interestpaid==interestloan & th_interest!=interestpaid & th_interest!=interestpaid+interestloan & (interestfreq==1 | interestfreq==2 | interestfreq==3)
+*/
+
+* Total repaid
+* si loanbalance=loanamount - total repaid & interestpaid>0: on considère que totalrepaid est en fait principalpaid
+g totalrepaid2=totalrepaid
+
+* Principal paid
+g principalpaid2=principalpaid
+
+
+*** Cohérence ?
+g temp=((loanbalance2==loanamount3-totalrepaid2) & interestpaid2>0 & interestpaid2!=.)
+ta temp
+order temp loanbalance2 loanamount3 totalrepaid2 interestpaid2 principalpaid2
+replace principalpaid2=totalrepaid2 if temp==1
+replace totalrepaid2=principalpaid2+interestpaid2 if principalpaid2!=. & interestpaid2!=.
+drop temp
+
+
+
+
+
+
+********** Principalpaid negatif
+*br HHID_panel INDID_panel loanamount loanbalance2 totalrepaid2 interestpaid2 principalpaid2 th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if principalpaid2<0
+
+*ici interestpaid2=6912 correspond à 24*interestloan (repayduration=27 mois, ca fait un taux d intéret total dans les clous). donc le principal remboursé  (30 000/27)*24=26667 => ce qui au bout de 24 mois nous donne bien loabbalance
+replace principalpaid2=26667 if HHID_panel=="MANAM25" & INDID_panel=="Ind_2" & loanid==1
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="MANAM25" & INDID_panel=="Ind_2" & loanid==1
+* interespaid correspond a 22*interestloan. principal paid en 22 mois= (30 000/24)*22=27500 => coherent avec loanbalance
+replace principalpaid2=27500 if HHID_panel=="MANAM25" & INDID_panel=="Ind_2" & loanid==2
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="MANAM25" & INDID_panel=="Ind_2" & loanid==2
+*pb de 0
+replace totalrepaid2=totalrepaid*10 if HHID_panel=="KUV18" & INDID_panel=="Ind_1" & loanid==3
+replace principalpaid2=totalrepaid2 - interestpaid2 if HHID_panel=="KUV18" & INDID_panel=="Ind_1"  & loanid==3
+*interestloan represente très probablement le montant total payé chaque mois (principal + interet). interestpaid est coherent avec 22 mois de paiement (ie 567 INR par mois d interetà. donc principalpaid=(2650-567)*22=45826 => cohérent avec loanbalance
+replace interestloan=567 if HHID_panel=="MANAM47" &	INDID_panel=="Ind_3" & loanid==2
+replace principalpaid2=45826 if HHID_panel=="MANAM47" &	INDID_panel=="Ind_3" & loanid==2
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="MANAM47" & INDID_panel=="Ind_3" & loanid==2
+* des idées pour les autres ?
+
+
+
+
+
+
+
+
+********** Balance, amount et principal
+g test=loanbalance2-(loanamount3-principalpaid2)
+ta loansettled if test!=0 & test!=., mis //tous unsetteld
+ta dummyinterest if test!=0 & test!=., mis //tous à interet
+ta test
+/** si loanbalance > loanamount - principalpaid:  (en gros 10% des prêts): ils surestiment ce qu'ils restent à payer ? ils sous estiment ce qu'ils ont déjà payé ?
+=> si priorité à principalpaid (ie on ajuste loanbalance à la baisse): risque de surestimer service de la dette (principalpaid > loanamount - loanbalance) et sous estimer dette
+=> si priorité à loanbalance: risque de surestimer la dette et sous estimer service
+ ** si loanbalance < loanamount - principalpaid (en gros 5%): l'inverse
+
+DONC on peut éventuellement considérer qu estimer le service de la dette est de toute facon foireux avec ce type de données et privilégier le volume de dette, donc faire les choix qui empechent surestimation de la dette:
+=> priorité à loanbalance si loanbalance < loanamount - principalpaid 
+=> priorité à principalpaid si  loanbalance > loanamount - principalpaid 
+*/
+
+
+
+
+
+********** Correction 
+/*
+Suite à la discussion du 17/1/22, on décide de garder l'approche par balance
+However, if loanamount=loanbalance, we use principalpaid
+*/
+order temp test loanbalance2 loanamount3 principalpaid2 interestpaid2 totalrepaid2
+
+*** var to correct
+gen 
+
+
+*** if test>0
+
+
+
+*** if test<0 
+
+
+*** Cas où il n'y a pas d'intérêts?
+*replace principalpaid=totalrepaid if principalpaid==. & dummyinterest==1 & totalrepaid!=.
+
+
+
+
+
+***
+drop test
+ta 
+
+g test=0
+replace test=1 if loanamount3
+
+
+clonevar principalpaid3=principalpaid2
+clonevar loanbalance3=loanbalance2
+
+gen equal=0
+replace equal=1 if loanamount==loanbalance
+ta equal
+
+*Priorité à loanbalance
+replace principalpaid3=loanamount3-loanbalance2 if equal==0
+
+*
+replace loanbalance3=loanamount3-principalpaid2
+
+
+
+/*** ci dessous j ai commencé à recoder à la main quelques cas pour lesquels loanbalance < loanamount - principalpaid 
+ mais j'ai abandonné car beaucoup trop fastidieux et surtout, il se trouve que quand c est possible de retrouver les bons montants en croisant les infos, ca revient à faire le choix mentionné ci dessus 
+ */
+
+*br HHID_panel INDID_panel loanamount loanbalance2 totalrepaid2 interestpaid2 principalpaid2 test th_interest interestfrequency interestloan lender4 repayduration1 repayduration2 loanid  months_diff lendername if test<-1000
+
+
+/*40 000/24=1667 => loanbalance serait coherent avec 10 mois de principal à payer, donc 14 déjà payés (ok vu que le pret a été contracté il y a 15 mois). donc interestpaid serait 183*14=2562 et principalpaid=230338
+mais totalrepaid serait coherent avec 10 mois remboursés (1667+183)*10
+donc on y va a la hache et on considere que loanbalance est en fait principalpaid
+*/
+replace principalpaid2=loanbalance2 if HHID_panel=="SEM8" &	INDID_panel=="Ind_2" & loanid==5
+replace interestpaid2=totalrepaid2-principalpaid2 if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==5
+replace loanbalance2=loanamount - principalpaid2 if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==5
+
+*censé rembourser 2600/mois ((50 000 + 24*516)/24 ), coherent avec 2 mois de remboursement: 4168 est le principal remboursé en 2 mois
+replace loanbalance2=loanamount - loanbalance if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==2
+
+* loanbalance coherent avec 4 mois restant à payer ( 35 000/24)* 4= 5833. donc a déjà payé 20 mois (ok loan a été contracté il y a 23 mois). donc porincipalpaid en 20 mois=29 167. et interet 20 mois en theorie=2840 => ce qui est ok avec interestpaid
+replace principalpaid2=29167 if HHID_panel=="ORA10" &	INDID_panel=="Ind_2" & loanid==3
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="ORA10" &	INDID_panel=="Ind_2" & loanid==3
+
+*interestpaid=24*interestloan. donc si loanbalance est ok, signifie qu a payé 10 278 par mois * 24 en principal. ferait un pret de 36 mois. pas absurde.
+replace principalpaid2=10278*24 if HHID_panel=="ORA15" & INDID_panel=="Ind_2" & loanid==1
+replace totalrepaid2=principalpaid2+interestpaid2 if  HHID_panel=="ORA15" & INDID_panel=="Ind_2" & loanid==1
+
+*interestpaid coherent avec 11 mois payés. et loabalance avec 7 mois restant. => ok pour repayduration de 18 mois
+replace principalpaid2=2222*11 if HHID_panel=="SEM29" &	INDID_panel=="Ind_1" & loanid==1
+replace  totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="SEM29" &	INDID_panel=="Ind_1" & loanid==1
+	
+*loanbalance coherent avec 10 mois restant à payer si on considere une durée classique de 24 mois. interestpaid donnerait sur 24 mois un taux à 20%, ok. 
+replace principalpaid2=1667*14 if HHID_panel=="KAR28" &	INDID_panel=="Ind_2" & loanid==1
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="KAR28" &	INDID_panel=="Ind_2" & loanid==1
+
+*loanbalance coherent avec 11 mois à payer si repayduration = 24. donnerait un taux de 27%, ok.
+replace principalpaid2=13*1667 if HHID_panel=="SEM6" &	INDID_panel=="Ind_2" & loanid==1
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="SEM6" &	INDID_panel=="Ind_2" & loanid==1
+	
+
+*loanbalance cogerent avec 2 mois restant à payer. avec interestpaid donnerait un taux d interet a 17%
+replace principalpaid2=2084*22 if  HHID_panel=="SEM2" & INDID_panel=="Ind_4" & loanid==8
+replace totalrepaid2=principalpaid2+interestpaid2 if   HHID_panel=="SEM2" & INDID_panel=="Ind_4" & loanid==8
+
+*loanbalance cohérent avec 7 mois restant à payer. 
+replace principalpaid2=1167*17 if loanid==2 & HHID_panel=="KAR42" &	INDID_panel=="Ind_2"
+replace totalrepaid2=principalpaid2+interestpaid2 if  loanid==2 & HHID_panel=="KAR42" &	INDID_panel=="Ind_2"
+
+*loanbalance coherent avec3 mois restant à payer
+replace principalpaid2=1250*21 if HHID_panel=="SEM2" &	INDID_panel=="Ind_4" & loanid==9
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="SEM2" &	INDID_panel=="Ind_4" & loanid==9
+
+
+
+
+
+
+***** consistency principalpaid, loanbalance, settled:  certains prets semblent furieusement etre rembourses
+
+
+
+g pb=(principalpaid2>=loanamount & principalpaid2!=. & loansettled==0)
+ta pb
+/*
+         pb |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      5,240       98.37       98.37
+          1 |         87        1.63      100.00
+------------+-----------------------------------
+      Total |      5,327      100.00
+
+*/
+br HHID_panel INDID_panel loanamount loanbalance2 totalrepaid interestpaid2 principalpaid2 test th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if pb==1
+
+
+
+*si on fait le choix mentionné ci dessus
+
+//priorité à loanbalance si loanbalance < loanamount - principalpaid 
+replace interestpaid2=totalrepaid2 - principalpaid2 if loanbalance2 < loanamount - principalpaid2 & principalpaid2<=loanamount //(4 real changes made)
+replace principalpaid2=loanamount - loanbalance2 if loanbalance2 < loanamount - principalpaid2 & principalpaid2<=loanamount //89 changes
+
+//priorité à principalpaid si  loanbalance > loanamount - principalpaid 
+replace loanbalance2=loanamount - principalpaid2 if loanbalance>loanamount - principalpaid2 & principalpaid2<=loanbalance2 //(67 real changes made)
+
+replace loansettled=1 if loanbalance2==0 & principalpaid2==loanamount //(7 real changes made)
+
+
+g pb2=(principalpaid2>=loanamount & principalpaid2!=.  & loansettled==0)
+ta pb2
+/*
+
+        pb2 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      5,243       98.42       98.42
+          1 |         84        1.58      100.00
+------------+-----------------------------------
+      Total |      5,327      100.00
+
+*/
+br HHID_panel INDID_panel loanamount loanbalance2 totalrepaid interestpaid2 principalpaid2 test th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if pb2==1
+
+
+* je propose d'attribuer le surplus de principalpaidé à interestpaid2, mettre loanbalance=0, et conserver loansettled=0 pour prendre en compte le fait qu il reste surement de l interet à payer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ***Priority to balance or priority to totalrepaid/interestpaid ?
-*Test Balance
-gen test=loanamount-loanbalance
-tab test  // 1/2228 weird loan : 0.04%
-drop test
-
-*Test Paid
-gen test=totalrepaid-interestpaid
-tab test  // 43/650 weird loan : 6.61%
-drop test
-/*
-Check with Isabelle and Elena, but i prefer to use balance as good measure instead of totalrepaid and interestpaid
-*/
 
 *Cleaning for coherence
 gen totalrepaid2=totalrepaid
@@ -847,9 +1394,6 @@ gen coherence=totalrepaid2-principalpaid-interestpaid2
 tab coherence
 drop coherence
 
-save "NEEMSIS2-loans_v9.dta", replace
-****************************************
-* END
 
 
 
