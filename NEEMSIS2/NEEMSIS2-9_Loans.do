@@ -1238,45 +1238,45 @@ list loanamount3 loanbalance2 totalrepaid3 principalpaid3 interestpaid2 if test2
 mais totalrepaid serait coherent avec 10 mois remboursés (1667+183)*10
 donc on y va a la hache et on considere que loanbalance est en fait principalpaid
 */
-replace principalpaid2=loanbalance2 if HHID_panel=="SEM8" &	INDID_panel=="Ind_2" & loanid==5
-replace interestpaid2=totalrepaid2-principalpaid2 if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==5
-replace loanbalance2=loanamount - principalpaid2 if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==5
+replace principalpaid3=loanbalance3 if HHID_panel=="SEM8" &	INDID_panel=="Ind_2" & loanid==5
+replace interestpaid2=totalrepaid3-principalpaid3 if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==5
+replace loanbalance3=loanamount3-principalpaid3 if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==5
 
 *censé rembourser 2600/mois ((50 000 + 24*516)/24 ), coherent avec 2 mois de remboursement: 4168 est le principal remboursé en 2 mois
-replace loanbalance2=loanamount - loanbalance if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==2
+replace loanbalance3=loanamount3-loanbalance3 if HHID_panel=="SEM8" & INDID_panel=="Ind_2" & loanid==2
 
 * loanbalance coherent avec 4 mois restant à payer ( 35 000/24)* 4= 5833. donc a déjà payé 20 mois (ok loan a été contracté il y a 23 mois). donc porincipalpaid en 20 mois=29 167. et interet 20 mois en theorie=2840 => ce qui est ok avec interestpaid
-replace principalpaid2=29167 if HHID_panel=="ORA10" &	INDID_panel=="Ind_2" & loanid==3
-replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="ORA10" &	INDID_panel=="Ind_2" & loanid==3
+replace principalpaid3=29167 if HHID_panel=="ORA10" &	INDID_panel=="Ind_2" & loanid==3
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID_panel=="ORA10" &	INDID_panel=="Ind_2" & loanid==3
 
 *interestpaid=24*interestloan. donc si loanbalance est ok, signifie qu a payé 10 278 par mois * 24 en principal. ferait un pret de 36 mois. pas absurde.
-replace principalpaid2=10278*24 if HHID_panel=="ORA15" & INDID_panel=="Ind_2" & loanid==1
-replace totalrepaid2=principalpaid2+interestpaid2 if  HHID_panel=="ORA15" & INDID_panel=="Ind_2" & loanid==1
+replace principalpaid3=10278*24 if HHID_panel=="ORA15" & INDID_panel=="Ind_2" & loanid==1
+replace totalrepaid3=principalpaid3+interestpaid2 if  HHID_panel=="ORA15" & INDID_panel=="Ind_2" & loanid==1
 
 *interestpaid coherent avec 11 mois payés. et loabalance avec 7 mois restant. => ok pour repayduration de 18 mois
-replace principalpaid2=2222*11 if HHID_panel=="SEM29" &	INDID_panel=="Ind_1" & loanid==1
-replace  totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="SEM29" &	INDID_panel=="Ind_1" & loanid==1
+replace principalpaid3=2222*11 if HHID_panel=="SEM29" &	INDID_panel=="Ind_1" & loanid==1
+replace  totalrepaid3=principalpaid3+interestpaid2 if HHID_panel=="SEM29" &	INDID_panel=="Ind_1" & loanid==1
 	
 *loanbalance coherent avec 10 mois restant à payer si on considere une durée classique de 24 mois. interestpaid donnerait sur 24 mois un taux à 20%, ok. 
-replace principalpaid2=1667*14 if HHID_panel=="KAR28" &	INDID_panel=="Ind_2" & loanid==1
-replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="KAR28" &	INDID_panel=="Ind_2" & loanid==1
+replace principalpaid3=1667*14 if HHID_panel=="KAR28" &	INDID_panel=="Ind_2" & loanid==1
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID_panel=="KAR28" &	INDID_panel=="Ind_2" & loanid==1
 
 *loanbalance coherent avec 11 mois à payer si repayduration = 24. donnerait un taux de 27%, ok.
-replace principalpaid2=13*1667 if HHID_panel=="SEM6" &	INDID_panel=="Ind_2" & loanid==1
-replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="SEM6" &	INDID_panel=="Ind_2" & loanid==1
+replace principalpaid3=13*1667 if HHID_panel=="SEM6" &	INDID_panel=="Ind_2" & loanid==1
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID_panel=="SEM6" &	INDID_panel=="Ind_2" & loanid==1
 	
 
 *loanbalance cogerent avec 2 mois restant à payer. avec interestpaid donnerait un taux d interet a 17%
-replace principalpaid2=2084*22 if  HHID_panel=="SEM2" & INDID_panel=="Ind_4" & loanid==8
-replace totalrepaid2=principalpaid2+interestpaid2 if   HHID_panel=="SEM2" & INDID_panel=="Ind_4" & loanid==8
+replace principalpaid3=2084*22 if  HHID_panel=="SEM2" & INDID_panel=="Ind_4" & loanid==8
+replace totalrepaid3=principalpaid3+interestpaid2 if   HHID_panel=="SEM2" & INDID_panel=="Ind_4" & loanid==8
 
 *loanbalance cohérent avec 7 mois restant à payer. 
-replace principalpaid2=1167*17 if loanid==2 & HHID_panel=="KAR42" &	INDID_panel=="Ind_2"
-replace totalrepaid2=principalpaid2+interestpaid2 if  loanid==2 & HHID_panel=="KAR42" &	INDID_panel=="Ind_2"
+replace principalpaid3=1167*17 if loanid==2 & HHID_panel=="KAR42" &	INDID_panel=="Ind_2"
+replace totalrepaid3=principalpaid3+interestpaid2 if  loanid==2 & HHID_panel=="KAR42" &	INDID_panel=="Ind_2"
 
 *loanbalance coherent avec3 mois restant à payer
-replace principalpaid2=1250*21 if HHID_panel=="SEM2" &	INDID_panel=="Ind_4" & loanid==9
-replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="SEM2" &	INDID_panel=="Ind_4" & loanid==9
+replace principalpaid3=1250*21 if HHID_panel=="SEM2" &	INDID_panel=="Ind_4" & loanid==9
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID_panel=="SEM2" &	INDID_panel=="Ind_4" & loanid==9
 
 
 
@@ -1389,35 +1389,47 @@ drop test test2
 
 ********** kézako les 2, 3, 4, etc.
 /*
-loanamount			loanamount classique, l'original, le seul et l'unique
-loanamount2			
-loanamount3
+loanamount			classique, original, l'unique
+loanamount2			+ (GOLD: Elena consistency)
+loanamount3			+ (GOLD: Arnaud reverse pledge et loan parfois)
 
-interestpaid
-interestpaid2
-interestpaid3
+interestpaid		classique, original, l'unique
+interestpaid2		+ (recodage 66 as missing)
+interestpaid3		+ =totalrepaid3-principalpaid4 if (interestpaid==66 | interestpaid==55) | =principalpaid4-loanamount3 if pb3==1 | ceux qui ne paient pas d'intérêts: =0 if dummyinterest==0 & test==0
 
-loanbalance
-loanbalance2
-loanbalance3
+loanbalance			classique, original, l'unique
+loanbalance2		+ (GOLD: Arnaud correction) + (FINANCE: corr small amt)
+loanbalance3		+ =loanamount3-principalpaid3 if test2==1 & loanamount3==loanbalance2 & principalpaid3<loanamount3 |0 if pb3==1
 
-totalrepaid
-totalrepaid2
-totalrepaid3
+totalrepaid			classique, original, l'unique
+totalrepaid2		+ (recodage 66 as missing) + (recodage manuel Elena quand principalpaid negatif)
+totalrepaid3		+ =interestpaid2 if test2==-1 & loanamount3==loanbalance2 | ceux qui ne paient pas d'intérêts: =principalpaid4 if dummyinterest==0 & test==0
 
-principalpaid
-principalpaid2
-principalpaid3
-principalpaid4
+principalpaid		totalrepaid2-interestpaid2. If totalrepaid2=0, principalpaid=0.
+principalpaid2		+ (recodage manuel Elena quand principalpaid negatif)
+principalpaid3		+ =loanamount3-loanbalance2 if test2==1 & loanamount3!=loanbalance2 | =loanamount3-loanbalance2 if test2==-1 & loanamount3!=loanbalance2 | =0 if test2==-1 & loanamount3==loanbalance2
+principalpaid4		+ =loanamount3-loanbalance3 if (interestpaid==66 | interestpaid==55) | =loanamount3 if pb3==1 | ceux qui ne paient pas d'intérêts: =loanamount3-loanbalance3 if dummyinterest==0 & test==0
 
-duplicates 
-duplicatestodrop 
-months_diff 
-years_diff 
-weeks_diff 
-th_interest 
-pb2 
-pb3 
+duplicates 			
+duplicatestodrop 	
+months_diff 		duration loan in month
+years_diff 			duration loan in year
+weeks_diff 			duration loan in week
+th_interest 		intérêts théoriques
+pb2 				=1 if test2==1 & loanamount3==loanbalance2 & principalpaid3>=loanamount3
+pb3 				=(principalpaid4>=loanamount3 & principalpaid4!=. & loansettled==0)
+
+
+
+g test=loanbalance2-(loanamount3-principalpaid2)
+ta loansettled if test!=0 & test!=., mis //tous unsetteld
+ta dummyinterest if test!=0 & test!=., mis //tous à interet
+ta test
+
+gen test2=.
+replace test2=1 if test>0 & test!=.
+replace test2=-1 if test<0 & test!=.
+ta test2
 */
 
 
