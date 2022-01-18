@@ -774,7 +774,7 @@ drop pb4
 gen pb4=0
 replace pb4=1 if interestpaid3<0
 order interestpaid interestpaid2, before(interestpaid3)
-br if pb4==1
+*br if pb4==1
 /*
 Pb des 66
 Pour eux, pb pour totalrepaid, donc à voir: soit modifier total repaid
@@ -783,6 +783,7 @@ avec principal=amt-bal
 
 Je les recode à 0 dans le doute, ca rpz peu de prêts donc bon.....
 */
+replace interestpaid3=. if dummyinterest==0
 
 
 save"NEEMSIS2-loans_v10.dta", replace
@@ -808,10 +809,10 @@ use"NEEMSIS2-loans_v10.dta", clear
 
 *****
 *Arnaud test yrate
-gen yratepaid=interestpaid2*100/loanamount if loanduration<=365
+gen yratepaid=interestpaid3*100/loanamount2 if loanduration<=365
 
-gen _yratepaid=interestpaid2*365/loanduration if loanduration>365
-gen _loanamount=loanamount*365/loanduration if loanduration>365
+gen _yratepaid=interestpaid3*365/loanduration if loanduration>365
+gen _loanamount=loanamount3*365/loanduration if loanduration>365
 
 replace yratepaid=_yratepaid*100/_loanamount if loanduration>365
 drop _loanamount _yratepaid
@@ -821,7 +822,7 @@ sort yratepaid
 *tab loanamount if loanamount<1000
 *drop if loanamount<1000
 
-tabstat yratepaid if interestpaid2>0 & interestpaid2!=., by(lender4) stat(n mean p50 min max)
+tabstat yratepaid if interestpaid2>0 & interestpaid3!=., by(lender4) stat(n mean p50 min max)
 gen monthlyinterestrate=.
 replace monthlyinterestrate=yratepaid if loanduration<=30.4167
 replace monthlyinterestrate=(yratepaid/loanduration)*30.4167 if loanduration>30.4167
