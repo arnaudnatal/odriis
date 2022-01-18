@@ -153,9 +153,20 @@ label variable `v' "Construction -- "
 
 order HHID_panel INDID_panel version_HH name sex age jatis edulevel egoid loan_database loanamount
 
-global arnaud loanlender_rec loanduration lender_cat reason_cat lender2 lender3 lender4 lender4_rec loanduration_month yratepaid monthlyinterestrate debt_service interest_service imp_principal imp1_interest imp1_totalrepaid_year imp1_debt_service imp1_interest_service dummymainloans loans_indiv loans_HH loans_gm_indiv loans_gm_HH loans_g_indiv loans_g_HH loanamount_g_indiv loanamount_g_HH loanamount_gm_indiv loanamount_gm_HH loanamount_indiv loanamount_HH imp1_ds_tot_indiv imp1_is_tot_indiv imp1_ds_tot_HH imp1_is_tot_HH
+global arnaud loanamount3 loanbalance3 principalpaid4 interestpaid2 interestpaid3 totalrepaid3 loanbalance2 principalpaid2 totalrepaid2 loanamount2 loanlender_rec loanduration lender_cat reason_cat lender2 lender3 lender4 lender4_rec loanduration_month yratepaid monthlyinterestrate debt_service interest_service imp_principal imp1_interest imp1_totalrepaid_year imp1_debt_service imp1_interest_service dummymainloans loans_indiv loans_HH loanamount_indiv loanamount_HH imp1_ds_tot_indiv imp1_is_tot_indiv imp1_ds_tot_HH imp1_is_tot_HH
 
 order setofmarriagefinance setofmarriagegroup $arnaud, after(lenderoccup)
+
+drop age INDID2020 INDID_total INDID_former INDID_new name
+
+order caste, before(jatis)
+drop months_diff years_diff weeks_diff pb pb2 pb3 pb4 loans
+/*
+pb--> loanamount>pledge
+*/
+
+
+order loanamount2 loanamount3 interestpaid2 interestpaid3 loanbalance2 loanbalance3 totalrepaid2 totalrepaid3 principalpaid principalpaid2 principalpaid3 principalpaid4 duplicates duplicatestodrop th_interest, after(setofmarriagegroup)
 
 
 save"$directory\CLEAN\NEEMSIS2-loans_v14", replace
