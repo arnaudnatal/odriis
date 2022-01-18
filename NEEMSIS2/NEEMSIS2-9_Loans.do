@@ -1321,13 +1321,7 @@ replace loanbalance3=0 if pb3==1
 *br HHID_panel INDID_panel loanamount3 loanbalance3 totalrepaid3 interestpaid3 principalpaid4 test th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if pb3==1
 
 
-save"NEEMSIS2-loans_v10.dta", replace
 
-
-
-
-
-use"NEEMSIS2-loans_v10.dta", clear
 
 ********** On en est où donc ?
 drop test test2
@@ -1380,66 +1374,56 @@ ta dummyinterest test, m
 
 
 *** Les autres ?
-gen test2=loanamount3-loanbalance3
-gen test3=totalrepaid3-interestpaid3
-order test2 test3, after(loanbalance3)
-order test, after(dummyinterest)
-gen bint2=0
-gen bint3=0
-order bint2 bint3, after(test3)
-replace bint2=1 if test2==principalpaid4
-replace bint3=1 if test3==principalpaid4
-
-sort bint2
-order HHID_panel INDID_panel test2 test3 bint2 bint3 loanamount3 loanbalance loanbalance2 loanbalance3 principalpaid principalpaid2 principalpaid3 principalpaid4 interestpaid interestpaid2 interestpaid3 totalrepaid totalrepaid2 totalrepaid3 lender4 loanlender loan_database
-
-br if test==0 & dummyinterest==1
-
-
-
-
-
-
-****************************************
-* BALANCE
-****************************************
-use"NEEMSIS2-loans_v9.dta", clear
-
-replace loanbalance=0 if loansettled==1
+gen test2=((loanamount3-principalpaid4)==loanbalance3)
+ta test test2
 /*
-*update loanbalance with principalpaid for microcredits (interest checked, plausible)
-replace loanbalance=loanamount-principalpaid if lender4==8 & loanbalance>loanamount & loanbalance!=.
-replace loanbalance=loanamount if loanbalance>loanamount & loanbalance!=. & principalpaid==. 
-*verif balance
-gen test=loanamount-principalpaid - loanbalance
-tab test
-gen test2=test*100/loanamount
-tab test2
-* 0 :  55 %
-*20% inf, 25% sup
-tab lender4 if test!=0 & test!=.
-*1/3 de microcredit dans ceux qui ne matchent pas
-drop test
-*** loans with pb "identified" + POSITIVE AMOUNTS of principal paid different selon principal paid et loanbalance:
-*apres check: on ne peut pas faire grand chose. considere que principalpaid prevaut sur loanbalance.
-gen test=loanamount-principalpaid - loanbalance
-tab test
-replace loanbalance=loanamount - principalpaid if test!=0 & test!=. &
-drop test
-gen test=loanamount-principalpaid - loanbalance
-tab test
-drop test
-tab loanbalance
+Among les 221, il y en a 219 pour lesquels: 
+amount-principal=balance.......!
+donc on reste avec ça je pense
 */
-save "NEEMSIS2-loans_v10.dta", replace
-*************************************
-*** END
+drop test test2
 
 
 
 
 
+********** kézako les 2, 3, 4, etc.
+/*
+loanamount			loanamount classique, l'original, le seul et l'unique
+loanamount2			
+loanamount3
 
+interestpaid
+interestpaid2
+interestpaid3
+
+loanbalance
+loanbalance2
+loanbalance3
+
+totalrepaid
+totalrepaid2
+totalrepaid3
+
+principalpaid
+principalpaid2
+principalpaid3
+principalpaid4
+
+duplicates 
+duplicatestodrop 
+months_diff 
+years_diff 
+weeks_diff 
+th_interest 
+pb2 
+pb3 
+*/
+
+
+save"NEEMSIS2-loans_v10.dta", replace
+****************************************
+* END
 
 
 
