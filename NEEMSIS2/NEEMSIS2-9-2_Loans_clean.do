@@ -833,17 +833,17 @@ ALL LOANS
 
      lender4 |         N      mean       p50       min       max
 -------------+--------------------------------------------------
-         WKP |       280  39.04335        30  .8333333       600
-   Relatives |        54  30.33661        25         2       144
-      Labour |        95  23.50702        20       2.4       108
- Shop keeper |         6  30.54747        33  .9212121        70
-Moneylenders |        32  16.88754  13.32667  .7272727  73.77333
-     Friends |       488  25.10458        18  .0057143       500
- Microcredit |        88  18.96117        10   .007875       120
-        Bank |       147  20.33835    14.575       .21     122.4
-     Thandal |        98  10.93325        10         1        60
+         WKP |       320  35.98926        30         0       600
+   Relatives |        87  19.28939        10         0       144
+      Labour |       103  21.22654        17         0       108
+ Pawn broker |        40  9.101075         0         0       100
+Moneylenders |         7  36.95906        36  .9212121  75.42857
+     Friends |       676  20.51796        10         0       950
+ Microcredit |       798  21.99785        20         0  133.3333
+        Bank |       371  6.822225         0         0       100
+     Thandal |       125  10.81567        10         0        65
 -------------+--------------------------------------------------
-       Total |      1288  26.01552        18  .0057143       600
+       Total |      2527  20.30521  13.33333         0       950
 ----------------------------------------------------------------
 */
 
@@ -875,7 +875,7 @@ use"NEEMSIS2-loans_v11.dta", clear
 
 
 *** Add income
-drop _merge
+*drop _merge
 merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v16.dta", keepusing(annualincome_indiv annualincome_HH) 
 drop if _merge==2
 drop _merge
@@ -885,33 +885,36 @@ tab householdid2020
 
 *** Debt service pour ML
 gen debt_service=.
-replace debt_service=totalrepaid2 if loanduration<=365
-replace debt_service=totalrepaid2*365/loanduration if loanduration>365
-replace debt_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==0 & totalrepaid2==.
+replace debt_service=totalrepaid3 if loanduration<=365
+replace debt_service=totalrepaid3*365/loanduration if loanduration>365
+replace debt_service=0 if loanduration==0 & totalrepaid3==0 | loanduration==0 & totalrepaid3==.
 
 
 *** Interest service pour ML
 gen interest_service=.
-replace interest_service=interestpaid2 if loanduration<=365
-replace interest_service=interestpaid2*365/loanduration if loanduration>365
-replace interest_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==0 & totalrepaid2==.
-replace interest_service=0 if dummyinterest==0 & interestpaid2==0 | dummyinterest==0 & interestpaid2==.
+replace interest_service=interestpaid3 if loanduration<=365
+replace interest_service=interestpaid3*365/loanduration if loanduration>365
+replace interest_service=0 if loanduration==0 & totalrepaid3==0 | loanduration==0 & totalrepaid3==.
+replace interest_service=0 if dummyinterest==0 & interestpaid3==0 | dummyinterest==0 & interestpaid3==.
 
 
 
 *** Imputation du principal
 gen imp_principal=.
-replace imp_principal=loanamount-loanbalance if loanduration<=365 & debt_service==.
-replace imp_principal=(loanamount-loanbalance)*365/loanduration if loanduration>365 & debt_service==.
+replace imp_principal=loanamount3-loanbalance3 if loanduration<=365 & debt_service==.
+replace imp_principal=(loanamount3-loanbalance3)*365/loanduration if loanduration>365 & debt_service==.
 
 
 
 *** Imputation interest for moneylenders (.17) and microcredit (.19)
 gen imp1_interest=.
-replace imp1_interest=0.17*loanamount if lender4==6 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.17*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
-replace imp1_interest=0.19*loanamount if lender4==8 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.19*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
+*Moneylender
+replace imp1_interest=0.37*loanamount if lender4==6 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.37*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
+*Microcredit
+replace imp1_interest=0.22*loanamount if lender4==8 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.22*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
+
 replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
 
 
@@ -963,54 +966,35 @@ tab dummymainloans
 
 
 *** Nber of loan
-gen loans_gm=1
-replace loans_gm=. if loansettled==1
-
-gen loans=0
-replace loans=1 if loan_database=="FINANCE"
+gen loans=1
 replace loans=. if loansettled==1
-
-gen loans_g=1
-replace loans_g=0 if loan_database=="MARRIAGE"
-replace loans_g=. if loansettled==1
 
 
 *** Loan amount
-clonevar loanamount_gm=loanamount
-replace loanamount_gm=. if loansettled==1
-
-clonevar loanamount_g=loanamount
-replace loanamount_g=. if loan_database=="MARRIAGE"
-replace loanamount_g=. if loansettled==1
-
-clonevar loanamount_fin=loanamount
-replace loanamount_fin=. if loan_database=="MARRIAGE"
-replace loanamount_fin=. if loan_database=="GOLD"
-replace loanamount_fin=. if loansettled==1
-
-ta loanamount_fin loan_database, m
-ta loanamount_g loan_database, m
-ta loanamount_gm loan_database, m
-
+clonevar loanamount4=loanamount3
+replace loanamount4=. if loansettled==1
 
 *** Indiv + HH level
-foreach x in loans loans_gm loans_g loanamount_g loanamount_gm loanamount_fin {
+foreach x in loans loanamount4 {
 bysort HHID_panel INDID_panel: egen `x'_indiv=sum(`x')
 bysort HHID_panel: egen `x'_HH=sum(`x')
 }
+drop loanamount4
+rename loanamount4_indiv loanamount_indiv
+rename loanamount4_HH loanamount_HH
 
-rename loanamount_fin_indiv loanamount_indiv
-rename loanamount_fin_HH loanamount_HH
-
-drop loanamount_fin loans_gm loanamount_gm loans_gm loans loans_g loanamount_g
 
 *** Services
-bysort HHID_panel INDID_panel: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
-bysort HHID_panel INDID_panel: egen imp1_is_tot_indiv=sum(imp1_interest_service)
+clonevar imp1_debt_service2=imp1_debt_service
+clonevar imp1_interest_service2=imp1_interest_service
 
-bysort HHID_panel: egen imp1_ds_tot_HH=sum(imp1_debt_service)
-bysort HHID_panel: egen imp1_is_tot_HH=sum(imp1_interest_service)
+bysort HHID_panel INDID_panel: egen imp1_ds_tot_indiv=sum(imp1_debt_service2)
+bysort HHID_panel INDID_panel: egen imp1_is_tot_indiv=sum(imp1_interest_service2)
 
+bysort HHID_panel: egen imp1_ds_tot_HH=sum(imp1_debt_service2)
+bysort HHID_panel: egen imp1_is_tot_HH=sum(imp1_interest_service2)
+
+drop imp1_debt_service2 imp1_interest_service2
 
 save"NEEMSIS2-loans_v13.dta", replace
 *************************************
@@ -1039,14 +1023,14 @@ use"NEEMSIS2-loans_v13.dta", clear
 *Indiv
 preserve
 duplicates drop HHID_panel INDID_panel, force
-keep HHID_panel INDID_panel loans_indiv loans_g_indiv loans_gm_indiv loanamount_gm_indiv  loanamount_g_indiv loanamount_indiv imp1_ds_tot_indiv imp1_is_tot_indiv
+keep HHID_panel INDID_panel loans_indiv loanamount_indiv imp1_ds_tot_indiv imp1_is_tot_indiv
 save"NEEMSIS2-loans_v13_indiv.dta", replace
 restore
 
 *HH
 preserve
 duplicates drop HHID_panel, force
-keep HHID_panel loans_HH loans_gm_HH loans_g_HH loanamount_gm_HH loanamount_g_HH imp1_ds_tot_HH imp1_is_tot_HH loanamount_HH
+keep HHID_panel loans_HH loanamount_HH imp1_ds_tot_HH imp1_is_tot_HH
 save"NEEMSIS2-loans_v13_HH.dta", replace
 restore
 
