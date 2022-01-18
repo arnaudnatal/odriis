@@ -1030,11 +1030,14 @@ use"NEEMSIS2-loans_v9.dta", clear
 
 
 ********** Sample size test + 66 recode
+clonevar interestpaid2=interestpaid
+clonevar totalrepaid2=totalrepaid
+
 *** Interest
 ta dummyinterest
 ta interestpaid if loan_database=="FINANCE"
 *2819 --> 1442 as 66 --> 1377
-replace interestpaid=. if interestpaid==55 | interestpaid==66
+replace interestpaid2=. if interestpaid==55 | interestpaid==66
 
 *** Repaid
 ta loansettled if loan_database=="FINANCE"
@@ -1049,7 +1052,7 @@ Parce que, du coup, nous ne pouvons pas faire la double vérification pour pas m
 */
 ta totalrepaid if loan_database=="FINANCE"
 *2512 --> 39 as 66 --> 2473
-replace totalrepaid=. if totalrepaid==66
+replace totalrepaid2=. if totalrepaid==66
 
 *** Loan amount
 replace loanamount=. if loanamount==66
@@ -1061,13 +1064,12 @@ replace loanamount=. if loanamount==66
 ********** Principalpaid creation
 *** Generique
 g principalpaid=.
-replace principalpaid=totalrepaid-interestpaid
+replace principalpaid=totalrepaid2-interestpaid2
 ta principalpaid
 
 *** Cas ou total repaid=0 mais interestpaid>0
-replace principalpaid=0 if totalrepaid==0 
-ta totalrepaid
-ta interestpaid
+replace principalpaid=0 if totalrepaid2==0 
+
 
 *** Cas ou il n'y a pas d'intérêts (à voir après)
 *replace principalpaid=totalrepaid if principalpaid==. & dummyinterest==1 & totalrepaid!=.
@@ -1108,17 +1110,10 @@ replace th_interest=years_diff*interestloan if interestfreq==3
 
 
 *** Recodage 
-* Interestpaid
-g interestpaid2=interestpaid
 /*(semble souvent repondu comme interestloan) - mais on ne peut pas savoir de toute facon;..
 replace interestpaid2=. if interestpaid==interestloan & th_interest!=interestpaid & th_interest!=interestpaid+interestloan & (interestfreq==1 | interestfreq==2 | interestfreq==3)
 */
-
-* Total repaid
 * si loanbalance=loanamount - total repaid & interestpaid>0: on considère que totalrepaid est en fait principalpaid
-g totalrepaid2=totalrepaid
-
-* Principal paid
 g principalpaid2=principalpaid
 
 
@@ -1165,6 +1160,11 @@ g test=loanbalance2-(loanamount3-principalpaid2)
 ta loansettled if test!=0 & test!=., mis //tous unsetteld
 ta dummyinterest if test!=0 & test!=., mis //tous à interet
 ta test
+
+gen test2=.
+replace test2=1 if test>0 & test!=.
+replace test2=-1 if test<0 & test!=.
+ta test2
 /** si loanbalance > loanamount - principalpaid:  (en gros 10% des prêts): ils surestiment ce qu'ils restent à payer ? ils sous estiment ce qu'ils ont déjà payé ?
 => si priorité à principalpaid (ie on ajuste loanbalance à la baisse): risque de surestimer service de la dette (principalpaid > loanamount - loanbalance) et sous estimer dette
 => si priorité à loanbalance: risque de surestimer la dette et sous estimer service
@@ -1184,49 +1184,52 @@ DONC on peut éventuellement considérer qu estimer le service de la dette est d
 Suite à la discussion du 17/1/22, on décide de garder l'approche par balance
 However, if loanamount=loanbalance, we use principalpaid
 */
-order temp test loanbalance2 loanamount3 principalpaid2 interestpaid2 totalrepaid2
+order test test2 loanbalance2 loanamount3 principalpaid2 interestpaid2 totalrepaid2
 
-*** var to correct
-gen 
-
-
-*** if test>0
-
-
-
-*** if test<0 
-
-
-*** Cas où il n'y a pas d'intérêts?
-*replace principalpaid=totalrepaid if principalpaid==. & dummyinterest==1 & totalrepaid!=.
-
-
-
-
-
-***
-drop test
-ta 
-
-g test=0
-replace test=1 if loanamount3
-
-
+*** var to create
 clonevar principalpaid3=principalpaid2
 clonevar loanbalance3=loanbalance2
-
-gen equal=0
-replace equal=1 if loanamount==loanbalance
-ta equal
-
-*Priorité à loanbalance
-replace principalpaid3=loanamount3-loanbalance2 if equal==0
-
-*
-replace loanbalance3=loanamount3-principalpaid2
+clonevar totalrepaid3=totalrepaid2
 
 
+*** if test>0: 189 loans
+replace principalpaid3=loanamount3-loanbalance2 if test2==1 & loanamount3!=loanbalance2
+*70/189=119 loans?
+ta loanamount3 if test2==1 & loanamount3==loanbalance2
+*ok
 
+*** if test<0: 104 loans
+replace principalpaid3=loanamount3-loanbalance2 if test2==-1 & loanamount3!=loanbalance2
+*102/104=2 loans
+ta loanamount3 if test2==-1 & loanamount3==loanbalance2
+*ok
+
+*** if loanamount=loanbalance with principal positive, priority to principalpaid
+*119 loans
+list loanamount3 loanbalance2 totalrepaid2 principalpaid3 interestpaid2 loansettled if test2==1 & loanamount3==loanbalance2, clean noobs
+*If principal<loanamount
+replace loanbalance3=loanamount3-principalpaid3 if test2==1 & loanamount3==loanbalance2 & principalpaid3<loanamount3
+*44 changes --> 75
+list loanamount3 loanbalance3 totalrepaid2 principalpaid3 interestpaid2 if test2==1 & loanamount3==loanbalance2, clean noobs
+
+* If principal>loanamount
+list loanamount3 loanbalance3 totalrepaid2 principalpaid3 interestpaid2 if test2==1 & loanamount3==loanbalance2 & principalpaid3>loanamount3, noobs
+list loanamount loanbalance totalrepaid principalpaid interestpaid if test2==1 & loanamount3==loanbalance2 & principalpaid3>loanamount3, noobs
+gen pb2=0
+replace pb2=1 if test2==1 & loanamount3==loanbalance2 & principalpaid3>=loanamount3
+
+
+*** if loanamount=loanbalance with principal negative, principal=0 & total=interest
+*2 loans
+list loanamount3 loanbalance2 totalrepaid2 principalpaid3 interestpaid2 if test2==-1 & loanamount3==loanbalance2, clean noobs
+replace totalrepaid3=interestpaid2 if test2==-1 & loanamount3==loanbalance2
+replace principalpaid3=0 if test2==-1 & loanamount3==loanbalance2
+list loanamount3 loanbalance2 totalrepaid3 principalpaid3 interestpaid2 if test2==-1 & loanamount3==loanbalance2, clean noobs
+
+
+
+
+********** Recodage manuel Elena
 /*** ci dessous j ai commencé à recoder à la main quelques cas pour lesquels loanbalance < loanamount - principalpaid 
  mais j'ai abandonné car beaucoup trop fastidieux et surtout, il se trouve que quand c est possible de retrouver les bons montants en croisant les infos, ca revient à faire le choix mentionné ci dessus 
  */
@@ -1283,57 +1286,51 @@ replace totalrepaid2=principalpaid2+interestpaid2 if HHID_panel=="SEM2" &	INDID_
 
 
 
+
+
+
+********** Ceux qui n'arrivait pas à donner une estimation des intérêts
+
+*On fait confiance à la balance
+*comme ça on voit un peu le principal et on en déduit les intérêts?
+clonevar principalpaid4=principalpaid3
+order principalpaid4, after(principalpaid3)
+clonevar interestpaid3=interestpaid2
+order interestpaid3, after(interestpaid2)
+
+replace principalpaid4=loanamount3-loanbalance3 if interestpaid==66 | interestpaid==55
+replace interestpaid3=totalrepaid3-principalpaid4 if interestpaid==66 | interestpaid==55
+sort interestpaid3
+*br if loansettled==0 & loan_database=="FINANCE" & dummyinterest==1 & interestpaid==66
+
+
+
+
 ***** consistency principalpaid, loanbalance, settled:  certains prets semblent furieusement etre rembourses
 
 
 
-g pb=(principalpaid2>=loanamount & principalpaid2!=. & loansettled==0)
-ta pb
+g pb3=(principalpaid4>=loanamount3 & principalpaid4!=. & loansettled==0)
+ta pb3
 /*
-         pb |      Freq.     Percent        Cum.
+        pb3 |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |      5,240       98.37       98.37
-          1 |         87        1.63      100.00
+          0 |      5,724       98.62       98.62
+          1 |         80        1.38      100.00
 ------------+-----------------------------------
-      Total |      5,327      100.00
-
+      Total |      5,804      100.00
 */
-br HHID_panel INDID_panel loanamount loanbalance2 totalrepaid interestpaid2 principalpaid2 test th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if pb==1
-
-
-
-*si on fait le choix mentionné ci dessus
-
-//priorité à loanbalance si loanbalance < loanamount - principalpaid 
-replace interestpaid2=totalrepaid2 - principalpaid2 if loanbalance2 < loanamount - principalpaid2 & principalpaid2<=loanamount //(4 real changes made)
-replace principalpaid2=loanamount - loanbalance2 if loanbalance2 < loanamount - principalpaid2 & principalpaid2<=loanamount //89 changes
-
-//priorité à principalpaid si  loanbalance > loanamount - principalpaid 
-replace loanbalance2=loanamount - principalpaid2 if loanbalance>loanamount - principalpaid2 & principalpaid2<=loanbalance2 //(67 real changes made)
-
-replace loansettled=1 if loanbalance2==0 & principalpaid2==loanamount //(7 real changes made)
-
-
-g pb2=(principalpaid2>=loanamount & principalpaid2!=.  & loansettled==0)
-ta pb2
-/*
-
-        pb2 |      Freq.     Percent        Cum.
-------------+-----------------------------------
-          0 |      5,243       98.42       98.42
-          1 |         84        1.58      100.00
-------------+-----------------------------------
-      Total |      5,327      100.00
-
-*/
-br HHID_panel INDID_panel loanamount loanbalance2 totalrepaid interestpaid2 principalpaid2 test th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if pb2==1
-
 
 * je propose d'attribuer le surplus de principalpaidé à interestpaid2, mettre loanbalance=0, et conserver loansettled=0 pour prendre en compte le fait qu il reste surement de l interet à payer
 
 
 
 
+*** Cas où il n'y a pas d'intérêts?
+*replace principalpaid=totalrepaid if principalpaid==. & dummyinterest==1 & totalrepaid!=.
+drop test test2
+g test=loanbalance3-(loanamount3-principalpaid3)
+ta test pb2, m
 
 
 
@@ -1343,56 +1340,6 @@ br HHID_panel INDID_panel loanamount loanbalance2 totalrepaid interestpaid2 prin
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-***Priority to balance or priority to totalrepaid/interestpaid ?
-
-*Cleaning for coherence
-gen totalrepaid2=totalrepaid
-gen interestpaid2=interestpaid
-gen principalpaid=loanamount-loanbalance
-
-
-*replace totalrepaid2=interestpaid if interestpaid>=totalrepaid
-
-replace totalrepaid2=principalpaid+interestpaid // if interestpaid>=totalrepaid
-
-*replace interestpaid2=totalrepaid-principalpaid if interestpaid<totalrepaid
-
-*Coherence
-gen coherence=loanamount-loanbalance-principalpaid
-tab coherence
-drop coherence
-gen coherence=totalrepaid2-principalpaid-interestpaid2
-tab coherence
-drop coherence
 
 
 
