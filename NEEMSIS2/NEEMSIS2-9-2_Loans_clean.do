@@ -544,7 +544,7 @@ replace interestpaid3=totalrepaid3-principalpaid4 if interestpaid==66 | interest
 sort interestpaid3
 *br if loansettled==0 & loan_database=="FINANCE" & dummyinterest==1 & interestpaid==66
 
-
+replace interestpaid3=0 if interestpaid3<0
 
 
 ********** Consistency principalpaid, loanbalance, settled
@@ -564,9 +564,11 @@ ta pb3
 
 * je propose d'attribuer le surplus de principalpaid à interestpaid2, mettre loanbalance=0, et conserver loansettled=0 pour prendre en compte le fait qu il reste surement de l interet à payer
 
-replace interestpaid3=principalpaid4-loanamount3 if pb3==1
-replace principalpaid4=loanamount3 if pb3==1
-replace loanbalance3=0 if pb3==1
+replace interestpaid3=principalpaid4-loanamount3 if pb3==1 & principalpaid4>loanamount3
+replace principalpaid4=loanamount3 if pb3==1 & principalpaid4>loanamount3
+replace loanbalance3=0 if pb3==1 & principalpaid4>loanamount3
+gen pb4=1 if pb3==1 & principalpaid4>loanamount3
+ta pb4
 *br HHID_panel INDID_panel loanamount3 loanbalance3 totalrepaid3 interestpaid3 principalpaid4 test th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if pb3==1
 
 
@@ -640,17 +642,85 @@ drop test test2
 ********** kézako les 2, 3, 4, etc.
 tabstat loanamount loanamount2 loanamount3, stat(n mean sd q min max)
 tabstat interestpaid interestpaid2 interestpaid3, stat(n mean sd q min max)
+*check interestpaid3<0
 tabstat loanbalance loanbalance2 loanbalance3, stat(n mean sd q min max)
 tabstat totalrepaid totalrepaid2 totalrepaid3, stat(n mean sd q min max)
 tabstat principalpaid principalpaid2 principalpaid3 principalpaid4, stat(n mean sd q min max)
 
 
 tabstat loanamount loanamount2 loanamount3 if loanamount!=., stat(n mean sd q min max)
-tabstat interestpaid interestpaid2 interestpaid3 if interestpaid!=., stat(n mean sd q min max)
-tabstat loanbalance loanbalance2 loanbalance3 if loanbalance!=., stat(n mean sd q min max)
-tabstat totalrepaid totalrepaid2 totalrepaid3 if totalrepaid!=., stat(n mean sd q min max)
-tabstat principalpaid principalpaid2 principalpaid3 principalpaid4 if principalpaid!=., stat(n mean sd q min max)
+/*
+   stats |  loanam~t  loanam~2  loanam~3
+---------+------------------------------
+       N |      5802      5802      5802
+    mean |  36944.37  36691.17  35166.91
+      sd |  81658.75  80328.04  76635.19
+     p25 |      5000      5000      4500
+     p50 |     20000     20000     15000
+     p75 |     40000     40000     39000
+     min |         2         2         2
+     max |   1700000   1700000   1700000
+----------------------------------------
+*/
 
+tabstat interestpaid interestpaid2 interestpaid3 if dummyinterest==1 & interestpaid!=66, stat(n mean sd q min max)
+/*
+   stats |  intere~d  intere~2  intere~3
+---------+------------------------------
+       N |      1377      1377      1377
+    mean |  9972.118  9973.314  11864.89
+      sd |  20840.88  20840.36  31895.59
+     p25 |      1000      1000      1000
+     p50 |      3600      3600      4350
+     p75 |     10000     10000     10800
+     min |         0         0         0
+     max |    305964    305964    720000
+----------------------------------------
+*/
+
+tabstat loanbalance loanbalance2 loanbalance3 if loanbalance!=., stat(n mean sd q min max)
+/*
+   stats |  loanba~e  loanba~2  loanba~3
+---------+------------------------------
+       N |      4350      4350      4350
+    mean |  26401.47  26371.86  24527.54
+      sd |  60935.21  60924.99  56174.83
+     p25 |      2000      2000      2000
+     p50 |     10000     10000     10000
+     p75 |     25080     25000     25000
+     min |         0         0         0
+     max |   1000000   1000000    962000
+----------------------------------------
+*/
+tabstat totalrepaid totalrepaid2 totalrepaid3 if dummyinterest==1, stat(n mean sd q min max)
+/*
+   stats |  totalr~d  totalr~2  totalr~3
+---------+------------------------------
+       N |      2512      2473      2473
+    mean |  21191.52   21951.4  22059.04
+      sd |  58677.17  59089.28  59281.19
+     p25 |      1000      2000      2000
+     p50 |      9000     10000     10000
+     p75 |     23000     24000     24000
+     min |         0         0         0
+     max |   1480000   1480000   1480000
+----------------------------------------
+*/
+
+tabstat principalpaid principalpaid2 principalpaid3 principalpaid4 if principalpaid!=., stat(n mean sd q min max)
+/*
+   stats |  princi~d  princi~2  princi~3  princi~4
+---------+----------------------------------------
+       N |      1614      1614      1614      1614
+    mean |  12116.93   12455.5  14453.55  12795.17
+      sd |   62615.9  62601.81  74820.51  61318.73
+     p25 |         0         0         0         0
+     p50 |         0         0         0         0
+     p75 |      3300      4000      5000      5000
+     min |    -96564    -96564         0         0
+     max |   1480000   1480000   1524596   1524596
+--------------------------------------------------
+*/
 
 /*
 loanamount			classique, original, l'unique
@@ -694,6 +764,24 @@ gen test2=.
 replace test2=1 if test>0 & test!=.
 replace test2=-1 if test<0 & test!=.
 ta test2
+*/
+
+
+
+
+********** Interestpaid3<0
+drop pb4
+gen pb4=0
+replace pb4=1 if interestpaid3<0
+order interestpaid interestpaid2, before(interestpaid3)
+br if pb4==1
+/*
+Pb des 66
+Pour eux, pb pour totalrepaid, donc à voir: soit modifier total repaid
+Soit ok pour total, mais ne pas faire le calcul total-principal=int
+avec principal=amt-bal
+
+Je les recode à 0 dans le doute, ca rpz peu de prêts donc bon.....
 */
 
 
