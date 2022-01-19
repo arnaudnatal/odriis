@@ -11,8 +11,10 @@ description: 	Cog
 -------------------------
 */
 
-
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
+****************************************
+* INITIALIZATION
+****************************************
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
 
 
 cd "$directory"
@@ -23,6 +25,13 @@ cd "$directory"
 *ssc install graphlog, replace
 set scheme plottig
 set graph off
+****************************************
+* END
+
+
+
+
+
 
 
 
@@ -230,16 +239,16 @@ fre completeduties putoffduties
 
 
 
-********* Omega
-omega curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .8684
+********* omegacoef
+omegacoef curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination, rev(repetitivetasks) // .8684
 
-omega organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .8513
+omegacoef organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties, rev(putoffduties easilydistracted)  // .8513
 
-omega enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .7292
+omegacoef enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts, rev(shywithpeople)  // .7292
 
-omega workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .5108
+omegacoef workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers, rev(rudetoother)  // .5108
 
-omega managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .4794
+omegacoef managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm, rev(managestress staycalm)  // .4794
 
 
 

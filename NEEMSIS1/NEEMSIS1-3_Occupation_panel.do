@@ -10,11 +10,24 @@ TITLE: Occupation
 -------------------------
 */
 
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
+
+
+****************************************
+* INITIALIZATION
+****************************************
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
 global git ="C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
 
 
 cd "$directory"
+****************************************
+* END
+
+
+
+
+
+
 
 
 

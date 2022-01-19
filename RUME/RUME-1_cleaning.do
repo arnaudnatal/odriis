@@ -10,8 +10,17 @@ TITLE: RUME
 -------------------------
 */
 
-global directory = "D:\Documents\_Thesis\_DATA\RUME\"
+
+
+
+****************************************
+* INITIALIZATION
+****************************************
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME\"
 cd "$directory"
+****************************************
+* END
+
 
 
 ****************************************
@@ -524,7 +533,7 @@ save"RUME-HH_v5.dta", replace
 ****************************************
 * Panel individuals
 ****************************************
-use"RUME-HH_v5.dta", clear
+*use"RUME-HH_v5.dta", clear
 /*
 ********** RAW: F1 to 1
 split INDID, p(F)
@@ -620,6 +629,7 @@ OK pour la dernière version (2 donc car en 3 je vérifie 2)
 */
 
 ********** MERGER LES NOUVEAUX CODE DONC
+/*
 use"RUME-HH_v5.dta", clear
 merge 1:1 HHID2010 INDID using "RUME-name_panel_v2.dta"
 drop _merge
@@ -639,13 +649,13 @@ sort HHID2010 INDID
 /*
 Check if INDID=0 are in tracking2016
 */
-
+*/
 
 
 
 **********
-drop INDID name_p16
-rename INDID_o INDID2010
+use"RUME-HH_v5.dta", clear
+rename INDID INDID2010
 merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_wide", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge

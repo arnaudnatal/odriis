@@ -9,14 +9,28 @@ TITLE: Other file
 -------------------------
 */
 
+
+
+
+****************************************
+* INITIALIZATION
+****************************************
 clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
 
 cd"$directory"
 clear all
+****************************************
+* END
+
+
+
+
+
+
 
 
 

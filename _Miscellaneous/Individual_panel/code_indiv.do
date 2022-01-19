@@ -45,7 +45,6 @@ Le but est donc de compléter ça avec les données 2020 sachant qu'une bonne pa
 ****************************************
 * Nettoyage précédents pour 2010
 ****************************************
-use"$data\RUME\RUME-HH_v8.dta", clear
 /*
 replace INDID_panel=1 if HHID_panel=="ELA52" & INDID=="F3" & year==2010
 replace INDID_panel=5 if HHID_panel=="ELA52" & INDID=="F1" & year==2010
@@ -80,8 +79,9 @@ Donc, en partant de la base déjà reliée "code_2010_2016
 -> Et donc merger de nouveau avec les bases...
 */
 
-use"$git\code_indiv_2010_2016"
-drop HHINDID
+
+/*
+use"$git\code_indiv_2010_2016", clear
 sort HHID_panel INDID_panel year
 
 *
@@ -98,7 +98,73 @@ replace INDID_panel="Ind_6" if HHID_panel=="KAR28" & INDID=="5" & year==2016
 replace INDID_panel="Ind_7" if HHID_panel=="KAR28" & INDID=="6" & year==2016
 
 *
+br if HHID_panel=="KAR49"
+replace INDID_panel="Ind_8" if HHID_panel=="KAR49" & INDID=="7" & year==2016
+replace INDID_panel="Ind_9" if HHID_panel=="KAR49" & INDID=="8" & year==2016
 
+*
+br if HHID_panel=="KOR23"
+replace INDID_panel="Ind_8" if HHID_panel=="KOR23" & INDID=="7" & year==2016
+
+*
+br if HHID_panel=="KOR38"
+replace INDID_panel="Ind_6" if HHID_panel=="KOR38" & INDID=="4" & year==2016
+replace INDID_panel="Ind_5" if HHID_panel=="KOR38" & INDID=="5" & year==2016
+
+*
+br if HHID_panel=="KOR9"
+replace INDID_panel="Ind_5" if HHID_panel=="KOR9" & INDID=="3" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="KOR9" & INDID=="4" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="KOR9" & INDID=="5" & year==2016
+
+*
+br if HHID_panel=="KUV29"
+replace INDID_panel="Ind_4" if HHID_panel=="KUV29" & INDID=="7" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="KUV29" & INDID=="4" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="KUV29" & INDID=="5" & year==2016
+
+*
+br if HHID_panel=="MAN16"
+replace INDID_panel="Ind_6" if HHID_panel=="MAN16" & INDID=="5" & year==2016
+
+*
+br if HHID_panel=="MANAM38"
+replace INDID_panel="Ind_7" if HHID_panel=="MANAM38" & INDID=="6" & year==2016
+
+*
+br if HHID_panel=="MANAM4"
+replace INDID_panel="Ind_6" if HHID_panel=="MANAM4" & INDID=="4" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="MANAM4" & INDID=="6" & year==2016
+
+*
+br if HHID_panel=="NAT1"
+replace INDID_panel="Ind_6" if HHID_panel=="NAT1" & INDID=="4" & year==2016
+
+*
+br if HHID_panel=="ORA15"
+replace INDID_panel="Ind_5" if HHID_panel=="ORA15" & INDID=="4" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="ORA15" & INDID=="5" & year==2016
+
+*
+br if HHID_panel=="SEM26"
+replace INDID_panel="Ind_6" if HHID_panel=="SEM26" & INDID=="3" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="SEM26" & INDID=="5" & year==2016
+replace INDID_panel="Ind_8" if HHID_panel=="SEM26" & INDID=="6" & year==2016
+replace INDID_panel="" if HHID_panel=="" & INDID=="" & year==2016
+replace INDID_panel="" if HHID_panel=="" & INDID=="" & year==2016
+replace INDID_panel="" if HHID_panel=="" & INDID=="" & year==2016
+replace INDID_panel="" if HHID_panel=="" & INDID=="" & year==2016
+
+drop HHINDID
+egen HHINDID=concat(HHID_panel INDID_panel), p(/)
+
+save"$git\code_indiv_2010_2016", replace
+
+use"$git\code_indiv_2010_2016", clear
+reshape wide INDID name sex age relationshiptohead dummylivinghome maritalstatus egoid, i(HHINDID) j(year)
+
+save"$git\code_indiv_2010_2016_wide", replace
+*/
 
 ****************************************
 * END

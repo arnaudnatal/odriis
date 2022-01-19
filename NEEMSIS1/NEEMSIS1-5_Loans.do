@@ -12,9 +12,25 @@ description: 	Réunir tous les prêts dans la même base
 */
 
 
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
+
+
+
+
+****************************************
+* INITIALIZATION
+****************************************
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
 
 cd "$directory"
+****************************************
+* END
+
+
+
+
+
+
+
 
 ****************************************
 * FINANCE

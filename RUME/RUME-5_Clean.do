@@ -10,8 +10,25 @@ TITLE: Cleaning
 -------------------------
 */
 
-global directory = "D:\Documents\_Thesis\_DATA\RUME"
+
+
+****************************************
+* INITIALIZATION
+****************************************
+
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME"
 cd "$directory"
+****************************************
+* END
+
+
+
+
+
+
+
+
+
 
 
 
