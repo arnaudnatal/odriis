@@ -24,7 +24,7 @@ macro drop _all
 
 global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel"
 
-global data "D:\Documents\_Thesis\_DATA"
+global data "C:\Users\Arnaud\Documents\_Thesis\_DATA"
 
 ********** SSC to install
 *ssc install dropmiss, replace
@@ -45,6 +45,7 @@ Le but est donc de compléter ça avec les données 2020 sachant qu'une bonne pa
 ****************************************
 * Nettoyage précédents pour 2010
 ****************************************
+use"$data\RUME\RUME-HH_v8.dta", clear
 /*
 replace INDID_panel=1 if HHID_panel=="ELA52" & INDID=="F3" & year==2010
 replace INDID_panel=5 if HHID_panel=="ELA52" & INDID=="F1" & year==2010
@@ -70,6 +71,35 @@ replace INDID_panel=-97 if HHID_panel=="KUV25" & INDID=="F4" & year==2010
 replace INDID_panel=-99 if HHID_panel=="MANAM34" & INDID=="F2" & year==2010
 replace INDID_panel=-99 if HHID_panel=="MANAM40" & INDID=="F3" & year==2010
 */
+
+
+/*
+Bon, je n'ai plus mes codes permettant de lier RUME et NEEMSIS-1
+Donc, en partant de la base déjà reliée "code_2010_2016
+-> Changer manuellement les Ind_
+-> Et donc merger de nouveau avec les bases...
+*/
+
+use"$git\code_indiv_2010_2016"
+drop HHINDID
+sort HHID_panel INDID_panel year
+
+*
+br if HHID_panel=="ELA13"
+replace INDID_panel="Ind_3" if HHID_panel=="ELA13" & INDID=="5" & year==2016
+
+
+*
+br if HHID_panel=="GOV3"
+
+*
+br if HHID_panel=="KAR28"
+replace INDID_panel="Ind_6" if HHID_panel=="KAR28" & INDID=="5" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="KAR28" & INDID=="6" & year==2016
+
+*
+
+
 ****************************************
 * END
 

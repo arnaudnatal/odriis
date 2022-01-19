@@ -20,6 +20,8 @@ global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND
 global directorybis = "C:\Users\Arnaud\Docuements\_Thesis\_DATA\NEEMSIS2\DATA"
 global git = "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS"
 
+global data="C:\Users\Arnaud\Documents\_Thesis\_DATA"
+
 *global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *global directorybis = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA"
 *global git ="C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
@@ -678,7 +680,7 @@ clear all
 ****************************************
 * COHERENCE SEX - RELATIONSHIP: RUME
 ****************************************
-use "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME\CLEAN\RUME-HH.dta", clear
+use "$data\RUME\CLEAN\RUME-HH.dta", clear
 
 label define sex 1"Male" 2"Female"
 label values sex sex
@@ -698,7 +700,7 @@ ta relationshiptohead sex
 ****************************************
 * COHERENCE SEX - RELATIONSHIP: NEEMSIS-1
 ****************************************
-use "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1\CLEAN\NEEMSIS1-HH.dta", clear
+use "$data\NEEMSIS1\CLEAN\NEEMSIS1-HH.dta", clear
 
 
 ta relationshiptohead sex
@@ -720,12 +722,107 @@ replace miscoding=1 if ///
 (sex==2 & relationshiptohead==15) | ///
 (sex==1 & relationshiptohead==16)
 
-
 codebook HHID_panel if sex==1 & relationshiptohead==2
+replace miscoding=2 if ///
+HHID_panel=="ELA36" | ///
+HHID_panel=="KUV14" | ///
+HHID_panel=="MAN43" | ///
+HHID_panel=="MANAM50" | ///
+HHID_panel=="MANAM9" | ///
+HHID_panel=="NAT36" | ///
+HHID_panel=="ORA7"
+
+ta miscoding
+preserve
+keep if miscoding==2
+sort HHID_panel INDID_panel
+keep HHID_panel INDID_panel relationshiptohead sex age name
+list, clean noobs
+restore
+/*
+Changer label en wife/husband
+Sauf pour ORA7 car head / wife sont male
+*/
+label define relationshipwithinhh 2"Wife/husband", modify
+recode miscoding (2=0)
+replace miscoding=2 if HHID_panel=="ORA7"
+fre relationshiptohead
 
 
+********** Nb of head
+gen head=0
+replace head=1 if relationshiptohead==1
+bysort HHID_panel: egen sum_head=sum(head)
+ta sum_head
+codebook HHID_panel if sum_head==2
+replace miscoding=3 if sum_head==2
+ta miscoding
 
 
+********** Check with RUME
+preserve
+rename relationshiptohead relationshiptohead_t2
+rename sex sex_t2
+rename name name_t2
+rename age age_t2
+
+merge 1:1 HHID_panel INDID_panel using "$data\RUME\CLEAN\RUME-HH.dta", keepusing(name relationshiptohead sex age)
+drop if _merge==2
+
+label values sex sex
+
+sort HHID_panel _merge INDID_panel
+list HHID_panel INDID_panel _merge name age sex relationshiptohead name_t2 age_t2 sex_t2 relationshiptohead_t2 if miscoding==1, clean noobs
+/*
+    HHID_p~l   INDID_~l            _merge          name   age      sex   relati~d         name_t2   age_t2   sex_t2   relationshipt~2  
+       ELA13      Ind_5   master only (1)                   .        .          .        Vimalraj        3   Female               Son  
+       KAR18      Ind_3       matched (3)      SARANRAJ    17     Male        Son        Saranraj       23     Male       Grandmother  
+       KAR39      Ind_4   master only (1)                   .        .          .          Barath       14     Male          Daughter  
+       KAR45      Ind_6   master only (1)                   .        .          .         Mathina       27     Male   Daughter-in-law  
+       KAR49      Ind_7       matched (3)   LATCHUMANAN     2     Male        Son   Ramakirushnan       12   Female               Son  
+        KAR8      Ind_5       matched (3)     SATHYARAJ     7   Female   Daughter      Sathiyaraj       14   Female               Son  
+       KOR30      Ind_5       matched (3)      RAJKUMAR    20     Male        Son       Rajakumar       26     Male          Daughter  
+       KUV20      Ind_1       matched (3)    DHANDAPANI    52     Male       Head      Dhandapani       58     Male       Grandmother  
+       NAT27      Ind_3   master only (1)                   .        .          .         Kesavan       65   Female            Father  
+       NAT42      Ind_4   master only (1)                   .        .          .          Balaji       13   Female               Son  
+       ORA13      Ind_2   master only (1)                   .        .          .    Ranjithkumar       27   Female               Son  
+       ORA26      Ind_9   master only (1)                   .        .          .    Sonia gandhi       26     Male   Daughter-in-law  
+       ORA36      Ind_4       matched (3)      GOGULRAJ     9     Male        Son        Gokulraj       16     Male          Daughter  
+       ORA42      Ind_3   master only (1)                   .        .          .      Srinivasan       35     Male       Grandmother  
+*/
+
+restore
+/*
+relationshiptohead:
+           1 Head
+           2 Wife
+           3 Mother
+           4 Father
+           5 Son
+           6 Daughter
+           7 Son-in-law
+           8 Daughter-in-law
+           9 Sister
+          10 Brother
+          11 Mother-in-law
+          12 Father-in-law
+          13 Grandchild
+          15 Grandfather
+          16 Grandmother
+          17 Cousin
+          77 Other
+sex:
+	1 Male
+	2 Female
+*/
+
+
+fre relationshiptohead
+replace relationshiptohead=5 if HHID_panel=="KAR18" & INDID_panel=="Ind_3"
+replace relationshiptohead=6 if HHID_panel=="KAR8" & INDID_panel=="Ind_5"
+replace relationshiptohead=5 if HHID_panel=="KOR30" & INDID_panel=="Ind_5"
+replace relationshiptohead=15 if HHID_panel=="KUV20" & INDID_panel=="Ind_1"
+replace relationshiptohead=5 if HHID_panel=="ORA42" & INDID_panel=="Ind_3"
 
 ****************************************
 * END

@@ -27,10 +27,10 @@ macro drop _all
 
 global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel"
 
-global rume "D:\Documents\_Thesis\_DATA\RUME"
-global neemsis1 "D:\Documents\_Thesis\_DATA\NEEMSIS1"
-global neemsis2 "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN\LAST"
-global tracking1 "D:\Documents\_Thesis\_DATA\Tracking2019\DATA"
+global rume "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME"
+global neemsis1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
+global neemsis2 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN\LAST"
+global tracking1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\Tracking2019\DATA"
 
 
 ****************************************
