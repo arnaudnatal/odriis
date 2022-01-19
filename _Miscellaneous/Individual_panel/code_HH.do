@@ -22,16 +22,16 @@ Indiv panel
 clear all
 macro drop _all
 ********** Path to folder "data" folder.
-*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 *cd "$directory\CLEAN"
 
 global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel"
 
-global directory "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
+*global directory "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN"
 
 global neemsis "NEEMSIS2-HH_v5"
 
-global tracking1 "D:\Documents\_Thesis\_DATA\Tracking2019\DATA"
+global tracking1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\Tracking2019\DATA"
 
 ********** SSC to install
 *ssc install dropmiss, replace
