@@ -662,3 +662,171 @@ save"$directory\CLEAN\NEEMSIS2-HH_v24.dta", replace
 clear all
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* COHERENCE SEX - RELATIONSHIP: RUME
+****************************************
+use "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME\CLEAN\RUME-HH.dta", clear
+
+label define sex 1"Male" 2"Female"
+label values sex sex
+
+ta relationshiptohead sex
+*1928
+*Ok, tout va bien ici
+
+****************************************
+* END
+
+
+
+
+
+
+****************************************
+* COHERENCE SEX - RELATIONSHIP: NEEMSIS-1
+****************************************
+use "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1\CLEAN\NEEMSIS1-HH.dta", clear
+
+
+ta relationshiptohead sex
+*2696 indiv ok
+
+********** Recoding
+gen miscoding=0
+replace miscoding=1 if ///
+(sex==1 & relationshiptohead==3) | ///
+(sex==2 & relationshiptohead==4) | ///
+(sex==2 & relationshiptohead==5) | ///
+(sex==1 & relationshiptohead==6) | ///
+(sex==2 & relationshiptohead==7) | ///
+(sex==1 & relationshiptohead==8) | ///
+(sex==1 & relationshiptohead==9) | ///
+(sex==2 & relationshiptohead==10) | ///
+(sex==1 & relationshiptohead==11) | ///
+(sex==2 & relationshiptohead==12) | ///
+(sex==2 & relationshiptohead==15) | ///
+(sex==1 & relationshiptohead==16)
+
+
+codebook HHID_panel if sex==1 & relationshiptohead==2
+
+
+
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* COHERENCE SEX - RELATIONSHIP: NEEMSIS-2
+****************************************
+use"$directory\CLEAN\NEEMSIS2-HH_v24.dta", clear
+*Mary Di Santolo clean
+
+
+********** Missing relationshiptohead
+ta relationshiptohead, m
+fre relationshiptohead
+replace relationshiptohead=77 if relationshiptoheadother!=""
+ta relationshiptohead if INDID_left!=., m
+ta relationshiptohead, m
+*OK
+label define relationshipwithinhh 77"Other", modify
+fre relationshiptohead
+fre sex
+ta relationshiptoheadother
+*3647 indiv au tot
+*600 left
+*=3047
+
+
+********** 
+ta relationshiptohead sex
+ta relationshiptohead sex, nolab
+*Ok -> 3047
+
+gen miscoding=0
+replace miscoding=1 if ///
+(sex==1 & relationshiptohead==3) | ///
+(sex==2 & relationshiptohead==4) | ///
+(sex==2 & relationshiptohead==5) | ///
+(sex==1 & relationshiptohead==6) | ///
+(sex==2 & relationshiptohead==7) | ///
+(sex==1 & relationshiptohead==8) | ///
+(sex==1 & relationshiptohead==9) | ///
+(sex==2 & relationshiptohead==10) | ///
+(sex==1 & relationshiptohead==11) | ///
+(sex==2 & relationshiptohead==12) | ///
+(sex==2 & relationshiptohead==15) | ///
+(sex==1 & relationshiptohead==16)
+
+codebook HHID_panel if sex==1 & relationshiptohead==2
+replace miscoding=2 if ///
+HHID_panel=="NAT31" | ///
+HHID_panel=="NAT36" | ///
+HHID_panel=="ORA7"
+
+ta miscoding
+preserve
+keep if miscoding==2
+sort HHID_panel INDID_panel
+keep HHID_panel INDID_panel INDID_left relationshiptohead sex age name
+list, clean noobs
+restore
+/*
+Changer label en wife/husband
+*/
+label define relationshipwithinhh 2"Wife/husband", modify
+recode miscoding (2=0)
+fre relationshiptohead
+
+
+
+
+
+ta indivpanel_10_16_20
+sort HHID_panel INDID_panel
+list HHID_panel INDID_panel name sex age relationshiptohead if indivpanel_10_16_20=="Yes", clean noobs
+
+
+restore
+
+
+
+
+
+
+
+
+save"$directory\CLEAN\NEEMSIS2-HH_v25.dta", replace
+clear all
+****************************************
+* END
