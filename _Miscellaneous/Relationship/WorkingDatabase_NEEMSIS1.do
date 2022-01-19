@@ -13,6 +13,7 @@ use "C:\Users\disantolo\OneDrive - Université Paris-Dauphine\Thèse\Chpt2\Datab
 	* 1.2 Dealing with miscoding between gender and relationship to head *
 	sort HHID_panel INDID_panel 
 	merge m:m HHID_panel INDID_panel using "C:\Users\disantolo\OneDrive - Université Paris-Dauphine\Thèse\Chpt2\Databases\NEEMSIS1-SexCorrection.dta"
+	* 4 not matched obs. from using: individuals who left their household *
 	drop if _merge==2 
 		
 		* 1.2.1 Gender correction * 
