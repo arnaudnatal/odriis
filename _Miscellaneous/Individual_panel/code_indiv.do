@@ -42,6 +42,14 @@ Le but est donc de compléter ça avec les données 2020 sachant qu'une bonne pa
 
 
 
+
+
+
+
+
+
+
+
 ****************************************
 * Nettoyage précédents pour 2010
 ****************************************
@@ -173,6 +181,12 @@ save"$git\code_indiv_2010_2016_wide", replace
 
 
 
+
+
+
+
+
+/*
 ****************************************
 * Nettoyage 2020
 ****************************************
@@ -411,6 +425,83 @@ order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020
 save"$git\code_indiv_2010_2016_2020_wide_v2", replace
 ****************************************
 * END
+*/
+
+
+
+
+
+
+
+
+****************************************
+* Vérifier INDID_panel à la main + correction
+****************************************
+use"$git\code_indiv_2010_2016_2020_wide_v2", clear
+
+gen pb=1 if name2016!=name2020
+list HHID_panel INDID2010 INDID2016 INDID2020 name2010 name2016 name2020 if pb==1, clean
+
+use"$git\code_indiv_2010_2016_2020_v2", clear
+
+order HHID_panel INDID_panel INDID name sex age relationshiptohead
+sort HHID_panel INDID_panel year
+
+*
+br if HHID_panel=="GOV19"
+replace INDID_panel="Ind_5" if HHID_panel=="GOV19" & INDID=="3" & year==2020
+
+*
+br if HHID_panel=="GOV38"
+replace INDID_panel="Ind_3" if HHID_panel=="GOV38" & INDID=="7" & year==2020
+replace INDID_panel="Ind_5" if HHID_panel=="GOV38" & INDID=="3" & year==2020
+replace INDID_panel="Ind_6" if HHID_panel=="GOV38" & INDID=="4" & year==2020
+replace INDID_panel="Ind_7" if HHID_panel=="GOV38" & INDID=="5" & year==2020
+replace INDID_panel="Ind_8" if HHID_panel=="GOV38" & INDID=="6" & year==2020
+replace INDID_panel="Ind_9" if HHID_panel=="GOV38" & INDID=="8" & year==2020
+
+*
+br if HHID_panel=="MAN23"
+replace INDID_panel="Ind_4" if HHID_panel=="MAN23" & INDID=="2" & year==2020
+replace INDID_panel="Ind_5" if HHID_panel=="MAN23" & INDID=="3" & year==2020
+replace INDID_panel="Ind_6" if HHID_panel=="MAN23" & INDID=="4" & year==2020
+
+*
+br if HHID_panel=="MAN34"
+replace INDID_panel="Ind_6" if HHID_panel=="MAN34" & INDID=="2" & year==2020
+
+*
+br if HHID_panel=="MANAM18"
+replace INDID_panel="Ind_6" if HHID_panel=="MANAM18" & INDID=="2" & year==2020
+replace INDID_panel="Ind_12" if HHID_panel=="MANAM18" & INDID=="3" & year==2020
+replace INDID_panel="Ind_13" if HHID_panel=="MANAM18" & INDID=="4" & year==2020
+
+*
+br if HHID_panel=="NAT10"
+replace INDID_panel="Ind_3" if HHID_panel=="NAT10" & INDID=="2" & year==2020
+
+*
+br if HHID_panel=="SEM44"
+replace INDID_panel="Ind_5" if HHID_panel=="SEM44" & INDID=="2" & year==2020
+replace INDID_panel="Ind_6" if HHID_panel=="SEM44" & INDID=="4" & year==2020
+replace INDID_panel="Ind_7" if HHID_panel=="SEM44" & INDID=="5" & year==2020
+replace INDID_panel="Ind_8" if HHID_panel=="SEM44" & INDID=="6" & year==2020
+replace INDID_panel="Ind_4" if HHID_panel=="SEM44" & INDID=="7" & year==2020
+
+
+
+save"$git\code_indiv_2010_2016_2020_wide_v3", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
 
 
 
@@ -457,8 +548,13 @@ OK
 
 
 
-/*
 
+
+
+
+
+
+/*
 ****************************************
 * Tracking 2019
 ****************************************
