@@ -39,17 +39,17 @@ fre sex
 ta relationshiptohead sex
 gen pb1=0
 
-replace pb=1 if sex==2 & relationshiptohead=="Brother"
-replace pb=1 if sex==1 & relationshiptohead=="Daughter"
-replace pb=1 if sex==1 & relationshiptohead=="Daughter-in-law"
-replace pb=1 if sex==2 & relationshiptohead=="Father"
-replace pb=1 if sex==2 & relationshiptohead=="Father-in-law"
-replace pb=1 if sex==1 & relationshiptohead=="Grandmother"
-replace pb=1 if sex==1 & relationshiptohead=="Mother"
-replace pb=1 if sex==1 & relationshiptohead=="Mother-in-law"
-replace pb=1 if sex==1 & relationshiptohead=="Sister"
-replace pb=1 if sex==2 & relationshiptohead=="Son"
-replace pb=1 if sex==2 & relationshiptohead=="Son-in-law"
+replace pb=1 if sex=="Female" & relationshiptohead=="Brother"
+replace pb=1 if sex=="Male" & relationshiptohead=="Daughter"
+replace pb=1 if sex=="Male" & relationshiptohead=="Daughter-in-law"
+replace pb=1 if sex=="Female" & relationshiptohead=="Father"
+replace pb=1 if sex=="Female" & relationshiptohead=="Father-in-law"
+replace pb=1 if sex=="Male" & relationshiptohead=="Grandmother"
+replace pb=1 if sex=="Male" & relationshiptohead=="Mother"
+replace pb=1 if sex=="Male" & relationshiptohead=="Mother-in-law"
+replace pb=1 if sex=="Male" & relationshiptohead=="Sister"
+replace pb=1 if sex=="Female" & relationshiptohead=="Son"
+replace pb=1 if sex=="Female" & relationshiptohead=="Son-in-law"
 
 
 

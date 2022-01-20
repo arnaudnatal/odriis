@@ -293,6 +293,7 @@ replace indivpanel_10_16_20="Yes" if wave_2010=="RUME" & wave_2016=="NEEMSIS-1" 
 save"$git\ODRIIS-indiv.dta", replace
 
 * HH
+/*
 preserve
 duplicates drop HHID_panel, force
 gen hhpanel_10_16_20="No"
@@ -300,8 +301,150 @@ replace hhpanel_10_16_20="Yes" if wave_2010=="RUME" & wave_2016=="NEEMSIS-1" & w
 drop name_2010 age_2010 sex_2010 relationshiptohead_2010 name_2016 age_2016 sex_2016 relationshiptohead_2016 name_2020 age_2020 sex_2020 relationshiptohead_2020 relationshiptoheadother_2020 dummyleft_2020 indivpanel_10_16_20
 save"$git\ODRIIS-HH.dta", replace
 restore
-
+*/
 *save"$git\ODRIIS-HH_indiv.dta", replace
 ****************************************
 * END
 
+
+
+
+
+
+
+****************************************
+* APPEND ALL DATASETS
+****************************************
+use"$git\ODRIIS-indiv.dta", clear
+
+foreach i in 2010 2016 2020 {
+gen pb1_`i'=0
+}
+
+foreach i in 2010 2016 2020 {
+replace pb1_`i'=1 if sex_`i'=="Female" & relationshiptohead_`i'=="Brother"
+replace pb1_`i'=1 if sex_`i'=="Male" & relationshiptohead_`i'=="Daughter"
+replace pb1_`i'=1 if sex_`i'=="Male" & relationshiptohead_`i'=="Daughter-in-law"
+replace pb1_`i'=1 if sex_`i'=="Female" & relationshiptohead_`i'=="Father"
+replace pb1_`i'=1 if sex_`i'=="Female" & relationshiptohead_`i'=="Father-in-law"
+replace pb1_`i'=1 if sex_`i'=="Male" & relationshiptohead_`i'=="Grandmother"
+replace pb1_`i'=1 if sex_`i'=="Male" & relationshiptohead_`i'=="Mother"
+replace pb1_`i'=1 if sex_`i'=="Male" & relationshiptohead_`i'=="Mother-in-law"
+replace pb1_`i'=1 if sex_`i'=="Male" & relationshiptohead_`i'=="Sister"
+replace pb1_`i'=1 if sex_`i'=="Female" & relationshiptohead_`i'=="Son"
+replace pb1_`i'=1 if sex_`i'=="Female" & relationshiptohead_`i'=="Son-in-law"
+}
+
+
+********** Coherence sex relationship
+*** 2010
+ta pb1_2010
+ta relationshiptohead_2010 sex_2010
+
+*** 2016-17
+ta pb1_2016
+ta relationshiptohead_2016 sex_2016
+ta relationshiptohead_2016 sex_2016 if pb1_2016==1
+list HHID_panel INDID_panel name_2010 sex_2010 relationshiptohead_2010 name_2016 sex_2016 relationshiptohead_2016 name_2020 sex_2020 relationshiptohead_2020 if pb1_2016==1, clean noobs
+
+
+replace relationshiptohead="Son" if HHID_panel=="KAR18" & INDID_panel=="Ind_3"
+replace relationshiptohead="Son" if HHID_panel=="KAR39" & INDID_panel=="Ind_4"
+replace relationshiptohead="Daughter" if HHID_panel=="KAR8" & INDID_panel=="Ind_5"  // 2020 aussi
+replace relationshiptohead="Son" if HHID_panel=="KOR30" & INDID_panel=="Ind_5"
+replace relationshiptohead="Head" if HHID_panel=="KUV20" & INDID_panel=="Ind_1"
+replace relationshiptohead="Son" if HHID_panel=="ORA36" & INDID_panel=="Ind_4"
+replace relationshiptohead="Son" if HHID_panel=="ORA42" & INDID_panel=="Ind_3"
+
+replace sex="Female" if HHID_panel=="KAR45" & INDID_panel=="Ind_6"  // 2020 aussi
+replace sex="Male" if HHID_panel=="NAT27" & INDID_panel=="Ind_3"  // 2020 aussi
+replace sex="Male" if HHID_panel=="KAR49" & INDID_panel=="Ind_8"  // 2020 aussi
+replace sex="Male" if HHID_panel=="ELA13" & INDID_panel=="Ind_5"  // 2020 aussi
+replace sex="Female" if HHID_panel=="MANAM50" & INDID_panel=="Ind_6"  // 2020 aussi
+replace sex="Male" if HHID_panel=="NAT42" & INDID_panel=="Ind_4"  // 2020 aussi
+replace sex="Male" if HHID_panel=="ORA13" & INDID_panel=="Ind_2"
+replace sex="Female" if HHID_panel=="ORA26" & INDID_panel=="Ind_9"  // 2020 aussi
+
+
+
+
+*** 2020-21
+ta pb1_2020
+ta relationshiptohead_2020 sex_2020
+ta relationshiptohead_2020 sex_2020 if pb1_2016==1
+list HHID_panel INDID_panel name_2010 sex_2010 relationshiptohead_2010 name_2016 sex_2016 relationshiptohead_2016 name_2020 sex_2020 relationshiptohead_2020 if pb1_2020==1, clean noobs
+/*
+
+    HHID_p~l   INDID_~l        name_2010   sex_2010   relationsh~2010                  name_2016   sex_2016   relationsh~2016                  name_2020   sex_2020   relation~d_2020  
+       KAR56      Ind_3                                                                                                                    Praveen sahar     Female               Son  
+       KAR61      Ind_3                                                                                                                     Nagananthini       Male   Daughter-in-law  
+       MAN56      Ind_4                                                                                                                          Gowtham     Female               Son  
+       ORA67      Ind_4                                                                                                                           Vijaya       Male            Mother 
+*/
+
+gen pb=0
+replace pb=1 if HHID_panel=="ELA25" & INDID_panel=="Ind_4"  // Arthijara
+replace pb=1 if HHID_panel=="MANAM17" & INDID_panel=="Ind_3"  // male son - female daughter - female son * barahti
+replace pb=1 if HHID_panel=="SEM28" & INDID_panel=="Ind_1"  // head head daughter
+replace pb=1 if HHID_panel=="SEM46" & INDID_panel=="Ind_1"  // head head daughter
+
+
+
+replace relationshiptohead="Daughter" if HHID_panel=="KAR8" & INDID_panel=="Ind_5"  // 2020 aussi
+replace relationshiptohead="Daughter" if HHID_panel=="ELA9" & INDID_panel=="Ind_3"
+replace relationshiptohead="Daughter" if HHID_panel=="GOV17" & INDID_panel=="Ind_8"
+replace relationshiptohead="Daughter" if HHID_panel=="GOV51" & INDID_panel=="Ind_4"
+replace relationshiptohead="Daughter-in-law" if HHID_panel=="KAR14" & INDID_panel=="Ind_5"
+replace relationshiptohead="Daughter" if HHID_panel=="KOR18" & INDID_panel=="Ind_5"
+replace relationshiptohead="Daughter" if HHID_panel=="KOR24" & INDID_panel=="Ind_6"
+replace relationshiptohead="Son" if HHID_panel=="KOR24" & INDID_panel=="Ind_7"
+replace relationshiptohead="Daughter" if HHID_panel=="KOR36" & INDID_panel=="Ind_3"
+replace relationshiptohead="Daughter" if HHID_panel=="KOR44" & INDID_panel=="Ind_4"
+replace relationshiptohead="Mother-in-law" if HHID_panel=="KUV12" & INDID_panel=="Ind_6"
+replace relationshiptohead="Daughter" if HHID_panel=="KUV19" & INDID_panel=="Ind_3"
+replace relationshiptohead="Daughter" if HHID_panel=="KUV24" & INDID_panel=="Ind_4"
+replace relationshiptohead="Daughter" if HHID_panel=="KUV24" & INDID_panel=="Ind_5"
+replace relationshiptohead="Daughter" if HHID_panel=="KUV35" & INDID_panel=="Ind_5"
+replace relationshiptohead="Son" if HHID_panel=="KUV44" & INDID_panel=="Ind_3"
+replace relationshiptohead="Daughter" if HHID_panel=="KUV6" & INDID_panel=="Ind_3"
+replace relationshiptohead="Son" if HHID_panel=="KUV7" & INDID_panel=="Ind_3"
+replace relationshiptohead="Daughter" if HHID_panel=="MAN31" & INDID_panel=="Ind_4"
+replace relationshiptohead="Daughter" if HHID_panel=="MAN48" & INDID_panel=="Ind_5"
+replace relationshiptohead="Grandchild" if HHID_panel=="MANAM15" & INDID_panel=="Ind_5"
+replace relationshiptohead="Grandchild" if HHID_panel=="MANAM15" & INDID_panel=="Ind_6"
+replace relationshiptohead="Daughter" if HHID_panel=="MANAM22" & INDID_panel=="Ind_3"
+replace relationshiptohead="Daughter" if HHID_panel=="NAT11" & INDID_panel=="Ind_4"
+replace relationshiptohead="Daughter" if HHID_panel=="ORA30" & INDID_panel=="Ind_3"
+replace relationshiptohead="Son" if HHID_panel=="ORA30" & INDID_panel=="Ind_5"
+replace relationshiptohead="Son" if HHID_panel=="ORA39" & INDID_panel=="Ind_5"
+replace relationshiptohead="Daughter" if HHID_panel=="ORA43" & INDID_panel=="Ind_6"
+replace relationshiptohead="Daughter-in-law" if HHID_panel=="SEM14" & INDID_panel=="Ind_2"
+replace relationshiptohead="Son" if HHID_panel=="SEM15" & INDID_panel=="Ind_4"
+
+
+
+
+
+
+
+replace sex="Male" if HHID_panel=="GOV33" & INDID_panel=="Ind_3"  // vérifier quand même car chelou son - head - son ?
+
+replace sex="Male" if HHID_panel=="NAT27" & INDID_panel=="Ind_3"  // 2020 aussi
+replace sex="Male" if HHID_panel=="KAR49" & INDID_panel=="Ind_8"  // 2020 aussi
+replace sex="Male" if HHID_panel=="ELA13" & INDID_panel=="Ind_5"  // 2020 aussi
+replace sex="Male" if HHID_panel=="NAT42" & INDID_panel=="Ind_4"  // 2020 aussi
+
+replace sex="Female" if HHID_panel=="MANAM50" & INDID_panel=="Ind_6"  // 2020 aussi
+replace sex="Female" if HHID_panel=="ORA26" & INDID_panel=="Ind_9"  // 2020 aussi
+replace sex="Female" if HHID_panel=="KAR45" & INDID_panel=="Ind_6"  // 2020 aussi
+replace sex="Female" if HHID_panel=="NAT57" & INDID_panel=="Ind_1"
+
+
+
+
+
+
+
+
+****************************************
+* END
