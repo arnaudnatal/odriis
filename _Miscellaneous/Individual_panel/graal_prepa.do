@@ -316,7 +316,7 @@ restore
 * APPEND ALL DATASETS
 ****************************************
 use"$git\ODRIIS-indiv.dta", clear
-
+/*
 foreach i in 2010 2016 2020 {
 gen pb1_`i'=0
 }
@@ -373,14 +373,6 @@ ta pb1_2020
 ta relationshiptohead_2020 sex_2020
 ta relationshiptohead_2020 sex_2020 if pb1_2016==1
 list HHID_panel INDID_panel name_2010 sex_2010 relationshiptohead_2010 name_2016 sex_2016 relationshiptohead_2016 name_2020 sex_2020 relationshiptohead_2020 if pb1_2020==1, clean noobs
-/*
-
-    HHID_p~l   INDID_~l        name_2010   sex_2010   relationsh~2010                  name_2016   sex_2016   relationsh~2016                  name_2020   sex_2020   relation~d_2020  
-       KAR56      Ind_3                                                                                                                    Praveen sahar     Female               Son  
-       KAR61      Ind_3                                                                                                                     Nagananthini       Male   Daughter-in-law  
-       MAN56      Ind_4                                                                                                                          Gowtham     Female               Son  
-       ORA67      Ind_4                                                                                                                           Vijaya       Male            Mother 
-*/
 
 gen pb=0
 replace pb=1 if HHID_panel=="ELA25" & INDID_panel=="Ind_4"  // Arthijara
@@ -423,28 +415,22 @@ replace relationshiptohead="Son" if HHID_panel=="SEM15" & INDID_panel=="Ind_4"
 
 
 
-
-
-
-
 replace sex="Male" if HHID_panel=="GOV33" & INDID_panel=="Ind_3"  // vérifier quand même car chelou son - head - son ?
 
 replace sex="Male" if HHID_panel=="NAT27" & INDID_panel=="Ind_3"  // 2020 aussi
 replace sex="Male" if HHID_panel=="KAR49" & INDID_panel=="Ind_8"  // 2020 aussi
 replace sex="Male" if HHID_panel=="ELA13" & INDID_panel=="Ind_5"  // 2020 aussi
 replace sex="Male" if HHID_panel=="NAT42" & INDID_panel=="Ind_4"  // 2020 aussi
+replace sex="Male" if HHID_panel=="MAN56" & INDID_panel=="Ind_4"
+replace sex="Male" if HHID_panel=="KAR56" & INDID_panel=="Ind_3"
+
 
 replace sex="Female" if HHID_panel=="MANAM50" & INDID_panel=="Ind_6"  // 2020 aussi
 replace sex="Female" if HHID_panel=="ORA26" & INDID_panel=="Ind_9"  // 2020 aussi
 replace sex="Female" if HHID_panel=="KAR45" & INDID_panel=="Ind_6"  // 2020 aussi
 replace sex="Female" if HHID_panel=="NAT57" & INDID_panel=="Ind_1"
-
-
-
-
-
-
-
-
+replace sex="Female" if HHID_panel=="ORA67" & INDID_panel=="Ind_4"
+replace sex="Female" if HHID_panel=="KAR61" & INDID_panel=="Ind_3"
+*/
 ****************************************
 * END

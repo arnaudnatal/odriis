@@ -430,9 +430,9 @@ NEEMSIS_APPEND-remsentidgroup_v2.dta
 base_alter_VF3.dta 
 */
 
-use"$directory\CLEAN\LAST\NEEMSIS2-HH_v24.dta", clear
+use"$directory\CLEAN\LAST\NEEMSIS2-HH_v25.dta", clear
 save"$directory\CLEAN\LAST\NEEMSIS2-HH", replace
-erase"$directory\CLEAN\LAST\NEEMSIS2-HH_v24.dta"
+erase"$directory\CLEAN\LAST\NEEMSIS2-HH_v25.dta"
 
 *use"$directory\CLEAN\LAST\NEEMSIS2-loans.dta", clear
 *save"$directory\CLEAN\LAST\NEEMSIS2-loans.dta", replace

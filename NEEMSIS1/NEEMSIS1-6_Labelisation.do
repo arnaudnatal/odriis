@@ -37,40 +37,25 @@ use"NEEMSIS1-HH_v8.dta", clear
 fre relationshiptohead
 fre sex
 ta relationshiptohead sex
-gen pb1=0
 
-replace pb=1 if sex==2 & relationshiptohead=="Brother"
-replace pb=1 if sex==1 & relationshiptohead=="Daughter"
-replace pb=1 if sex==1 & relationshiptohead=="Daughter-in-law"
-replace pb=1 if sex==2 & relationshiptohead=="Father"
-replace pb=1 if sex==2 & relationshiptohead=="Father-in-law"
-replace pb=1 if sex==1 & relationshiptohead=="Grandmother"
-replace pb=1 if sex==1 & relationshiptohead=="Mother"
-replace pb=1 if sex==1 & relationshiptohead=="Mother-in-law"
-replace pb=1 if sex==1 & relationshiptohead=="Sister"
-replace pb=1 if sex==2 & relationshiptohead=="Son"
-replace pb=1 if sex==2 & relationshiptohead=="Son-in-law"
+replace relationshiptohead=5 if HHID_panel=="KAR18" & INDID_panel=="Ind_3"
+replace relationshiptohead=5 if HHID_panel=="KAR39" & INDID_panel=="Ind_4"
+replace relationshiptohead=6 if HHID_panel=="KAR8" & INDID_panel=="Ind_5"
+replace relationshiptohead=5 if HHID_panel=="KOR30" & INDID_panel=="Ind_5"
+replace relationshiptohead=1 if HHID_panel=="KUV20" & INDID_panel=="Ind_1"
+replace relationshiptohead=5 if HHID_panel=="ORA36" & INDID_panel=="Ind_4"
+replace relationshiptohead=5 if HHID_panel=="ORA42" & INDID_panel=="Ind_3"
 
+replace sex=2 if HHID_panel=="KAR45" & INDID_panel=="Ind_6"
+replace sex=1 if HHID_panel=="NAT27" & INDID_panel=="Ind_3"
+replace sex=1 if HHID_panel=="KAR49" & INDID_panel=="Ind_8"
+replace sex=1 if HHID_panel=="ELA13" & INDID_panel=="Ind_5"
+replace sex=2 if HHID_panel=="MANAM50" & INDID_panel=="Ind_6"
+replace sex=1 if HHID_panel=="NAT42" & INDID_panel=="Ind_4"
+replace sex=1 if HHID_panel=="ORA13" & INDID_panel=="Ind_2"
+replace sex=2 if HHID_panel=="ORA26" & INDID_panel=="Ind_9"
 
-
-replace relationshiptohead="Son" if HHID_panel=="KAR18" & INDID_panel=="Ind_3"
-replace relationshiptohead="Son" if HHID_panel=="KAR39" & INDID_panel=="Ind_4"
-replace relationshiptohead="Daughter" if HHID_panel=="KAR8" & INDID_panel=="Ind_5"  // 2020 aussi
-replace relationshiptohead="Son" if HHID_panel=="KOR30" & INDID_panel=="Ind_5"
-replace relationshiptohead="Head" if HHID_panel=="KUV20" & INDID_panel=="Ind_1"
-replace relationshiptohead="Son" if HHID_panel=="ORA36" & INDID_panel=="Ind_4"
-replace relationshiptohead="Son" if HHID_panel=="ORA42" & INDID_panel=="Ind_3"
-
-replace sex="Female" if HHID_panel=="KAR45" & INDID_panel=="Ind_6"  // 2020 aussi
-replace sex="Male" if HHID_panel=="NAT27" & INDID_panel=="Ind_3"  // 2020 aussi
-replace sex="Male" if HHID_panel=="KAR49" & INDID_panel=="Ind_8"  // 2020 aussi
-replace sex="Male" if HHID_panel=="ELA13" & INDID_panel=="Ind_5"  // 2020 aussi
-replace sex="Female" if HHID_panel=="MANAM50" & INDID_panel=="Ind_6"  // 2020 aussi
-replace sex="Male" if HHID_panel=="NAT42" & INDID_panel=="Ind_4"  // 2020 aussi
-replace sex="Male" if HHID_panel=="ORA13" & INDID_panel=="Ind_2"
-replace sex="Female" if HHID_panel=="ORA26" & INDID_panel=="Ind_9"  // 2020 aussi
-
-
+ta relationshiptohead sex
 
 save"NEEMSIS1-HH_v8_bis.dta", replace
 

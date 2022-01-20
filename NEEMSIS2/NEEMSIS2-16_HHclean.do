@@ -664,3 +664,96 @@ save"$directory\CLEAN\NEEMSIS2-HH_v24.dta", replace
 clear all
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Sex relationship
+****************************************
+*Mary
+use"$directory\CLEAN\NEEMSIS2-HH_v24.dta", clear
+
+fre sex
+fre relationshiptohead
+
+gen pb=0
+replace pb=1 if HHID_panel=="ELA25" & INDID_panel=="Ind_4"  // Arthijara
+replace pb=1 if HHID_panel=="MANAM17" & INDID_panel=="Ind_3"  // male son - female daughter - female son * barahti
+replace pb=1 if HHID_panel=="SEM28" & INDID_panel=="Ind_1"  // head head daughter
+replace pb=1 if HHID_panel=="SEM46" & INDID_panel=="Ind_1"  // head head daughter
+
+
+replace relationshiptohead=6 if HHID_panel=="KAR8" & INDID_panel=="Ind_5"  // 2020 aussi
+replace relationshiptohead=6 if HHID_panel=="ELA9" & INDID_panel=="Ind_3"
+replace relationshiptohead=6 if HHID_panel=="GOV17" & INDID_panel=="Ind_8"
+replace relationshiptohead=6 if HHID_panel=="GOV51" & INDID_panel=="Ind_4"
+replace relationshiptohead=8 if HHID_panel=="KAR14" & INDID_panel=="Ind_5"
+replace relationshiptohead=6 if HHID_panel=="KOR18" & INDID_panel=="Ind_5"
+replace relationshiptohead=6 if HHID_panel=="KOR24" & INDID_panel=="Ind_6"
+replace relationshiptohead=5 if HHID_panel=="KOR24" & INDID_panel=="Ind_7"
+replace relationshiptohead=6 if HHID_panel=="KOR36" & INDID_panel=="Ind_3"
+replace relationshiptohead=6 if HHID_panel=="KOR44" & INDID_panel=="Ind_4"
+replace relationshiptohead=11 if HHID_panel=="KUV12" & INDID_panel=="Ind_6"
+replace relationshiptohead=5 if HHID_panel=="KUV19" & INDID_panel=="Ind_3"
+replace relationshiptohead=6 if HHID_panel=="KUV24" & INDID_panel=="Ind_4"
+replace relationshiptohead=6 if HHID_panel=="KUV24" & INDID_panel=="Ind_5"
+replace relationshiptohead=6 if HHID_panel=="KUV35" & INDID_panel=="Ind_5"
+replace relationshiptohead=5 if HHID_panel=="KUV44" & INDID_panel=="Ind_3"
+replace relationshiptohead=6 if HHID_panel=="KUV6" & INDID_panel=="Ind_3"
+replace relationshiptohead=5 if HHID_panel=="KUV7" & INDID_panel=="Ind_3"
+replace relationshiptohead=6 if HHID_panel=="MAN31" & INDID_panel=="Ind_4"
+replace relationshiptohead=6 if HHID_panel=="MAN48" & INDID_panel=="Ind_5"
+replace relationshiptohead=13 if HHID_panel=="MANAM15" & INDID_panel=="Ind_5"
+replace relationshiptohead=13 if HHID_panel=="MANAM15" & INDID_panel=="Ind_6"
+replace relationshiptohead=5 if HHID_panel=="MANAM22" & INDID_panel=="Ind_3"
+replace relationshiptohead=5 if HHID_panel=="NAT11" & INDID_panel=="Ind_4"
+replace relationshiptohead=6 if HHID_panel=="ORA30" & INDID_panel=="Ind_3"
+replace relationshiptohead=5 if HHID_panel=="ORA30" & INDID_panel=="Ind_5"
+replace relationshiptohead=5 if HHID_panel=="ORA39" & INDID_panel=="Ind_5"
+replace relationshiptohead=6 if HHID_panel=="ORA43" & INDID_panel=="Ind_6"
+replace relationshiptohead=8 if HHID_panel=="SEM14" & INDID_panel=="Ind_2"
+replace relationshiptohead=5 if HHID_panel=="SEM15" & INDID_panel=="Ind_4"
+
+
+replace sex=1 if HHID_panel=="GOV33" & INDID_panel=="Ind_3"  // vérifier quand même car chelou son - head - son ?
+
+replace sex=1 if HHID_panel=="NAT27" & INDID_panel=="Ind_3"
+replace sex=1 if HHID_panel=="KAR49" & INDID_panel=="Ind_8"
+replace sex=1 if HHID_panel=="ELA13" & INDID_panel=="Ind_5"
+replace sex=1 if HHID_panel=="NAT42" & INDID_panel=="Ind_4"
+replace sex=1 if HHID_panel=="MAN56" & INDID_panel=="Ind_4"
+replace sex=1 if HHID_panel=="KAR56" & INDID_panel=="Ind_3"
+
+replace sex=2 if HHID_panel=="MANAM50" & INDID_panel=="Ind_6"
+replace sex=2 if HHID_panel=="ORA26" & INDID_panel=="Ind_9"
+replace sex=2 if HHID_panel=="KAR45" & INDID_panel=="Ind_6"
+replace sex=2 if HHID_panel=="NAT57" & INDID_panel=="Ind_1"
+replace sex=2 if HHID_panel=="ORA67" & INDID_panel=="Ind_4"
+replace sex=2 if HHID_panel=="KAR61" & INDID_panel=="Ind_3"
+
+
+ta relationshiptohead sex if pb==0
+
+save"$directory\CLEAN\NEEMSIS2-HH_v25.dta", replace
+clear all
+****************************************
+* END
+
