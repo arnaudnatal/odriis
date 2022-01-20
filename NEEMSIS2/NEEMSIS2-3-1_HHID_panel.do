@@ -73,3 +73,20 @@ save"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", replace
 /*
 PUIS ICI, IL FAUT CONTINUER LA FABRICATION DE INDID PANEL EN LANCANT LE FICHIER DO code_indiv
 */
+
+
+
+
+/*
+Merger du coup car changements à la main
+*/
+
+use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
+
+tostring INDID, gen(INDID2020)
+
+merge 1:m HHID_panel INDID2020 using "$git\code_indiv_2010_2016_2020_wide_v3", keepusing(INDID_panel)
+keep if _merge==3
+drop _merge
+order INDID_panel INDID2020, before(INDID)
+save"$directory\CLEAN\NEEMSIS2-HH_v5_bis2.dta", replace

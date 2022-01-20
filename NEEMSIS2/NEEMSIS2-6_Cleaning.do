@@ -23,11 +23,11 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *global git = "C:\Users\anatal\Downloads\Github"
 global git = "C:\Users\Arnaud\Documents\GitHub"
-global neemsis1 = "D:\Documents\_Thesis\_DATA\NEEMSIS1"
+global neemsis1 = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
 
 cd "$directory\CLEAN"
 
@@ -80,7 +80,7 @@ restore
 *
 
 
-merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v2", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v3", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
 drop if _merge==2
 drop _merge
 
@@ -809,8 +809,7 @@ use"NEEMSIS2-HH_v12.dta", clear
 
 rename marriedid_o old_marriedid
 drop threemainloans_*
-drop loanlender1	loanlender2	loanlender3	loanlender4	loanlender5	loanlender6	loanlender7	loanlender8	loanlender9	loanlender10	loanlender11	loanlender12	loanlender13	loanlender14	loanlender15	loanlender16	loanlender17	loanlender18	loanlender19	loanlender20	loanlender21	loanlender22	loanlender23	loanlender24	loanlender25	loanlender26	loanlender27	loanlender28	loanlender29	loanlender30	loanlender31	loanlender32	loanlender33	loanlender34	loanlender35	loanlender36	loanlender37	loanlender38	loanlender39	loanlender40	loanlender41	loanlender42	loanlender43	loanlender44	loanlender45	loanlender46	loanlender47	loanlender48	loanlender49	loanlender50	loanlender51	loanlender52	loanlender53	loanlender54	loanlender55	loanlender56	loanlender57	loanlender58	loanlender59	loanlender60	loanlender61	loanlender62	loanlender63	loanlender64	loanlender65	loanlender66	loanlender67	loanlender68	loanlender69	loanlender70	loanlender71	loanlender72	loanlender73	loanlender74	loanlender75	loanlender76	loanlender77	loanlender78	loanlender79
-loanlender80
+drop loanlender1	loanlender2	loanlender3	loanlender4	loanlender5	loanlender6	loanlender7	loanlender8	loanlender9	loanlender10	loanlender11	loanlender12	loanlender13	loanlender14	loanlender15	loanlender16	loanlender17	loanlender18	loanlender19	loanlender20	loanlender21	loanlender22	loanlender23	loanlender24	loanlender25	loanlender26	loanlender27	loanlender28	loanlender29	loanlender30	loanlender31	loanlender32	loanlender33	loanlender34	loanlender35	loanlender36	loanlender37	loanlender38	loanlender39	loanlender40	loanlender41	loanlender42	loanlender43	loanlender44	loanlender45	loanlender46	loanlender47	loanlender48	loanlender49	loanlender50	loanlender51	loanlender52	loanlender53	loanlender54	loanlender55	loanlender56	loanlender57	loanlender58	loanlender59	loanlender60	loanlender61	loanlender62	loanlender63	loanlender64	loanlender65	loanlender66	loanlender67	loanlender68	loanlender69	loanlender70	loanlender71	loanlender72	loanlender73	loanlender74	loanlender75	loanlender76	loanlender77	loanlender78	loanlender79 loanlender80
 drop *_o tag
 drop selected_index1 selected_index2 selected_index3 selected_name1 selected_name2 selected_name3 selected_index1_2 selected_index2_2 selected_index3_2 selected_name1_2 selected_name2_2 selected_name3_2 selected_index1_3 selected_index2_3 selected_index3_3 selected_name1_3 selected_name2_3 selected_name3_3 _3selected_index1 _3selected_index2 _3selected_index3 _3selected_name1 _3selected_name2 _3selected_name3 _3selected_index1_2 _3selected_index2_2 _3selected_index3_2 _3selected_name1_2 _3selected_name2_2 _3selected_name3_2 _3ego2random_3_2 _3selected_index1_3 _3selected_index2_3 _3selected_index3_3 _3selected_name1_3 _3selected_name2_3 _3selected_name3_3 _3ego2random_1_3 _3ego2random_2_3 _3ego2random_3_3
 drop joinnamehhmemberego1 joinnamehhmember join_1825 join_2635 join_36 _3join_1825 _3join_2635 _3join_36

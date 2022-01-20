@@ -19,9 +19,9 @@ clear all
 macro drop _all
 cls
 ********** Path to folder "data" folder.
-*global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global git "C:\Users\anatal\Downloads\Github\RUME-NEEMSIS"
+global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+*global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
+global git "C:\Users\Arnaud\Documents\Github\RUME-NEEMSIS"
 
 cd"$directory"
 ********** SSC to install
@@ -47,7 +47,7 @@ cd"$directory"
 ****************************************
 
 ********** TEMPORARY PANEL DATA BASE TO HAVE ALL INDIVIDUALS
-use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v5_bis2.dta", clear
 
 *replace INDID=. if version=="NEEMSIS2_NEW_APRIL"
 *replace INDIDpanel="" if version=="NEEMSIS2_NEW_APRIL"
