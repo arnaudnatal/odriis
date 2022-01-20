@@ -117,6 +117,8 @@ save"$git\RUME-HH_indiv.dta", replace
 
 ********** NEEMSIS1
 use"$neemsis1\NEEMSIS1-HH_v9.dta", clear
+
+rename INDID INDID2016
 keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate
 
 * All string
