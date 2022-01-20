@@ -437,6 +437,7 @@ save"$git\code_indiv_2010_2016_2020_wide_v2", replace
 ****************************************
 * Vérifier INDID_panel à la main + correction
 ****************************************
+/*
 use"$git\code_indiv_2010_2016_2020_wide_v2", clear
 
 gen pb=1 if name2016!=name2020
@@ -488,9 +489,19 @@ replace INDID_panel="Ind_7" if HHID_panel=="SEM44" & INDID=="5" & year==2020
 replace INDID_panel="Ind_8" if HHID_panel=="SEM44" & INDID=="6" & year==2020
 replace INDID_panel="Ind_4" if HHID_panel=="SEM44" & INDID=="7" & year==2020
 
+save"$git\code_indiv_2010_2016_2020_v3", replace
 
+
+use"$git\code_indiv_2010_2016_2020_v3", clear
+
+egen HHINDID=concat(HHID_panel INDID_panel), p(/)
+
+drop dummyleft dummynew dummyformer maritalstatus2010 egoid2010 dummylivinghome
+
+reshape wide INDID name sex age relationshiptohead maritalstatus egoid, i(HHINDID) j(year)
 
 save"$git\code_indiv_2010_2016_2020_wide_v3", replace
+*/
 ****************************************
 * END
 
