@@ -457,20 +457,53 @@ order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020 name_2010 age_2010 se
 sort HHID_panel INDID_panel
 gen n=_n
 
+/*
+* Mary 0 --> 950
 preserve
 drop if n>950
 export excel "C:\Users\Arnaud\Downloads\ODRIIS_indiv-Mary-950" , firstrow(variables) replace
 restore
 
-preserve
+* Gaston 951 --> 1900 (Arnaud finalement)
+*preserve
 drop if n<=950
 drop if n>1900
-export excel "C:\Users\Arnaud\Downloads\ODRIIS_indiv-Gaston-1900" , firstrow(variables) replace
-restore
+*export excel "C:\Users\Arnaud\Downloads\ODRIIS_indiv-Gaston-1900" , firstrow(variables) replace
+*restore
 
+* Arnaud 1901 --> END
 preserve
 drop if n<=1900
 *ok pour la suite
+*/
+
+
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Youna et Sébastien
+****************************************
+use"C:\Users\Arnaud\Downloads\Panel_name.dta", clear
+
+sort HHINDID year
+
+
 
 
 ****************************************

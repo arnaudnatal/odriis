@@ -18,7 +18,7 @@ Indiv panel
 ****************************************
 clear all
 macro drop _all
-********** Path to folder "data" folder.
+********** Path to folder "data" folder
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *cd "$directory\CLEAN"
 
@@ -437,17 +437,121 @@ save"$git\code_indiv_2010_2016_2020_wide_v2", replace
 ****************************************
 * Vérifier INDID_panel à la main + correction
 ****************************************
-/*
-use"$git\code_indiv_2010_2016_2020_wide_v2", clear
-
-gen pb=1 if name2016!=name2020
-list HHID_panel INDID2010 INDID2016 INDID2020 name2010 name2016 name2020 if pb==1, clean
-
 use"$git\code_indiv_2010_2016_2020_v2", clear
 
 order HHID_panel INDID_panel INDID name sex age relationshiptohead
 sort HHID_panel INDID_panel year
 
+
+********** Séb - Youna
+*
+br if HHID_panel=="ELA7"
+replace INDID_panel="Ind_1" if HHID_panel=="ELA7" & INDID=="6" & year==2016
+replace INDID_panel="Ind_1" if HHID_panel=="ELA7" & INDID=="6" & year==2020
+replace INDID_panel="Ind_7" if HHID_panel=="ELA7" & INDID=="16" & year==2020
+replace INDID_panel="Ind_8" if HHID_panel=="ELA7" & INDID=="17" & year==2020
+
+*
+br if HHID_panel=="KAR15"
+replace INDID_panel="Ind_6" if HHID_panel=="KAR15" & INDID=="6" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="KAR15" & INDID=="6" & year==2020
+replace INDID_panel="Ind_7" if HHID_panel=="KAR15" & INDID=="16" & year==2020
+
+*
+br if HHID_panel=="KAR26"
+replace INDID_panel="Ind_5" if HHID_panel=="KAR26" & INDID=="7" & year==2016
+replace INDID_panel="Ind_5" if HHID_panel=="KAR26" & INDID=="7" & year==2020
+
+*
+br if HHID_panel=="KOR30"
+replace INDID_panel="Ind_6" if HHID_panel=="KOR30" & INDID=="10" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="KOR30" & INDID=="10" & year==2020
+replace INDID_panel="Ind_8" if HHID_panel=="KOR30" & INDID=="3" & year==2016
+replace INDID_panel="Ind_8" if HHID_panel=="KOR30" & INDID=="3" & year==2020
+
+*
+br if HHID_panel=="KOR41"
+replace INDID_panel="Ind_2" if HHID_panel=="KOR41" & INDID=="1" & year==2016
+replace INDID_panel="Ind_2" if HHID_panel=="KOR41" & INDID=="1" & year==2020
+replace INDID_panel="Ind_4" if HHID_panel=="KOR41" & INDID=="3" & year==2016
+replace INDID_panel="Ind_4" if HHID_panel=="KOR41" & INDID=="3" & year==2020
+
+*
+br if HHID_panel=="KOR9"
+replace INDID_panel="Ind_3" if HHID_panel=="KOR9" & INDID=="3" & year==2016
+replace INDID_panel="Ind_3" if HHID_panel=="KOR9" & INDID=="3" & year==2020
+replace INDID_panel="Ind_4" if HHID_panel=="KOR9" & INDID=="4" & year==2016
+replace INDID_panel="Ind_4" if HHID_panel=="KOR9" & INDID=="4" & year==2020
+
+*
+br if HHID_panel=="MAN16"
+replace INDID_panel="Ind_5" if HHID_panel=="MAN16" & INDID=="5" & year==2016
+replace INDID_panel="Ind_5" if HHID_panel=="MAN16" & INDID=="5" & year==2020
+
+*
+br if HHID_panel=="MANAM4"
+replace INDID_panel="Ind_4" if HHID_panel=="MANAM4" & INDID=="4" & year==2016
+replace INDID_panel="Ind_4" if HHID_panel=="MANAM4" & INDID=="4" & year==2020
+replace INDID_panel="Ind_6" if HHID_panel=="MANAM4" & INDID=="6" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="MANAM4" & INDID=="6" & year==2020
+
+*
+br if HHID_panel=="NAT1"
+replace INDID_panel="Ind_4" if HHID_panel=="NAT1" & INDID=="4" & year==2016
+replace INDID_panel="Ind_4" if HHID_panel=="NAT1" & INDID=="4" & year==2020
+
+*
+br if HHID_panel=="NAT12"
+replace INDID_panel="Ind_5" if HHID_panel=="NAT12" & INDID=="2" & year==2016
+replace INDID_panel="Ind_5" if HHID_panel=="NAT12" & INDID=="2" & year==2020
+replace INDID_panel="Ind_6" if HHID_panel=="NAT12" & INDID=="3" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="NAT12" & INDID=="3" & year==2020
+replace INDID_panel="Ind_7" if HHID_panel=="NAT12" & INDID=="4" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="NAT12" & INDID=="4" & year==2020
+replace INDID_panel="Ind_8" if HHID_panel=="NAT12" & INDID=="8" & year==2016
+replace INDID_panel="Ind_8" if HHID_panel=="NAT12" & INDID=="8" & year==2020
+
+*
+br if HHID_panel=="ORA23"
+replace INDID_panel="Ind_6" if HHID_panel=="ORA23" & INDID=="2" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="ORA23" & INDID=="2" & year==2020
+replace INDID_panel="Ind_7" if HHID_panel=="ORA23" & INDID=="5" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="ORA23" & INDID=="5" & year==2020
+replace INDID_panel="Ind_8" if HHID_panel=="ORA23" & INDID=="6" & year==2016
+replace INDID_panel="Ind_8" if HHID_panel=="ORA23" & INDID=="6" & year==2020
+replace INDID_panel="Ind_9" if HHID_panel=="ORA23" & INDID=="7" & year==2016
+replace INDID_panel="Ind_9" if HHID_panel=="ORA23" & INDID=="7" & year==2020
+replace INDID_panel="Ind_10" if HHID_panel=="ORA23" & INDID=="8" & year==2016
+replace INDID_panel="Ind_10" if HHID_panel=="ORA23" & INDID=="8" & year==2020
+replace INDID_panel="Ind_11" if HHID_panel=="ORA23" & INDID=="9" & year==2016
+replace INDID_panel="Ind_11" if HHID_panel=="ORA23" & INDID=="9" & year==2020
+replace INDID_panel="Ind_12" if HHID_panel=="ORA23" & INDID=="10" & year==2016
+replace INDID_panel="Ind_12" if HHID_panel=="ORA23" & INDID=="10" & year==2020
+replace INDID_panel="Ind_13" if HHID_panel=="ORA23" & INDID=="11" & year==2016
+replace INDID_panel="Ind_13" if HHID_panel=="ORA23" & INDID=="11" & year==2020
+
+*
+br if HHID_panel=="ORA29"
+replace INDID_panel="Ind_4" if HHID_panel=="ORA29" & INDID=="6" & year==2016
+replace INDID_panel="Ind_4" if HHID_panel=="ORA29" & INDID=="6" & year==2020
+replace INDID_panel="Ind_5" if HHID_panel=="ORA29" & INDID=="4" & year==2016
+replace INDID_panel="Ind_5" if HHID_panel=="ORA29" & INDID=="4" & year==2020
+replace INDID_panel="Ind_6" if HHID_panel=="ORA29" & INDID=="5" & year==2016
+replace INDID_panel="Ind_6" if HHID_panel=="ORA29" & INDID=="5" & year==2020
+replace INDID_panel="Ind_4" if HHID_panel=="ORA29" & INDID=="6" & year==2016
+replace INDID_panel="Ind_4" if HHID_panel=="ORA29" & INDID=="6" & year==2020
+
+*
+br if HHID_panel=="SEM26"
+replace INDID_panel="Ind_5" if HHID_panel=="SEM26" & INDID=="5" & year==2016
+replace INDID_panel="Ind_5" if HHID_panel=="SEM26" & INDID=="5" & year==2020
+replace INDID_panel="Ind_7" if HHID_panel=="SEM26" & INDID=="6" & year==2016
+replace INDID_panel="Ind_7" if HHID_panel=="SEM26" & INDID=="6" & year==2020
+
+
+
+
+********** Arnaud
 *
 br if HHID_panel=="GOV19"
 replace INDID_panel="Ind_5" if HHID_panel=="GOV19" & INDID=="3" & year==2020
@@ -489,19 +593,42 @@ replace INDID_panel="Ind_7" if HHID_panel=="SEM44" & INDID=="5" & year==2020
 replace INDID_panel="Ind_8" if HHID_panel=="SEM44" & INDID=="6" & year==2020
 replace INDID_panel="Ind_4" if HHID_panel=="SEM44" & INDID=="7" & year==2020
 
+
+
+
+********** Mary
+*
+br if HHID_panel=="GOV45" & INDID_panel=="Ind_3"  // male or female?
+br if HHID_panel=="GOV19" & INDID_panel=="Ind_4"  // male or female?
+
+br if HHID_panel=="ELA22"  // 5 male female
+br if HHID_panel=="ELA40"  // 3 et 9 identiques ?
+br if HHID_panel=="ELA45"  // 8 et 5/6 identiques ?
+br if HHID_panel=="ELA7"  // 1 et 6 identiques ?
+br if HHID_panel=="ELA9"  // 3/4 sex?
+br if HHID_panel=="GOV10"  // 1 remariage ?
+br if HHID_panel=="GOV18"  // deux HH diff ?
+br if HHID_panel=="GOV25"  // 4 et 3 identiques ?
+
+
+********** Save
 save"$git\code_indiv_2010_2016_2020_v3", replace
 
 
+********** Reshape
 use"$git\code_indiv_2010_2016_2020_v3", clear
+
+keep HHID_panel INDID_panel INDID name sex age relationshiptohead year maritalstatus egoid
 
 egen HHINDID=concat(HHID_panel INDID_panel), p(/)
 
-drop dummyleft dummynew dummyformer maritalstatus2010 egoid2010 dummylivinghome
+reshape wide name sex age relationshiptohead maritalstatus INDID egoid, i(HHINDID) j(year)
 
-reshape wide INDID name sex age relationshiptohead maritalstatus egoid, i(HHINDID) j(year)
+drop HHINDID
+order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020 name2010 name2016 name2020
+
 
 save"$git\code_indiv_2010_2016_2020_wide_v3", replace
-*/
 ****************************************
 * END
 
@@ -512,43 +639,6 @@ save"$git\code_indiv_2010_2016_2020_wide_v3", replace
 
 
 
-
-
-
-
-
-
-
-/*
-****************************************
-* Vérifier INDID_panel
-****************************************
-use"$git\code_indiv_2010_2016_2020_wide", clear
-
-rename name2010 name_2010
-rename name2016 name_2016
-rename name2020 name_2020
-
-merge 1:1 HHID_panel INDID_panel using "$git\code_indiv_2010_2016_2020_wide_v2", keepusing(name2010 name2016 name2020)
-keep if _merge==3
-
-foreach x in 10 16 20 {
-gen test20`x'=.
-}
-
-foreach x in 10 16 20 {
-replace test20`x'=1 if name20`x'!=name_20`x'
-}
-
-tab1 test2010 test2016 test2020
-sort test2020
-
-/*
-OK
-*/
-****************************************
-* END
-*/
 
 
 
