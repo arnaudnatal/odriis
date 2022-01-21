@@ -32,7 +32,7 @@ global neemsis1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
 global neemsis2 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN\LAST"
 global tracking1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\Tracking2019\DATA"
 
-
+global data "C:\Users\Arnaud\Documents\_Thesis\_DATA"
 ****************************************
 * END
 
@@ -64,7 +64,7 @@ From "..." we need to continue in the right order
 
 */
 ********** RUME
-use"$rume\RUME-HH_v8.dta", clear
+use"$data\RUME-HH.dta", clear
 keep HHID_panel INDID_panel HHID2010 INDID2010 name age sex relationshiptohead jatis caste address villageid
 
 * All string
@@ -116,7 +116,7 @@ save"$git\RUME-HH_indiv.dta", replace
 
 
 ********** NEEMSIS1
-use"$neemsis1\NEEMSIS1-HH_v9.dta", clear
+use"$data\NEEMSIS1-HH.dta", clear
 
 rename INDID INDID2016
 keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate
@@ -165,7 +165,7 @@ save"$git\NEEMSIS1-HH_indiv.dta", replace
 
 
 ********** NEEMSIS2
-use"$neemsis2\NEEMSIS2-HH_v21.dta", clear
+use"$data\NEEMSIS2-HH.dta", clear
 
 keep HHID_panel INDID_panel parent_key INDID2020 name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate INDID_left householdidparent householdid2020
 rename parent_key HHID2020
@@ -432,5 +432,46 @@ replace sex="Female" if HHID_panel=="NAT57" & INDID_panel=="Ind_1"
 replace sex="Female" if HHID_panel=="ORA67" & INDID_panel=="Ind_4"
 replace sex="Female" if HHID_panel=="KAR61" & INDID_panel=="Ind_3"
 */
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* APPEND ALL DATASETS
+****************************************
+use"$git\ODRIIS-indiv.dta", clear
+
+
+order HHID_panel INDID_panel INDID2010 INDID2016 INDID2020 name_2010 age_2010 sex_2010 relationshiptohead_2010 name_2016 age_2016 sex_2016 relationshiptohead_2016 name_2020 age_2020 sex_2020 relationshiptohead_2020
+
+sort HHID_panel INDID_panel
+gen n=_n
+
+preserve
+drop if n>950
+export excel "C:\Users\Arnaud\Downloads\ODRIIS_indiv-Mary-950" , firstrow(variables) replace
+restore
+
+preserve
+drop if n<=950
+drop if n>1900
+export excel "C:\Users\Arnaud\Downloads\ODRIIS_indiv-Gaston-1900" , firstrow(variables) replace
+restore
+
+preserve
+drop if n<=1900
+*ok pour la suite
+
+
 ****************************************
 * END
