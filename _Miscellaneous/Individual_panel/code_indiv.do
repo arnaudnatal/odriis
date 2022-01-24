@@ -598,17 +598,14 @@ replace INDID_panel="Ind_4" if HHID_panel=="SEM44" & INDID=="7" & year==2020
 
 ********** Mary
 *
-br if HHID_panel=="GOV45" & INDID_panel=="Ind_3"  // male or female?
-br if HHID_panel=="GOV19" & INDID_panel=="Ind_4"  // male or female?
+*** Male of female?
+br if HHID_panel=="GOV45" & INDID_panel=="Ind_3"
+br if HHID_panel=="GOV19" & INDID_panel=="Ind_4"
+br if HHID_panel=="ELA22" & INDID_panel=="Ind_5"
 
-br if HHID_panel=="ELA22"  // 5 male female
-br if HHID_panel=="ELA40"  // 3 et 9 identiques ?
-br if HHID_panel=="ELA45"  // 8 et 5/6 identiques ?
-br if HHID_panel=="ELA7"  // 1 et 6 identiques ?
-br if HHID_panel=="ELA9"  // 3/4 sex?
+*** Wife?
 br if HHID_panel=="GOV10"  // 1 remariage ?
-br if HHID_panel=="GOV18"  // deux HH diff ?
-br if HHID_panel=="GOV25"  // 4 et 3 identiques ?
+
 
 
 ********** Save
