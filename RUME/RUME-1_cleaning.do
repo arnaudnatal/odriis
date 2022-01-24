@@ -656,7 +656,7 @@ Check if INDID=0 are in tracking2016
 **********
 use"RUME-HH_v5.dta", clear
 rename INDID INDID2010
-merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_wide", keepusing(INDID_panel)
+merge 1:m HHID_panel INDID2010 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v3", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge
 sort HHID_panel INDID_panel
