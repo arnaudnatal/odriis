@@ -292,6 +292,8 @@ gen indivpanel_10_16_20="No"
 replace indivpanel_10_16_20="Yes" if wave_2010=="RUME" & wave_2016=="NEEMSIS-1" & wave_2020=="NEEMSIS-2"
 save"$git\ODRIIS-indiv.dta", replace
 
+export excel "$git\ODRIIS-indiv.xlsx", firstrow(var)
+
 * HH
 /*
 preserve
