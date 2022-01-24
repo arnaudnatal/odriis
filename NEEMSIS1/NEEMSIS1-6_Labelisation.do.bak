@@ -179,7 +179,7 @@ label var `x' "Construction -- Arnaud"
 
 drop egoid dummynewHH dummydemonetisation num submissiondate_o
 order $arnaud, after(submissiondate)
-save"$directory\CLEAN\NEEMSIS1-all_loans", replace
+save"$directory\CLEAN\NEEMSIS1-all-loans", replace
 
 
 ********** Migration

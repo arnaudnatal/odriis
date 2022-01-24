@@ -41,7 +41,7 @@ cd "$directory"
 
 
 
-
+/*
 
 ****************************************
 * CLEANING
@@ -500,7 +500,6 @@ save"$directory/CLEAN/NEEMSIS_Agriculture_APPEND_v2", replace
 
 
 
-
 ****************************************
 * MERGING AGRI
 ****************************************
@@ -593,6 +592,7 @@ save"$directory\CLEAN\NEEMSIS_Agriculture_APPEND_v3.dta", replace
 
 
 
+*/
 
 
 

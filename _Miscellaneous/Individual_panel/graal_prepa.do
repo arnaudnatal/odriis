@@ -30,9 +30,9 @@ global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individ
 global rume "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME"
 global neemsis1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
 global neemsis2 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN\LAST"
-global tracking1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\Tracking2019\DATA"
+*global tracking1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\Tracking2019\DATA"
 
-global data "C:\Users\Arnaud\Documents\_Thesis\_DATA"
+*global data "C:\Users\Arnaud\Documents\_Thesis\_DATA"
 ****************************************
 * END
 
@@ -64,7 +64,7 @@ From "..." we need to continue in the right order
 
 */
 ********** RUME
-use"$data\RUME-HH.dta", clear
+use"$rume\CLEAN\RUME-HH.dta", clear
 keep HHID_panel INDID_panel HHID2010 INDID2010 name age sex relationshiptohead jatis caste address villageid
 
 * All string
@@ -116,7 +116,7 @@ save"$git\RUME-HH_indiv.dta", replace
 
 
 ********** NEEMSIS1
-use"$data\NEEMSIS1-HH.dta", clear
+use"$neemsis1\CLEAN\NEEMSIS1-HH.dta", clear
 
 rename INDID INDID2016
 keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate
@@ -165,7 +165,7 @@ save"$git\NEEMSIS1-HH_indiv.dta", replace
 
 
 ********** NEEMSIS2
-use"$data\NEEMSIS2-HH.dta", clear
+use"$neemsis2\\NEEMSIS2-HH.dta", clear
 
 keep HHID_panel INDID_panel parent_key INDID2020 name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate INDID_left householdidparent householdid2020
 rename parent_key HHID2020
@@ -218,7 +218,7 @@ save"$git\NEEMSIS2-HH_indiv.dta", replace
 
 
 
-
+/*
 ********** Tracking 1
 use"$tracking1\NEEMSIS-tracking_comp_v4.dta", clear
 keep HHID_panel INDID_panel name sex age HHID2010 INDID2019 key relationshiptohead migrationaddress villageid namemigrant caste casteother
@@ -267,7 +267,7 @@ drop code
 save"$git\Tracking1-HH_indiv.dta", replace
 ****************************************
 * END
-
+*/
 
 
 
@@ -316,7 +316,6 @@ restore
 * APPEND ALL DATASETS
 ****************************************
 use"$git\ODRIIS-indiv.dta", clear
-/*
 foreach i in 2010 2016 2020 {
 gen pb1_`i'=0
 }
@@ -335,6 +334,8 @@ replace pb1_`i'=1 if sex_`i'=="Female" & relationshiptohead_`i'=="Son"
 replace pb1_`i'=1 if sex_`i'=="Female" & relationshiptohead_`i'=="Son-in-law"
 }
 
+tab1 pb1_2010 pb1_2016 pb1_2020
+br if pb1_2020==1
 
 ********** Coherence sex relationship
 *** 2010
