@@ -50,7 +50,7 @@ drop _merge
 *indiv panel
 rename INDID INDID2016
 tostring INDID2016, replace
-merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_wide.dta", keepusing(INDID_panel)
+merge 1:m HHID_panel INDID2016 using "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v3.dta", keepusing(INDID_panel)
 keep if _merge==3
 drop _merge
 
