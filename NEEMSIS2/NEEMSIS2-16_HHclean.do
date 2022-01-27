@@ -731,7 +731,8 @@ replace relationshiptohead=5 if HHID_panel=="ORA39" & INDID_panel=="Ind_5"
 replace relationshiptohead=6 if HHID_panel=="ORA43" & INDID_panel=="Ind_6"
 replace relationshiptohead=8 if HHID_panel=="SEM14" & INDID_panel=="Ind_2"
 replace relationshiptohead=5 if HHID_panel=="SEM15" & INDID_panel=="Ind_4"
-
+replace relationshiptohead=13 if HHID_panel=="MANAM5" & INDID_panel=="Ind_6"
+replace relationshiptohead=1 if HHID_panel=="MANAM49" & INDID_panel=="Ind_1"
 
 replace sex=1 if HHID_panel=="GOV33" & INDID_panel=="Ind_3"  // vérifier quand même car chelou son - head - son ?
 
@@ -748,7 +749,6 @@ replace sex=2 if HHID_panel=="KAR45" & INDID_panel=="Ind_6"
 replace sex=2 if HHID_panel=="NAT57" & INDID_panel=="Ind_1"
 replace sex=2 if HHID_panel=="ORA67" & INDID_panel=="Ind_4"
 replace sex=2 if HHID_panel=="KAR61" & INDID_panel=="Ind_3"
-
 
 ta relationshiptohead sex if pb==0
 
