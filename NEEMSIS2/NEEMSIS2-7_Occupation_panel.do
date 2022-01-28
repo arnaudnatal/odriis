@@ -680,7 +680,8 @@ tab occup_sector, m
 order occupationname occup_sector kindofwork HHID_panel INDID_panel occupationnumber
 compress 
 sort occup_sector occupationname
-
+order HHID_panel INDID_panel occupationnumber
+sort HHID_panel INDID_panel occupationnumber
 
 ***** Recoder kindofwork
 rename occupationnumber occupationid
@@ -712,20 +713,19 @@ replace occup_sector=31 if occupationname=="Worker in a UCO4G COMPANY"
 replace occup_sector=31 if occupationname=="Godreje"
 replace occup_sector=31 if occupationname=="Company"
 
-replace occup_sector=33 if HHID_panel=="MANAM26" & INDID_panel=="Ind_2" & occupationnumber=="2"  // SHG leader
+replace occup_sector=33 if occupationname=="Self help group leader"
 
-replace occup_sector=41 if HHID_panel=="GOV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // Assistant professor
+replace occup_sector=41 if occupationname=="Assistant professor"
 
 replace occup_sector=44 if occupationname=="Pharmacy work"
 
-replace occup_sector=46 if HHID_panel=="KUV43" & INDID_panel=="Ind_3" & occupationnumber=="1"  // LIC agent
+replace occup_sector=46 if occupationname=="LIC agent"
 
 replace occup_sector=51 if occupationname=="Municipality worker"
 replace occup_sector=51 if occupationname=="NLC Employer"
 
 replace occup_sector=71 if occupationname=="Thinathanthi newspaper"
-replace occup_sector=71 if HHID_panel=="KOR7" & INDID_panel=="Ind_5" & occupationnumber=="1"  // Govt. Job (Clerk in BDO Office)
-
+replace occup_sector=71 if occupationname=="Govt. Job (Clerk in BDO Office)"
 
 replace occup_sector=72 if occupationname=="Employee in finance company"
 replace occup_sector=72 if occupationname=="Loan officer"
@@ -986,15 +986,20 @@ replace kindofwork=4 if occupationname=="Working at tirupur textile"
 
 replace occupcode2020=5 if occup_sector==85 & classcompleted>=10 
 
+replace occupcode2020=4 if occupationname=="Working at tirupur textile"
+
+replace occupcode2020=3 if occupationname=="Tution centre"
+
+*** Indiv code
+order HHID_panel INDID_panel occupationnumber occupcode2020
+sort HHID_panel INDID_panel occupationnumber
 replace occupcode2020=3 if HHID_panel=="ORA46" & INDID_panel=="Ind_3" & occupationnumber=="3"
 
 replace occupcode2020=3 if HHID_panel=="SEM36" & INDID_panel=="Ind_4" & occupationnumber=="1"
 
 replace occupcode2020=4 if HHID_panel=="MAN31" & INDID_panel=="Ind_1" & occupationnumber=="1"
 
-replace occupcode2020=4 if occupationname=="Working at tirupur textile"
 
-replace occupcode2020=3 if occupationname=="Tution centre"
 
 sort occupcode2020 occup_sector2 occup_sector occupationname HHID_panel INDID_panel occupationid
 

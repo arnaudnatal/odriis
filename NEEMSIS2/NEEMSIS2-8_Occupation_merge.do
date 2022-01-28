@@ -575,25 +575,25 @@ save"NEEMSIS_APPEND-occupations_v4.dta", replace
 ****************************************
 use"NEEMSIS_APPEND-occupations_v4.dta", clear
 
-merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v14.dta", keepusing(egoid name sex caste jatis age_arnaud age agefromearlier1 agefromearlier2 agecalculation age_new age_newfromearlier age2010 age2016 villageid everattendedschool classcompleted edulevel relationshiptohead dummyworkedpastyear livinghome livinghomefromearlier1 livinghomefromearlier2 INDID_left)
+merge m:1 HHID_panel INDID_panel using "NEEMSIS2-HH_v14.dta", keepusing(egoid name sex caste jatis age agefromearlier agefromearlier1 agefromearlier2 villageid everattendedschool classcompleted edulevel relationshiptohead dummyworkedpastyear livinghome livinghomefromearlier1 livinghomefromearlier2 INDID_left)
 
-label var age_arnaud "age --> age2016+4 --> age2010+10 --> agefromearlier1"
+*label var age_arnaud "age --> age2016+4 --> age2010+10 --> agefromearlier1"
 
 drop agetowork
-order HHID_panel INDID_panel age_arnaud age2010 age2016 age*
+order HHID_panel INDID_panel age
 
 preserve
 *condition pour que le questionnaire se lance
 keep if livinghome==1 | livinghome==2
-drop if age_arnaud<=10
+drop if age<=10
 *condition à moi
 drop if INDID_left!=.
 *verdique
 ta dummyworkedpastyear, m
-tab age_arnaud if dummyworkedpastyear==.
-tab agefromearlier2 if dummyworkedpastyear==.
-tab age_arnaud if dummyworkedpastyear==1
-tab agefromearlier2 if dummyworkedpastyear==1
+tab age if dummyworkedpastyear==.
+tab age if dummyworkedpastyear==.
+tab age if dummyworkedpastyear==1
+tab age if dummyworkedpastyear==1
 restore
 /*
 
@@ -634,12 +634,12 @@ restore
 
 preserve
 *101 mal codé de l'age
-keep if dummyworkedpastyear!=. & age_arnaud<20
-ta age_arnaud
+keep if dummyworkedpastyear!=. & age<20
+ta age
 ta agefromearlier2
-ta age_arnaud dummyworkedpastyear 
+ta age dummyworkedpastyear 
 sort HHID_panel INDID_panel occupationid
-list sex age_arnaud agefromearlier2 edulevel kindofwork annualincome occupation if dummyworkedpastyear==1, clean noobs
+list sex age agefromearlier2 edulevel kindofwork annualincome occupation if dummyworkedpastyear==1, clean noobs
 restore
 /*
        sex   age_ar~d   agefro~2                        edulevel             kindofwork   annual~e                               occupation  
@@ -663,12 +663,6 @@ Je ne touche à rien, il faudra juste noter ça pour les prochaines vagues
 
 
 
-
-
-
-
-
-
 rename _merge worker
 recode worker (2=0) (3=1)
 label define worker 0"No" 1"Yes"
@@ -688,7 +682,7 @@ label var occupa_unemployed "Occupations of workers + unoccupied individuals"
 
 **Generate and label occupation variable only for population on working age (15-60 included)
 gen occupa_unemployed_15_70=.
-replace occupa_unemployed_15_70=occupa_unemployed if age_arnaud>14 & age_arnaud<71
+replace occupa_unemployed_15_70=occupa_unemployed if age>14 & age<71
 label define occupcode 0 "Unoccupied working age individuals", modify
 label var occupa_unemployed_15_70 "Occupations of workers + unoccupied working age indiv (15-70)"
 label values occupa_unemployed_15_70 occupcode
@@ -774,9 +768,9 @@ restore
 
 **Generate active and inactive population in the same variable
 gen working_pop=.
-replace working_pop=1 if (age_arnaud<=14 & age_arnaud!=.) | (age_arnaud>=71 & age_arnaud!=.)
-replace working_pop=2 if age_arnaud>14 & age_arnaud<71 & worker==0
-replace working_pop=3 if age_arnaud>14 & age_arnaud<71 & worker==1
+replace working_pop=1 if (age<=14 & age!=.) | (age>=71 & age!=.)
+replace working_pop=2 if age>14 & age<71 & worker==0
+replace working_pop=3 if age>14 & age<71 & worker==1
 replace working_pop=. if INDID_left!=.
 replace working_pop=. if livinghome>=3
 label define working_pop 1 "Inactive" 2 "Unocc act" 3 "Occ act", modify

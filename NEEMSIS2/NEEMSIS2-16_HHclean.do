@@ -173,12 +173,6 @@ restore
 ****************************************
 use "$directory\CLEAN\NEEMSIS2-HH_v22.dta", clear
 
-*age
-drop age agecalculation
-rename age_arnaud age
-order age2010 age2016 age, after(sex)
-replace age=age2016+4 if age==. & age2016!=.
-drop age2010 age2016
 
 * Rename
 /*

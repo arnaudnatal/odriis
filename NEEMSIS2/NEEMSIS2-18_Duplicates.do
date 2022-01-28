@@ -113,17 +113,17 @@ forvalues i=1/`obs' {
 	if !_rc {
 	drop if parent_key==""
 	***** Duplicates
-	drop if parent_key=="uuid:244d058e-b68a-4271-bf5f-5332dca88f8f"  // householdid==36
-	drop if parent_key=="uuid:7e235580-30be-4dea-8982-68ed963b45c8"  // householdid==67
-	drop if parent_key=="uuid:ece23449-7f67-4de2-b7da-3ea48d4d33dd"  // householdid==235
-	drop if parent_key=="uuid:953d8941-5338-4a82-a5d7-2f6e25947e5d"  // householdid==246
-	drop if parent_key=="uuid:f52b0fb0-064b-4133-a78d-83edcd80b3e1"  // householdid==343
-	drop if parent_key=="uuid:08b045f7-ca13-429c-b25b-604ed8786a32"  // householdid==348
-	drop if parent_key=="uuid:332b0700-6bdb-4e66-92ee-7f1e892dae6a"  // householdid==361
-	drop if parent_key=="uuid:6854d50b-0b75-4b24-a3b8-ee031aa78668"  // householdid==391
+	drop if parent_key=="uuid:244d058e-b68a-4271-bf5f-5332dca88f8f"
+	drop if parent_key=="uuid:7e235580-30be-4dea-8982-68ed963b45c8"
+	drop if parent_key=="uuid:ece23449-7f67-4de2-b7da-3ea48d4d33dd"
+	drop if parent_key=="uuid:953d8941-5338-4a82-a5d7-2f6e25947e5d"
+	drop if parent_key=="uuid:f52b0fb0-064b-4133-a78d-83edcd80b3e1"
+	drop if parent_key=="uuid:08b045f7-ca13-429c-b25b-604ed8786a32"
+	drop if parent_key=="uuid:332b0700-6bdb-4e66-92ee-7f1e892dae6a"
+	drop if parent_key=="uuid:6854d50b-0b75-4b24-a3b8-ee031aa78668"
 	*
-	drop if parent_key=="uuid:f98d6d16-e1cb-4504-8475-9414a295c014"  // householdid==534
-	drop if parent_key=="uuid:0c5b2989-3bf7-49db-b6e4-ab455dfee7fe"  // householdid==547 (duplicates with "uuid:211fcb9c-19d7-4e89-9285-488a1a6588be")
+	drop if parent_key=="uuid:f98d6d16-e1cb-4504-8475-9414a295c014"
+	drop if parent_key=="uuid:0c5b2989-3bf7-49db-b6e4-ab455dfee7fe"
 	}
 	capture confirm v forauto
 	if !_rc {
@@ -144,6 +144,8 @@ filelist, dir("$directory\CLEAN\LAST") pattern(*.dta)
 egen file=concat(dirname filename),p(\)
 
 gen todrop=0
+replace todrop=1 if filename=="NEEMSIS1_temp.dta"
+replace todrop=1 if filename=="RUME_temp.dta"
 replace todrop=1 if filename=="NEEMSIS2-loans_v13.dta"
 replace todrop=1 if filename=="NEEMSIS2-loans_v12.dta"
 replace todrop=1 if filename=="NEEMSIS2-loans_v11.dta"

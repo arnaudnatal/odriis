@@ -50,6 +50,22 @@ cd"$directory"
 *1. Nettoyage de la base prêts
 use "NEEMSIS_APPEND-detailsloanbyborrower.dta", clear
 egen setofloansbyborrower=concat(parent_key key2), p(/)
+
+*** Duplicates
+drop if parent_key=="uuid:73af0a16-d6f8-4389-b117-2c40d591b806"
+drop if parent_key=="uuid:2cca6f5f-3ecb-4088-b73f-1ecd9586690d" 
+drop if parent_key=="uuid:1ea7523b-cad1-44da-9afa-8c4f96189433" 
+drop if parent_key=="uuid:9b931ac2-ef49-43e9-90cd-33ae0bf1928f" 
+drop if parent_key=="uuid:b283cb62-a316-418a-80b5-b8fe86585ef8"
+drop if parent_key=="uuid:5a19b036-4004-4c71-9e2a-b4efd3572cf3"  
+drop if parent_key=="uuid:7fc65842-447f-4b1d-806a-863556d03ed3"  
+drop if parent_key=="uuid:d0cd220f-bec1-49b8-a3ff-d70f82a3b231"  
+*
+drop if parent_key=="uuid:b73883fb-2b91-4db1-a117-9b198de7847b" 
+drop if parent_key=="uuid:73333f70-a553-4cbb-8df7-59284b9fcb66" 
+drop if parent_key=="uuid:63543454-ff4f-46f4-a07e-30e8032cf1bc"
+
+
 save"NEEMSIS2-loans.dta", replace
 
 

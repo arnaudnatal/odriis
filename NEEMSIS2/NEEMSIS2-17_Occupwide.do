@@ -100,14 +100,14 @@ drop _merge
 * Clean arnaud
 keep if INDID_left==.
 order HHID_panel parent_key INDID_panel INDID_left INDID_total jatis caste sex name canread classcompleted edulevel year setofbusinesslabourers setofinfoemployer setofoccupations setofemployment
-drop age_arnaud age2010 age2016 age agecalculation age_new age_newfromearlier agefromearlier1 agefromearlier2 egoid
+drop age egoid
 drop toask setofbusinesslabourers setofinfoemployer 
 drop parent_key INDID_left INDID_total jatis caste sex name canread classcompleted edulevel year
 drop jobloc_samevil jobloc_aroundvil jobloc_ruralTN jobloc_smalltownAR jobloc_bigcitiesTN jobloc_ruralOUT jobloc_bigcitiesOUT ext dummyego
 drop workedpastyearfromearlier selected_occupposition_ selected_occupname_ min_datestartoccup min_occupationid villageid livinghome relationshiptohead livinghomefromearlier1 livinghomefromearlier2
 drop countoccupation
 
-merge m:1 HHID_panel INDID_panel using "$directory\CLEAN\NEEMSIS2-HH_v24.dta", keepusing(name parent_key INDID_total age sex caste jatis relationshiptohead maritalstatus canread edulevel)
+merge m:1 HHID_panel INDID_panel using "$directory\CLEAN\NEEMSIS2-HH_v25.dta", keepusing(name parent_key INDID_total age sex caste jatis relationshiptohead maritalstatus canread edulevel)
 drop if _merge==2
 drop _merge
 

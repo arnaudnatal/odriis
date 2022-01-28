@@ -116,11 +116,11 @@ destring age, replace
 gen age_arnaud=age
 *order age_arnaud age age_autofromearlier age_new age_newfromearlier agecalculation agefromearlier agefromearlier1 agefromearlier2 age2010 age2016 INDID_left INDID_new INDID_total
 destring agefromearlier1 agefromearlier2 age_autofromearlier age_newfromearlier agecalculation agefromearlier, replace
-drop age_autofromearlier age_new age_newfromearlier agecalculation agefromearlier agefromearlier2
+drop age_autofromearlier age_new age_newfromearlier agecalculation
 
 replace age_arnaud=agefromearlier1 if INDID_new!=. & age_arnaud==.
 replace age_arnaud=agefromearlier1+4 if INDID_new==. & age_arnaud==.
-drop agefromearlier1 age
+drop age
 rename age_arnaud age
 replace age=age2016+4 if age==. & age2016!=.
 replace age=age2010+10 if age==. & age2010!=.

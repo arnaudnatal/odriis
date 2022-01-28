@@ -42,7 +42,7 @@ use"$directory\CLEAN\NEEMSIS2-HH_v19.dta", clear
 
 drop setoffamilymembers setofeducation setofindividualid setoflefthome setofremreceivedidgroup setofremsentidgroup setofmigrationidgroup setofloansbyborrower setoflendingmoney setofrecommendationgiven setofchitfund setofsavings setofgold setofinsurance setofschemenregaind setofcashassistancemarriagegroup setofgoldmarriagegroup setofschemepension1group setofschemepension2group setofschemepension3group setofschemepension4group setofschemepension5group setofschemepension6group setofschemepension7group
 
-drop age_newfromearlier age_autofromearlier agefromearlier1 agefromearlier2
+drop agefromearlier1 agefromearlier2
 
 drop marriagegift_count 
 
@@ -53,7 +53,7 @@ drop memberlistpreload2016_count lefthome_count individualid_count familymembers
 
 drop nameego2fromearlier nameego1fromearlierhh nameego1fromearlier indexego2fromearlier indexego2firststep indexego2 indexego1fromearlier indexego1firststep indexego1finalstep indexego1final indexego1 ego3positionname ego3position ego2position ego2index_36 ego2index_2635 ego2index_1825 ego2herefromearlier ego1herefromearlier
 
-drop familymembersindex educationindex employmentindex sex_new age_new HHID dummydemonetisation villageid_new villageid_new_comments tracked namefrompreload
+drop familymembersindex educationindex employmentindex HHID dummydemonetisation villageid_new villageid_new_comments tracked namefrompreload
 
 foreach x in migrantlist remrecipientlist remsenderlist borrowerlist hhlenderlist recommendgivenlist marriedlist nregarecipientlist schemeslist chitfundbelongerid savingsownerid goldownerid insuranceownerid schemerecipientlist3 schemerecipientlist4 schemerecipientlist5 schemerecipientlist6 schemerecipientlist7 schemerecipientlist8 schemerecipientlist9 schemerecipientlist10 {
 rename `x'_ dummy_`x'
@@ -93,7 +93,7 @@ drop castepreload2016 numfamilypreload2016 dummyeverhadlandpreload2016 ownlandpr
 sort HHID_panel INDID_panel
 
 ***From earlier
-drop namefromearlier4 namefromearlier5 workedpastyearfromearlier mainoccupationfromearlier attendedschoolfromearlier namefromearlier sexfromearlier agefromearlier namefromearlier2 livinghomefromearlier2 namefromearlier3
+drop namefromearlier4 namefromearlier5 workedpastyearfromearlier mainoccupationfromearlier attendedschoolfromearlier namefromearlier agefromearlier namefromearlier2 livinghomefromearlier2 namefromearlier3
 
 ***Selected
 foreach x in selected_occupposition selected_occupname selected_months selected_months_monthsid {
@@ -188,6 +188,7 @@ save"$directory\CLEAN\NEEMSIS2-loans_v14", replace
 ****************************************
 use"$directory\CLEAN\NEEMSIS2-HH_v20", clear
 
+/*
 merge m:1 HHID_panel using "$git\_Miscellaneous\Individual_panel\ODRIIS-HH.dta", keepusing(hhpanel_10_16_20)
 keep if _merge==3
 drop _merge
@@ -195,7 +196,7 @@ drop _merge
 merge 1:1 HHID_panel INDID_panel using "$git\_Miscellaneous\Individual_panel\ODRIIS-Indiv.dta", keepusing(indivpanel_10_16_20)
 keep if _merge==3
 drop _merge
-
+*/
 save"$directory\CLEAN\NEEMSIS2-HH_v21.dta", replace
 ****************************************
 * END
