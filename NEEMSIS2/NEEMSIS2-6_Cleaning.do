@@ -273,7 +273,7 @@ tab name
 ********** Caste
 preserve 
 use"$neemsis1\NEEMSIS1-HH.dta", clear
-global tokeep name sex canread everattendedschool classcompleted after10thstandard durationafter10th typeofhigheredu subjectsafter10th currentlyatschool educationexpenses amountschoolfees bookscost transportcost   dummyscholarship scholarshipamount scholarshipduration converseinenglish
+global tokeep name sex canread everattendedschool classcompleted after10thstandard durationafter10th typeofhigheredu subjectsafter10th currentlyatschool educationexpenses amountschoolfees bookscost transportcost   dummyscholarship scholarshipamount scholarshipduration converseinenglish othersubjectsafter10th otherreasondroppingschool reasonneverattendedschool reasondropping
 keep HHID_panel INDID_panel $tokeep
 foreach x in $tokeep {
 rename `x' `x'2016
@@ -332,7 +332,7 @@ list HHID_panel INDID_panel	name age version_HH if livinghome==1 & edulevel==., 
        ELA52        In5            Rasu    69       NEEMSIS2_APRIL  
 */
 
-drop sex2010 HHID2010 dummyeverland2010 dummyHHlost2016
+drop HHID2010 dummyeverland2010 dummyHHlost2016
 drop canread2016 everattendedschool2016 classcompleted2016 after10thstandard2016 durationafter10th2016 typeofhigheredu2016 subjectsafter10th2016 othersubjectsafter10th2016 currentlyatschool2016 educationexpenses2016 amountschoolfees2016 bookscost2016 transportcost2016 reasonneverattendedschool2016 reasondropping2016 otherreasondroppingschool2016 dummyscholarship2016 scholarshipamount2016 scholarshipduration2016 converseinenglish2016 sex2016
 
 
@@ -975,7 +975,7 @@ use"NEEMSIS2-HH_v13.dta", clear
 
 rename livinghome livinghome2020
 
-merge 1:1 HHID_panel INDID_panel using "$neemsis1\NEEMSIS1-HH_v2.dta", keepusing(livinghome)
+merge 1:1 HHID_panel INDID_panel using "$neemsis1\NEEMSIS1-HH.dta", keepusing(livinghome)
 
 drop if _merge==2
 drop _merge
