@@ -169,8 +169,25 @@ save"$git\NEEMSIS1-HH_indiv.dta", replace
 ********** NEEMSIS2
 use"$neemsis2\\NEEMSIS2-HH.dta", clear
 
-keep HHID_panel INDID_panel parent_key INDID2020 INDID_left name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate INDID_left householdidparent householdid2020 livinghome lefthomereason lefthousehold dummylefthousehold othermember lefthomeid lefthomename reasonlefthome reasonlefthomeother lefthomedurationmoreoneyear
+keep HHID_panel INDID_panel parent_key INDID2020 INDID_new INDID_former INDID_left name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate householdidparent householdid2020 livinghome lefthomereason  dummylefthousehold reasonlefthome reasonlefthomeother
 sort HHID_panel INDID_panel
+
+gen member_new=0
+gen member_former=0
+gen member_left=0
+replace member_new=1 if INDID_new!=.
+replace member_former=1 if INDID_former!=.
+replace member_left=1 if INDID_left!=.
+drop INDID_new INDID_former
+
+order dummylefthousehold member_left
+
+drop dummylefthousehold 
+label define yesno9 0"No" 1"Yes", replace
+foreach x in new former left {
+label values member_`x' yesno9
+}
+fre member_*
 
 rename parent_key HHID2020
 
