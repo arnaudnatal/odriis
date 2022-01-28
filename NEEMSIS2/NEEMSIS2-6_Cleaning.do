@@ -42,7 +42,7 @@ cd "$directory\CLEAN"
 
 
 ****************************************
-* SEX AGE
+* SEX AGE NAME
 ****************************************
 use"NEEMSIS2-HH_v7.dta", clear
 
@@ -62,24 +62,15 @@ drop if name==""
 *rename INDID INDID2020
 *tostring INDID2020, replace
 
+/*
 preserve
 keep HHID_panel INDID2020 name ego livinghome sex age relationshiptohead maritalstatus version_HH relationshiptoheadother
 gen year=2020
 save"indiv2020_temp", replace
 restore
+*/
 
-
-*******
-******
-*****
-****
-***
-**
-*
-
-
-*merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v3", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
-
+********** Preload + merging
 preserve 
 use"$rume\RUME-HH.dta", clear
 keep HHID_panel INDID_panel name age sex
@@ -107,7 +98,9 @@ merge 1:1 HHID_panel INDID_panel using "NEEMSIS1_temp"
 drop if _merge==2
 drop _merge
 
-***** Clean sex
+
+
+********** Sex
 fre sex
 destring sex, replace
 label values sex sex
@@ -116,20 +109,26 @@ replace sex=sex2016 if sex==. & sex2016!=.
 fre sex
 drop sexfromearlier sex_new sex2010 sex2016
 
-***** Clean age
+
+
+********** Age
 destring age, replace
 gen age_arnaud=age
-order age_arnaud age age_autofromearlier age_new age_newfromearlier agecalculation agefromearlier agefromearlier1 agefromearlier2 age2010 age2016
-replace age_arnaud=age2016+4 if age==.
-replace age_arnaud=age2010+10 if age==.
-sort HHID_panel age
+*order age_arnaud age age_autofromearlier age_new age_newfromearlier agecalculation agefromearlier agefromearlier1 agefromearlier2 age2010 age2016 INDID_left INDID_new INDID_total
 destring agefromearlier1 agefromearlier2 age_autofromearlier age_newfromearlier agecalculation agefromearlier, replace
-sort age HHID_panel INDID_panel
-replace age_arnaud=agefromearlier1 if age==.
-tab age,m
+drop age_autofromearlier age_new age_newfromearlier agecalculation agefromearlier agefromearlier2
 
-***** Sortie
+replace age_arnaud=agefromearlier1 if INDID_new!=. & age_arnaud==.
+replace age_arnaud=agefromearlier1+4 if INDID_new==. & age_arnaud==.
+drop agefromearlier1 age
+rename age_arnaud age
+replace age=age2016+4 if age==. & age2016!=.
+replace age=age2010+10 if age==. & age2010!=.
+drop age2016 age2010
 
+
+
+********** Cleaning
 order HHID_panel INDID_panel INDID2020 sex  age 
 
 sort HHID_panel INDID_panel
@@ -144,6 +143,7 @@ drop formermember1 formermember2 formermember3 formermember4 formermember5 forme
 drop formermember formermember_
 drop tot_HH
 
+drop name2010 name2016
 
 save"NEEMSIS2-HH_v8.dta", replace
 ****************************************
@@ -169,24 +169,37 @@ save"NEEMSIS2-HH_v8.dta", replace
 ****************************************
 use"NEEMSIS2-HH_v8.dta", clear
 
-merge m:1 HHID_panel using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_HH", keepusing(jatis2010 jatis2016)
-drop if _merge==2
-drop _merge
-
-merge 1:1 HHID_panel INDID_panel using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\educ2016"
-drop if _merge==2
-drop _merge
-
-********** HOW MUCH PRESENT ON NEEMSIS2 survey?
-gen respondent2020=.
-replace respondent2020=0 if INDID_left!=.
-replace respondent2020=1 if INDID_left==.
-tab respondent2020, m
-tab livinghome respondent2020, m
-rename respondent2020 dummy_respondent2020
-
 
 ********** Caste
+preserve 
+use"$rume\RUME-HH.dta", clear
+keep HHID_panel caste jatis
+duplicates drop
+rename caste caste2010
+rename jatis jatis2010
+save"RUME_temp", replace
+restore
+
+preserve 
+use"$neemsis1\NEEMSIS1-HH.dta", clear
+keep HHID_panel caste jatis
+duplicates drop
+rename caste caste2016
+rename jatis jatis2016
+save"NEEMSIS1_temp", replace
+restore
+
+**Merge
+merge m:1 HHID_panel using "RUME_temp"
+drop if _merge==2
+drop _merge
+
+merge m:1 HHID_panel using "NEEMSIS1_temp"
+drop if _merge==2
+drop _merge
+
+
+***** Opérations
 tab caste
 destring castepreload2016, replace
 tab castepreload2016
@@ -219,8 +232,31 @@ drop jatis2010 jatis2016
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+********** HOW MUCH PRESENT ON NEEMSIS2 survey?
+gen respondent2020=.
+replace respondent2020=0 if INDID_left!=.
+replace respondent2020=1 if INDID_left==.
+tab respondent2020, m
+tab livinghome respondent2020, m
+rename respondent2020 dummy_respondent2020
+
+
+
 ********** Egoid
 rename ego egoid
+
+
 
 
 ********** Name
@@ -234,7 +270,23 @@ tab name
 
 
 
-********** Education
+********** Caste
+preserve 
+use"$neemsis1\NEEMSIS1-HH.dta", clear
+global tokeep name sex canread everattendedschool classcompleted after10thstandard durationafter10th typeofhigheredu subjectsafter10th currentlyatschool educationexpenses amountschoolfees bookscost transportcost   dummyscholarship scholarshipamount scholarshipduration converseinenglish
+keep HHID_panel INDID_panel $tokeep
+foreach x in $tokeep {
+rename `x' `x'2016
+}
+save"NEEMSIS1_temp", replace
+restore
+
+**Merge
+merge 1:1 HHID_panel INDID_panel using "NEEMSIS1_temp"
+drop if _merge==2
+drop _merge
+
+***** Opérations
 foreach x in canread everattendedschool classcompleted after10thstandard durationafter10th typeofhigheredu subjectsafter10th currentlyatschool educationexpenses amountschoolfees bookscost transportcost   dummyscholarship scholarshipamount scholarshipduration converseinenglish{
 replace `x'=`x'2016 if `x'==. & `x'2016!=.
 }
@@ -282,6 +334,12 @@ list HHID_panel INDID_panel	name age version_HH if livinghome==1 & edulevel==., 
 
 drop sex2010 HHID2010 dummyeverland2010 dummyHHlost2016
 drop canread2016 everattendedschool2016 classcompleted2016 after10thstandard2016 durationafter10th2016 typeofhigheredu2016 subjectsafter10th2016 othersubjectsafter10th2016 currentlyatschool2016 educationexpenses2016 amountschoolfees2016 bookscost2016 transportcost2016 reasonneverattendedschool2016 reasondropping2016 otherreasondroppingschool2016 dummyscholarship2016 scholarshipamount2016 scholarshipduration2016 converseinenglish2016 sex2016
+
+
+
+
+
+
 
 
 ********** Encode version
