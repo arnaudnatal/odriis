@@ -102,8 +102,19 @@ rename livinghome livinghome2
 
 *Caste
 destring jatis, replace
-label define jatis 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"Mudaliar" 12"Kulalar" 13"Chettiyar" 14"Marwari" 15"Muslims" 16"Padayachi" 17"Yathavar" 77"Other", replace
+ta jatis
+label define jatis 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 12"Muthaliyar" 13"Kulalar" 66"Ir" 77"Other" 88"D/K" 99"N/R", replace
+*13"Chettiyar" 14"Marwari" 15"Muslims" 16"Padayachi" 17"Yathavar" 77"Other", replace
 label values jatis jatis
+fre jatis
+clonevar jatis2=jatis
+recode jatis2 (12=11) (13=12) 
+label define jatis2 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"Muthaliyar" 12"Kulalar" 77"Other", replace
+label values jatis2 jatis2
+ta jatis jatis2
+rename jatis jatis_codeRUME
+rename jatis2 jatis
+
 
 destring caste, replace
 label define castecat 1"Dalits" 2"Middle" 3"Upper"

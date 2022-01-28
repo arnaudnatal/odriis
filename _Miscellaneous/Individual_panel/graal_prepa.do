@@ -119,14 +119,16 @@ save"$git\RUME-HH_indiv.dta", replace
 use"$neemsis1\CLEAN\NEEMSIS1-HH.dta", clear
 
 rename INDID INDID2016
-keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate
+keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate livinghome lefthomereason
+replace lefthomereason="" if livinghome==1
+replace lefthomereason="" if livinghome==4
 
 * All string
 tostring *, replace
 desc
 
 * Decode
-foreach x in sex villageid relationshiptohead jatis caste {
+foreach x in sex villageid relationshiptohead jatis caste livinghome {
 decode `x', gen(`x'_str)
 drop `x'
 rename `x'_str `x'
@@ -167,7 +169,9 @@ save"$git\NEEMSIS1-HH_indiv.dta", replace
 ********** NEEMSIS2
 use"$neemsis2\\NEEMSIS2-HH.dta", clear
 
-keep HHID_panel INDID_panel parent_key INDID2020 name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate INDID_left householdidparent householdid2020
+keep HHID_panel INDID_panel parent_key INDID2020 INDID_left name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate INDID_left householdidparent householdid2020 livinghome lefthomereason lefthousehold dummylefthousehold othermember lefthomeid lefthomename reasonlefthome reasonlefthomeother lefthomedurationmoreoneyear
+sort HHID_panel INDID_panel
+
 rename parent_key HHID2020
 
 * All string

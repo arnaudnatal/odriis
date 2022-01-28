@@ -38,6 +38,13 @@ cd "$directory"
 ****************************************
 use "RUME-HH_v8", replace
 
+
+*** Recodage Sex relationship
+br if HHID2010=="VENGP179"
+fre sex relationshiptohead
+replace sex=1 if HHID2010=="VENGP179" & name=="THAMIZH"
+replace relationshiptohead=5 if HHID2010=="VENGP179" & name=="THAMIZH"
+
 drop jobinc_HH_agri jobinc_HH_coolie jobinc_HH_agricoolie jobinc_HH_nregs jobinc_HH_invest jobinc_HH_employee jobinc_HH_selfemp jobinc_HH_pension jobinc_indiv_agri jobinc_indiv_coolie jobinc_indiv_agricoolie jobinc_indiv_nregs jobinc_indiv_invest jobinc_indiv_employee jobinc_indiv_selfemp jobinc_indiv_pension assets1000 assets_noland1000
 
 
