@@ -24,11 +24,9 @@ macro drop _all
 cls
 ********** Path to folder "data" folder.
 global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-*global directory = "C:\Users\anatal\Downloads\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-*global git = "C:\Users\anatal\Downloads\Github"
 global git = "C:\Users\Arnaud\Documents\GitHub"
-global neemsis1 = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
-
+global neemsis1 = "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1\CLEAN"
+global rume="C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME\CLEAN"
 cd "$directory\CLEAN"
 
 ********** SSC to install
@@ -44,7 +42,7 @@ cd "$directory\CLEAN"
 
 
 ****************************************
-* 2010 2016 DATA PRELOAD for sex, etc.
+* SEX AGE
 ****************************************
 use"NEEMSIS2-HH_v7.dta", clear
 
@@ -61,8 +59,8 @@ Donc je drop 5 obs
 */
 drop if name==""
 
-rename INDID INDID2020
-tostring INDID2020, replace
+*rename INDID INDID2020
+*tostring INDID2020, replace
 
 preserve
 keep HHID_panel INDID2020 name ego livinghome sex age relationshiptohead maritalstatus version_HH relationshiptoheadother
@@ -80,19 +78,48 @@ restore
 *
 
 
-merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v3", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+*merge 1:m HHID_panel INDID2020 using "$git\RUME-NEEMSIS\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_wide_v3", keepusing(age2016 sex2016 age2010 sex2010 INDID_panel)
+
+preserve 
+use"$rume\RUME-HH.dta", clear
+keep HHID_panel INDID_panel name age sex
+rename name name2010
+rename sex sex2010
+rename age age2010
+save"RUME_temp", replace
+restore
+
+preserve 
+use"$neemsis1\NEEMSIS1-HH.dta", clear
+keep HHID_panel INDID_panel name age sex
+rename name name2016
+rename sex sex2016
+rename age age2016
+save"NEEMSIS1_temp", replace
+restore
+
+**Merge
+merge 1:1 HHID_panel INDID_panel using "RUME_temp"
 drop if _merge==2
 drop _merge
 
+merge 1:1 HHID_panel INDID_panel using "NEEMSIS1_temp"
+drop if _merge==2
+drop _merge
+
+***** Clean sex
+fre sex
 destring sex, replace
 label values sex sex
 
-destring age, replace
-*order age*, first
+replace sex=sex2016 if sex==. & sex2016!=.
+fre sex
+drop sexfromearlier sex_new sex2010 sex2016
 
-replace sex=sex2016 if sex==.
-tab sex
+***** Clean age
+destring age, replace
 gen age_arnaud=age
+order age_arnaud age age_autofromearlier age_new age_newfromearlier agecalculation agefromearlier agefromearlier1 agefromearlier2 age2010 age2016
 replace age_arnaud=age2016+4 if age==.
 replace age_arnaud=age2010+10 if age==.
 sort HHID_panel age
@@ -101,6 +128,7 @@ sort age HHID_panel INDID_panel
 replace age_arnaud=agefromearlier1 if age==.
 tab age,m
 
+***** Sortie
 
 order HHID_panel INDID_panel INDID2020 sex  age 
 
@@ -137,7 +165,7 @@ save"NEEMSIS2-HH_v8.dta", replace
 
 
 ****************************************
-* SEX CASTE EDUCATION
+* CASTE EDUCATION
 ****************************************
 use"NEEMSIS2-HH_v8.dta", clear
 

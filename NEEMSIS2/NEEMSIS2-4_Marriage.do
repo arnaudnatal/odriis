@@ -56,7 +56,7 @@ tostring INDID, replace
 drop sex age
 
 preserve
-use"$git\_Miscellaneous\Individual_panel\code_indiv_2010_2016.dta", clear
+use"$git\_Miscellaneous\Individual_panel\code_indiv_2010_2016_2020_v3", clear
 keep if year==2016
 save"$git\_Miscellaneous\Individual_panel\preload2016.dta", replace
 restore
@@ -317,7 +317,7 @@ save"$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.d
 ****************************************
 * MERGE MARRIAGE WITH HOUSEHOLD DATA BASE
 ****************************************
-use"$directory\CLEAN\NEEMSIS2-HH_v5_bis.dta", clear
+use"$directory\CLEAN\NEEMSIS2-HH_v5_bis2.dta", clear
 drop INDID2010
 
 merge 1:m INDID parent_key using "$directory\CLEAN\NEEMSIS_APPEND-hhquestionnaire-marriage-marriagegroup_v3.dta"
