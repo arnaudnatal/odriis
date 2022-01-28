@@ -101,23 +101,22 @@ recode edulevel (.=0)
 tab edulevel
 
 *Caste
-tab caste
-gen caste_group=.
+rename caste jatis
+fre jatis
+gen caste=.
 foreach x in 2 3{
-replace caste_group=1 if caste==`x'
+replace caste=1 if jatis==`x'
 }
 foreach x in 1 5 7 8 10 12 15 16{
-replace caste_group=2 if caste==`x'
+replace caste=2 if jatis==`x'
 }
 foreach x in 4 6 9 11 13 17{
-replace caste_group=3 if caste==`x'
+replace caste=3 if jatis==`x'
 }
 label define castecat 1"Dalits" 2"Middle" 3"Upper", replace
-label values caste_group castecat
-tab caste_group
+label values caste castecat
+tab caste
 label values caste caste
-rename caste jatis
-rename caste_group caste
 tab jatis caste
 
 

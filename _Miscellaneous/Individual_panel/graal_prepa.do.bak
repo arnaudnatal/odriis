@@ -330,46 +330,6 @@ restore
 use"$git\ODRIIS-indiv.dta", clear
 
 
-gen pb=.
-
-*** Relationship
-replace pb=1 if HHID_panel=="KOR20"  // relationship chaotique en panel
-replace pb=1 if HHID_panel=="KOR26"  // relationship idem à recoder
-
-replace pb=1 if HHID_panel=="GOV28"  // grandchild chelou
-replace pb=1 if HHID_panel=="MANAM38"
-replace pb=1 if HHID_panel=="MANAM2"
-replace pb=1 if HHID_panel=="KUV27"
-replace pb=1 if HHID_panel=="MAN17"
-replace pb=1 if HHID_panel=="MANAM30"
-replace pb=1 if HHID_panel=="ELA9"
-
-*** Age
-replace pb=1 if HHID_panel=="ELA40"
-
-
-*** Jatis
-replace pb=1 if HHID_panel=="GOV42"  // pb jatis
-
-*** 2010-2020 panel étrange
-replace pb=1 if HHID_panel=="GOV5"  // 2010-2020 avec une seule personne en panel
-replace pb=1 if HHID_panel=="KUV10"
-replace pb=1 if HHID_panel=="KUV25"
-replace pb=1 if HHID_panel=="GOV9" 
-replace pb=1 if HHID_panel=="GOV10"
-
-
-*** Avec Youna et Sébastien
-*replace pb=1 if HHID_panel=="KAR49"  // 7 et 8 identiques non donc on sort
-*replace pb=1 if HHID_panel=="KOR15"  // Kalaimani et différent
-
-
-*** Apparitions
-replace pb=1 if HHID_panel=="ELA40"  // 7 et 8 14 ans en 2016, pq pas là en 2010
-
-
-*** Disparitions
-replace pb=1 if HHID_panel=="ELA9"  // où est le fils ?
 
 
 

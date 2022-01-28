@@ -606,6 +606,37 @@ br if HHID_panel=="ELA22" & INDID_panel=="Ind_5"
 *** Wife?
 br if HHID_panel=="GOV10"  // 1 remariage ?
 
+br if HHID_panel=="GOV25"
+br if HHID_panel=="GOV28"
+br if HHID_panel=="GOV29"
+br if HHID_panel=="GOV42"
+br if HHID_panel=="GOV45"
+br if HHID_panel=="GOV5"
+
+
+br if HHID_panel=="GOV9"
+br if HHID_panel=="KAR49" 
+br if HHID_panel=="KOR15"
+br if HHID_panel=="KOR20"
+br if HHID_panel=="KOR26"
+br if HHID_panel=="ELA33"
+br if HHID_panel=="ELA40"
+br if HHID_panel=="ELA45"
+br if HHID_panel=="ELA9"
+br if HHID_panel=="GOV10"
+br if HHID_panel=="GOV18"
+
+
+
+
+********** Cécile
+br if HHID_panel=="KUV9" | HHID_panel=="MANAM16"
+br if HHID_panel=="MANAM38" | HHID_panel=="MANAM2"  // recode MANAM2
+br if HHID_panel=="KUV10" | HHID_panel=="KUV25"  // KUV10 same HH? KUV25 ok.
+br if HHID_panel=="KUV27"
+br if HHID_panel=="MAN17"
+br if HHID_panel=="MANAM30"
+br if HHID_panel=="MANAM5"
 
 
 ********** Save
