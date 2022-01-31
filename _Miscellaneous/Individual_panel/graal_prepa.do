@@ -100,11 +100,11 @@ order HHID_panel INDID_panel HHID2010 INDID2010 wave submissiondate name age sex
 compress
 
 foreach x in * {
-rename `x' `x'_2010
+rename `x' `x'2010
 }
 
 foreach x in HHID_panel INDID_panel HHID2010 INDID2010 {
-rename `x'_2010 `x'
+rename `x'2010 `x'
 }
 
 save"$git\RUME-HH_indiv.dta", replace
@@ -146,14 +146,14 @@ order HHID_panel INDID_panel HHID2016 INDID2016 wave submissiondate name age sex
 compress
 
 foreach x in * {
-rename `x' `x'_2016
+rename `x' `x'2016
 }
 
 foreach x in HHID_panel INDID_panel HHID2016 INDID2016 {
-rename `x'_2016 `x'
+rename `x'2016 `x'
 }
 
-order lefthomereason_2016, after(livinghome_2016)
+order lefthomereason2016, after(livinghome2016)
 
 save"$git\NEEMSIS1-HH_indiv.dta", replace
 
@@ -213,14 +213,14 @@ order HHID_panel INDID_panel HHID2020 INDID2020 wave submissiondate name age sex
 compress
 
 foreach x in * {
-rename `x' `x'_2020
+rename `x' `x'2020
 }
 
 foreach x in HHID_panel INDID_panel HHID2020 INDID2020 {
-rename `x'_2020 `x'
+rename `x'2020 `x'
 }
 
-order member_left_2020 reasonlefthome_2020 reasonlefthomeother_2020 livinghome_2020 lefthomereason_2020, after(member_former_2020)
+order member_left2020 reasonlefthome2020 reasonlefthomeother2020 livinghome2020 lefthomereason2020, after(member_former2020)
 
 drop member_former
 
@@ -294,52 +294,20 @@ drop _merge
 merge 1:1 HHID_panel INDID_panel using "$git\NEEMSIS2-HH_indiv.dta"
 drop _merge
 
-order HHID_panel INDID_panel wave_2010 wave_2016 wave_2020
-fre wave_2010 wave_2016 wave_2020
+order HHID_panel INDID_panel wave2010 wave2016 wave2020
+fre wave2010 wave2016 wave2020
 
 * Indiv
 gen indivpanel_10_16_20="No"
-replace indivpanel_10_16_20="Yes" if wave_2010=="RUME (2010)" & wave_2016=="NEEMSIS-1 (2016-17)" & wave_2020=="NEEMSIS-2 (2020-21)"
+replace indivpanel_10_16_20="Yes" if wave2010=="RUME (2010)" & wave2016=="NEEMSIS-1 (2016-17)" & wave2020=="NEEMSIS-2 (2020-21)"
 
-order HHID_panel INDID_panel name_2010 name_2016 livinghome_2016 name_2020 member_new member_left_2020 livinghome_2020
+order HHID_panel INDID_panel name2010 name2016 livinghome2016 name2020 member_new2020 member_left2020 livinghome2020
 
 sort HHID_panel INDID_panel
 
-save"$git\ODRIIS-indiv.dta", replace
-
-export excel "$git\ODRIIS-indiv.xlsx", firstrow(var) replace
-
-* HH
-/*
-preserve
-duplicates drop HHID_panel, force
-gen hhpanel_10_16_20="No"
-replace hhpanel_10_16_20="Yes" if wave_2010=="RUME" & wave_2016=="NEEMSIS-1" & wave_2020=="NEEMSIS-2"
-drop name_2010 age_2010 sex_2010 relationshiptohead_2010 name_2016 age_2016 sex_2016 relationshiptohead_2016 name_2020 age_2020 sex_2020 relationshiptohead_2020 relationshiptoheadother_2020 dummyleft_2020 indivpanel_10_16_20
-save"$git\ODRIIS-HH.dta", replace
-restore
-*/
-*save"$git\ODRIIS-HH_indiv.dta", replace
-****************************************
-* END
 
 
-
-
-
-
-
-
-
-
-
-
-****************************************
-* Pb
-****************************************
-use"$git\ODRIIS-indiv.dta", clear
-
-
+********** Pb
 gen pb=.
 
 *** Relationship
@@ -380,6 +348,12 @@ replace pb=1 if HHID_panel=="ELA40"  // 7 et 8 14 ans en 2016, pq pas là en 201
 
 *** Disparitions
 replace pb=1 if HHID_panel=="ELA9"  // où est le fils ?
+
+
+********** Saving
+save"$git\ODRIIS-indiv.dta", replace
+
+export excel "$git\ODRIIS-indiv.xlsx", firstrow(var) replace
 
 ****************************************
 * END
