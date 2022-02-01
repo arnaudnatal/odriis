@@ -169,7 +169,9 @@ mdesc $literacy if canreadcard1a==. //those are mostly the same people
 tab edulevel if canreadcard1a==. //code as can't read if edulevel max primary completed 
 gen refuse=0
 replace refuse=1 if (canreadcard1a+canreadcard1b+canreadcard1c+canreadcard2==.)
-recode $literacy (.=0) if edulevel<=1
+foreach x in $literacy {
+replace `x'=0 if `x'==. & edulevel<=1 & egoid!=0
+}
 
 mdesc numeracy4 numeracy3 numeracy2 if numeracy1==. 
 tab edulevel if numeracy1==. 
@@ -179,6 +181,15 @@ recode numeracy4 numeracy3 numeracy2 numeracy1 (.=0) if edulevel<=1
 
 egen num_tt = rowtotal(numeracy1 numeracy2 numeracy3 numeracy4), missing 
 egen lit_tt = rowtotal(canreadcard1a canreadcard1b canreadcard1c canreadcard2), missing 
+
+********** Recode for label
+foreach x of varlist $numeracy {
+recode `x' (0=2)
+}
+foreach x of varlist $literacy {
+recode `x' (0=1) (0.5=2) (1=3) 
+}
+
 /*
 twoway (histogram lit_tt if username==2, w(0.5)) (histogram lit_tt if username==4, color(green) w(0.5)) (histogram lit_tt if username==7, color(blue) w(0.5)) (histogram lit_tt if username==8, color(red) w(0.5)), legend(order(1 "Vivek" 2 "Suganya" 3 "Chithra" 4 "Raichal" ))
 twoway (histogram num_tt if username==2, w(1)) (histogram num_tt if username==4, color(green) w(1)) (histogram num_tt if username==7, color(blue) w(1)) (histogram num_tt if username==8, color(red) w(1)), legend(order(1 "Vivek" 2 "Suganya" 3 "Chithra" 4 "Raichal" ))
