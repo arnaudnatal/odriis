@@ -724,7 +724,9 @@ mdesc $literacy if canreadcard1a==. //those are mostly the same people
 tab edulevel if canreadcard1a==. //code as can't read if edulevel max primary completed 
 gen refuse=0
 replace refuse=1 if (canreadcard1a+canreadcard1b+canreadcard1c+canreadcard2==.)
-recode $literacy (.=0) if edulevel<=1
+foreach x in $literacy {
+replace `x'=0 if `x'==. & edulevel<=1 & egoid!=0
+}
 
 mdesc numeracy6 numeracy5 numeracy4 numeracy3 numeracy2 if numeracy1==. 
 tab edulevel if numeracy1==. 
@@ -734,6 +736,14 @@ recode numeracy6 numeracy5 numeracy4 numeracy3 numeracy2 numeracy1 (.=0) if edul
 
 egen num_tt = rowtotal(numeracy1 numeracy2 numeracy3 numeracy4 numeracy5 numeracy6), missing 
 egen lit_tt = rowtotal(canreadcard1a canreadcard1b canreadcard1c canreadcard2), missing 
+
+********** Recode for label
+foreach x of varlist $numeracy {
+recode `x' (0=2)
+}
+foreach x of varlist $literacy {
+recode `x' (0=1) (0.5=2) (1=3) 
+}
 
 
 save"NEEMSIS2-HH_v11.dta", replace
