@@ -350,10 +350,90 @@ replace pb=1 if HHID_panel=="ELA40"  // 7 et 8 14 ans en 2016, pq pas là en 201
 replace pb=1 if HHID_panel=="ELA9"  // où est le fils ?
 
 
-********** Saving
+********** Save
 save"$git\ODRIIS-indiv.dta", replace
+
 
 export excel "$git\ODRIIS-indiv.xlsx", firstrow(var) replace
 
 ****************************************
 * END
+
+
+
+
+
+
+
+****************************************
+* HH
+****************************************
+use"$git\RUME-HH_indiv.dta", clear
+
+duplicates drop HHID_panel, force
+keep HHID2010 HHID_panel
+
+preserve
+use "$git\NEEMSIS1-HH_indiv.dta", clear
+duplicates drop HHID_panel, force
+keep HHID2016 HHID_panel
+save "$git\NEEMSIS1-HH.dta", replace
+restore
+
+preserve
+use "$git\NEEMSIS2-HH_indiv.dta", clear
+duplicates drop HHID_panel, force
+keep HHID2020 HHID_panel
+save "$git\NEEMSIS2-HH.dta", replace
+restore
+
+merge 1:1 HHID_panel using "$git\NEEMSIS1-HH.dta"
+drop _merge
+merge 1:1 HHID_panel using "$git\NEEMSIS2-HH.dta"
+drop _merge
+
+********** panel
+gen panel1=1 if HHID2010!="" & HHID2016!=""
+gen panel2=1 if HHID2016!="" & HHID2020!=""
+gen panel3=1 if HHID2010!="" & HHID2016!="" & HHID2020!=""
+
+gen panel4=1 if HHID2010!="" & HHID2016=="" & HHID2020!=""
+list HHID_panel if panel4==1, clean noobs
+/*
+       GOV10  
+       GOV47  
+        GOV5  
+        GOV9  
+       KUV10  
+       KUV25  
+     MANAM19  
+     MANAM34  
+     MANAM40  
+       ORA37 
+*/
+
+********** Save
+save"$git\ODRIIS-HH.dta", replace
+
+export excel "$git\ODRIIS-HH.xlsx", firstrow(var) replace
+
+erase "$git\NEEMSIS1-HH.dta"
+erase "$git\NEEMSIS2-HH.dta"
+****************************************
+* END
+
+
+
+
+keep if HHID_panel=="GOV10" | /// 
+HHID_panel=="GOV47" |   ///
+HHID_panel=="GOV5" |   ///
+HHID_panel=="GOV9" |   ///
+HHID_panel=="KUV10" |   ///
+HHID_panel=="KUV25" |   ///
+HHID_panel=="MANAM19" |   ///
+HHID_panel=="MANAM34" |   ///
+HHID_panel=="MANAM40" |   ///
+HHID_panel=="ORA37" 
+
+order HHID_panel INDID_panel name2010 name2020 relationshiptohead2010 relationshiptohead2020 age2010 age2020

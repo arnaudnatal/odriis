@@ -177,6 +177,8 @@ keep HHID_panel caste jatis
 duplicates drop
 rename caste caste2010
 rename jatis jatis2010
+decode caste2010, gen(caste2010_str)
+decode jatis2010, gen(jatis2010_str)
 save"RUME_temp", replace
 restore
 
@@ -186,6 +188,8 @@ keep HHID_panel caste jatis
 duplicates drop
 rename caste caste2016
 rename jatis jatis2016
+decode caste2016, gen(caste2016_str)
+decode jatis2016, gen(jatis2016_str)
 save"NEEMSIS1_temp", replace
 restore
 
@@ -204,6 +208,15 @@ tab caste
 destring castepreload2016, replace
 tab castepreload2016
 tab jatis2010 jatis2016
+
+****** Verif panel
+order HHID_panel INDID_panel jatis2010_str jatis2016_str caste
+sort HHID_panel INDID_panel
+/*
+ELA16
+ELA5
+
+*/
 
 replace caste=castepreload2016 if caste==. & castepreload2016!=.
 tab caste
@@ -229,8 +242,6 @@ order parent_key HHID_panel HHID2010 householdid2020 villageid villagearea jatis
 rename caste_group caste
 
 drop jatis2010 jatis2016
-
-
 
 
 

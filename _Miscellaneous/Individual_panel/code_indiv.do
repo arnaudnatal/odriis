@@ -639,6 +639,23 @@ br if HHID_panel=="MANAM30"
 br if HHID_panel=="MANAM5"
 
 
+
+********** Recode HHID
+*keep if HHID_panel=="GOV10"
+
+replace HHID_panel="GOV64" if HHID_panel=="GOV10" & year==2020
+replace HHID_panel="GOV65" if HHID_panel=="GOV5" & year==2020
+replace HHID_panel="GOV66" if HHID_panel=="GOV9" & year==2020
+replace HHID_panel="GOV67" if HHID_panel=="GOV47" & year==2020
+
+replace HHID_panel="KUV66" if HHID_panel=="KUV10" & year==2020
+replace HHID_panel="KUV67" if HHID_panel=="KUV25" & year==2020
+
+
+
+
+
+
 ********** Save
 save"$git\code_indiv_2010_2016_2020_v3", replace
 
@@ -648,7 +665,13 @@ use"$git\code_indiv_2010_2016_2020_v3", clear
 
 keep HHID_panel INDID_panel INDID name sex age relationshiptohead year maritalstatus egoid
 
+sort HHID_panel INDID_panel
+
 egen HHINDID=concat(HHID_panel INDID_panel), p(/)
+
+duplicates tag HHINDID year, gen(tag)
+ta tag
+drop tag
 
 reshape wide name sex age relationshiptohead maritalstatus INDID egoid, i(HHINDID) j(year)
 
