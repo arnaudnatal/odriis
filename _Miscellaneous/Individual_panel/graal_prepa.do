@@ -307,6 +307,121 @@ sort HHID_panel INDID_panel
 
 
 
+********** Cohérence age
+destring age2016 age2010, replace
+
+*** If Died = replace
+replace age2016=age2010+6 if livinghome2016=="No, died" & age2010!=. & age2016!=.
+
+gen diff=age2016-age2010
+order HHID_panel INDID_panel name2010 name2016 relationshiptohead2010 relationshiptohead2016 age2010 age2016 diff
+bysort HHID_panel: egen max_diff=max(diff)
+bysort HHID_panel: egen min_diff=min(diff)
+gen int_diff=max_diff-min_diff
+order min_diff max_diff int_diff, after(diff)
+
+
+** Min
+sort min_diff HHID_panel INDID_panel
+clonevar age2010panel=age2010
+clonevar age2016panel=age2016
+clonevar age2020panel=age2020
+
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM23" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM23" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM23" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM23" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR20" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KOR20" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="KOR20" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="KOR20" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA26" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ORA26" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA11" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ELA11" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="ELA11" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="ELA11" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="ELA11" & INDID_panel=="Ind_5"
+
+replace age2010panel=age2016-6 if HHID_panel=="KOR9" & INDID_panel=="Ind_1"
+replace age2010panel=age2016-6 if HHID_panel=="KOR9" & INDID_panel=="Ind_2"
+replace age2010panel=age2016-6 if HHID_panel=="KOR9" & INDID_panel=="Ind_3"
+replace age2010panel=age2016-6 if HHID_panel=="KOR9" & INDID_panel=="Ind_4"
+replace age2010panel=age2016-6 if HHID_panel=="KOR9" & INDID_panel=="Ind_7"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN13" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="MAN13" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR25" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="KOR25" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA6" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ELA6" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV23" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT1" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="NAT1" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM6" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="SEM6" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV22" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KUV22" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM37" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="SEM37" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_5"
+replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV27" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN12" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MAN12" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="MAN12" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="MAN12" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM28" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="GOV41" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR2" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR15" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="KOR15" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV19" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KUV19" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN38" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MAN38" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR20" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV36" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KUV36" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT46" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM48" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA1" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA45" & INDID_panel=="Ind_4"
+
+
+
+
+
+
+/*
 ********** Pb
 gen pb=.
 
@@ -348,7 +463,7 @@ replace pb=1 if HHID_panel=="ELA40"  // 7 et 8 14 ans en 2016, pq pas là en 201
 
 *** Disparitions
 replace pb=1 if HHID_panel=="ELA9"  // où est le fils ?
-
+*/
 
 ********** Save
 save"$git\ODRIIS-indiv.dta", replace
