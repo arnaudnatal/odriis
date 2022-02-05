@@ -319,9 +319,12 @@ bysort HHID_panel: egen max_diff=max(diff)
 bysort HHID_panel: egen min_diff=min(diff)
 gen int_diff=max_diff-min_diff
 order min_diff max_diff int_diff, after(diff)
-clonevar age2010panel=age2010
-clonevar age2016panel=age2016
-clonevar age2020panel=age2020
+*clonevar age2010panel=age2010
+*clonevar age2016panel=age2016
+*clonevar age2020panel=age2020
+gen age2010panel=.
+gen age2016panel=.
+order age2010panel age2016panel, after(int_diff)
 
 
 
@@ -376,6 +379,7 @@ replace age2016panel=age2010+6 if HHID_panel=="KUV22" & INDID_panel=="Ind_2"
 replace age2016panel=age2010+6 if HHID_panel=="SEM37" & INDID_panel=="Ind_1"
 replace age2016panel=age2010+6 if HHID_panel=="SEM37" & INDID_panel=="Ind_5"
 
+replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_1"
 replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_3"
 replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_4"
 replace age2016panel=age2010+6 if HHID_panel=="ELA19" & INDID_panel=="Ind_5"
@@ -400,12 +404,12 @@ replace age2016panel=age2010+6 if HHID_panel=="KOR15" & INDID_panel=="Ind_5"
 replace age2016panel=age2010+6 if HHID_panel=="KUV19" & INDID_panel=="Ind_1"
 replace age2016panel=age2010+6 if HHID_panel=="KUV19" & INDID_panel=="Ind_2"
 
-replace age2016panel=age2010+6 if HHID_panel=="MAN38" & INDID_panel=="Ind_1"
-replace age2016panel=age2010+6 if HHID_panel=="MAN38" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM38" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM38" & INDID_panel=="Ind_4"
 
 replace age2016panel=age2010+6 if HHID_panel=="KAR20" & INDID_panel=="Ind_2"
 
-replace age2016panel=age2010+6 if HHID_panel=="KUV36" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KUV36" & INDID_panel=="Ind_2"
 replace age2016panel=age2010+6 if HHID_panel=="KUV36" & INDID_panel=="Ind_4"
 
 replace age2016panel=age2010+6 if HHID_panel=="NAT46" & INDID_panel=="Ind_3"
@@ -415,6 +419,10 @@ replace age2016panel=age2010+6 if HHID_panel=="SEM48" & INDID_panel=="Ind_4"
 replace age2016panel=age2010+6 if HHID_panel=="ELA1" & INDID_panel=="Ind_5"
 
 replace age2016panel=age2010+6 if HHID_panel=="ELA45" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if (diff==0 & age2016panel==. & age2010panel==.)
+replace age2016panel=age2010+6 if (diff==1 & age2016panel==. & age2010panel==.)
+replace age2016panel=age2010+6 if (diff==2 & age2016panel==. & age2010panel==.)
 
 
 ** Min
@@ -431,23 +439,26 @@ replace age2016panel=age2010+6 if HHID_panel=="GOV26" & INDID_panel=="Ind_2"
 
 replace age2016panel=age2010+6 if HHID_panel=="ELA35" & INDID_panel=="Ind_1"
 replace age2016panel=age2010+6 if HHID_panel=="ELA35" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="ELA35" & INDID_panel=="Ind_5"
 
 replace age2016panel=age2010+6 if HHID_panel=="ORA25" & INDID_panel=="Ind_2"
 
 replace age2016panel=age2010+6 if HHID_panel=="MANAM17" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM17" & INDID_panel=="Ind_2"
 
 replace age2016panel=age2010+6 if HHID_panel=="GOV29" & INDID_panel=="Ind_1"
 replace age2016panel=age2010+6 if HHID_panel=="GOV29" & INDID_panel=="Ind_2"
 
 replace age2016panel=age2010+6 if HHID_panel=="ORA24" & INDID_panel=="Ind_1"
 
+replace age2016panel=age2010+6 if HHID_panel=="ELA7" & INDID_panel=="Ind_2"
 replace age2016panel=age2010+6 if HHID_panel=="ELA7" & INDID_panel=="Ind_4"
 replace age2016panel=age2010+6 if HHID_panel=="ELA7" & INDID_panel=="Ind_5"
 
 replace age2016panel=age2010+6 if HHID_panel=="ELA2" & INDID_panel=="Ind_1"
 replace age2016panel=age2010+6 if HHID_panel=="ELA2" & INDID_panel=="Ind_2"
 
-replace age2016panel=age2010+6 if HHID_panel=="MANAM44" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="MAN44" & INDID_panel=="Ind_2"
 
 replace age2010panel=age2016-6 if HHID_panel=="NAT51" & INDID_panel=="Ind_1"
 replace age2010panel=age2016-6 if HHID_panel=="NAT51" & INDID_panel=="Ind_2"
@@ -477,6 +488,269 @@ replace age2016panel=age2010+6 if HHID_panel=="SEM46" & INDID_panel=="Ind_4"
 
 replace age2016panel=age2010+6 if HHID_panel=="ORA15" & INDID_panel=="Ind_3"
 
+replace age2016panel=age2010+6 if HHID_panel=="NAT4" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="NAT4" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="NAT4" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT37" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT35" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="NAT35" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT11" & INDID_panel=="Ind_5"
+replace age2016panel=age2010+6 if HHID_panel=="NAT11" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM32" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV29" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="KUV29" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR26" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KOR26" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR23" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR29" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR29" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="GOV32" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA9" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ELA9" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="ELA9" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="ELA9" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA45" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ELA45" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA26" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ELA26" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="ELA26" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="ELA26" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="ELA26" & INDID_panel=="Ind_5"
+replace age2016panel=age2010+6 if HHID_panel=="ELA26" & INDID_panel=="Ind_6"
+replace age2016panel=age2010+6 if HHID_panel=="ELA26" & INDID_panel=="Ind_7"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA22" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="ORA22" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="ORA22" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA14" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="ORA14" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM8" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM8" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN14" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MAN14" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV52" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KUV52" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="KUV52" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR1" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="KOR1" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR7" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM8" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA9" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT28" & INDID_panel=="Ind_5"
+replace age2016panel=age2010+6 if HHID_panel=="NAT28" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN32" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MAN32" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="MAN32" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV19" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR10" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR45" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR45" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR25" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="GOV3" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA30" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ELA30" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="ELA30" & INDID_panel=="Ind_7"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM2" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="SEM2" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM17" & INDID_panel=="Ind_5"
+replace age2016panel=age2010+6 if HHID_panel=="SEM17" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA23" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA2" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="ORA2" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT29" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="NAT29" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM4" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM31" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN10" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV43" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV14" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR27" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KOR27" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR44" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR44" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR36" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR21" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR21" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR10" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR10" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM43" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM22" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM16" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA39" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT5" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM51" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM51" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM51" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="MANAM51" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM20" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN39" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN1" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV27" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KUV27" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV12" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR37" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="KOR37" & INDID_panel=="Ind_5"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR49" & INDID_panel=="Ind_4"
+replace age2016panel=age2010+6 if HHID_panel=="KAR49" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR42" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR26" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="GOV4" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="GOV4" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="GOV28" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM42" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM36" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM27" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM15" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="SEM15" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="SEM1" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA48" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA30" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="ORA1" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT39" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT16" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="NAT15" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM45" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM43" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM42" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MANAM10" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN31" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="MAN31" & INDID_panel=="Ind_5"
+replace age2016panel=age2010+6 if HHID_panel=="MAN31" & INDID_panel=="Ind_6"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN21" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN19" & INDID_panel=="Ind_3"
+replace age2016panel=age2010+6 if HHID_panel=="MAN19" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="MAN18" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV6" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV40" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KUV21" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR5" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KOR3" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="KOR3" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR8" & INDID_panel=="Ind_2"
+replace age2016panel=age2010+6 if HHID_panel=="KAR8" & INDID_panel=="Ind_3"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR47" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR3" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR3" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR18" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR17" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR17" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="KAR15" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="KAR15" & INDID_panel=="Ind_4"
+
+replace age2016panel=age2010+6 if HHID_panel=="GOV39" & INDID_panel=="Ind_1"
+replace age2016panel=age2010+6 if HHID_panel=="GOV39" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="GOV38" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA42" & INDID_panel=="Ind_2"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA33" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA23" & INDID_panel=="Ind_1"
+
+replace age2016panel=age2010+6 if HHID_panel=="ELA15" & INDID_panel=="Ind_5"
+
+
+********** No pb
+replace age2010panel=age2010 if age2010panel==.
+replace age2016panel=age2016 if age2016panel==.
+
+********** Verif
+gen diffpanel=age2016panel-age2010panel
+order HHID_panel INDID_panel relationshiptohead2010 relationshiptohead2016 age2010 age2016 diff age2010panel age2016panel diffpanel
+
+ta diffpanel
+sort diffpanel
 
 
 /*
