@@ -752,6 +752,13 @@ order HHID_panel INDID_panel relationshiptohead2010 relationshiptohead2016 age20
 ta diffpanel
 sort diffpanel
 
+gen diff2016=age2016-age2016panel
+gen diff2010=age2010-age2010panel
+
+ta diff2016
+ta diff2010
+drop diff diffpanel min_diff max_diff int_diff diff2016 diff2010
+
 
 /*
 ********** Pb
@@ -870,7 +877,7 @@ erase "$git\NEEMSIS2-HH.dta"
 * END
 
 
-
+/*
 
 keep if HHID_panel=="GOV10" | /// 
 HHID_panel=="GOV47" |   ///
