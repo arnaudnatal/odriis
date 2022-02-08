@@ -113,3 +113,18 @@ La variable corrige uniquement les cas où l'age a augmenté de moins de 3 ans e
 
 Nous trouvons donc les variables "age2010panel", "age2016panel" et "age2020panel" dans la base `ODRIIS_indiv.dta` qui permettent d'avoir des ages corrigés lorsque nous travaillons en panel.
 
+
+# Caste (jatis plutôt)
+
+En vérifiant la cohérence panel, j'ai trouvé des changements de castes (ou jatis plutôt) entre 2010 et 2016-17.
+Rien pour 2016-17 - 2020-21.
+En regardant une base panel de Sébastien et Youna, le jatis retenu était celui de 2016-17.
+
+| `HHID_panel` | `HHID2010` | Jatis 2010 | Jatis 2016-17 |
+|--------------|------------|------------|---------------|
+| MANAM28      | SIMTP297   | Gramani    | SC            |
+| SEM48        | SISEM106   | Settu      | Chettiyar     |
+| SEM10        | SISEM107   | Settu      | Chettiyar     |
+| ORA38        | VENOR397   | Vanniyar   | Padayachi     |
+| ELA5         | PSEP78     | Vanniyar   | Padayachi     |
+| MAN18        | ANTMP241   | Settu      | Vanniyar      |
