@@ -113,10 +113,9 @@ replace caste=2 if jatis==`x'
 foreach x in 4 6 9 11 13 17{
 replace caste=3 if jatis==`x'
 }
-label define castecat 1"Dalits" 2"Middle" 3"Upper", replace
-label values caste castecat
+label define castecat2 1"Dalits" 2"Middle" 3"Upper"
+label values caste castecat2
 tab caste
-label values caste caste
 tab jatis caste
 
 
