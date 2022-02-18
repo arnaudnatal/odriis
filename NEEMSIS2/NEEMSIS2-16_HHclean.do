@@ -680,7 +680,7 @@ clear all
 
 
 ****************************************
-* Sex relationship
+* Sex relationship + label agri
 ****************************************
 *Mary
 use"$directory\CLEAN\NEEMSIS2-HH_v24.dta", clear
@@ -745,6 +745,13 @@ replace sex=2 if HHID_panel=="ORA67" & INDID_panel=="Ind_4"
 replace sex=2 if HHID_panel=="KAR61" & INDID_panel=="Ind_3"
 
 ta relationshiptohead sex if pb==0
+
+
+********** Label agri
+foreach x in productpricesold1 productpricesold2 productpricesold3 productpricesold4 productpricesold5 productpricesold9 productpricesold11 productpricesold12 productpricesold14 {
+label var `x' "How much did you sell a unit according to the harvest unit on average?"
+}
+
 
 save"$directory\CLEAN\NEEMSIS2-HH_v25.dta", replace
 clear all
