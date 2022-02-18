@@ -343,7 +343,7 @@ list HHID_panel INDID_panel	name age version_HH if livinghome==1 & edulevel==., 
        ELA52        In5            Rasu    69       NEEMSIS2_APRIL  
 */
 
-drop HHID2010 dummyeverland2010 dummyHHlost2016
+drop HHID2010 dummyHHlost2016
 drop canread2016 everattendedschool2016 classcompleted2016 after10thstandard2016 durationafter10th2016 typeofhigheredu2016 subjectsafter10th2016 othersubjectsafter10th2016 currentlyatschool2016 educationexpenses2016 amountschoolfees2016 bookscost2016 transportcost2016 reasonneverattendedschool2016 reasondropping2016 otherreasondroppingschool2016 dummyscholarship2016 scholarshipamount2016 scholarshipduration2016 converseinenglish2016 sex2016
 
 
