@@ -65,7 +65,7 @@ From "..." we need to continue in the right order
 */
 ********** RUME
 use"$rume\CLEAN\RUME-HH.dta", clear
-keep HHID_panel INDID_panel HHID2010 INDID2010 name age sex relationshiptohead jatis caste address villageid
+keep HHID_panel INDID_panel HHID2010 INDID2010 name age sex relationshiptohead jatis caste address villageid villagearea
 
 * All string
 tostring *, replace
@@ -115,7 +115,9 @@ save"$git\RUME-HH_indiv.dta", replace
 use"$neemsis1\CLEAN\NEEMSIS1-HH.dta", clear
 
 rename INDID INDID2016
-keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate livinghome lefthomereason
+keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate livinghome lefthomereason villageareaid
+
+rename villageareaid villagearea
 replace lefthomereason="" if livinghome==1
 replace lefthomereason="" if livinghome==4
 
@@ -124,7 +126,7 @@ tostring *, replace
 desc
 
 * Decode
-foreach x in sex villageid relationshiptohead jatis caste livinghome {
+foreach x in sex villageid relationshiptohead jatis caste livinghome villagearea {
 decode `x', gen(`x'_str)
 drop `x'
 rename `x'_str `x'
@@ -163,7 +165,7 @@ save"$git\NEEMSIS1-HH_indiv.dta", replace
 ********** NEEMSIS2
 use"$neemsis2\\NEEMSIS2-HH.dta", clear
 
-keep HHID_panel INDID_panel parent_key INDID2020 INDID_new INDID_former INDID_left name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate householdid2020 livinghome lefthomereason  dummylefthousehold reasonlefthome reasonlefthomeother
+keep HHID_panel INDID_panel parent_key INDID2020 INDID_new INDID_former INDID_left name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate householdid2020 livinghome lefthomereason  dummylefthousehold reasonlefthome reasonlefthomeother villagearea
 sort HHID_panel INDID_panel
 
 gen member_new=0
@@ -190,7 +192,7 @@ tostring *, replace
 desc
 
 * Decode
-foreach x in sex villageid relationshiptohead jatis caste member_left member_new member_former livinghome reasonlefthome lefthomereason {
+foreach x in sex villageid relationshiptohead jatis caste member_left member_new member_former livinghome reasonlefthome lefthomereason villagearea {
 decode `x', gen(`x'_str)
 drop `x'
 rename `x'_str `x'
@@ -305,6 +307,48 @@ order HHID_panel INDID_panel name2010 name2016 livinghome2016 name2020 member_ne
 
 sort HHID_panel INDID_panel
 
+
+********** Area
+***** 2010
+ta villagearea2010
+replace villagearea2010="Ur" if villagearea2010=="1"
+replace villagearea2010="Colony" if villagearea2010=="2"
+
+***** 2016-17
+ta villagearea2016
+replace villagearea2016="Ur" if ///
+villagearea2016=="ELAUR" | ///
+villagearea2016=="GOVUR" | ///
+villagearea2016=="KARUR" | ///
+villagearea2016=="KORUR" | ///
+villagearea2016=="KUVUR" | ///
+villagearea2016=="MANAMUR" | ///
+villagearea2016=="MANUR" | ///
+villagearea2016=="NATUR" | ///
+villagearea2016=="ORAUR" | ///
+villagearea2016=="SEMUR"
+replace villagearea2016="Colony" if ///
+villagearea2016=="ELACO" | ///
+villagearea2016=="GOVCO" | ///
+villagearea2016=="KARCO" | ///
+villagearea2016=="KORCO" | ///
+villagearea2016=="KUVCO" | ///
+villagearea2016=="MANAMCO" | ///
+villagearea2016=="MANCO" | ///
+villagearea2016=="NATCO" | ///
+villagearea2016=="ORACO" | ///
+villagearea2016=="SEMCO"
+
+***** 2020-21
+ta villagearea2020
+split villagearea2020
+drop villagearea2020 villagearea20201
+rename villagearea20202 villagearea2020
+
+***** Check
+ta villagearea2010
+ta villagearea2016
+ta villagearea2020
 
 
 ********** Cohérence age
@@ -819,25 +863,67 @@ export excel "$git\ODRIIS-indiv.xlsx", firstrow(var) replace
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 ****************************************
 * HH
 ****************************************
 use"$git\RUME-HH_indiv.dta", clear
 
-duplicates drop HHID_panel, force
-keep HHID2010 HHID_panel
+keep HHID_panel HHID2010 caste2010 jatis2010 address2010 villageid2010 villagearea2010
+duplicates drop
+replace villagearea2010="Ur" if villagearea2010=="1"
+replace villagearea2010="Colony" if villagearea2010=="2"
+
 
 preserve
 use "$git\NEEMSIS1-HH_indiv.dta", clear
-duplicates drop HHID_panel, force
-keep HHID2016 HHID_panel
+keep HHID_panel HHID2016 caste2016 jatis2016 address2016 villageid2016 villagearea2016
+duplicates drop 
+replace villagearea2016="Ur" if ///
+villagearea2016=="ELAUR" | ///
+villagearea2016=="GOVUR" | ///
+villagearea2016=="KARUR" | ///
+villagearea2016=="KORUR" | ///
+villagearea2016=="KUVUR" | ///
+villagearea2016=="MANAMUR" | ///
+villagearea2016=="MANUR" | ///
+villagearea2016=="NATUR" | ///
+villagearea2016=="ORAUR" | ///
+villagearea2016=="SEMUR"
+replace villagearea2016="Colony" if ///
+villagearea2016=="ELACO" | ///
+villagearea2016=="GOVCO" | ///
+villagearea2016=="KARCO" | ///
+villagearea2016=="KORCO" | ///
+villagearea2016=="KUVCO" | ///
+villagearea2016=="MANAMCO" | ///
+villagearea2016=="MANCO" | ///
+villagearea2016=="NATCO" | ///
+villagearea2016=="ORACO" | ///
+villagearea2016=="SEMCO"
 save "$git\NEEMSIS1-HH.dta", replace
 restore
 
 preserve
 use "$git\NEEMSIS2-HH_indiv.dta", clear
-duplicates drop HHID_panel, force
-keep HHID2020 HHID_panel
+keep HHID_panel HHID2020 caste2020 jatis2020 address2020 villageid2020 villagearea2020
+duplicates drop 
+split villagearea2020
+drop villagearea2020 villagearea20201
+rename villagearea20202 villagearea2020
+
 save "$git\NEEMSIS2-HH.dta", replace
 restore
 
@@ -853,21 +939,94 @@ gen panel3=1 if HHID2010!="" & HHID2016!="" & HHID2020!=""
 
 gen panel4=1 if HHID2010!="" & HHID2016=="" & HHID2020!=""
 list HHID_panel if panel4==1, clean noobs
-/*
-       GOV10  
-       GOV47  
-        GOV5  
-        GOV9  
-       KUV10  
-       KUV25  
-     MANAM19  
-     MANAM34  
-     MANAM40  
-       ORA37 
-*/
+
+
+********** Jatis
+*** Check
+gen jatisok_1016=0
+gen jatisok_1620=0
+
+replace jatisok_1016=1 if jatis2010==jatis2016
+replace jatisok_1620=1 if jatis2016==jatis2020
+
+replace jatisok_1016=1 if jatis2010=="" | jatis2016==""
+replace jatisok_1620=1 if jatis2016=="" | jatis2020==""
+
+
+*** Pb 2010
+clonevar jatis2010_backup=jatis2010
+clonevar jatis2016_backup=jatis2016
+clonevar jatis2020_backup=jatis2020
+* Muthaliyar
+replace jatis2010="Mudaliar" if jatis2010=="Muthaliyar"
+* Arunthatiyar
+replace jatis2010="Arunthathiyar" if jatis2010=="Arunthatiyar"
+* Other
+replace jatis2010=jatis2016 if jatis2010=="Other" & jatis2016!=""
+
+*** Pb 2016-2020
+replace jatis2020=jatis2016 if HHID_panel=="ELA16"
+replace jatis2020=jatis2016 if HHID_panel=="GOV19"
+replace jatis2020=jatis2016 if HHID_panel=="GOV2"
+replace jatis2020=jatis2016 if HHID_panel=="GOV38"
+replace jatis2020=jatis2016 if HHID_panel=="KAR30"
+
+*** À la main 2010-2016
+*
+replace jatis2010="SC" if HHID_panel=="MANAM28"
+replace caste2010="Dalits" if HHID_panel=="MANAM28"
+*
+replace jatis2010="Padayachi" if HHID_panel=="ELA5"
+replace caste2010="Middle" if HHID_panel=="ELA5"
+*
+replace jatis2010="Padayachi" if HHID_panel=="ORA38"
+replace caste2010="Middle" if HHID_panel=="ORA38"
+*
+replace jatis2010="Chettiyar" if HHID_panel=="SEM10"
+replace caste2010="Upper" if HHID_panel=="SEM10"
+*
+replace jatis2010="Chettiyar" if HHID_panel=="SEM48"
+replace caste2010="Upper" if HHID_panel=="SEM48"
+*
+replace jatis2010="Vanniyar" if HHID_panel=="MAN18"
+replace caste2010="Middle" if HHID_panel=="MAN18"
+
+*** À la main 2020-21
+*
+replace jatis2016="SC" if HHID_panel=="MANAM18"
+replace caste2016="Dalits" if HHID_panel=="MANAM18"
+*
+replace jatis2016="Vanniyar" if HHID_panel=="KUV42"
+replace jatis2016="Vanniyar" if HHID_panel=="MANAM11"
+replace jatis2016="Vanniyar" if HHID_panel=="MANAM12"
+tab1 jatis2010 jatis2016 jatis2020
+
+
+*** Update
+drop jatisok_1016 jatisok_1620
+
+gen jatisok_1016=0
+gen jatisok_1620=0
+
+replace jatisok_1016=1 if jatis2010==jatis2016
+replace jatisok_1620=1 if jatis2016==jatis2020
+
+replace jatisok_1016=1 if jatis2010=="" | jatis2016==""
+replace jatisok_1620=1 if jatis2016=="" | jatis2020==""
+
+
+order HHID_panel caste2010 caste2016 caste2020 jatis2010 jatis2016 jatis2020 jatisok_1016 jatisok_1620 villagearea2010 villagearea2016 villagearea2020
+
+sort jatisok_1016 HHID_panel
+
+sort jatisok_1620 HHID_panel
+drop jatisok_1016 jatisok_1620
+
+
 
 ********** Save
 save"$git\ODRIIS-HH.dta", replace
+
 
 export excel "$git\ODRIIS-HH.xlsx", firstrow(var) replace
 
@@ -875,19 +1034,3 @@ erase "$git\NEEMSIS1-HH.dta"
 erase "$git\NEEMSIS2-HH.dta"
 ****************************************
 * END
-
-
-/*
-
-keep if HHID_panel=="GOV10" | /// 
-HHID_panel=="GOV47" |   ///
-HHID_panel=="GOV5" |   ///
-HHID_panel=="GOV9" |   ///
-HHID_panel=="KUV10" |   ///
-HHID_panel=="KUV25" |   ///
-HHID_panel=="MANAM19" |   ///
-HHID_panel=="MANAM34" |   ///
-HHID_panel=="MANAM40" |   ///
-HHID_panel=="ORA37" 
-
-order HHID_panel INDID_panel name2010 name2020 relationshiptohead2010 relationshiptohead2020 age2010 age2020

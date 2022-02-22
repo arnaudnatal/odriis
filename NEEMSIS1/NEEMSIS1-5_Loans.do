@@ -774,6 +774,7 @@ ta loanamount_fin loan_database, m
 ta loanamount_g loan_database, m
 ta loanamount_gm loan_database, m
 
+tabstat loanamount loanamount_gm loanamount_g loanamount_fin, stat(n mean sd p50)
 
 *** Indiv + HH level
 foreach x in loans loans_gm loans_g loanamount_g loanamount_gm loanamount_fin {
