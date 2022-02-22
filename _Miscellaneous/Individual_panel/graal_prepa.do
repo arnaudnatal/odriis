@@ -1030,6 +1030,12 @@ save"$git\ODRIIS-HH.dta", replace
 
 export excel "$git\ODRIIS-HH.xlsx", firstrow(var) replace
 
+*** Long
+reshape long caste jatis villagearea HHID address villageid, j(year) i(HHID_panel)
+
+save"$git\ODRIIS-HH_long.dta", replace
+
+
 erase "$git\NEEMSIS1-HH.dta"
 erase "$git\NEEMSIS2-HH.dta"
 ****************************************
