@@ -786,6 +786,21 @@ Je les recode à 0 dans le doute, ca rpz peu de prêts donc bon.....
 replace interestpaid3=. if dummyinterest==0
 
 
+********** Verif loanbalance loanamount
+gen loantest=loanamount-loanbalance
+gen loan3test=loanamount3-loanbalance3
+
+preserve
+order HHID_panel INDID_panel loanamount loanbalance loantest loanamount3 loanbalance3 loan3test loan_database
+sort loan3test
+restore
+
+replace loanbalance3=loanamount3 if loanamount3<loanbalance3 & loan_database=="GOLD"
+drop if loanamount3==66
+
+drop loantest loan3test
+
+
 save"NEEMSIS2-loans_v10.dta", replace
 ****************************************
 * END

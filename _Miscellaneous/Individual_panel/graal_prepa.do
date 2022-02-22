@@ -1023,6 +1023,36 @@ sort jatisok_1620 HHID_panel
 drop jatisok_1016 jatisok_1620
 
 
+********** Caste
+replace caste2010="Dalits" if HHID_panel=="MAN22"
+replace caste2010="Upper" if HHID_panel=="KAR48"
+replace caste2010="Middle" if jatis2010=="Muslims"
+
+replace caste2020="Upper" if HHID_panel=="GOV19"
+replace caste2020="Upper" if HHID_panel=="GOV2"
+
+*** Check
+gen casteok_1016=0
+gen casteok_1620=0
+
+replace casteok_1016=1 if caste2010==caste2016
+replace casteok_1620=1 if caste2016==caste2020
+
+replace casteok_1016=1 if caste2010=="" | caste2016==""
+replace casteok_1620=1 if caste2016=="" | caste2020==""
+
+
+order HHID_panel caste2010 caste2016 caste2020 casteok_1016 casteok_1620 jatis2010 jatis2016 jatis2020 villagearea2010 villagearea2016 villagearea2020
+
+
+sort casteok_1016 HHID_panel
+
+sort casteok_1620 HHID_panel
+
+drop casteok_*
+
+
+
 
 ********** Save
 save"$git\ODRIIS-HH.dta", replace
