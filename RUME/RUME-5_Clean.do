@@ -82,5 +82,6 @@ use "RUME-loans_v10.dta", clear
 drop annualincome_HH
 
 save"CLEAN\RUME-all_loans.dta", replace
+clear all
 ****************************************
 * END

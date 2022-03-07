@@ -332,6 +332,253 @@ save"RUME-HH_v3.dta", replace
 
 
 
+
+
+
+
+
+
+****************************************
+* Others files
+****************************************
+
+
+********** xlsx to dta
+/*
+clear all
+filelist, dir("$directory") pattern(*.xlsx)
+gen rename=""
+replace rename="RUME_crops" if filename=="T18-2 Agriculture _ Crops.xlsx"
+replace rename="RUME_agri18-3-6" if filename=="T18-3_6 Agriculture.xlsx"
+replace rename="RUME_agri18-7-9" if filename=="T18-7_9 Agriculture.xlsx"
+replace rename="RUME_agri_wage" if filename=="T19 Agricultural wage.xlsx"
+replace rename="RUME_SE1" if filename=="T22 Self Employment #1.xlsx"
+replace rename="RUME_SE6" if filename=="T22-11 Self Employment #6.xlsx"
+replace rename="RUME_SE2" if filename=="T22-1_2 Self Employment #2.xlsx"
+replace rename="RUME_SE3" if filename=="T22-3 Self Employment #3.xlsx"
+replace rename="RUME_SE4" if filename=="T22-4 Self Employment #4.xlsx"
+replace rename="RUME_SE5" if filename=="T22-9 Self Employment #5.xlsx"
+replace rename="RUME_SJ1" if filename=="T23 Salaried Job #1.xlsx"
+replace rename="RUME_SJ2" if filename=="T23-1 Salaried Job #2.xlsx"
+replace rename="RUME_pbwork" if filename=="T24 Problems in work (crisis).xlsx"
+replace rename="RUME_migration" if filename=="T25 Migration Full.xlsx"
+replace rename="RUME_income" if filename=="T26 Income by Family.xlsx"
+replace rename="RUME_sendingmoney" if filename=="T27 Sending money.xlsx"
+replace rename="RUME_cropsname" if filename=="X_Crops.xlsx"
+
+drop if rename==""
+
+**** Rename
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local old = filename
+	local new = rename
+	import excel "$directory\\`old'", firstrow clear
+	save "$directory\\`new'.dta", replace
+	erase "$directory\\`old'"
+	tempfile save`i'
+}
+*/
+
+
+
+********** HHID2010 + rename
+/*
+clear all
+filelist, dir("$directory") pattern(*.dta)
+*To keep
+keep if substr(filename,1,5)=="RUME_"
+*To rename
+split filename, p(_)
+egen filename4=concat(filename1 filename2), p(-)
+replace filename4="RUME-agri_wage.dta" if filename4=="RUME-agri"
+drop filename1 filename2 filename3
+rename filename4 filename2
+
+**** Varname+rename
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local old = filename
+	local new = filename2
+	use "$directory\\`old'", clear
+	capture confirm v Codefamily
+	if _rc==0 {
+	rename Codefamily HHID2010
+	}
+	capture confirm v CodeFamily
+	if _rc==0 {
+	rename CodeFamily HHID2010
+	}	
+	save "$directory\\`new'", replace
+	erase "$directory\\`old'"
+	tempfile save`i'
+}
+*/
+
+
+
+********* Crops + agri
+
+***** Crops
+*use"RUME-cropsname", clear
+/*
+N	Crops
+1	Paddy
+2	Cotton
+3	Sugarcane
+4	Savukku tree
+5	Guava
+6	Manguo
+7	Sapotta fruit
+8	Plantain
+9	Ground nut
+10	Millets
+11	ulundu
+12	banana
+13	Cashwinut
+14	No crops
+66	Irrelevant
+77	Other
+88	Don't know
+99	No reponse
+*/
+use"RUME-crops", clear
+rename B crops
+rename C cropsacre
+rename D cropsland
+rename E cropstotalharvestinbag
+rename F cropsharvestprice
+rename G cropssoldamount
+rename H cropsproductioncost
+rename I cropslabourcost
+
+bysort HHID2010 (crops): gen n=_n
+order HHID2010 n
+
+ta crops
+label define crops 1"Paddy" 2"Cotton" 3"Sugarcane" 4"Savukku tree" 5"Guava" 6"Mango" 7"Sapotta fruit" 8"Plantain" 9"Ground nut" 10"Millets" 11"Ulundu" 12"Banana" 13"Cashewnuts" 14"No crops" 77"Other"
+label values crops crops
+fre crops
+
+*drop if crops==14
+
+replace cropsacre="0,25" if cropsacre=="0.25"
+destring cropsacre, dpcomma replace
+ta cropsacre
+
+bysort HHID2010: egen cropsexpenses=sum(cropsproductioncost)
+bysort HHID2010: egen labourcostexpenses=sum(cropslabourcost)
+
+save"RUME-crops_v2", replace
+
+
+
+
+***** Agri wage
+use"RUME-agri_wage.dta", clear
+
+rename B dummylabourers
+rename C labourersnumber
+rename D labourerstotalwage
+rename E labourersfrom
+rename F labourerscaste1
+rename G labourerscaste2
+rename H labourerscaste3
+
+label define yesno 0"No" 1"Yes"
+label values dummylabourers yesno
+
+bysort HHID2010: gen n=_n
+order HHID2010 n
+sort HHID2010 n
+ta n
+drop n
+
+save"RUME-agri_wage_v2.dta", replace
+
+
+
+***** Agri
+use"RUME-agri18-3-6.dta", clear
+drop if E=="" & F=="" & J=="66"
+
+rename B dummyacrespurchased
+rename C acrespurchasedsize
+rename D acrespurchasedprice
+rename E acrespurchasedhow
+rename F otherproducts
+rename G otherprodamntsold
+rename H otherprodamntownpurp
+rename I dummyleaseoutland
+rename J leaseouttowhom
+rename K leaseoutcaste
+rename L leaseoutrelationship
+
+bysort HHID2010: gen n=_n
+order HHID2010 n
+sort HHID2010 n
+ta n
+*drop n
+
+save"RUME-crops_part2.dta", replace
+
+
+
+***** Agri
+use"RUME-agri18-7-9.dta", clear
+
+rename B dummyleasedland
+rename C leasedlandtowhom
+rename D leasedlandcaste
+rename E leasedlandrelationship
+rename F cropsintereststopped
+rename G intereststopped
+rename H intereststoppedreason
+rename I intereststoppedyear
+
+label define intereststopped 1"Interested" 2"Stopped"
+label values intereststopped intereststopped
+
+bysort HHID2010: gen n=_n
+order HHID2010 n
+sort HHID2010 n
+ta n
+*drop n
+
+save"RUME-crops_part3.dta", replace
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ****************************************
 * Assets + crisis + chit + gold + savings
 ****************************************
@@ -495,6 +742,21 @@ tab _dummyinsurance
 rename dummyinsurance insuranceownerlist
 rename _dummyinsurance dummyinsurance
 replace dummyinsurance=1 if dummyinsurance>1 & dummyinsurance!=.
+
+
+
+********** Crops expenses
+preserve
+use"RUME-crops_v2", clear
+duplicates drop HHID2010, force
+keep HHID2010 cropsexpenses labourcostexpenses
+save"RUME_crops_v3", replace
+restore
+merge m:1 HHID2010 using "$directory\RUME_crops_v3.dta", keepusing( cropsexpenses labourcostexpenses)
+drop if _merge==2
+drop _merge
+erase "RUME_crops_v3.dta"
+
 
 
 ********** Submission date

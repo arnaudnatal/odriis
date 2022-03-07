@@ -33,6 +33,7 @@ cd "$directory"
 ****************************************
 * SJ
 ****************************************
+/*
 import delimited "$directory\RUME-salariedjob1.csv", delimiter(";") clear 
 rename codefamily HHID2010
 rename v2 INDID
@@ -72,7 +73,7 @@ rename v13 know
 drop if INDID==""
 
 save"RUME-salariedjob2.dta", replace
-
+*/
 
 
 
