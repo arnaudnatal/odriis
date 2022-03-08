@@ -1064,3 +1064,19 @@ drop if parent_key==""
 save"NEEMSIS2-HH_v17.dta", replace
 *************************************
 * END
+
+
+
+
+
+
+/*
+*do "NEEMSIS2-10_Network_clean.do"
+do "$git\NEEMSIS2\NEEMSIS2-11_Network_merge.do"
+do "$git\NEEMSIS2\NEEMSIS2-12_Otherfilescleaning.do"
+do "$git\NEEMSIS2\NEEMSIS2-13_Labelisation.do"
+do "$git\NEEMSIS2\NEEMSIS2-14_SN_CMO_part1.do"
+do "$git\NEEMSIS2\NEEMSIS2-15_SN_CMO_part2.do"
+do "$git\NEEMSIS2\NEEMSIS2-16_HHclean.do"
+do "$git\NEEMSIS2\NEEMSIS2-17_Occupwide.do"
+do "$git\NEEMSIS2\NEEMSIS2-18_Duplicates.do"

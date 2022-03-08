@@ -517,6 +517,46 @@ drop diff_pledge2 diff_pledge3
 
 *** New loan with diff loan pledge
 gen loanamountgoldrest=goldamountpledge3-loanamountgold3
+recode loanamountgoldrest (0=.)
+ta loanamountgoldrest
+gen goldreasonpledgerest=goldreasonpledgemain if loanamountgoldrest!=.
+order loanamountgoldrest goldreasonpledgerest
+sort goldreasonpledgerest
+tostring goldreasonpledgerest, replace
+replace goldreasonpledgerest=goldreasonpledge if goldreasonpledgerest=="." & loanamountgoldrest!=.
+ta goldreasonpledgerest
+
+replace goldreasonpledgerest="1" if goldreasonpledgerest=="1 2"
+replace goldreasonpledgerest="1" if goldreasonpledgerest=="1 2 3 4"
+replace goldreasonpledgerest="1" if goldreasonpledgerest=="1 2 4"
+replace goldreasonpledgerest="5" if goldreasonpledgerest=="1 2 5 7 10"
+replace goldreasonpledgerest="5" if goldreasonpledgerest=="1 3 5 11"
+replace goldreasonpledgerest="1" if goldreasonpledgerest=="1 4"
+replace goldreasonpledgerest="2" if goldreasonpledgerest=="2 10"
+replace goldreasonpledgerest="3" if goldreasonpledgerest=="2 3"
+replace goldreasonpledgerest="3" if goldreasonpledgerest=="2 3 10"
+replace goldreasonpledgerest="4" if goldreasonpledgerest=="2 3 4"
+replace goldreasonpledgerest="5" if goldreasonpledgerest=="2 3 4 5"
+replace goldreasonpledgerest="3" if goldreasonpledgerest=="2 3 4 9"
+replace goldreasonpledgerest="4" if goldreasonpledgerest=="2 4"
+replace goldreasonpledgerest="5" if goldreasonpledgerest=="2 4 5"
+replace goldreasonpledgerest="5" if goldreasonpledgerest=="2 4 5 7"
+replace goldreasonpledgerest="4" if goldreasonpledgerest=="2 4 7"
+replace goldreasonpledgerest="8" if goldreasonpledgerest=="2 4 7 8"
+replace goldreasonpledgerest="8" if goldreasonpledgerest=="2 4 7 8 10 11"
+replace goldreasonpledgerest="8" if goldreasonpledgerest=="2 4 8"
+replace goldreasonpledgerest="8" if goldreasonpledgerest=="2 4 8 10"
+replace goldreasonpledgerest="7" if goldreasonpledgerest=="2 7"
+replace goldreasonpledgerest="3" if goldreasonpledgerest=="3 4"
+replace goldreasonpledgerest="5" if goldreasonpledgerest=="3 5"
+replace goldreasonpledgerest="5" if goldreasonpledgerest=="4 5 7"
+replace goldreasonpledgerest="6" if goldreasonpledgerest=="4 6"
+replace goldreasonpledgerest="8" if goldreasonpledgerest=="5 8"
+replace goldreasonpledgerest="9" if goldreasonpledgerest=="9 11"
+*replace goldreasonpledgerest="" if goldreasonpledgerest==""
+
+destring goldreasonpledgerest, replace
+gen loanlenderrest=6
 
 *** Order
 sort HHID_panel INDID_panel
@@ -617,7 +657,7 @@ rename lenderscaste snmoneylendercastes
 rename lenderfrom snmoneylenderliving
 
 *** Var to keep
-keep parent_key HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis key loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database loanamountgold2 pb loanamountgold3 loanamountgoldrest loanbalancegold2
+keep parent_key HHID_panel INDID_panel submissiondate version_HH householdid2020 caste jatis key loanamount loandate loanreasongiven loaneffectivereason loanlender snmoneylendercastes loansettled loanbalance loan_database loanamountgold2 pb loanamountgold3 loanamountgoldrest loanbalancegold2 goldreasonpledgerest loanlenderrest
 
 order HHID_panel INDID_panel loanamount loanamountgold2 loanamountgold3 loanamountgoldrest loanlender snmoneylendercastes loansettled loanbalance loanbalancegold2
 
@@ -632,6 +672,8 @@ rename loanamountgold3 loanamount_c1
 rename loanbalancegold2 loanbalance_b1
 
 rename loanamountgoldrest loanamount2
+rename goldreasonpledgerest loanreasongiven2
+rename loanlenderrest loanlender2
 
 gen loandate2=loandate1
 
@@ -644,7 +686,7 @@ rename loanamount_b loanamount2
 rename loanamount_c loanamount3
 rename loanbalance_b loanbalance2
 
-drop if loanamount==0 & num==2
+drop if loanamount==. & num==2
 drop HHINDID
 
 rename num rest
