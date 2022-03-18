@@ -125,7 +125,19 @@ label var repayinterestamount "How much do you have to pay towards interest and 
 rename apfrequency repayduration1
 rename aqwhodecidesmanner repaydecide
 rename artermsrepayment termsofrepayment
-rename asproblem dummyproblemtorepay
+rename asproblem settleloanstrategy
+gen dummyproblemtorepay=.
+replace dummyproblemtorepay=0 if settleloanstrategy==9 & settleloanstrategy!=.
+replace dummyproblemtorepay=1 if settleloanstrategy!=9 & settleloanstrategy!=.
+recode settleloanstrategy (9=.)
+
+ta dummyproblemtorepay
+ta settleloanstrategy
+recode settleloanstrategy (1=3) (2=4) (3=5) (4=6) (5=7) (6=8) (7=9) (8=10)
+label define settleloanstrategy 1"Using normal income from labour" 2"Using income from scheme/pension" 3"Borrowing elsewhere" 4"Selling something not planned" 5"Lease land" 6"Consumption reduction" 7"Take an additional job" 8"Work more" 9"Relative or friends support" 10"Selling the harvest in advance"
+label values settleloanstrategy settleloanstrategy
+fre settleloanstrategy
+
 rename atsoldproduct settleloanstrategy_prodamt  // settleloanstrategy
 rename au1product settleloanstrategy_prod1
 rename au2product settleloanstrategy_prod2
