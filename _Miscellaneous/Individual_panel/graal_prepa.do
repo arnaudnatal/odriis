@@ -785,6 +785,7 @@ replace age2016panel=age2010+6 if HHID_panel=="ELA23" & INDID_panel=="Ind_1"
 replace age2016panel=age2010+6 if HHID_panel=="ELA15" & INDID_panel=="Ind_5"
 
 
+
 ********** No pb
 replace age2010panel=age2010 if age2010panel==.
 replace age2016panel=age2016 if age2016panel==.
@@ -847,6 +848,27 @@ replace pb=1 if HHID_panel=="ELA40"  // 7 et 8 14 ans en 2016, pq pas là en 201
 *** Disparitions
 replace pb=1 if HHID_panel=="ELA9"  // où est le fils ?
 */
+
+***** age2020panel
+gen age2020panel=age2016panel+4
+
+
+********** relationship
+replace relationshiptohead2020="Head" if HHID_panel=="SEM46" & INDID_panel=="Ind_1"
+replace relationshiptohead2020="Head" if HHID_panel=="SEM28" & INDID_panel=="Ind_1"
+replace relationshiptohead2020="Son" if HHID_panel=="ELA25" & INDID_panel=="Ind_4"
+replace relationshiptohead2020="Daughter" if HHID_panel=="MAN23" & INDID_panel=="Ind_6"
+
+
+***** to string
+tostring age2010 age2016 age2020, replace
+tostring age2010panel age2016panel age2020panel, replace
+
+order HHID_panel INDID_panel name2010 name2016 name2020 sex2010 sex2016 sex2020 age2010 age2016 age2020 age2010panel age2016panel age2020panel relationshiptohead2010 relationshiptohead2016 relationshiptohead2020
+
+sort HHID_panel INDID_panel
+
+
 
 ********** Save
 save"$git\ODRIIS-indiv.dta", replace
