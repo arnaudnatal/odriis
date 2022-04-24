@@ -104,102 +104,183 @@ save"$directory\ODRIIS-indiv.dta", replace
 
 
 ****************************************
-* 
+* Nb of HH
 ****************************************
 
-********** Nb obs
 use "ODRIIS-HH", clear
 reshape long caste jatis villagearea HHID address villageid, i(HHID_panel) j(year)
+
 ta villagearea year if villageid=="ORA"
 
+graph bar (count), over(villagearea) over(year)
+
+****************************************
+* END
 
 
-********** Migration
+
+
+
+****************************************
+* Migration
+****************************************
+
+********** 2016-17
 use "wave2", clear
 fre livinghome
 drop if livinghome==1
 drop if livinghome==4
 
-gen lefthomereason_code=.
-label define lefthomereasoncode 1"Permanent job" 2"Marriage" 3"Study" 77"Other"
-label values lefthomereason_code lefthomereasoncode
-replace lefthomereason_code=1 if strpos(lefthomereason,"work")
-replace lefthomereason_code=1 if strpos(lefthomereason,"job")
-replace lefthomereason_code=1 if lefthomereason=="ForJob"
-replace lefthomereason_code=1 if lefthomereason=="For Job"
-replace lefthomereason_code=1 if lefthomereason=="Job"
-replace lefthomereason_code=1 if lefthomereason=="Job and settled with his family"
-replace lefthomereason_code=1 if lefthomereason=="Job for construction labour"
-replace lefthomereason_code=1 if lefthomereason=="Job"
-replace lefthomereason_code=1 if lefthomereason=="Job"
-replace lefthomereason_code=1 if lefthomereason=="Job"
-replace lefthomereason_code=1 if lefthomereason=="For Work"
-replace lefthomereason_code=1 if lefthomereason=="Construction Worker"
-replace lefthomereason_code=1 if lefthomereason=="Doing Worker"
-replace lefthomereason_code=1 if lefthomereason=="Police training"
-replace lefthomereason_code=1 if lefthomereason=="Professional"
-replace lefthomereason_code=1 if lefthomereason=="Software company staff"
-replace lefthomereason_code=1 if lefthomereason=="Doing Worker"
-replace lefthomereason_code=1 if lefthomereason=="Doing Work"
-replace lefthomereason_code=1 if lefthomereason=="Work"
-replace lefthomereason_code=1 if strpos(lefthomereason,"Work , stay there and come back to th")
-replace lefthomereason_code=1 if lefthomereason=="Work and setled"
-replace lefthomereason_code=1 if lefthomereason=="Work and setteled"
-replace lefthomereason_code=1 if lefthomereason=="Work and settled"
-replace lefthomereason_code=1 if strpos(lefthomereason,"Try to get chance in cinema field")
-replace lefthomereason_code=1 if lefthomereason=="To collect tamarind seeds for subramani business"
+ta lefthomereason reasonlefthome
+ta villagearea reasonlefthome
 
-replace lefthomereason_code=2 if strpos(lefthomereason,"marriage")
-replace lefthomereason_code=2 if strpos(lefthomereason,"married")
-replace lefthomereason_code=2 if strpos(lefthomereason,"marriage")
-replace lefthomereason_code=2 if strpos(lefthomereason,"wedding")
-replace lefthomereason_code=2 if lefthomereason=="Marriage"
-replace lefthomereason_code=2 if lefthomereason=="Married"
-replace lefthomereason_code=2 if lefthomereason=="Got Married"
-replace lefthomereason_code=2 if lefthomereason=="For Married"
-replace lefthomereason_code=2 if lefthomereason=="Married and got new family"
-replace lefthomereason_code=2 if lefthomereason=="Married and got nuclear family"
-replace lefthomereason_code=2 if lefthomereason=="Married and left"
-replace lefthomereason_code=2 if lefthomereason=="Married and settled there"
+keep villagearea reasonlefthome HHID_panel year INDID_panel
+save "wave2_tempmigr", replace
 
 
-replace lefthomereason_code=3 if strpos(lefthomereason,"school")
-replace lefthomereason_code=3 if strpos(lefthomereason,"study")
-replace lefthomereason_code=3 if strpos(lefthomereason,"education")
-replace lefthomereason_code=3 if lefthomereason=="For Training"
-replace lefthomereason_code=3 if lefthomereason=="For training"
-replace lefthomereason_code=3 if lefthomereason=="For Studying"
-replace lefthomereason_code=3 if lefthomereason=="For higher studies"
-replace lefthomereason_code=3 if lefthomereason=="For studies"
-replace lefthomereason_code=3 if lefthomereason=="For nursing apprentice"
-replace lefthomereason_code=3 if lefthomereason=="For nursing training"
-replace lefthomereason_code=3 if lefthomereason=="ITI Aprentice Training"
-replace lefthomereason_code=3 if lefthomereason=="Study"
-replace lefthomereason_code=3 if lefthomereason=="Studying"
-replace lefthomereason_code=3 if lefthomereason=="Studying in 12 Th"
-replace lefthomereason_code=3 if strpos(lefthomereason,"Study and stay with sister for some m")
-replace lefthomereason_code=3 if lefthomereason=="Training"
+********** 2020-21
+use"wave3",clear
+
+keep villagearea reasonlefthome HHID_panel year INDID_panel
+append using "wave2_tempmigr"
+
+fre reasonlefthome
+drop if reasonlefthome==4
+drop if reasonlefthome==77
+drop if reasonlefthome==.
+
+graph bar (count), over(reasonlefthome) over(year)
+
+erase "wave2_tempmigr.dta"
+****************************************
+* END
 
 
-replace lefthomereason_code=. if lefthomereason=="Following her husband and also for work"
-replace lefthomereason_code=. if lefthomereason=="Following his parents and also for work"
-replace lefthomereason_code=. if lefthomereason=="For Husband job"
-replace lefthomereason_code=. if lefthomereason=="Following her husband family and also for work"
-replace lefthomereason_code=. if lefthomereason=="Following his wife's family, work localy"
-replace lefthomereason_code=. if lefthomereason=="Following her parents and also for work"
-replace lefthomereason_code=. if lefthomereason=="Family problem,and also for her daughter's education."
-replace lefthomereason_code=. if lefthomereason=="Following her mother and also for education"
 
 
-ta lefthomereason if lefthomereason_code==.
-
-ta lefthomereason lefthomereason_code
 
 
-reshape long name sex age relationshiptohead livinghome wave HHID INDID submissiondate jatis caste address villageid villagearea lefthomereason reasonlefthome, i(HHID_panel INDID_panel) j(year)
 
-ta reasonlefthome year if villageid=="MAN"
+****************************************
+* Agri + toilet + items + HH debt
+****************************************
 
+********** 2010
+use "wave1", clear
+duplicates drop HHID_panel, force
+
+keep HHID_panel year villagearea ownland leaseland sizeownland sizeleaseland numbergoods_car numbergoods_bike numbergoods_fridge numbergoods_furniture numbergoods_tailormach numbergoods_phone numbergoods_landline numbergoods_camera numbergoods_cookgas numbergoods_computer numbergoods_antenna loans_HH loanamount_HH villageid
+
+save"wave1_tempagr", replace
+
+
+
+********** 2016-17
+use "wave2", clear
+duplicates drop HHID_panel, force
+
+keep HHID_panel year villagearea ownland leaseland sizeownland sizeleaseland toiletfacility numbergoods_car numbergoods_bike numbergoods_fridge numbergoods_furniture numbergoods_tailormach numbergoods_phone numbergoods_landline numbergoods_camera numbergoods_cookgas numbergoods_computer numbergoods_antenna loans_HH loanamount_HH villageid
+save"wave2_tempagr", replace
+
+
+
+********** 2020-21
+use "wave3", clear
+duplicates drop HHID_panel, force
+
+destring ownland leaseland toiletfacility, replace
+keep HHID_panel year villagearea ownland leaseland sizeownland sizeleaseland toiletfacility numbergoods_car numbergoods_bike numbergoods_fridge numbergoods_furniture numbergoods_tailormach numbergoods_phone numbergoods_landline numbergoods_camera numbergoods_cookgas numbergoods_computer numbergoods_antenna loans_HH loanamount_HH villageid
+
+
+
+********** Append
+append using "wave1_tempagr"
+append using "wave2_tempagr"
+
+
+
+***** Clean
+replace ownland=0 if ownland==.
+replace leaseland=0 if leaseland==.
+
+ta year
+
+
+
+********** Agri
+gen haveland=ownland+leaseland
+recode haveland (2=1)
+recode haveland (.=0)
+egen  landsize=rowtotal(sizeownland sizeleaseland)
+
+graph bar haveland, over(year)
+preserve
+drop if ownland==0 & leaseland==0
+graph bar landsize, over(year)
+restore
+
+
+********** Items
+foreach x in numbergoods_car numbergoods_bike numbergoods_fridge numbergoods_furniture numbergoods_tailormach numbergoods_phone numbergoods_landline numbergoods_camera numbergoods_cookgas numbergoods_computer numbergoods_antenna {
+replace `x'=0 if `x'==.
+replace `x'=1 if `x'>1
+}
+
+
+ta villagearea year
+foreach x in phone {
+graph bar numbergoods_`x' if villagearea==10, over(year)
+}
+
+
+
+
+
+
+
+****************************************
+* END
+
+
+
+
+
+****************************************
+* Education + Occupation + debt
+****************************************
+use"wave2", clear
+
+gen edu=.
+label define edu 1"Not read" 2"Primary school (1-8)" 3"High-school (9-10)" 4"Higher secondary school (10-12)" 5"Higher (13-)"
+label values edu edu
+replace edu=1 if canread==1
+replace edu=1 if classcompleted==1
+replace edu=2 if classcompleted==2
+replace edu=2 if classcompleted==3
+replace edu=2 if classcompleted==4
+replace edu=2 if classcompleted==5
+replace edu=2 if classcompleted==6
+replace edu=2 if classcompleted==7
+replace edu=2 if classcompleted==8
+replace edu=3 if classcompleted==9
+replace edu=3 if classcompleted==10
+replace edu=4 if classcompleted==11
+replace edu=4 if classcompleted==12
+replace edu=5 if classcompleted==13
+replace edu=5 if classcompleted==14
+replace edu=5 if classcompleted==15
+replace edu=5 if classcompleted==16
+
+ta villagearea edu
+
+
+
+********** Job
+ta mainocc_occupation_indiv
+
+
+********** Debt
+tabstat loanamount_indiv, stat(n mean) by(mainocc_occupation_indiv)
 
 ****************************************
 * END

@@ -30,7 +30,7 @@ clear all
 
 
 ****************************************
-* Recode sex relationshiptohead
+* Recode sex relationshiptohead + Village area + reason lefthome
 ****************************************
 use"NEEMSIS1-HH_v8.dta", clear
 
@@ -57,6 +57,98 @@ replace sex=2 if HHID_panel=="ORA26" & INDID_panel=="Ind_9"
 
 ta relationshiptohead sex
 
+
+********** Villagearea
+fre villagearea
+decode villagearea, gen(area)
+replace area="1" if strpos(area,"UR")
+replace area="2" if strpos(area,"CO")
+destring area, gen(area2)
+label define area2 1"Ur" 2"Colony"
+label values area2 area2
+drop area
+
+ta villagearea area2
+drop villagearea
+rename area2 villagearea
+
+fre villagearea
+
+
+
+********** Reason left home
+gen lefthomereason_code=.
+label define lefthomereasoncode 1"Studies" 2"Work" 3"Marriage"
+label values lefthomereason_code lefthomereasoncode
+replace lefthomereason_code=1 if strpos(lefthomereason,"school")
+replace lefthomereason_code=1 if strpos(lefthomereason,"study")
+replace lefthomereason_code=1 if strpos(lefthomereason,"education")
+replace lefthomereason_code=1 if lefthomereason=="For Training"
+replace lefthomereason_code=1 if lefthomereason=="For training"
+replace lefthomereason_code=1 if lefthomereason=="For Studying"
+replace lefthomereason_code=1 if lefthomereason=="For higher studies"
+replace lefthomereason_code=1 if lefthomereason=="For studies"
+replace lefthomereason_code=1 if lefthomereason=="For nursing apprentice"
+replace lefthomereason_code=1 if lefthomereason=="For nursing training"
+replace lefthomereason_code=1 if lefthomereason=="ITI Aprentice Training"
+replace lefthomereason_code=1 if lefthomereason=="Study"
+replace lefthomereason_code=1 if lefthomereason=="Studying"
+replace lefthomereason_code=1 if lefthomereason=="Studying in 12 Th"
+replace lefthomereason_code=1 if strpos(lefthomereason,"Study and stay with sister for some m")
+replace lefthomereason_code=1 if lefthomereason=="Training"
+
+replace lefthomereason_code=2 if strpos(lefthomereason,"work")
+replace lefthomereason_code=2 if strpos(lefthomereason,"job")
+replace lefthomereason_code=2 if lefthomereason=="ForJob"
+replace lefthomereason_code=2 if lefthomereason=="For Job"
+replace lefthomereason_code=2 if lefthomereason=="Job"
+replace lefthomereason_code=2 if lefthomereason=="Job and settled with his family"
+replace lefthomereason_code=2 if lefthomereason=="Job for construction labour"
+replace lefthomereason_code=2 if lefthomereason=="Job"
+replace lefthomereason_code=2 if lefthomereason=="Job"
+replace lefthomereason_code=2 if lefthomereason=="Job"
+replace lefthomereason_code=2 if lefthomereason=="For Work"
+replace lefthomereason_code=2 if lefthomereason=="Construction Worker"
+replace lefthomereason_code=2 if lefthomereason=="Doing Worker"
+replace lefthomereason_code=2 if lefthomereason=="Police training"
+replace lefthomereason_code=2 if lefthomereason=="Professional"
+replace lefthomereason_code=2 if lefthomereason=="Software company staff"
+replace lefthomereason_code=2 if lefthomereason=="Doing Worker"
+replace lefthomereason_code=2 if lefthomereason=="Doing Work"
+replace lefthomereason_code=2 if lefthomereason=="Work"
+replace lefthomereason_code=2 if strpos(lefthomereason,"Work , stay there and come back to th")
+replace lefthomereason_code=2 if lefthomereason=="Work and setled"
+replace lefthomereason_code=2 if lefthomereason=="Work and setteled"
+replace lefthomereason_code=2 if lefthomereason=="Work and settled"
+replace lefthomereason_code=2 if strpos(lefthomereason,"Try to get chance in cinema field")
+replace lefthomereason_code=2 if lefthomereason=="To collect tamarind seeds for subramani business"
+
+replace lefthomereason_code=3 if strpos(lefthomereason,"marriage")
+replace lefthomereason_code=3 if strpos(lefthomereason,"married")
+replace lefthomereason_code=3 if strpos(lefthomereason,"marriage")
+replace lefthomereason_code=3 if strpos(lefthomereason,"wedding")
+replace lefthomereason_code=3 if lefthomereason=="Marriage"
+replace lefthomereason_code=3 if lefthomereason=="Married"
+replace lefthomereason_code=3 if lefthomereason=="Got Married"
+replace lefthomereason_code=3 if lefthomereason=="For Married"
+replace lefthomereason_code=3 if lefthomereason=="Married and got new family"
+replace lefthomereason_code=3 if lefthomereason=="Married and got nuclear family"
+replace lefthomereason_code=3 if lefthomereason=="Married and left"
+replace lefthomereason_code=3 if lefthomereason=="Married and settled there"
+
+replace lefthomereason_code=. if lefthomereason=="Following her husband and also for work"
+replace lefthomereason_code=. if lefthomereason=="Following his parents and also for work"
+replace lefthomereason_code=. if lefthomereason=="For Husband job"
+replace lefthomereason_code=. if lefthomereason=="Following her husband family and also for work"
+replace lefthomereason_code=. if lefthomereason=="Following his wife's family, work localy"
+replace lefthomereason_code=. if lefthomereason=="Following her parents and also for work"
+replace lefthomereason_code=. if lefthomereason=="Family problem,and also for her daughter's education."
+replace lefthomereason_code=. if lefthomereason=="Following her mother and also for education"
+
+rename lefthomereason_code reasonlefthome
+
+
+
 save"NEEMSIS1-HH_v8_bis.dta", replace
 
 ****************************************
@@ -76,7 +168,7 @@ drop kowinc_indiv_agri kowinc_indiv_selfemp kowinc_indiv_sjagri kowinc_indiv_sjn
 drop assets_as2010 amountownlandwet_as2010 amountownland_as2010 HHID2010 sum_ext_HH
  
 
-global arnaud occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega remreceivedtotalamount_indiv remreceivedtotalamount_HH incomeassets_HH incomeassets_indiv otherhouserent_HH otherhouserent_indiv pension_indiv pension_HH ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt curious_backup interestedbyart_backup repetitivetasks_backup inventive_backup liketothink_backup newideas_backup activeimagination_backup organized_backup makeplans_backup workhard_backup appointmentontime_backup putoffduties_backup easilydistracted_backup completeduties_backup enjoypeople_backup sharefeelings_backup shywithpeople_backup enthusiastic_backup talktomanypeople_backup talkative_backup expressingthoughts_backup workwithother_backup understandotherfeeling_backup trustingofother_backup rudetoother_backup toleratefaults_backup forgiveother_backup helpfulwithothers_backup managestress_backup nervous_backup changemood_backup feeldepressed_backup easilyupset_backup worryalot_backup staycalm_backup tryhard_backup stickwithgoals_backup goaftergoal_backup finishwhatbegin_backup finishtasks_backup keepworking_backup ars ars2 ars3 cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit caste edulevel s_goldquantity goldquantityamount amountownlanddry amountownlandwet amountownland goodtotalamount assets assets_noland mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv worker mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH working_pop totalincome_indiv totalincome_HH loans_indiv loans_gm_indiv loanamount_indiv loanamount_gm_indiv imp1_ds_tot_indiv imp1_is_tot_indiv loans_HH loans_gm_HH loanamount_HH loanamount_gm_HH imp1_ds_tot_HH imp1_is_tot_HH 
+global arnaud occinc_indiv_agri occinc_indiv_agricasual occinc_indiv_nonagricasual occinc_indiv_nonagriregnonqual occinc_indiv_nonagriregqual occinc_indiv_selfemp occinc_indiv_nrega occinc_HH_agri occinc_HH_agricasual occinc_HH_nonagricasual occinc_HH_nonagriregnonqual occinc_HH_nonagriregqual occinc_HH_selfemp occinc_HH_nrega remreceivedtotalamount_indiv remreceivedtotalamount_HH incomeassets_HH incomeassets_indiv otherhouserent_HH otherhouserent_indiv pension_indiv pension_HH ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt curious_backup interestedbyart_backup repetitivetasks_backup inventive_backup liketothink_backup newideas_backup activeimagination_backup organized_backup makeplans_backup workhard_backup appointmentontime_backup putoffduties_backup easilydistracted_backup completeduties_backup enjoypeople_backup sharefeelings_backup shywithpeople_backup enthusiastic_backup talktomanypeople_backup talkative_backup expressingthoughts_backup workwithother_backup understandotherfeeling_backup trustingofother_backup rudetoother_backup toleratefaults_backup forgiveother_backup helpfulwithothers_backup managestress_backup nervous_backup changemood_backup feeldepressed_backup easilyupset_backup worryalot_backup staycalm_backup tryhard_backup stickwithgoals_backup goaftergoal_backup finishwhatbegin_backup finishtasks_backup keepworking_backup ars ars2 ars3 cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit caste edulevel s_goldquantity goldquantityamount amountownlanddry amountownlandwet amountownland goodtotalamount assets assets_noland mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_hoursayear_indiv mainocc_annualincome_indiv mainocc_jobdistance_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv worker mainocc_kindofwork_HH mainocc_occupation_HH annualincome_HH nboccupation_HH working_pop totalincome_indiv totalincome_HH loans_indiv loans_gm_indiv loanamount_indiv loanamount_gm_indiv imp1_ds_tot_indiv imp1_is_tot_indiv loans_HH loans_gm_HH loanamount_HH loanamount_gm_HH imp1_ds_tot_HH imp1_is_tot_HH reasonlefthome
 
 foreach x in $arnaud {
 label var `x' "Construction -- Arnaud"
@@ -85,10 +177,10 @@ label var `x' "Construction -- Arnaud"
 
 ********** Order
 * Generic
-global ord1 HHID_panel HHID2016 dummynewHH dummydemonetisation submissiondate year INDID_panel INDID egoid jatis caste address villageid  householdid villagearea INDID2010 INDID2016 interviewplace numfamily instancename formdef_version username villageareaid villageid_new villageid_new_comments tracked religion comefrom otherorigin
+global ord1 HHID_panel HHID2016 dummynewHH dummydemonetisation submissiondate year INDID_panel INDID egoid jatis caste address villageid  householdid villagearea INDID2010 INDID2016 interviewplace numfamily instancename formdef_version username villagearea villageid_new villageid_new_comments tracked religion comefrom otherorigin
 
 * Family members
-global ord3 name age sex livinghome lefthomedurationlessoneyear lefthomedestination lefthomereason relationshiptohead maritalstatus
+global ord3 name age sex livinghome lefthomedurationlessoneyear lefthomedestination reasonlefthome lefthomereason relationshiptohead maritalstatus
 
 * Education
 global ord4 canread everattendedschool classcompleted after10thstandard durationafter10th typeofhigheredu subjectsafter10th othersubjectsafter10th    currentlyatschool educationexpenses amountschoolfees bookscost transportcost reasonneverattendedschool reasondropping otherreasondroppingschool   dummyscholarship scholarshipamount scholarshipduration converseinenglish

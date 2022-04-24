@@ -35,6 +35,61 @@ clear all
 
 
 
+****************************************
+* Clear old one
+****************************************
+*
+clear all
+filelist, dir("$directory\CLEAN\_ANALYSIS_HH") pattern(*.dta)
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local f = filename
+	local d = dirname
+	use "`d'\\`f'", clear
+	erase"`d'\\`f'"
+	tempfile save`i'
+}
+*
+clear all
+filelist, dir("$directory\CLEAN\_SURPLUS_HH") pattern(*.dta)
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local f = filename
+	local d = dirname
+	use "`d'\\`f'", clear
+	erase"`d'\\`f'"
+	tempfile save`i'
+}*
+clear all
+filelist, dir("$directory\CLEAN\LAST") pattern(*.dta)
+tempfile myfiles
+save "`myfiles'"
+local obs=_N
+forvalues i=1/`obs' {
+	*set trace on
+	use "`myfiles'" in `i', clear
+	local f = filename
+	local d = dirname
+	use "`d'\\`f'", clear
+	erase"`d'\\`f'"
+	tempfile save`i'
+}
+
+****************************************
+* END
+
+
+
+
+
 
 
 
