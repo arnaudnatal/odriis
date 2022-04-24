@@ -134,22 +134,28 @@ drop if livinghome==4
 ta lefthomereason reasonlefthome
 ta villagearea reasonlefthome
 
-keep villagearea reasonlefthome HHID_panel year INDID_panel
+keep villagearea villageid reasonlefthome HHID_panel year INDID_panel
 save "wave2_tempmigr", replace
 
 
 ********** 2020-21
 use"wave3",clear
 
-keep villagearea reasonlefthome HHID_panel year INDID_panel
+keep villagearea villageid reasonlefthome HHID_panel year INDID_panel
 append using "wave2_tempmigr"
 
+
+********** Statistic
 fre reasonlefthome
 drop if reasonlefthome==4
 drop if reasonlefthome==77
 drop if reasonlefthome==.
 
-graph bar (count), over(reasonlefthome) over(year)
+fre villageid
+
+ta reasonlefthome year if villageid==7
+
+graph bar (count) if villageid==7, over(year) over(reasonlefthome)
 
 erase "wave2_tempmigr.dta"
 ****************************************
@@ -199,43 +205,37 @@ append using "wave2_tempagr"
 
 
 
-***** Clean
+********** Clean
+*** Agri
 replace ownland=0 if ownland==.
 replace leaseland=0 if leaseland==.
 
-ta year
-
-
-
-********** Agri
 gen haveland=ownland+leaseland
 recode haveland (2=1)
 recode haveland (.=0)
 egen  landsize=rowtotal(sizeownland sizeleaseland)
 
-graph bar haveland, over(year)
-preserve
-drop if ownland==0 & leaseland==0
-graph bar landsize, over(year)
-restore
-
-
-********** Items
+*** Goods
 foreach x in numbergoods_car numbergoods_bike numbergoods_fridge numbergoods_furniture numbergoods_tailormach numbergoods_phone numbergoods_landline numbergoods_camera numbergoods_cookgas numbergoods_computer numbergoods_antenna {
 replace `x'=0 if `x'==.
 replace `x'=1 if `x'>1
 }
 
 
-ta villagearea year
+
+
+********** Statistic
+*** Agri
+graph bar haveland, over(year)
+preserve
+drop if ownland==0 & leaseland==0
+graph bar landsize, over(year)
+restore
+
+*** Goods
 foreach x in phone {
 graph bar numbergoods_`x' if villagearea==10, over(year)
 }
-
-
-
-
-
 
 
 ****************************************
@@ -245,11 +245,35 @@ graph bar numbergoods_`x' if villagearea==10, over(year)
 
 
 
+
+
+
 ****************************************
 * Education + Occupation + debt
 ****************************************
+
+********** 2016-17
 use"wave2", clear
 
+keep HHID_panel INDID_panel year classcompleted canread mainocc_occupation_indiv loanamount_indiv
+
+save"wave2_tempindiv", replace
+
+
+********** 2020-21
+use"wave3", clear
+
+keep HHID_panel INDID_panel year classcompleted canread mainocc_occupation_indiv loanamount_indiv
+
+
+
+
+********** Append
+append using "wave2_tempindiv"
+
+
+
+********** Clean
 gen edu=.
 label define edu 1"Not read" 2"Primary school (1-8)" 3"High-school (9-10)" 4"Higher secondary school (10-12)" 5"Higher (13-)"
 label values edu edu
@@ -271,15 +295,18 @@ replace edu=5 if classcompleted==14
 replace edu=5 if classcompleted==15
 replace edu=5 if classcompleted==16
 
+
+
+
+********** Statistic
+*** Education
 ta villagearea edu
 
 
-
-********** Job
+*** Occupations
 ta mainocc_occupation_indiv
 
-
-********** Debt
+*** Debt
 tabstat loanamount_indiv, stat(n mean) by(mainocc_occupation_indiv)
 
 ****************************************
