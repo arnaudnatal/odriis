@@ -20,9 +20,10 @@ clear all
 macro drop _all
 ********** Path to folder "data" folder.
 global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA"
-cd"$directory"
-*cd"F:\Tracking2022"
-global git "C:\Users\Arnaud\Documents\GitHub"
+*cd"F:\Tracking2"
+global git "C:\Users\Arnaud\Documents\GitHub\odriis"
+cd"$git"
+
 
 set scheme plotplain 
 
@@ -49,7 +50,7 @@ Replace KOR30 Ind_8 par Ind_6
 ****************************************
 * Tracking 2010-19 --> hhhead
 ****************************************
-import excel "Tracking2022\Neemsis_tracking_last_FINAL_V15.xlsx", sheet("choices") firstrow clear
+import excel "Tracking2\Neemsis_tracking_last_FINAL_V15.xlsx", sheet("choices") firstrow clear
 
 keep if list_name=="hhhead"
 drop image filter filter1 filter2 filter3 filter4 filter5 filter6 filter7 filter8 filter9 filter10 labeltamil
@@ -83,7 +84,7 @@ dis 425-20
 ****************************************
 * Tracking 2010-19 --> householdidoriginal
 ****************************************
-import excel "Tracking2022\Neemsis_tracking_last_FINAL_V15.xlsx", sheet("choices") firstrow clear
+import excel "Tracking2\Neemsis_tracking_last_FINAL_V15.xlsx", sheet("choices") firstrow clear
 
 keep if list_name=="householdidoriginal"
 compress label
@@ -97,10 +98,10 @@ preserve
 use"RUME\CLEAN\RUME-HH.dta", clear
 keep HHID_panel HHID2010 villageid villagearea
 duplicates drop
-save"Tracking2022\_temp_RUME-HH.dta", replace
+save"Tracking2\_temp_RUME-HH.dta", replace
 restore
 
-merge 1:1 HHID2010 using "Tracking2022\_temp_RUME-HH.dta"
+merge 1:1 HHID2010 using "Tracking2\_temp_RUME-HH.dta"
 keep if _merge==3
 drop _merge
 
@@ -140,7 +141,7 @@ filter	villag~d
 ****************************************
 * Tracking 2010-19 --> householdmigrantslist
 ****************************************
-import excel "Tracking2022\Neemsis_tracking_last_FINAL_V15.xlsx", sheet("choices") firstrow clear
+import excel "Tracking2\Neemsis_tracking_last_FINAL_V15.xlsx", sheet("choices") firstrow clear
 
 keep if list_name=="householdmigrantslist"
 drop image filter1 filter2 filter3 filter4 filter5 filter6 filter7 filter8 filter9 filter10 labeltamil
@@ -184,20 +185,20 @@ compress
 ****************************************
 * Open HH list Gaston
 ****************************************
-import excel "Tracking2022\MIgrant_tracking_72.xlsx", sheet("migrant_complement_others") firstrow clear
+import excel "Tracking2\MIgrant_tracking_72.xlsx", sheet("migrant_complement_others") firstrow clear
 
 *** Keep id for migr det
 preserve
 keep HHID_panel INDID_panel
 gen gaston_migr=1
-save "Tracking2022\migr_id", replace
+save "Tracking2\migr_id", replace
 restore
 
 
 *** NEEMSIS-2
 use"NEEMSIS2\DATA\APPEND\CLEAN\LAST\NEEMSIS2-HH", clear
 
-merge 1:1 HHID_panel INDID_panel using "Tracking2022\migr_id"
+merge 1:1 HHID_panel INDID_panel using "Tracking2\migr_id"
 
 order HHID_panel INDID_panel INDID_left gaston_migr villageid dummylefthousehold lefthomename reasonlefthome livinghome lefthomedestination lefthomereason relationshiptohead name
 
@@ -217,16 +218,17 @@ keep HHID_panel INDID_panel name sex age caste address relationshiptohead
 
 
 *** householdidoriginal
-import excel "Tracking2022\MIgrant_tracking_72.xlsx", sheet("migrant_complement_others") firstrow clear
+import excel "Tracking2\MIgrant_tracking_72.xlsx", sheet("migrant_complement_others") firstrow clear
 
-keep villagearea HHID_panel
+keep villagearea HHID_panel name_head address
 duplicates drop
+egen code=concat(HHID_panel name_head address), p(" --- ")
 sort villagearea HHID_panel
-
+keep villagearea HHID_panel code
 
 
 *** householdmigrantslist
-import excel "Tracking2022\MIgrant_tracking_72.xlsx", sheet("migrant_complement_others") firstrow clear
+import excel "Tracking2\MIgrant_tracking_72.xlsx", sheet("migrant_complement_others") firstrow clear
 
 keep HHID_panel INDID_panel name villagearea sex age caste
 sort villagearea HHID_panel INDID_panel
