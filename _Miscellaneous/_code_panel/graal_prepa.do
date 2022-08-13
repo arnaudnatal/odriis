@@ -25,11 +25,11 @@ macro drop _all
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
 *cd "$directory\CLEAN"
 
-global git "C:\Users\Arnaud\Documents\GitHub\RUME-NEEMSIS\_Miscellaneous\Individual_panel"
+global git "C:\Users\Arnaud\Documents\GitHub\odriis\_Miscellaneous\_code_panel"
 
-global rume "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME"
-global neemsis1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS1"
-global neemsis2 "C:\Users\Arnaud\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND\CLEAN\LAST"
+global rume "C:\Users\Arnaud\Documents\MEGA\Data\Data_RUME\DATA\CLEAN"
+global neemsis1 "C:\Users\Arnaud\Documents\MEGA\Data\Data_NEEMSIS1\DATA\CLEAN"
+global neemsis2 "C:\Users\Arnaud\Documents\MEGA\Data\Data_NEEMSIS2\DATA\CLEAN"
 *global tracking1 "C:\Users\Arnaud\Documents\_Thesis\_DATA\Tracking2019\DATA"
 
 *global data "C:\Users\Arnaud\Documents\_Thesis\_DATA"
@@ -64,7 +64,7 @@ From "..." we need to continue in the right order
 
 */
 ********** RUME
-use"$rume\CLEAN\RUME-HH.dta", clear
+use"$rume\RUME-HH.dta", clear
 keep HHID_panel INDID_panel HHID2010 INDID2010 name age sex relationshiptohead jatis caste address villageid villagearea
 
 * All string
@@ -100,10 +100,10 @@ save"$git\RUME-HH_indiv.dta", replace
 
 
 ********** NEEMSIS1
-use"$neemsis1\CLEAN\NEEMSIS1-HH.dta", clear
+use"$neemsis1\NEEMSIS1-HH.dta", clear
 
 rename INDID INDID2016
-keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate livinghome lefthomereason villagearea
+keep HHID_panel INDID_panel HHID2016 INDID2016 name age sex relationshiptohead jatis caste address villageid submissiondate livinghome lefthomereason villagearea villageid_new
 
 replace lefthomereason="" if livinghome==1
 replace lefthomereason="" if livinghome==4
@@ -150,7 +150,7 @@ save"$git\NEEMSIS1-HH_indiv.dta", replace
 
 
 ********** NEEMSIS2
-use"$neemsis2\\NEEMSIS2-HH.dta", clear
+use"$neemsis2\\NEEMSIS2-HH_all.dta", clear
 
 keep HHID_panel INDID_panel parent_key INDID2020 INDID_new INDID_former INDID_left name age sex relationshiptohead relationshiptoheadother jatis caste address villageid submissiondate householdid2020 livinghome lefthomereason  dummylefthousehold reasonlefthome reasonlefthomeother villagearea
 sort HHID_panel INDID_panel
@@ -766,11 +766,297 @@ sort HHID_panel INDID_panel
 
 
 
+******************** Names of caste jatis
+
+********** All names
+foreach var of varlist jatis2010 jatis2016 jatis2020 {
+fre `var', miss 	
+}
+* No missing value
+
+
+********** Rename
+replace jatis2010="Mudaliar" if jatis2010=="Muthaliyar"
+replace jatis2010="Arunthathiyar" if jatis2010=="Arunthatiyar"
+
+********** Backup former typology
+foreach x in jatis2010 jatis2016 jatis2020 caste2010 caste2016 caste2020 {
+clonevar BU_`x'=`x'
+}
+
+
+******************** Panel consistency of jatis
+
+********** 2016 to 2016-17
+gen pb1=1 if jatis2010!=jatis2016 & jatis2010!="" & jatis2016!=""
+ta pb1
+ta jatis2010 jatis2016 if pb1==1
+
+***** Gramani in 2010 and SC in 2016
+ta HHID_panel if jatis2010=="Gramani" & jatis2016=="SC"
+replace jatis2010="SC" if HHID_panel=="MANAM28"
+
+***** Other in 2010 and Kulalar in 2016
+ta HHID_panel if jatis2010=="Other" & jatis2016=="Kulalar"
+replace jatis2010="Kulalar" if HHID_panel=="GOV38"
+replace jatis2016="Kulalar" if HHID_panel=="GOV38"
+replace jatis2020="Kulalar" if HHID_panel=="GOV38"
+
+***** Other in 2010 and Muslims in 2016
+ta HHID_panel if jatis2010=="Other" & jatis2016=="Muslims" 
+replace jatis2010="Muslims" if HHID_panel=="SEM1" |  HHID_panel=="SEM16" |  HHID_panel=="SEM26" |  HHID_panel=="SEM28" |  HHID_panel=="SEM35" |  HHID_panel=="SEM40" |  HHID_panel=="SEM43"
+
+***** Other in 2010 and Naidu in 2016
+ta HHID_panel if jatis2010=="Other" & jatis2016=="Naidu"
+replace jatis2010="Naidu" if HHID_panel=="SEM17"
+replace jatis2010="Navithar" if HHID_panel=="ORA10"
+
+***** Other in 2010 and Padayachi in 2016
+ta HHID_panel if jatis2010=="Other" & jatis2016=="Padayachi"  
+replace jatis2010="Padayachi" if HHID_panel=="ELA49"
+
+***** Other in 2010 and SC in 2016
+ta HHID_panel if jatis2010=="Other" & jatis2016=="SC"  
+replace jatis2010="SC" if HHID_panel=="KOR23" | HHID_panel=="MAN22"
+
+***** Other in 2010 and Vanniyar in 2016
+ta HHID_panel if jatis2010=="Other" & jatis2016=="Vanniyar" 
+replace jatis2010="Vanniyar" if HHID_panel=="KUV52"
+
+***** Other in 2010 and Yathavar in 2016
+ta HHID_panel if jatis2010=="Other" & jatis2016=="Yathavar" 
+replace jatis2010="Yathavar" if HHID_panel=="KAR48"
+
+***** Settu in 2010 and Chettiyar in 2016
+ta HHID_panel if jatis2010=="Settu" & jatis2016=="Chettiyar" 
+replace jatis2010="Chettiyar" if HHID_panel=="SEM10" | HHID_panel=="SEM48"
+
+***** Settu in 2010 and Vanniyar in 2016
+ta HHID_panel if jatis2010=="Settu" & jatis2016=="Vanniyar" 
+replace jatis2010="Vanniyar" if HHID_panel=="MAN18"
+
+***** Vanniyar in 2010 and Padayachi in 2016
+ta HHID_panel if jatis2010=="Vanniyar" & jatis2016=="Padayachi" 
+replace jatis2010="Padayachi" if HHID_panel=="ELA5" | HHID_panel=="ORA38"
+
+
+
+********** 2016-17 to 2020-21
+gen pb2=1 if jatis2016!=jatis2020 & jatis2016!="" & jatis2020!=""
+ta pb2
+ta jatis2016 jatis2020 if pb2==1
+
+***** Asarai in 2016 and Vanniyar in 2020
+ta HHID_panel if jatis2016=="Asarai" & jatis2020=="Vanniyar" 
+replace jatis2020="Asarai" if HHID_panel=="MANAM11"
+
+***** Gramani in 2016 and Vanniyar in 2020
+ta HHID_panel if jatis2016=="Gramani" & jatis2020=="Vanniyar" 
+replace jatis2020="Gramani" if HHID_panel=="MANAM12"
+
+***** Mudaliar in 2016 and Padayachi in 2020
+ta HHID_panel if jatis2016=="Mudaliar" & jatis2020=="Padayachi" 
+replace jatis2020="Mudaliar" if HHID_panel=="GOV19"
+
+***** Mudaliar in 2016 and Vanniyar in 2020
+ta HHID_panel if jatis2016=="Mudaliar" & jatis2020=="Vanniyar" 
+replace jatis2020="Mudaliar" if HHID_panel=="GOV2"
+
+***** Nattar in 2016 and SC in 2020
+ta HHID_panel if jatis2016=="Nattar" & jatis2020=="SC" 
+replace jatis2016="SC" if HHID_panel=="MANAM18"
+
+***** Padayachi in 2016 and Vanniyar in 2020
+ta HHID_panel if jatis2016=="Padayachi" & jatis2020=="Vanniyar" 
+replace jatis2020="Padayachi" if HHID_panel=="KUV42"
+
+***** Vanniyar in 2016 and Padayachi in 2020
+ta HHID_panel if jatis2016=="Vanniyar" & jatis2020=="Padayachi" 
+replace jatis2020="Vanniyar" if HHID_panel=="ELA16" | HHID_panel=="KAR30"
+
+
+
+********** 2010 to 2020-21
+gen pb3=1 if jatis2010!=jatis2020 & jatis2010!="" & jatis2020!=""
+ta pb3
+ta jatis2010 jatis2020 if pb3==1
+
+***** Other in 2010 and Vanniyar in 2020
+ta HHID_panel if jatis2010=="Other" & jatis2020=="Vanniyar" 
+replace jatis2010="Vanniyar" if HHID_panel=="ORA37"
+
+***** Rediyar in 2010 and Vanniyar in 2020
+ta HHID_panel if jatis2010=="Rediyar" & jatis2020=="Vanniyar" 
+replace jatis2020="Rediyar" if HHID_panel=="MANAM40"
+
+
+
+
+******************** Panel consistency of caste
+
+********** 2010 
+ta jatis2010 caste2010 
+
+***** Muslims as upper?
+ta HHID_panel if jatis2010=="Muslims" 
+replace caste2010="Dalits" if HHID_panel=="SEM1" | HHID_panel=="SEM16" | HHID_panel=="SEM26" | HHID_panel=="SEM28" 
+replace caste2010="Middle" if HHID_panel=="SEM35" | HHID_panel=="SEM40" | HHID_panel=="SEM43"
+
+***** SC as middle?
+ta HHID_panel if jatis2010=="SC" & caste2010=="Middle" 
+replace caste2010="Dalits" if HHID_panel=="MAN22" | HHID_panel=="MANAM28"
+
+***** Vanniyar as upper?
+ta HHID_panel if jatis2010=="Vanniyar" & caste2010=="Upper" 
+replace caste2010="Middle" if HHID_panel=="MAN18"
+
+***** Yathavar as middle?
+ta HHID_panel if jatis2010=="Yathavar" 
+replace caste2010="Upper" if HHID_panel=="KAR48"
+
+
+******** 2016-17
+ta jatis2016 caste2016
+
+***** Muslims as middle?
+ta HHID_panel if jatis2016=="Muslims" 
+replace caste2016="Dalits" if HHID_panel=="SEM1" | HHID_panel=="SEM16" | HHID_panel=="SEM26" | HHID_panel=="SEM28" 
+
+***** SC as middle?
+ta HHID_panel if jatis2016=="SC" & caste2016=="Middle"
+replace caste2016="Dalits" if HHID_panel=="MANAM18"
+
+
+******** 2020-21
+ta jatis2020 caste2020
+
+***** Mudaliar as middle?
+ta HHID_panel if jatis2020=="Mudaliar" & caste2020=="Middle"
+replace caste2020="Upper" if HHID_panel=="GOV19" | HHID_panel=="GOV2"
+
+****** Muslims as middle?
+ta HHID_panel if jatis2020=="Muslims" 
+replace caste2020="Dalits" if HHID_panel=="SEM1" | HHID_panel=="SEM16" | HHID_panel=="SEM26" | HHID_panel=="SEM28" 
+
+***** Rediyar as middle?
+ta HHID_panel if jatis2020=="Rediyar" & caste2020=="Middle"
+replace caste2020="Upper" if HHID_panel=="MANAM40" & caste2020=="Middle"
+
+
+********** Panel
+ta caste2010 caste2016
+*Ok
+ta caste2010 caste2020
+*Ok 
+ta caste2016 caste2020 
+*Ok
+
+
+********** Relationship
+ta relationshiptohead2010 sex2010
+ta relationshiptohead2016 sex2016
+ta relationshiptohead2020 sex2020
+
+foreach x in 2010 2016 2020 {
+replace relationshiptohead`x'="Husband" if relationshiptohead`x'=="Wife" & sex`x'=="Male"
+}
+
+drop pb1 pb2 pb3
+
+foreach x in 2010 2016 2020 {
+rename agepanel`x' 	agecorr`x'
+rename caste`x' 	castecorr`x'
+rename jatis`x'		jatiscorr`x'
+rename BU_caste`x'	caste`x'
+rename BU_jatis`x'	jatis`x'
+}
+
+
+********** Label
+foreach x in 2010 2016 2020 {
+label var age`x' "Age `x'"
+label var agecorr`x' "Age corrected `x'"
+label var relationshiptohead`x' "Relationship to head `x'"
+label var caste`x' "Caste `x'"
+label var castecorr`x' "Caste corrected `x'"
+label var jatis`x' "Jatis `x'"
+label var jatiscorr`x' "Jatis corrected `x'"
+label var villagearea`x' "Area `x'"
+label var villageid`x' "Village `x'"
+label var sex`x' "Sex `x'"
+label var name`x' "Name `x'"
+label var HHID`x' "HHID `x'"
+label var INDID`x' "INDID `x'"
+label var submissiondate`x' "Date `x'"
+label var address`x' "Address of HH `x'"
+label var wave`x' "Wave survey `x'"
+}
+
+label var HHID_panel "HHID in panel"
+label var INDID_panel "Indid in panel"
+
+label var lefthomereason2020 "Reason left home 2020"
+label var lefthomereason2016 "Reason left home 2016"
+label var reasonlefthome2020 "Reason left home (second module) 2020"
+label var reasonlefthomeother2020 "Reason left home other (second module) 2020"
+
+label var livinghome2016 "Is X living home? 2016"
+label var livinghome2020 "Is X living home? 2020"
+
+label var relationshiptoheadother2020 "Relationship to head other 2020"
+
+label var member_new2020 "Is X a new member? 2020"
+label var member_left2020 "Is X left the HH? 2020"
+
+label var indivpanel_10_16_20 "Is X in full panel?"
+
+drop householdid20202020
+
+********** Surplus2020
+gen dummysurplus2020="No"
+replace dummysurplus2020="Yes" if HHID_panel=="ELA65"
+replace dummysurplus2020="Yes" if HHID_panel=="KAR51"
+replace dummysurplus2020="Yes" if HHID_panel=="KAR55"
+replace dummysurplus2020="Yes" if HHID_panel=="KAR61"
+replace dummysurplus2020="Yes" if HHID_panel=="KUV61"
+replace dummysurplus2020="Yes" if HHID_panel=="MAN57"
+replace dummysurplus2020="Yes" if HHID_panel=="MAN58"
+replace dummysurplus2020="Yes" if HHID_panel=="MAN63"
+replace dummysurplus2020="Yes" if HHID_panel=="MAN68"
+replace dummysurplus2020="Yes" if HHID_panel=="MAN69"
+replace dummysurplus2020="Yes" if HHID_panel=="MANAM58"
+replace dummysurplus2020="Yes" if HHID_panel=="MANAM62"
+replace dummysurplus2020="Yes" if HHID_panel=="ORA57"
+replace dummysurplus2020="Yes" if HHID_panel=="ORA58"
+replace dummysurplus2020="Yes" if HHID_panel=="ORA60"
+replace dummysurplus2020="Yes" if HHID_panel=="ORA64"
+replace dummysurplus2020="Yes" if HHID_panel=="ORA69"
+replace dummysurplus2020="Yes" if HHID_panel=="SEM59"
+
+label var dummysurplus2020 "HH in suplus in 2020"
+
+foreach x in caste jatis {
+replace `x'corr2020=`x'2020 if dummysurplus2020=="Yes"
+}
+
+replace agecorr2010=age2010 if agecorr2010=="." & age2010!=""
+replace agecorr2016=age2016 if agecorr2016=="." & age2016!=""
+replace agecorr2020=age2020 if agecorr2020=="." & age2020!=""
+
+
+order HHID_panel INDID_panel indivpanel_10_16_20 dummysurplus2020 name* agecorr* age* sex* relationshiptohead* relationshiptoheadother2020 castecorr* jatiscorr* caste* jatis* villageid* villagearea* livinghome2016 lefthomereason2016 livinghome2020 lefthomereason2020 reasonlefthome2020 reasonlefthomeother2020 member_new2020 member_left2020 HHID2010 INDID2010 submissiondate2010 address2010 wave2010 HHID2016 INDID2016 submissiondate2016 address2016 wave2016 HHID2020 INDID2020 submissiondate2020 address2020 wave2020
+
+
 ********** Save
-save"$git\ODRIIS-indiv.dta", replace
+save"$git\ODRIIS-indiv_wide.dta", replace
+export excel "$git\ODRIIS-indiv_wide.xlsx", firstrow(var) replace
 
 
-export excel "$git\ODRIIS-indiv.xlsx", firstrow(var) replace
+reshape long wave villageid villagearea submissiondate sex relationshiptoheadother relationshiptohead reasonlefthomeother reasonlefthome name member_new member_left livinghome lefthomereason jatiscorr jatis dummysurplus castecorr caste agecorr age address INDID HHID, i(HHID_panel INDID_panel) j(year)
+keep if name!=""
+
+save"$git\ODRIIS-indiv_long.dta", replace
+export excel "$git\ODRIIS-indiv_long.xlsx", firstrow(var) replace
 
 ****************************************
 * END
@@ -797,149 +1083,57 @@ export excel "$git\ODRIIS-indiv.xlsx", firstrow(var) replace
 ****************************************
 * HH
 ****************************************
-use"$git\RUME-HH_indiv.dta", clear
 
-keep HHID_panel HHID2010 caste2010 jatis2010 address2010 villageid2010 villagearea2010
-duplicates drop
+********** 2010
+use"$git\ODRIIS-indiv_long.dta", clear
 
+keep HHID_panel INDID_panel relationshiptohead castecorr caste jatiscorr jatis year
+keep if year==2010
 
-preserve
-use "$git\NEEMSIS1-HH_indiv.dta", clear
-keep HHID_panel HHID2016 caste2016 jatis2016 address2016 villageid2016 villagearea2016
-duplicates drop 
-save "$git\NEEMSIS1-HH.dta", replace
-restore
+gen head=1 if relationshiptohead=="Head"
+bysort HHID_panel: egen sum_head=sum(head)
 
-preserve
-use "$git\NEEMSIS2-HH_indiv.dta", clear
-keep HHID_panel HHID2020 caste2020 jatis2020 address2020 villageid2020 villagearea2020
-duplicates drop 
-save "$git\NEEMSIS2-HH.dta", replace
-restore
+ta HHID_panel if sum_head<1
+ta HHID_panel if sum_head>1
+list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="GOV18", clean noobs
 
-merge 1:1 HHID_panel using "$git\NEEMSIS1-HH.dta"
-drop _merge
-merge 1:1 HHID_panel using "$git\NEEMSIS2-HH.dta"
-drop _merge
+gen castecorr_head=castecorr if relationshiptohead=="Head"
+replace castecorr_head="" if HHID_panel=="GOV18" & INDID_panel=="Ind_2"
 
-********** panel
-gen panel1=1 if HHID2010!="" & HHID2016!=""
-gen panel2=1 if HHID2016!="" & HHID2020!=""
-gen panel3=1 if HHID2010!="" & HHID2016!="" & HHID2020!=""
+keep if castecorr_head!=""
+keep HHID_panel castecorr_head
 
-gen panel4=1 if HHID2010!="" & HHID2016=="" & HHID2020!=""
-list HHID_panel if panel4==1, clean noobs
+save "$git\Caste-HH_2010.dta", replace
 
 
-********** Jatis
-*** Check
-gen jatisok_1016=0
-gen jatisok_1620=0
-
-replace jatisok_1016=1 if jatis2010==jatis2016
-replace jatisok_1620=1 if jatis2016==jatis2020
-
-replace jatisok_1016=1 if jatis2010=="" | jatis2016==""
-replace jatisok_1620=1 if jatis2016=="" | jatis2020==""
 
 
-*** Pb 2010
-clonevar jatis2010_backup=jatis2010
-clonevar jatis2016_backup=jatis2016
-clonevar jatis2020_backup=jatis2020
-* Muthaliyar
-replace jatis2010="Mudaliar" if jatis2010=="Muthaliyar"
-* Arunthatiyar
-replace jatis2010="Arunthathiyar" if jatis2010=="Arunthatiyar"
-* Other
-replace jatis2010=jatis2016 if jatis2010=="Other" & jatis2016!=""
 
-*** Pb 2016-2020
-replace jatis2020=jatis2016 if HHID_panel=="ELA16"
-replace jatis2020=jatis2016 if HHID_panel=="GOV19"
-replace jatis2020=jatis2016 if HHID_panel=="GOV2"
-replace jatis2020=jatis2016 if HHID_panel=="GOV38"
-replace jatis2020=jatis2016 if HHID_panel=="KAR30"
+********** 2016-17
+use"$git\ODRIIS-indiv_long.dta", clear
 
-*** À la main 2010-2016
-*
-replace jatis2010="SC" if HHID_panel=="MANAM28"
-replace caste2010="Dalits" if HHID_panel=="MANAM28"
-*
-replace jatis2010="Padayachi" if HHID_panel=="ELA5"
-replace caste2010="Middle" if HHID_panel=="ELA5"
-*
-replace jatis2010="Padayachi" if HHID_panel=="ORA38"
-replace caste2010="Middle" if HHID_panel=="ORA38"
-*
-replace jatis2010="Chettiyar" if HHID_panel=="SEM10"
-replace caste2010="Upper" if HHID_panel=="SEM10"
-*
-replace jatis2010="Chettiyar" if HHID_panel=="SEM48"
-replace caste2010="Upper" if HHID_panel=="SEM48"
-*
-replace jatis2010="Vanniyar" if HHID_panel=="MAN18"
-replace caste2010="Middle" if HHID_panel=="MAN18"
+keep HHID_panel INDID_panel relationshiptohead castecorr caste jatiscorr jatis year
+keep if year==2016
 
-*** À la main 2020-21
-*
-replace jatis2016="SC" if HHID_panel=="MANAM18"
-replace caste2016="Dalits" if HHID_panel=="MANAM18"
-*
-replace jatis2016="Vanniyar" if HHID_panel=="KUV42"
-replace jatis2016="Vanniyar" if HHID_panel=="MANAM11"
-replace jatis2016="Vanniyar" if HHID_panel=="MANAM12"
-tab1 jatis2010 jatis2016 jatis2020
+gen head=1 if relationshiptohead=="Head"
+bysort HHID_panel: egen sum_head=sum(head)
+
+ta HHID_panel if sum_head<1
+list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="KOR12" | HHID_panel=="KOR15" | HHID_panel=="KUV23" | HHID_panel=="9" | HHID_panel=="MAN3", clean noobs
+
+ta HHID_panel if sum_head>1
+list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="GOV18", clean noobs
+
+gen castecorr_head=castecorr if relationshiptohead=="Head"
+replace castecorr_head="" if HHID_panel=="GOV18" & INDID_panel=="Ind_2"
+
+keep if castecorr_head!=""
+keep HHID_panel castecorr_head
+
+save "$git\Caste-HH_2010.dta", replace
 
 
-*** Update
-drop jatisok_1016 jatisok_1620
 
-gen jatisok_1016=0
-gen jatisok_1620=0
-
-replace jatisok_1016=1 if jatis2010==jatis2016
-replace jatisok_1620=1 if jatis2016==jatis2020
-
-replace jatisok_1016=1 if jatis2010=="" | jatis2016==""
-replace jatisok_1620=1 if jatis2016=="" | jatis2020==""
-
-
-order HHID_panel caste2010 caste2016 caste2020 jatis2010 jatis2016 jatis2020 jatisok_1016 jatisok_1620 villagearea2010 villagearea2016 villagearea2020
-
-sort jatisok_1016 HHID_panel
-
-sort jatisok_1620 HHID_panel
-drop jatisok_1016 jatisok_1620
-
-
-********** Caste
-replace caste2010="Dalits" if HHID_panel=="MAN22"
-replace caste2010="Upper" if HHID_panel=="KAR48"
-replace caste2010="Middle" if jatis2010=="Muslims"
-
-replace caste2020="Upper" if HHID_panel=="GOV19"
-replace caste2020="Upper" if HHID_panel=="GOV2"
-
-*** Check
-gen casteok_1016=0
-gen casteok_1620=0
-
-replace casteok_1016=1 if caste2010==caste2016
-replace casteok_1620=1 if caste2016==caste2020
-
-replace casteok_1016=1 if caste2010=="" | caste2016==""
-replace casteok_1620=1 if caste2016=="" | caste2020==""
-
-
-order HHID_panel caste2010 caste2016 caste2020 casteok_1016 casteok_1620 jatis2010 jatis2016 jatis2020 villagearea2010 villagearea2016 villagearea2020
-
-
-sort casteok_1016 HHID_panel
-
-sort casteok_1620 HHID_panel
-
-drop casteok_*
 
 
 
