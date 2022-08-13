@@ -1119,41 +1119,122 @@ gen head=1 if relationshiptohead=="Head"
 bysort HHID_panel: egen sum_head=sum(head)
 
 ta HHID_panel if sum_head<1
-list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="KOR12" | HHID_panel=="KOR15" | HHID_panel=="KUV23" | HHID_panel=="9" | HHID_panel=="MAN3", clean noobs
+list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="KOR12" | HHID_panel=="KOR15" | HHID_panel=="KUV23" | HHID_panel=="KUV9" | HHID_panel=="MAN3", clean noobs
 
 ta HHID_panel if sum_head>1
-list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="GOV18", clean noobs
+list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="GOV13" | HHID_panel=="KAR33" | HHID_panel=="KUV36" | HHID_panel=="SEM29", clean noobs
 
 gen castecorr_head=castecorr if relationshiptohead=="Head"
-replace castecorr_head="" if HHID_panel=="GOV18" & INDID_panel=="Ind_2"
+replace castecorr_head="Middle" if HHID_panel=="KOR12" & INDID_panel=="Ind_1"
+replace castecorr_head="Dalits" if HHID_panel=="KOR15" & INDID_panel=="Ind_1"
+replace castecorr_head="Middle" if HHID_panel=="KUV23" & INDID_panel=="Ind_1"
+replace castecorr_head="Dalits" if HHID_panel=="KUV9" & INDID_panel=="Ind_1"
+replace castecorr_head="Dalits" if HHID_panel=="MAN3" & INDID_panel=="Ind_1"
+
+replace castecorr_head="" if HHID_panel=="GOV13" & INDID_panel=="Ind_3"
+replace castecorr_head="" if HHID_panel=="KAR33" & INDID_panel=="Ind_2"
+replace castecorr_head="" if HHID_panel=="KUV36" & INDID_panel=="Ind_5"
+replace castecorr_head="" if HHID_panel=="SEM29" & INDID_panel=="Ind_3"
 
 keep if castecorr_head!=""
 keep HHID_panel castecorr_head
 
-save "$git\Caste-HH_2010.dta", replace
+save "$git\Caste-HH_2016.dta", replace
+
+
+
+********** 2020-21
+use"$git\ODRIIS-indiv_long.dta", clear
+
+keep HHID_panel INDID_panel relationshiptohead castecorr caste jatiscorr jatis year
+keep if year==2020
+
+gen head=1 if relationshiptohead=="Head"
+bysort HHID_panel: egen sum_head=sum(head)
+
+ta HHID_panel if sum_head<1
+list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="ELA30" | HHID_panel=="GOV29" | HHID_panel=="KAR61" | HHID_panel=="SEM50", clean noobs
+
+ta HHID_panel if sum_head>1
+list HHID_panel INDID_panel relationshiptohead castecorr caste if HHID_panel=="ELA18", clean noobs
+
+gen castecorr_head=castecorr if relationshiptohead=="Head"
+replace castecorr_head="Middle" if HHID_panel=="ELA30" & INDID_panel=="Ind_1"
+replace castecorr_head="Upper" if HHID_panel=="GOV29" & INDID_panel=="Ind_1"
+replace castecorr_head="Dalits" if HHID_panel=="KAR61" & INDID_panel=="Ind_1"
+replace castecorr_head="Middle" if HHID_panel=="SEM50" & INDID_panel=="Ind_1"
+
+replace castecorr_head="" if HHID_panel=="ELA18" & INDID_panel=="Ind_2"
+
+
+keep if castecorr_head!=""
+keep HHID_panel castecorr_head
+
+save "$git\Caste-HH_2020.dta", replace
 
 
 
 
+********** Wave 1
+use"$git\RUME-HH_indiv.dta", clear
+keep HHID_panel HHID2010 villageid2010 villagearea2010 address2010
+duplicates drop
+merge 1:1 HHID_panel using  "$git\Caste-HH_2010.dta"
+rename castecorr_head castecorr2010
+drop _merge
+save"$git\Wave1.dta", replace
 
+
+
+********** Wave 2
+use"$git\NEEMSIS1-HH_indiv.dta", clear
+keep HHID_panel HHID2016 villageid2016 villagearea2016 address2016 villageid_new2016
+duplicates drop
+merge 1:1 HHID_panel using  "$git\Caste-HH_2016.dta"
+rename castecorr_head castecorr2016
+drop _merge
+save"$git\Wave2.dta", replace
+
+
+********** Wave 3
+use"$git\NEEMSIS2-HH_indiv.dta", clear
+keep HHID_panel HHID2020 villageid2020 villagearea2020 address2020
+duplicates drop
+merge 1:1 HHID_panel using  "$git\Caste-HH_2020.dta"
+rename castecorr_head castecorr2020
+drop _merge
+save"$git\Wave3.dta", replace
+
+
+********* Append
+use"$git\Wave1", clear
+merge 1:1 HHID_panel using "$git\Wave2"
+drop _merge
+merge 1:1 HHID_panel using "$git\Wave3"
+drop _merge
 
 
 ********** Save
-save"$git\ODRIIS-HH.dta", replace
+save"$git\ODRIIS-HH_wide.dta", replace
+export excel "$git\ODRIIS-HH_wide.xlsx", firstrow(var) replace
 
-
-export excel "$git\ODRIIS-HH.xlsx", firstrow(var) replace
 
 *** Long
-reshape long caste jatis villagearea HHID address villageid, j(year) i(HHID_panel)
+reshape long HHID address villageid villagearea villageid_new castecorr, j(year) i(HHID_panel)
 
 save"$git\ODRIIS-HH_long.dta", replace
+export excel "$git\ODRIIS-HH_long.xlsx", firstrow(var) replace
 
 
-erase "$git\NEEMSIS1-HH.dta"
-erase "$git\NEEMSIS2-HH.dta"
 erase "$git\RUME-HH_indiv.dta"
 erase "$git\NEEMSIS1-HH_indiv.dta"
 erase "$git\NEEMSIS2-HH_indiv.dta"
+erase "$git\Caste-HH_2010.dta"
+erase "$git\Caste-HH_2016.dta"
+erase "$git\Caste-HH_2020.dta"
+erase "$git\Wave1.dta"
+erase "$git\Wave2.dta"
+erase "$git\Wave3.dta"
+
 ****************************************
 * END
