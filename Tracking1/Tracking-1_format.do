@@ -40,6 +40,8 @@ order key, first
 sort key
 save"NEEMSIS-tracking_intro.dta", replace
 
+
+
 ********** HH
 use"NEEMSIS tracking_Append_Last.dta", clear
 drop geolocationlatitude geolocationlongitude geolocationaltitude geolocationaccuracy interviewplacemig username username_1 username_2 username_3 username_4 username_5 username_6 username_7 username_8 householdvillageoriginal householdidoriginal migrationplacename migrationareatype migrationareaurban migrationarearural migrationaddress sharedhhmig householdmigrantslist householdmigrantslist_1 householdmigrantslist_2 householdmigrantslist_3 householdmigrantslist_4 householdmigrantslist_5 householdmigrantslist_6 householdmigrantslist_7 householdmigrantslist_8 householdmigrantslist_9 householdmigrantslist_10 householdmigrantslist_11 householdmigrantslist_12 householdmigrantslist_13 householdmigrantslist_14 householdmigrantslist_15 householdmigrantslist_16 householdmigrantslist_17 householdmigrantslist_18 householdmigrantslist_19 householdmigrantslist_20 householdmigrantslist_21 householdmigrantslist_22 householdmigrantslist_23 householdmigrantslist_24 householdmigrantslist_25 householdmigrantslist_26 householdmigrantslist_27 householdmigrantslist_28 householdmigrantslist_29 householdmigrantslist_30 householdmigrantslist_31 householdmigrantslist_32 householdmigrantslist_33 householdmigrantslist_34 householdmigrantslist_35 householdmigrantslist_36 householdmigrantslist_37 householdmigrantslist_38 householdmigrantslist_39 householdmigrantslist_40 householdmigrantslist_41 householdmigrantslist_42 householdmigrantslist_43 householdmigrantslist_44 householdmigrantslist_45 householdmigrantslist_46 householdmigrantslist_47 householdmigrantslist_48 householdmigrantslist_49 householdmigrantslist_50 householdmigrantslist_51 householdmigrantslist_52 householdmigrantslist_53 householdmigrantslist_54 householdmigrantslist_55 householdmigrantslist_56 householdmigrantslist_57 householdmigrantslist_58 householdmigrantslist_59 householdmigrantslist_60 householdmigrantslist_62 householdmigrantslist_63 householdmigrantslist_64 householdmigrantslist_67 householdmigrantslist_68 householdmigrantslist_69 householdmigrantslist_70 householdmigrantslist_71 householdmigrantslist_72 householdmigrantslist_73 householdmigrantslist_74 householdmigrantslist_75 householdmigrantslist_76 householdmigrantslist_77 householdmigrantslist_78 householdmigrantslist_79 householdmigrantslist_80 householdmigrantslist_81 householdmigrantslist_82 householdmigrantslist_83 householdmigrantslist_84 householdmigrantslist_85 householdmigrantslist_86 householdmigrantslist_87 householdmigrantslist_88 householdmigrantslist_89 householdmigrantslist_90 householdmigrantslist_91 householdmigrantslist_92 householdmigrantslist_93 householdmigrantslist_94 householdmigrantslist_95 householdmigrantslist_96 householdmigrantslist_97 householdmigrantslist_98 householdmigrantslist_99 householdmigrantslist_100 householdmigrantslist_101 householdmigrantslist_102 householdmigrantslist_103 householdmigrantslist_104 householdmigrantslist_105 householdmigrantslist_106 householdmigrantslist_107 householdmigrantslist_108 householdmigrantslist_109 householdmigrantslist_110 householdmigrantslist_111 householdmigrantslist_112 householdmigrantslist_113 householdmigrantslist_114 householdmigrantslist_115 householdmigrantslist_116 householdmigrantslist_117 householdmigrantslist_118 householdmigrantslist_119 householdmigrantslist_120 householdmigrantslist_121 householdmigrantslist_122 householdmigrantslist_123 householdmigrantslist_124 householdmigrantslist_125 householdmigrantslist_126 householdmigrantslist_127 householdmigrantslist_128 householdmigrantslist_129 householdmigrantslist_130 householdmigrantslist_131 householdmigrantslist_132 householdmigrantslist_133 householdmigrantslist_134 householdmigrantslist_135 householdmigrantslist_137 householdmigrantslist_140 householdmigrantslist_143 householdmigrantslist_144 householdmigrantslist_145 householdmigrantslist_146 householdmigrantslist_147 householdmigrantslist_148 householdmigrantslist_149 householdmigrantslist_150 householdmigrantslist_151 householdmigrantslist_152 othermemberhhmig rankingmigrant migrationremark
@@ -87,14 +89,19 @@ local newname=substr("`x'",1,strlen("`x'")-2)
 rename `x' `newname'
 }
 *reshape to have 1 indiv per row
-reshape long namenumber_ name_ namefromearlier_ sex_ age_ comefrom_ relationshiptohead_ maritalstatus_ casteindividual_ religionindividual_ relationshiptoheadother_ casteindividualother_ otherreligionindividual_ everattendedschool_ classcompleted_ currentlyatschool_ educationexpenses_ agefromearlier2_ namefromearlier3_ dummyworkedpastyear_ occupationnumber_ occupationname_ kindofwork_ monthsayear_ daysamonth_ hoursaday_ annualincome_ hoursayear_ joblocation_, i(key) j(indid)
+rename reasonnotworkpastyear reasonnotworkpastyear_1
+reshape long namenumber_ name_ namefromearlier_ sex_ age_ comefrom_ relationshiptohead_ maritalstatus_ casteindividual_ religionindividual_ relationshiptoheadother_ casteindividualother_ otherreligionindividual_ everattendedschool_ classcompleted_ currentlyatschool_ educationexpenses_ agefromearlier2_ namefromearlier3_ dummyworkedpastyear_ occupationnumber_ occupationname_ kindofwork_ monthsayear_ daysamonth_ hoursaday_ annualincome_ hoursayear_ joblocation_ reasonnotworkpastyear_, i(key) j(indid)
 *only keep indiv that exist
 keep if name_!=""
 *rename to drop the _
-foreach x in namenumber_ name_ namefromearlier_ sex_ age_ comefrom_ relationshiptohead_ maritalstatus_ casteindividual_ religionindividual_ relationshiptoheadother_ casteindividualother_ otherreligionindividual_ everattendedschool_ classcompleted_ currentlyatschool_ educationexpenses_ agefromearlier2_ namefromearlier3_ dummyworkedpastyear_ occupationnumber_ occupationname_ kindofwork_ monthsayear_ daysamonth_ hoursaday_ annualincome_ hoursayear_ joblocation_ {
+foreach x in namenumber_ name_ namefromearlier_ sex_ age_ comefrom_ relationshiptohead_ maritalstatus_ casteindividual_ religionindividual_ relationshiptoheadother_ casteindividualother_ otherreligionindividual_ everattendedschool_ classcompleted_ currentlyatschool_ educationexpenses_ agefromearlier2_ namefromearlier3_ dummyworkedpastyear_ occupationnumber_ occupationname_ kindofwork_ monthsayear_ daysamonth_ hoursaday_ annualincome_ hoursayear_ joblocation_ reasonnotworkpastyear_ {
 local newname=substr("`x'",1,strlen("`x'")-1)
 rename `x' `newname'
 }
+
+order key indid
+sort key indid
+
 save "NEEMSIS-tracking_HH-indiv.dta", replace
 
 
@@ -115,6 +122,9 @@ foreach x in landpurchasedhowbuy2 listgoods2 housetitle2 ownotherhouse2 {
 local newname=substr("`x'",1,strlen("`x'")-1)
 rename `x' `newname'
 }
+
+sort key
+
 save "NEEMSIS-tracking_HH-HH.dta", replace
 ****************************************
 * END
@@ -155,7 +165,7 @@ restore
 
 ********** Help level
 drop lefthomeduration migration1type2 migration1type2other migration1reason migration1reasonother migration1reasonoccup satisfaction migration1type rationhelptrue migration1decision migration1forced migration1cost sourcemigrationcost
-reshape long migration1helnamenb_ migration1helpname_ migration1helprelationship_ migration1helpsex_ migration1helpage_ migration1helpcastes_ migration1helpcastesother_ migration1helpeduc_ migration1helpoccuptype_ migration1helpoccupname_ migration1helpliving_ migration1helpcompared_ migration1helpduration_ migration1helpmeet_ migration1helpmeetother_ migration1helpmeetfrequency_ migration1helpinvite_ migration1helpreciprocity1_ migration1helpintimacy_ migration1helpfindjob_ migration1helpfindjobhow_ migration1helpfindjobhowother_ migration1helpmoney_ migration1helprecommendations_ migration1helpsn_, i(key) j(helpnb)
+reshape long migration1helnamenb_ migration1helpname_ migration1helprelationship_ migration1helpsex_ migration1helpage_ migration1helpcastes_ migration1helpcastesother_ migration1helpeduc_ migration1helpoccuptype_ migration1helpoccupname_ migration1helpliving_ migration1helpcompared_ migration1helpduration_ migration1helpmeet_ migration1helpmeetother_ migration1helpmeetfrequency_ migration1helpinvite_ migration1helpreciprocity1_ migration1helpintimacy_ migration1helpfindjob_ migration1helpfindjobhow_ migration1helpfindjobhowother_ migration1helpmoney_ migration1helprecommendations_ migration1helpsn_, i(key) j(helpid)
 
 foreach x in migration1helnamenb_ migration1helpname_ migration1helprelationship_ migration1helpsex_ migration1helpage_ migration1helpcastes_ migration1helpcastesother_ migration1helpeduc_ migration1helpoccuptype_ migration1helpoccupname_ migration1helpliving_ migration1helpcompared_ migration1helpduration_ migration1helpmeet_ migration1helpmeetother_ migration1helpmeetfrequency_ migration1helpinvite_ migration1helpreciprocity1_ migration1helpintimacy_ migration1helpfindjob_ migration1helpfindjobhow_ migration1helpfindjobhowother_ migration1helpmoney_ migration1helprecommendations_ migration1helpsn_ {
 local newname=substr("`x'",1,strlen("`x'")-1)
@@ -178,7 +188,7 @@ save "NEEMSIS-tracking_migr-help.dta", replace
 
 
 ****************************************
-* Indiv format
+* Indiv format (general + occupations)
 ****************************************
 
 ********** Characteristics
@@ -220,7 +230,7 @@ save "NEEMSIS-tracking_indiv-charact_p1.dta", replace
 
 
 
-********** Occupations
+********** Occupations: indiv level
 use"NEEMSIS-tracking_indiv.dta", clear
 
 drop migcasteemployer_*_*_*	migrelationemployer_*_*_*	migbusinessskill_*_*_*	migbusinesssourceinvest_*_*_*	migadvancebalanceproblem_*_*_*
@@ -271,7 +281,7 @@ dis "`newname'"
 }
 
 dropmiss, force
-reshape long 	migadvancebalanceproblemother_	migoccupationnumber_	migoccupationname_	migkindofwork_	migmonthsayear_	migdaysamonth_	mighoursaday_	migannualincome_	mighoursayear_	migkeep_occupposition_	migjoblocation_	migjobdistance_	migrelationemployer_	migcasteemployer_	migsalariedjobtype_	migsalariedwagetype_	migsalariedjobbonus_	migsalariedjobinsurance_	migsalariedjobpension_	migsalariedjobtenure_	migdummyadvance_	migdatestartoccup_	migyearestablishment_	migbusinesscastebased_	migbusinessskill_	migbusinessamountinvest_	migbusinesslossinvest_	migbusinessskillother_	migbusinesslossinvestamount_	migbusinesssourceinvest_	migotherbusisourinvest_	migdummybusinesslabourers_	mignbbusinesslabourers_	migothercasteemployer_	migsalariedjobkindbonus_	migsalariedjobbonusamount_	migmigrationadvanceamount_	migmigrationadvanceprovider_	migdummyadvancebalance_	migadvanceamountbalance_	migadvancebalanceproblem_	migadvancebalanceperception_	migadvancebalpercpopen_, i(key occupid) j(indiv)
+reshape long 	migadvancebalanceproblemother_	migoccupationnumber_	migoccupationname_	migkindofwork_	migmonthsayear_	migdaysamonth_	mighoursaday_	migannualincome_	mighoursayear_	migkeep_occupposition_	migjoblocation_	migjobdistance_	migrelationemployer_	migcasteemployer_	migsalariedjobtype_	migsalariedwagetype_	migsalariedjobbonus_	migsalariedjobinsurance_	migsalariedjobpension_	migsalariedjobtenure_	migdummyadvance_	migdatestartoccup_	migyearestablishment_	migbusinesscastebased_	migbusinessskill_	migbusinessamountinvest_	migbusinesslossinvest_	migbusinessskillother_	migbusinesslossinvestamount_	migbusinesssourceinvest_	migotherbusisourinvest_	migdummybusinesslabourers_	mignbbusinesslabourers_	migothercasteemployer_	migsalariedjobkindbonus_	migsalariedjobbonusamount_	migmigrationadvanceamount_	migmigrationadvanceprovider_	migdummyadvancebalance_	migadvanceamountbalance_	migadvancebalanceproblem_	migadvancebalanceperception_	migadvancebalpercpopen_, i(key occupid) j(indid2)
 
 keep if migoccupationname!=""
 
@@ -282,8 +292,493 @@ rename `x' `newname'
 
 save "NEEMSIS-tracking_indiv-occup_main.dta", replace
 
-********** 
+
+
+********** Occupations: loan level
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migbusinessloannumber_* migbusinessloanname_* mignumberbusinessloan_*
+dropmiss, force
+
+reshape long migbusinessloannumber_1_1_ migbusinessloanname_1_1_ mignumberbusinessloan_1_1_, i(key) j(loanid)
+
+rename migbusinessloannumber_1_1_ migbusinessloannumber_1_1
+rename migbusinessloanname_1_1_ migbusinessloanname_1_1
+rename mignumberbusinessloan_1_1_ mignumberbusinessloan_1_1
+
+reshape long migbusinessloannumber_1_ migbusinessloanname_1_ mignumberbusinessloan_1_, i(key loanid) j(occupid)
+
+rename migbusinessloannumber_1_ migbusinessloannumber_1
+rename migbusinessloanname_1_ migbusinessloanname_1
+rename mignumberbusinessloan_1_ mignumberbusinessloan_1
+
+reshape long migbusinessloannumber_ migbusinessloanname_ mignumberbusinessloan_, i(key loanid occupid) j(indid2)
+
+rename migbusinessloannumber_ migbusinessloannumber
+rename migbusinessloanname_ migbusinessloanname
+rename mignumberbusinessloan_ mignumberbusinessloan
+
+keep if migbusinessloanname!=""
+
+save "NEEMSIS-tracking_indiv-occup_loan.dta", replace
+
+
+
+********** Occupations: lender level
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migbusinesslenderid_* mignamebusinesslender_* migaddressbusinesslender_* migbusinesslender_* migcastebusinesslender_* migoccupbusinesslender_* migothercastebusinesslender_* migoccupbusinesslenderother_*
+dropmiss, force
+
+reshape long migbusinesslenderid_1_1_1_ migbusinesslenderid_1_1_2_ migbusinesslenderid_1_1_3_ mignamebusinesslender_1_1_1_ mignamebusinesslender_1_1_2_ mignamebusinesslender_1_1_3_ migaddressbusinesslender_1_1_1_ migaddressbusinesslender_1_1_2_ migaddressbusinesslender_1_1_3_ migbusinesslender_1_1_1_ migbusinesslender_1_1_2_ migbusinesslender_1_1_3_ migcastebusinesslender_1_1_1_ migcastebusinesslender_1_1_2_ migcastebusinesslender_1_1_3_ migoccupbusinesslender_1_1_1_ migoccupbusinesslender_1_1_2_ migoccupbusinesslender_1_1_3_, i(key) j(lenderid)
+
+foreach x in migbusinesslenderid_1_1_1_ mignamebusinesslender_1_1_1_ migaddressbusinesslender_1_1_1_ migbusinesslender_1_1_1_ migcastebusinesslender_1_1_1_ migoccupbusinesslender_1_1_1_ migbusinesslenderid_1_1_2_ mignamebusinesslender_1_1_2_ migaddressbusinesslender_1_1_2_ migbusinesslender_1_1_2_ migcastebusinesslender_1_1_2_ migoccupbusinesslender_1_1_2_ migbusinesslenderid_1_1_3_ mignamebusinesslender_1_1_3_ migaddressbusinesslender_1_1_3_ migbusinesslender_1_1_3_ migcastebusinesslender_1_1_3_ migoccupbusinesslender_1_1_3_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migbusinesslenderid_1_1_ mignamebusinesslender_1_1_ migaddressbusinesslender_1_1_ migbusinesslender_1_1_ migcastebusinesslender_1_1_ migoccupbusinesslender_1_1_, i(key lenderid) j(loanid)
+
+foreach x in migbusinesslenderid_1_1_ mignamebusinesslender_1_1_ migaddressbusinesslender_1_1_ migbusinesslender_1_1_ migcastebusinesslender_1_1_ migoccupbusinesslender_1_1_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migbusinesslenderid_1_ mignamebusinesslender_1_ migaddressbusinesslender_1_ migbusinesslender_1_ migcastebusinesslender_1_ migoccupbusinesslender_1_, i(key lenderid loanid) j(occupid)
+
+foreach x in migbusinesslenderid_1_ mignamebusinesslender_1_ migaddressbusinesslender_1_ migbusinesslender_1_ migcastebusinesslender_1_ migoccupbusinesslender_1_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migbusinesslenderid_ mignamebusinesslender_ migaddressbusinesslender_ migbusinesslender_ migcastebusinesslender_ migoccupbusinesslender_, i(key lenderid loanid occupid) j(indid2)
+
+foreach x in migbusinesslenderid_ mignamebusinesslender_ migaddressbusinesslender_ migbusinesslender_ migcastebusinesslender_ migoccupbusinesslender_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+keep if mignamebusinesslender!=""
+
+save "NEEMSIS-tracking_indiv-occup_loan_lender.dta", replace
+
+
+
+
+********** Occupations: Labourer level
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migbusinesslabourernumber_* mignamebusinesslabourer_* migaddressbusinesslabourer_* migcastebusinesslabourer_* migbusinesslabourerdate_* migbusinesslabourertypejob_* migbusinesslabourerwagetype_* migbusinesslabourerbonus_* migbusinesslabourerinsurance_* migbusinesslabourerpension_* migdummybusinesslabourerhhmember v942 v1150 v1162 v2988 v3000 v3208 v3220 v5046 v5058 v5266 v5278 v7104 v7116 v7324 v7336 v9162 v9174 v9382 v9394
+
+rename migdummybusinesslabourerhhmember migdummybusilabhhmb_1_1_1
+rename v942  migdummybusilabhhmb_1_1_2
+rename migbusinesslabourerwagetype_1_1_ migbusinesslabwagetype_1_1_1
+rename migbusinesslabourerinsurance_1_1 migbusinesslabinsurance_1_1_1
+dropmiss, force
+
+reshape long migbusinesslabourernumber_1_1_ mignamebusinesslabourer_1_1_ migdummybusilabhhmb_1_1_ migaddressbusinesslabourer_1_1_ migcastebusinesslabourer_1_1_ migbusinesslabourertypejob_1_1_ migbusinesslabwagetype_1_1_ migbusinesslabourerbonus_1_1_ migbusinesslabinsurance_1_1_ migbusinesslabourerpension_1_1_, i(key) j(labourerid)
+
+
+foreach x in migbusinesslabourernumber_1_1_ mignamebusinesslabourer_1_1_ migdummybusilabhhmb_1_1_ migaddressbusinesslabourer_1_1_ migcastebusinesslabourer_1_1_ migbusinesslabourertypejob_1_1_ migbusinesslabourerbonus_1_1_ migbusinesslabourerpension_1_1_ migbusinesslabwagetype_1_1_ migbusinesslabinsurance_1_1_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migbusinesslabourernumber_1_ mignamebusinesslabourer_1_ migdummybusilabhhmb_1_ migaddressbusinesslabourer_1_ migcastebusinesslabourer_1_ migbusinesslabourertypejob_1_ migbusinesslabourerbonus_1_ migbusinesslabourerpension_1_ migbusinesslabwagetype_1_ migbusinesslabinsurance_1_, i(key labourerid) j(occupid)
+
+foreach x in migbusinesslabourernumber_1_ mignamebusinesslabourer_1_ migdummybusilabhhmb_1_ migaddressbusinesslabourer_1_ migcastebusinesslabourer_1_ migbusinesslabourertypejob_1_ migbusinesslabourerbonus_1_ migbusinesslabourerpension_1_ migbusinesslabwagetype_1_ migbusinesslabinsurance_1_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migbusinesslabourernumber_ mignamebusinesslabourer_ migdummybusilabhhmb_ migaddressbusinesslabourer_ migcastebusinesslabourer_ migbusinesslabourertypejob_ migbusinesslabourerbonus_ migbusinesslabourerpension_ migbusinesslabwagetype_ migbusinesslabinsurance_, i(key labourerid occupid) j(indid2)
+
+foreach x in migbusinesslabourernumber_ mignamebusinesslabourer_ migdummybusilabhhmb_ migaddressbusinesslabourer_ migcastebusinesslabourer_ migbusinesslabourertypejob_ migbusinesslabourerbonus_ migbusinesslabourerpension_ migbusinesslabwagetype_ migbusinesslabinsurance_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+
+keep if mignamebusinesslabourer!=""
+
+save "NEEMSIS-tracking_indiv-occup_labourer.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
 
 
 ****************************************
+* Indiv format (migration + indoc + payment in kind + remittances)
+****************************************
+
+********** Migration
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migmigrationjobid_* migmigrationjobname_* migmigrationarea_*	migmigrationplace_*	migmigrationdistance_*	migmigrationtype_*	migmigrationdurationfrequency_*	migmigrationdurationinmonth_*	migdummybacktovillage_*	migmigrationtravelcost_*	migmigrationtravelpayment_*	migmigrationtenure_*	migmigrationfindjob_*	migmigrationjobtype_*	migmigrationjobtype2_*	migmigrationwagetype_*	migmigrationsalary_*	migmigrationpension_*	migmigrationbonus_*	migmigrationinsurance_* migmigrationchild_* migmigrationmainoccup_* migmigrationskill_* migmigrationreason_* migmigrationotherreason_*
+dropmiss, force
+
+drop migmigrationarea_1_1_1 migmigrationarea_2_1_1 migmigrationarea_3_1_1 migmigrationarea_4_1_1 migmigrationarea_5_1_1 migmigrationarea_6_1_1 migmigrationfindjob_1_1_1 migmigrationfindjob_2_1_1 migmigrationfindjob_3_1_1 migmigrationfindjob_4_1_1 migmigrationfindjob_5_1_1 migmigrationfindjob_6_1_1 migmigrationskill_1_1_1 migmigrationskill_2_1_1 migmigrationskill_3_1_1 migmigrationskill_4_1_1 migmigrationskill_5_1_1 migmigrationreason_1_1_1 migmigrationreason_2_1_1 migmigrationreason_3_1_1 migmigrationreason_4_1_1 migmigrationreason_5_1_1 migmigrationreason_6_1_1 migmigrationreason_7_1_1 migmigrationreason_8_1_1 migmigrationreason_9_1_1 migmigrationreason_10_1_1 migmigrationreason_77_1_1 migmigrationarea_1_2_1 migmigrationarea_2_2_1 migmigrationarea_3_2_1 migmigrationarea_4_2_1 migmigrationarea_5_2_1 migmigrationarea_6_2_1 migmigrationfindjob_1_2_1 migmigrationfindjob_2_2_1 migmigrationfindjob_3_2_1 migmigrationfindjob_4_2_1 migmigrationfindjob_5_2_1 migmigrationfindjob_6_2_1 migmigrationskill_1_2_1 migmigrationskill_2_2_1 migmigrationskill_3_2_1 migmigrationskill_4_2_1 migmigrationskill_5_2_1 migmigrationreason_1_2_1 migmigrationreason_2_2_1 migmigrationreason_3_2_1 migmigrationreason_4_2_1 migmigrationreason_5_2_1 migmigrationreason_6_2_1 migmigrationreason_7_2_1 migmigrationreason_8_2_1 migmigrationreason_9_2_1 migmigrationreason_10_2_1 migmigrationreason_77_2_1
+
+rename migmigrationdurationfrequency_1_ migmigrationdurationfreq_1_1
+rename migmigrationdurationfrequency_2_ migmigrationdurationfreq_2_1
+
+reshape long migmigrationjobid_1_ migmigrationjobname_1_ migmigrationarea_1_ migmigrationplace_1_ migmigrationdistance_1_ migmigrationtype_1_ migmigrationdurationinmonth_1_ migdummybacktovillage_1_ migmigrationtravelcost_1_ migmigrationtravelpayment_1_ migmigrationtenure_1_ migmigrationfindjob_1_ migmigrationjobtype_1_ migmigrationjobtype2_1_ migmigrationwagetype_1_ migmigrationsalary_1_ migmigrationpension_1_ migmigrationbonus_1_ migmigrationinsurance_1_ migmigrationchild_1_ migmigrationmainoccup_1_ migmigrationskill_1_ migmigrationreason_1_ migmigrationotherreason_1_ migmigrationdurationfreq_1_ migmigrationdurationfreq_2_ migmigrationjobid_2_ migmigrationjobname_2_ migmigrationarea_2_ migmigrationplace_2_ migmigrationdistance_2_ migmigrationtype_2_ migmigrationdurationinmonth_2_ migdummybacktovillage_2_ migmigrationtravelcost_2_ migmigrationtravelpayment_2_ migmigrationtenure_2_ migmigrationfindjob_2_ migmigrationjobtype_2_ migmigrationjobtype2_2_ migmigrationwagetype_2_ migmigrationsalary_2_ migmigrationpension_2_ migmigrationbonus_2_ migmigrationinsurance_2_ migmigrationchild_2_ migmigrationmainoccup_2_ migmigrationskill_2_ migmigrationreason_2_, i(key) j(migjobid)
+
+
+foreach x in migmigrationjobid_1_ migmigrationjobname_1_ migmigrationarea_1_ migmigrationplace_1_ migmigrationdistance_1_ migmigrationtype_1_ migmigrationdurationfreq_1_ migmigrationdurationinmonth_1_ migdummybacktovillage_1_ migmigrationtravelcost_1_ migmigrationtravelpayment_1_ migmigrationtenure_1_ migmigrationfindjob_1_ migmigrationjobtype_1_ migmigrationjobtype2_1_ migmigrationwagetype_1_ migmigrationsalary_1_ migmigrationpension_1_ migmigrationbonus_1_ migmigrationinsurance_1_ migmigrationchild_1_ migmigrationmainoccup_1_ migmigrationskill_1_ migmigrationreason_1_ migmigrationotherreason_1_ migmigrationjobid_2_ migmigrationjobname_2_ migmigrationarea_2_ migmigrationplace_2_ migmigrationdistance_2_ migmigrationtype_2_ migmigrationdurationfreq_2_ migmigrationdurationinmonth_2_ migdummybacktovillage_2_ migmigrationtravelcost_2_ migmigrationtravelpayment_2_ migmigrationtenure_2_ migmigrationfindjob_2_ migmigrationjobtype_2_ migmigrationjobtype2_2_ migmigrationwagetype_2_ migmigrationsalary_2_ migmigrationpension_2_ migmigrationbonus_2_ migmigrationinsurance_2_ migmigrationchild_2_ migmigrationmainoccup_2_ migmigrationskill_2_ migmigrationreason_2_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migmigrationjobid_ migmigrationjobname_ migmigrationarea_ migmigrationplace_ migmigrationdistance_ migmigrationtype_ migmigrationdurationfreq_ migmigrationdurationinmonth_ migdummybacktovillage_ migmigrationtravelcost_ migmigrationtravelpayment_ migmigrationtenure_ migmigrationfindjob_ migmigrationjobtype_ migmigrationjobtype2_ migmigrationwagetype_ migmigrationsalary_ migmigrationpension_ migmigrationbonus_ migmigrationinsurance_ migmigrationchild_ migmigrationmainoccup_ migmigrationskill_ migmigrationreason_ migmigrationotherreason_, i(key migjobid) j(indid2)
+
+foreach x in migmigrationjobid_ migmigrationjobname_ migmigrationarea_ migmigrationplace_ migmigrationdistance_ migmigrationtype_ migmigrationdurationfreq_ migmigrationdurationinmonth_ migdummybacktovillage_ migmigrationtravelcost_ migmigrationtravelpayment_ migmigrationtenure_ migmigrationfindjob_ migmigrationjobtype_ migmigrationjobtype2_ migmigrationwagetype_ migmigrationsalary_ migmigrationpension_ migmigrationbonus_ migmigrationinsurance_ migmigrationchild_ migmigrationmainoccup_ migmigrationskill_ migmigrationreason_ migmigrationotherreason_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+keep if migmigrationjobname!=""
+
+save "NEEMSIS-tracking_indiv-migration_job.dta", replace
+
+
+
+********** Business payment in kind
+
+use"NEEMSIS-tracking_indiv.dta", clear
+
+*keep key migbusinesspaymentinkindid_* migbusinesspaymentinkindname_* migbusinesspaymentinkindvalue_*
+
+
+
+
+
+********** Wage job payment in kind
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migwagejobpaymentinkindid_* migwagejobpaymentinkindname_* migwagejobpaymentinkindvalue_*
+
+reshape long migwagejobpaymentinkindid_1_ migwagejobpaymentinkindname_1_ migwagejobpaymentinkindvalue_1_ migwagejobpaymentinkindid_2_ migwagejobpaymentinkindname_2_ migwagejobpaymentinkindvalue_2_ migwagejobpaymentinkindid_3_ migwagejobpaymentinkindname_3_ migwagejobpaymentinkindvalue_3_ migwagejobpaymentinkindid_4_ migwagejobpaymentinkindname_4_ migwagejobpaymentinkindvalue_4_ migwagejobpaymentinkindid_5_ migwagejobpaymentinkindname_5_ migwagejobpaymentinkindvalue_5_, i(key) j(wagejobpaymentinkindid)
+
+foreach x in migwagejobpaymentinkindid_1_ migwagejobpaymentinkindname_1_ migwagejobpaymentinkindvalue_1_ migwagejobpaymentinkindid_2_ migwagejobpaymentinkindname_2_ migwagejobpaymentinkindvalue_2_ migwagejobpaymentinkindid_3_ migwagejobpaymentinkindname_3_ migwagejobpaymentinkindvalue_3_ migwagejobpaymentinkindid_4_ migwagejobpaymentinkindname_4_ migwagejobpaymentinkindvalue_4_ migwagejobpaymentinkindid_5_ migwagejobpaymentinkindname_5_ migwagejobpaymentinkindvalue_5_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migwagejobpaymentinkindid_ migwagejobpaymentinkindname_ migwagejobpaymentinkindvalue_, i(key wagejobpaymentinkindid) j(indid2)
+
+rename migwagejobpaymentinkindid_ migwagejobpaymentinkindid
+rename migwagejobpaymentinkindname_ migwagejobpaymentinkindname
+rename migwagejobpaymentinkindvalue_ migwagejobpaymentinkindvalue
+
+keep if migwagejobpaymentinkindname!=""
+keep if migwagejobpaymentinkindvalue!=.
+
+order key indid2 wagejobpaymentinkindid
+sort key indid2 wagejobpaymentinkindid
+
+save "NEEMSIS-tracking_indiv-wagejobpaymentinkind.dta", replace
+
+
+
+
+
+
+
+
+********** Remittances sent
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migremittancessentid_* migremittancessentname_* migremittancessentdummyvillage_* migremittancessentrelation_* migremittancessentoccup_* migremittancessentplace_* migremittancessentfrequency_* migremittancessentamount_* migremittancessenttotalamount_* migremittancessentservices_* migremittancessentservicesother_* migremittancessentsourceoccupoth v3646 v5704 v7762 v9820
+dropmiss, force
+
+rename migremittancessentsourceoccupoth migremitsentsourceoccupother_1_1
+
+drop migremittancessentservices_1_1_1 migremittancessentservices_2_1_1 migremittancessentservices_3_1_1 migremittancessentservices_4_1_1 migremittancessentservices_5_1_1 migremittancessentservices_77_1_ migremittancessentservices_1_2_1 migremittancessentservices_2_2_1 migremittancessentservices_3_2_1 migremittancessentservices_4_2_1 migremittancessentservices_5_2_1 migremittancessentservices_77_2_ migremittancessentservices_1_3_1 migremittancessentservices_2_3_1 migremittancessentservices_3_3_1 migremittancessentservices_4_3_1 migremittancessentservices_5_3_1 migremittancessentservices_77_3_ migremittancessentservices_1_5_1 migremittancessentservices_2_5_1 migremittancessentservices_3_5_1 migremittancessentservices_4_5_1 migremittancessentservices_5_5_1 migremittancessentservices_77_5_
+
+foreach i in 1 2 3 5 {
+rename migremittancessentdummyvillage_`i' migremitsentdummyvillage_`i'_1
+rename migremittancessenttotalamount_`i'_ migremitsenttotalamount_`i'_1
+}
+
+foreach x in migremittancessentid_1_1 migremittancessentname_1_1 migremitsentdummyvillage_1_1 migremittancessentrelation_1_1 migremittancessentoccup_1_1 migremittancessentplace_1_1 migremittancessentfrequency_1_1 migremittancessentamount_1_1 migremitsenttotalamount_1_1 migremittancessentservices_1_1 migremitsentsourceoccupother_1_1 migremittancessentid_2_1 migremittancessentname_2_1 migremitsentdummyvillage_2_1 migremittancessentrelation_2_1 migremittancessentoccup_2_1 migremittancessentplace_2_1 migremittancessentfrequency_2_1 migremittancessentamount_2_1 migremitsenttotalamount_2_1 migremittancessentservices_2_1 migremittancessentid_3_1 migremittancessentname_3_1 migremitsentdummyvillage_3_1 migremittancessentrelation_3_1 migremittancessentoccup_3_1 migremittancessentplace_3_1 migremittancessentfrequency_3_1 migremittancessentamount_3_1 migremitsenttotalamount_3_1 migremittancessentservices_3_1 migremittancessentid_5_1 migremittancessentname_5_1 migremitsentdummyvillage_5_1 migremittancessentrelation_5_1 migremittancessentoccup_5_1 migremittancessentplace_5_1 migremittancessentfrequency_5_1 migremittancessentamount_5_1 migremitsenttotalamount_5_1 migremittancessentservices_5_1 {
+local newname=substr("`x'",1,strlen("`x'")-2)
+rename `x' `newname'
+}
+gen remtsentid=1
+
+
+reshape long migremittancessentid_ migremittancessentname_ migremitsentdummyvillage_ migremittancessentrelation_ migremittancessentoccup_ migremittancessentplace_ migremittancessentfrequency_ migremittancessentamount_ migremitsenttotalamount_ migremittancessentservices_ migremitsentsourceoccupother_, i(key remtsentid) j(indid2)
+
+foreach x in migremittancessentid_ migremittancessentname_ migremitsentdummyvillage_ migremittancessentrelation_ migremittancessentoccup_ migremittancessentplace_ migremittancessentfrequency_ migremittancessentamount_ migremitsenttotalamount_ migremittancessentservices_ migremitsentsourceoccupother_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+drop if migremittancessentname==""
+
+save "NEEMSIS-tracking_indiv-remtsent.dta", replace
+
+
+
+
+
+
+
+********** Remittances received
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migremittancesrecipientid_* migremittancesrecipientname_*
+
+foreach x in migremittancesrecipientid_1_1 migremittancesrecipientname_1_1 migremittancesrecipientid_2_1 migremittancesrecipientname_2_1 migremittancesrecipientid_3_1 migremittancesrecipientname_3_1 migremittancesrecipientid_4_1 migremittancesrecipientname_4_1 migremittancesrecipientid_5_1 migremittancesrecipientname_5_1 {
+local newname=substr("`x'",1,strlen("`x'")-2)
+rename `x' `newname'
+}
+gen remtreceivedid=1
+
+reshape long migremittancesrecipientid_ migremittancesrecipientname_, i(key remtreceivedid) j(indid2)
+
+rename migremittancesrecipientid_ migremittancesrecipientid
+rename migremittancesrecipientname_ migremittancesrecipientname
+
+drop if migremittancesrecipientname==""
+
+save "NEEMSIS-tracking_indiv-remtreceived.dta", replace
+
+
+
+
+
+
+
+********** Remittances received: 
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migremittancesreceivedsourcehh_*	migremittancesreceivedfrequency_*	migremittancesreceivedamount_*	migremittancesrecipientsourceid_ v3657 v5715 v7773 v9831 migremittancesrecipientsourcenam v3658 v5716 v7774 v9832 migremittancesreceivedsourcerela v3659 v5717 v7775 v9833 migremittancesreceivedsourceoccu v3661 v5719 v7777 v9835 migremittancesreceivedsourceplac v3662 v5720 v7778 v9836 migremittancesreceivedtotalamoun v3665 v5723 v7781 v9839 v1615 v3673 v5731 v7789 v9847 migremittancesreceivedservicesot v3674 v5732 v7790 v9848 v3663 v5721 v7779 v9837 migremittancesreceivedservices_1 v1609 migremittancesreceivedservices_2 migremittancesreceivedservices_3 migremittancesreceivedservices_4 migremittancesreceivedservices_5 migremittancesreceivedservices_7 v3666 v3667 v3668 v3669 v3670 v3671 v3672 v5724 v5725 v5726 v5727 v5728 v5729 v5730 v7782 v7783 v7784 v7785 v7786 v7787 v7788 v9840 v9841 v9842 v9843 v9844 v9845 v9846
+
+rename migremittancesrecipientsourceid_ migremitrecipsourceid_1_1_1
+rename v3657 migremitrecipsourceid_2_1_1
+rename v5715 migremitrecipsourceid_3_1_1
+rename v7773 migremitrecipsourceid_4_1_1
+rename v9831 migremitrecipsourceid_5_1_1
+
+rename migremittancesrecipientsourcenam migremitrecipsourcename1_1_1_1
+rename v3658 migremitrecipsourcename1_2_1_1
+rename v5716 migremitrecipsourcename1_3_1_1
+rename v7774 migremitrecipsourcename1_4_1_1
+rename v9832 migremitrecipsourcename1_5_1_1
+
+rename migremittancesreceivedsourcerela migremitrecsourcerelation_1_1_1
+rename v3659 migremitrecsourcerelation_2_1_1
+rename v5717 migremitrecsourcerelation_3_1_1
+rename v7775 migremitrecsourcerelation_4_1_1
+rename v9833 migremitrecsourcerelation_5_1_1
+
+rename migremittancesreceivedsourceoccu migremitrecsourceoccup_1_1_1
+rename v3661 migremitrecsourceoccup_2_1_1
+rename v5719 migremitrecsourceoccup_3_1_1
+rename v7777 migremitrecsourceoccup_4_1_1
+rename v9835 migremitrecsourceoccup_5_1_1
+
+rename migremittancesreceivedsourceplac migremitrecsourceplace_1_1_1
+rename v3662 migremitrecsourceplace_2_1_1
+rename v5720 migremitrecsourceplace_3_1_1
+rename v7778 migremitrecsourceplace_4_1_1
+rename v9836 migremitrecsourceplace_5_1_1
+
+rename migremittancesreceivedtotalamoun migremitrectotalamount_1_1_1
+rename v3665 migremitrectotalamount_2_1_1
+rename v5723 migremitrectotalamount_3_1_1
+rename v7781 migremitrectotalamount_4_1_1
+rename v9839 migremitrectotalamount_5_1_1
+
+rename v1615 migremitrecsourceoccupoth_1_1_1
+rename v3673 migremitrecsourceoccupoth_2_1_1
+rename v5731 migremitrecsourceoccupoth_3_1_1
+rename v7789 migremitrecsourceoccupoth_4_1_1
+rename v9847 migremitrecsourceoccupoth_5_1_1
+
+rename migremittancesreceivedservicesot migremitrecservicesother_1_1_1
+rename v3674 migremitrecservicesother_2_1_1
+rename v5732 migremitrecservicesother_3_1_1
+rename v7790 migremitrecservicesother_4_1_1
+rename v9848 migremitrecservicesother_5_1_1
+
+rename migremittancesreceivedamount_1_1 migremitrecamount_1_1_1
+rename migremittancesreceivedamount_2_1 migremitrecamount_2_1_1
+rename migremittancesreceivedamount_3_1 migremitrecamount_3_1_1
+rename migremittancesreceivedamount_4_1 migremitrecamount_4_1_1
+rename migremittancesreceivedamount_5_1 migremitrecamount_5_1_1
+
+rename migremittancesreceivedsourcehh_1 migremitrecsourcehh_1_1_1
+rename migremittancesreceivedsourcehh_2 migremitrecsourcehh_2_1_1
+rename migremittancesreceivedsourcehh_3 migremitrecsourcehh_3_1_1
+rename migremittancesreceivedsourcehh_4 migremitrecsourcehh_4_1_1
+rename migremittancesreceivedsourcehh_5 migremitrecsourcehh_5_1_1
+
+rename migremittancesreceivedfrequency_ migremitrecfreq_1_1_1
+rename v3663 migremitrecfreq_2_1_1
+rename v5721 migremitrecfreq_3_1_1
+rename v7779 migremitrecfreq_4_1_1
+rename v9837 migremitrecfreq_5_1_1
+
+drop v9841 v9842 v9843 v9844 v9845 v9846 v7783 v7784 v7785 v7786 v7787 v7788 v5725 v5726 v5727 v5728 v5729 v5730 v3667 v3668 v3669 v3670 v3671 v3672 v1609 migremittancesreceivedservices_2 migremittancesreceivedservices_3 migremittancesreceivedservices_4 migremittancesreceivedservices_5 migremittancesreceivedservices_7
+rename migremittancesreceivedservices_1 migremitrecservices_1_1_1
+rename v3666 migremitrecservices_2_1_1
+rename v5724 migremitrecservices_3_1_1
+rename v7782 migremitrecservices_4_1_1
+rename v9840 migremitrecservices_5_1_1
+
+
+foreach x in migremitrecipsourceid_1_1_1 migremitrecipsourcename1_1_1_1 migremitrecsourcerelation_1_1_1 migremitrecsourcehh_1_1_1 migremitrecsourceoccup_1_1_1 migremitrecsourceplace_1_1_1 migremitrecfreq_1_1_1 migremitrecamount_1_1_1 migremitrectotalamount_1_1_1 migremitrecservices_1_1_1 migremitrecsourceoccupoth_1_1_1 migremitrecservicesother_1_1_1 migremitrecipsourceid_2_1_1 migremitrecipsourcename1_2_1_1 migremitrecsourcerelation_2_1_1 migremitrecsourcehh_2_1_1 migremitrecsourceoccup_2_1_1 migremitrecsourceplace_2_1_1 migremitrecfreq_2_1_1 migremitrecamount_2_1_1 migremitrectotalamount_2_1_1 migremitrecservices_2_1_1 migremitrecsourceoccupoth_2_1_1 migremitrecservicesother_2_1_1 migremitrecipsourceid_3_1_1 migremitrecipsourcename1_3_1_1 migremitrecsourcerelation_3_1_1 migremitrecsourcehh_3_1_1 migremitrecsourceoccup_3_1_1 migremitrecsourceplace_3_1_1 migremitrecfreq_3_1_1 migremitrecamount_3_1_1 migremitrectotalamount_3_1_1 migremitrecservices_3_1_1 migremitrecsourceoccupoth_3_1_1 migremitrecservicesother_3_1_1 migremitrecipsourceid_4_1_1 migremitrecipsourcename1_4_1_1 migremitrecsourcerelation_4_1_1 migremitrecsourcehh_4_1_1 migremitrecsourceoccup_4_1_1 migremitrecsourceplace_4_1_1 migremitrecfreq_4_1_1 migremitrecamount_4_1_1 migremitrectotalamount_4_1_1 migremitrecservices_4_1_1 migremitrecsourceoccupoth_4_1_1 migremitrecservicesother_4_1_1 migremitrecipsourceid_5_1_1 migremitrecipsourcename1_5_1_1 migremitrecsourcerelation_5_1_1 migremitrecsourcehh_5_1_1 migremitrecsourceoccup_5_1_1 migremitrecsourceplace_5_1_1 migremitrecfreq_5_1_1 migremitrecamount_5_1_1 migremitrectotalamount_5_1_1 migremitrecservices_5_1_1 migremitrecsourceoccupoth_5_1_1 migremitrecservicesother_5_1_1 {
+local newname=substr("`x'",1,strlen("`x'")-4)
+rename `x' `newname'
+}
+
+gen remtreceivedid=1
+gen remtreceivedsourceid=1
+
+dropmiss, force
+destring migremitrecipsourceid_1, replace
+tostring migremitrecservices_2, replace
+tostring migremitrecservices_3, replace
+
+reshape long migremitrecipsourceid_ migremitrecipsourcename1_ migremitrecsourcerelation_ migremitrecsourcehh_ migremitrecsourceoccup_ migremitrecsourceplace_ migremitrecfreq_ migremitrecamount_ migremitrectotalamount_ migremitrecservices_ migremitrecsourceoccupoth_ migremitrecservicesother_, i(key remtreceivedsourceid remtreceivedid) j(indid2)
+
+foreach x in migremitrecipsourceid_ migremitrecipsourcename1_ migremitrecsourcerelation_ migremitrecsourcehh_ migremitrecsourceoccup_ migremitrecsourceplace_ migremitrecfreq_ migremitrecamount_ migremitrectotalamount_ migremitrecservices_ migremitrecsourceoccupoth_ migremitrecservicesother_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+keep if migremitrecipsourcename1!=""
+
+save "NEEMSIS-tracking_indiv-remtreceived_source.dta", replace
+****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Indiv format (formal social capital + contact group)
+****************************************
+
+********** Main
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migassociationid_* migassociationtype_* migassociationname_* migassodegreeparticip_* migassosize_* migdummyassorecommendation_* migdummyassohelpjob_* migassohelpjob_* migassocotherhelpjob_* migdummyassohelpbusiness_* migassohelpbusiness_* migassootherhelpbusiness_*
+
+drop migassohelpjob_1_1_1 migassohelpjob_2_1_1 migassohelpjob_3_1_1 migassohelpjob_4_1_1 migassohelpjob_5_1_1 migassohelpjob_77_1_1 migassohelpbusiness_1_1_1 migassohelpbusiness_2_1_1 migassohelpbusiness_3_1_1 migassohelpbusiness_4_1_1 migassohelpbusiness_5_1_1 migassohelpbusiness_6_1_1 migassohelpbusiness_7_1_1 migassohelpbusiness_77_1_1 migassohelpjob_1_1_2 migassohelpjob_2_1_2 migassohelpjob_3_1_2 migassohelpjob_4_1_2 migassohelpjob_5_1_2 migassohelpjob_77_1_2 migassohelpbusiness_1_1_2 migassohelpbusiness_2_1_2 migassohelpbusiness_3_1_2 migassohelpbusiness_4_1_2 migassohelpbusiness_5_1_2 migassohelpbusiness_6_1_2 migassohelpbusiness_7_1_2 migassohelpbusiness_77_1_2 migassohelpjob_1_2_1 migassohelpjob_2_2_1 migassohelpjob_3_2_1 migassohelpjob_4_2_1 migassohelpjob_5_2_1 migassohelpjob_77_2_1 migassohelpbusiness_1_2_1 migassohelpbusiness_2_2_1 migassohelpbusiness_3_2_1 migassohelpbusiness_4_2_1 migassohelpbusiness_5_2_1 migassohelpbusiness_6_2_1 migassohelpbusiness_7_2_1 migassohelpbusiness_77_2_1 migassohelpjob_1_2_2 migassohelpjob_2_2_2 migassohelpjob_3_2_2 migassohelpjob_4_2_2 migassohelpjob_5_2_2 migassohelpjob_77_2_2 migassohelpbusiness_1_2_2 migassohelpbusiness_2_2_2 migassohelpbusiness_3_2_2 migassohelpbusiness_4_2_2 migassohelpbusiness_5_2_2 migassohelpbusiness_6_2_2 migassohelpbusiness_7_2_2 migassohelpbusiness_77_2_2 migassohelpjob_1_3_1 migassohelpjob_2_3_1 migassohelpjob_3_3_1 migassohelpjob_4_3_1 migassohelpjob_5_3_1 migassohelpjob_77_3_1 migassohelpbusiness_1_3_1 migassohelpbusiness_2_3_1 migassohelpbusiness_3_3_1 migassohelpbusiness_4_3_1 migassohelpbusiness_5_3_1 migassohelpbusiness_6_3_1 migassohelpbusiness_7_3_1 migassohelpbusiness_77_3_1 migassohelpjob_1_3_2 migassohelpjob_2_3_2 migassohelpjob_3_3_2 migassohelpjob_4_3_2 migassohelpjob_5_3_2 migassohelpjob_77_3_2 migassohelpbusiness_1_3_2 migassohelpbusiness_2_3_2 migassohelpbusiness_3_3_2 migassohelpbusiness_4_3_2 migassohelpbusiness_5_3_2 migassohelpbusiness_6_3_2 migassohelpbusiness_7_3_2 migassohelpbusiness_77_3_2 migassohelpjob_1_4_1 migassohelpjob_2_4_1 migassohelpjob_3_4_1 migassohelpjob_4_4_1 migassohelpjob_5_4_1 migassohelpjob_77_4_1 migassohelpbusiness_1_4_1 migassohelpbusiness_2_4_1 migassohelpbusiness_3_4_1 migassohelpbusiness_4_4_1 migassohelpbusiness_5_4_1 migassohelpbusiness_6_4_1 migassohelpbusiness_7_4_1 migassohelpbusiness_77_4_1 migassohelpjob_1_4_2 migassohelpjob_2_4_2 migassohelpjob_3_4_2 migassohelpjob_4_4_2 migassohelpjob_5_4_2 migassohelpjob_77_4_2 migassohelpbusiness_1_4_2 migassohelpbusiness_2_4_2 migassohelpbusiness_3_4_2 migassohelpbusiness_4_4_2 migassohelpbusiness_5_4_2 migassohelpbusiness_6_4_2 migassohelpbusiness_7_4_2 migassohelpbusiness_77_4_2 migassohelpjob_1_5_1 migassohelpjob_2_5_1 migassohelpjob_3_5_1 migassohelpjob_4_5_1 migassohelpjob_5_5_1 migassohelpjob_77_5_1 migassohelpbusiness_1_5_1 migassohelpbusiness_2_5_1 migassohelpbusiness_3_5_1 migassohelpbusiness_4_5_1 migassohelpbusiness_5_5_1 migassohelpbusiness_6_5_1 migassohelpbusiness_7_5_1 migassohelpbusiness_77_5_1 migassohelpjob_1_5_2 migassohelpjob_2_5_2 migassohelpjob_3_5_2 migassohelpjob_4_5_2 migassohelpjob_5_5_2 migassohelpjob_77_5_2 migassohelpbusiness_1_5_2 migassohelpbusiness_2_5_2 migassohelpbusiness_3_5_2 migassohelpbusiness_4_5_2 migassohelpbusiness_5_5_2 migassohelpbusiness_6_5_2 migassohelpbusiness_7_5_2 migassohelpbusiness_77_5_2
+
+
+reshape long migassociationid_1_ migassociationtype_1_ migassociationname_1_ migassodegreeparticip_1_ migassosize_1_ migdummyassorecommendation_1_  migdummyassohelpjob_1_ migassohelpjob_1_ migassocotherhelpjob_1_ migdummyassohelpbusiness_1_ migassohelpbusiness_1_ migassootherhelpbusiness_1_ migdummyassohelpjob_2_ migassohelpjob_2_ migassocotherhelpjob_2_ migdummyassohelpbusiness_2_ migassohelpbusiness_2_ migassootherhelpbusiness_2_ migdummyassohelpjob_3_ migassohelpjob_3_ migassocotherhelpjob_3_ migdummyassohelpbusiness_3_ migassohelpbusiness_3_ migassootherhelpbusiness_3_ migdummyassohelpjob_4_ migassohelpjob_4_ migassocotherhelpjob_4_ migdummyassohelpbusiness_4_ migassohelpbusiness_4_ migassootherhelpbusiness_4_ migdummyassohelpjob_5_ migassohelpjob_5_ migassocotherhelpjob_5_ migdummyassohelpbusiness_5_ migassohelpbusiness_5_ migassootherhelpbusiness_5_   migassociationid_2_ migassociationtype_2_ migassociationname_2_ migassodegreeparticip_2_ migassosize_2_ migdummyassorecommendation_2_ migassociationid_3_ migassociationtype_3_ migassociationname_3_ migassodegreeparticip_3_ migassosize_3_ migdummyassorecommendation_3_ migassociationid_4_ migassociationtype_4_ migassociationname_4_ migassodegreeparticip_4_ migassosize_4_ migdummyassorecommendation_4_ migassociationid_5_ migassociationtype_5_ migassociationname_5_ migassodegreeparticip_5_ migassosize_5_ migdummyassorecommendation_5_, i(key) j(assoid)
+
+
+foreach x in migassociationid_1_ migassociationtype_1_ migassociationname_1_ migassodegreeparticip_1_ migassosize_1_ migdummyassorecommendation_1_ migdummyassohelpjob_1_ migassohelpjob_1_ migassocotherhelpjob_1_ migdummyassohelpbusiness_1_ migassohelpbusiness_1_ migassootherhelpbusiness_1_ migassociationid_2_ migassociationtype_2_ migassociationname_2_ migassodegreeparticip_2_ migassosize_2_ migdummyassorecommendation_2_ migdummyassohelpjob_2_ migassohelpjob_2_ migassocotherhelpjob_2_ migdummyassohelpbusiness_2_ migassohelpbusiness_2_ migassootherhelpbusiness_2_ migassociationid_3_ migassociationtype_3_ migassociationname_3_ migassodegreeparticip_3_ migassosize_3_ migdummyassorecommendation_3_ migdummyassohelpjob_3_ migassohelpjob_3_ migassocotherhelpjob_3_ migdummyassohelpbusiness_3_ migassohelpbusiness_3_ migassootherhelpbusiness_3_ migassociationid_4_ migassociationtype_4_ migassociationname_4_ migassodegreeparticip_4_ migassosize_4_ migdummyassorecommendation_4_ migdummyassohelpjob_4_ migassohelpjob_4_ migassocotherhelpjob_4_ migdummyassohelpbusiness_4_ migassohelpbusiness_4_ migassootherhelpbusiness_4_ migassociationid_5_ migassociationtype_5_ migassociationname_5_ migassodegreeparticip_5_ migassosize_5_ migdummyassorecommendation_5_ migdummyassohelpjob_5_ migassohelpjob_5_ migassocotherhelpjob_5_ migdummyassohelpbusiness_5_ migassohelpbusiness_5_ migassootherhelpbusiness_5_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migassociationid_ migassociationtype_ migassociationname_ migassodegreeparticip_ migassosize_ migdummyassorecommendation_ migdummyassohelpjob_ migassohelpjob_ migassocotherhelpjob_ migdummyassohelpbusiness_ migassohelpbusiness_ migassootherhelpbusiness_, i(key assoid) j(indid2)
+
+foreach x in migassociationid_ migassociationtype_ migassociationname_ migassodegreeparticip_ migassosize_ migdummyassorecommendation_ migdummyassohelpjob_ migassohelpjob_ migassocotherhelpjob_ migdummyassohelpbusiness_ migassohelpbusiness_ migassootherhelpbusiness_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+
+keep if migassociationtype!=""
+
+save "NEEMSIS-tracking_indiv-asso.dta", replace
+
+
+
+********** recommend asso
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migsnrecommendassonber_* migsnrecommendassoname_* migsnrecommendassosex_* migsnrecommendassoage_* migsnrecommendassocastes_* migsnrecommendassoeduc_* migsnrecommendassooccup_* migsnrecommendassooccupother_* migsnrecommendassoliving_* migsnrecommendassocompared_* migsnrecommendassoduration_* migsnrecommendassomeet_* migsnrecommendassomeetother_* migsnrecommendassoinvite_* migsnrecommendassointimacy_* migsnrecommendassorelationship_1 v1642 migsnrecommendassorelationship_2 migsnrecommendassorelationship_3 migsnrecommendassorelationship_4 migsnrecommendassorelationship_5 migsnrecommendassorelationship_6 migsnrecommendassorelationship_7 migsnrecommendassorelationship_8 migsnrecommendassorelationship_9 v1651 v1652 v1653 v1654 v1655 v1656 v1702 v1703 v1704 v1705 v1706 v1707 v1708 v1709 v1710 v1711 v1712 v1713 v1714 v1715 v1716 v1717 v3699 v3700 v3701 v3702 v3703 v3704 v3705 v3706 v3707 v3708 v3709 v3710 v3711 v3712 v3713 v3714 v3760 v3761 v3762 v3763 v3764 v3765 v3766 v3767 v3768 v3769 v3770 v3771 v3772 v3773 v3774 v3775 v5757 v5758 v5759 v5760 v5761 v5762 v5763 v5764 v5765 v5766 v5767 v5768 v5769 v5770 v5771 v5772 v5818 v5819 v5820 v5821 v5822 v5823 v5824 v5825 v5826 v5827 v5828 v5829 v5830 v5831 v5832 v5833 v7815 v7816 v7817 v7818 v7819 v7820 v7821 v7822 v7823 v7824 v7825 v7826 v7827 v7828 v7829 v7830 v7876 v7877 v7878 v7879 v7880 v7881 v7882 v7883 v7884 v7885 v7886 v7887 v7888 v7889 v7890 v7891 v9873 v9874 v9875 v9876 v9877 v9878 v9879 v9880 v9881 v9882 v9883 v9884 v9885 v9886 v9887 v9888 v9934 v9935 v9936 v9937 v9938 v9939 v9940 v9941 v9942 v9943 v9944 v9945 v9946 v9947 v9948 v9949 migsnrecommendassocastesother_1_ v1721 migsnrecommendassocastesother_2_ v3779 migsnrecommendassocastesother_3_ v5837 migsnrecommendassocastesother_4_ v7895 migsnrecommendassocastesother_5_ v9953 migsnrecommendassomeetfrequency_ v1730 v3727 v3788 v5785 v5846 v7843 v7904 v9901 v9962 migsnrecommendassoreciprocity1_1 v1732 migsnrecommendassoreciprocity1_2 v3790 migsnrecommendassoreciprocity1_3 v5848 migsnrecommendassoreciprocity1_4 v7906 migsnrecommendassoreciprocity1_5 v9964
+
+drop v1703 v1704 v1705 v1706 v1707 v1708 v1709 v1710 v1711 v1712 v1713 v1714 v1715 v1716 v1717 v3700 v3701 v3702 v3703 v3704 v3705 v3706 v3707 v3708 v3709 v3710 v3711 v3712 v3713 v3714 v3761 v3762 v3763 v3764 v3765 v3766 v3767 v3768 v3769 v3770 v3771 v3772 v3773 v3774 v3775 v5758 v5759 v5760 v5761 v5762 v5763 v5764 v5765 v5766 v5767 v5768 v5769 v5770 v5771 v5772 v5819 v5820 v5821 v5822 v5823 v5824 v5825 v5826 v5827 v5828 v5829 v5830 v5831 v5832 v5833 v7816 v7817 v7818 v7819 v7820 v7821 v7822 v7823 v7824 v7825 v7826 v7827 v7828 v7829 v7830 v7877 v7878 v7879 v7880 v7881 v7882 v7883 v7884 v7885 v7886 v7887 v7888 v7889 v7890 v7891 v9874 v9875 v9876 v9877 v9878 v9879 v9880 v9881 v9882 v9883 v9884 v9885 v9886 v9887 v9888 v9935 v9936 v9937 v9938 v9939 v9940 v9941 v9942 v9943 v9944 v9945 v9946 v9947 v9948 v9949 v1642 v1651 v1652 v1653 v1654 v1655 v1656 migsnrecommendassorelationship_2 migsnrecommendassorelationship_3 migsnrecommendassorelationship_4 migsnrecommendassorelationship_5 migsnrecommendassorelationship_6 migsnrecommendassorelationship_7 migsnrecommendassorelationship_8 migsnrecommendassorelationship_9
+
+dropmiss, force
+
+
+rename migsnrecommendassorelationship_1 migsnrecoassorelationship_1_1_1
+rename migsnrecommendassomeetfrequency_ migsnrecoassomeetfreq_1_1_1
+rename migsnrecommendassoreciprocity1_1 migsnrecoassoreciprocity1_1_1_1
+
+foreach x in migsnrecommendassonber_1_1_1 migsnrecommendassoname_1_1_1 migsnrecoassorelationship_1_1_1 migsnrecommendassosex_1_1_1 migsnrecommendassoage_1_1_1 migsnrecommendassocastes_1_1_1 migsnrecommendassoeduc_1_1_1 migsnrecommendassooccup_1_1_1 migsnrecommendassoliving_1_1_1 migsnrecommendassocompared_1_1_1 migsnrecommendassoduration_1_1_1 migsnrecommendassomeet_1_1_1 migsnrecoassomeetfreq_1_1_1 migsnrecommendassoinvite_1_1_1 migsnrecoassoreciprocity1_1_1_1 migsnrecommendassointimacy_1_1_1 {
+local newname=substr("`x'",1,strlen("`x'")-6)
+rename `x' `newname'
+}
+
+gen assoid=1
+gen indid2=1
+gen recoid=1
+
+order key indid2 assoid recoid
+sort key indid2 assoid recoid
+
+drop if migsnrecommendassoname==""
+
+save "NEEMSIS-tracking_indiv-asso_reco.dta", replace
+
+
+
+
+
+
+********** Contact group
+use"NEEMSIS-tracking_indiv.dta", clear
+
+keep key migcontactid_* migcontactname_* migcontactnumber_*
+
+reshape long migcontactid_1_ migcontactname_1_ migcontactnumber_1_ migcontactid_2_ migcontactname_2_ migcontactnumber_2_ migcontactid_3_ migcontactname_3_ migcontactnumber_3_ migcontactid_4_ migcontactname_4_ migcontactnumber_4_ migcontactid_5_ migcontactname_5_ migcontactnumber_5_, i(key) j(contactid)
+
+foreach x in migcontactid_1_ migcontactname_1_ migcontactnumber_1_ migcontactid_2_ migcontactname_2_ migcontactnumber_2_ migcontactid_3_ migcontactname_3_ migcontactnumber_3_ migcontactid_4_ migcontactname_4_ migcontactnumber_4_ migcontactid_5_ migcontactname_5_ migcontactnumber_5_ {
+local newname=substr("`x'",1,strlen("`x'")-1)
+rename `x' `newname'
+}
+
+reshape long migcontactid_ migcontactname_ migcontactnumber_, i(key contactid) j(indid2)
+
+rename migcontactid_ migcontactid
+rename migcontactname_ migcontactname
+rename migcontactnumber_ migcontactnumber
+
+drop if migcontactnumber==.
+
+save "NEEMSIS-tracking_indiv-contact.dta", replace
+****************************************
+* END
+
+
+
+/*
+To do:
+sn~X~id
+sn~X~group
+
+With X:
+technicalhelp
+entrustbusiness
+recruitworker
+findsuppliers
+lendtools
+findjob
+recommendforjob
+recojobsuccess
+*/
