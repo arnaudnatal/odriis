@@ -433,6 +433,83 @@ save"NEEMSIS-tracking_contact.dta", replace
 
 
 
+
+
+****************************************
+* Caste, jatis, edulevel
+****************************************
+use"NEEMSIS-tracking_v4.dta", clear
+
+
+********** 
+***** Jatis
+fre caste casteindividual
+gen jatis=caste if caste!=.
+replace jatis=casteindividual if casteindividual!=.
+codebook caste
+ta jatis
+label values jatis migcaste_5
+gen jatisother=casteindividualother if casteindividual==77
+replace jatisother=casteother if caste==77
+ta jatisother
+drop casteindividual casteindividualother caste casteother
+
+***** Caste
+gen caste=.
+replace caste=1 if jatis==2
+
+replace caste=2 if jatis==1
+replace caste=2 if jatis==12
+replace caste=2 if jatis==16
+
+replace caste=3 if jatis==4
+replace caste=3 if jatis==6
+replace caste=3 if jatis==11
+replace caste=3 if jatis==77 & jatisother=="Yadhavar"
+label define caste 1"Dalits" 2"Middle" 3"Upper"
+label values caste caste
+fre caste
+
+
+********* Edulevel
+gen edulevel=.
+replace edulevel = 0 if  everattendedschool == 0
+replace edulevel = 0 if classcompleted < 5 & classcompleted != .
+replace edulevel= 1 if classcompleted>=5 & classcompleted != .
+replace edulevel= 2 if classcompleted>=8 & classcompleted != .
+replace edulevel= 3 if classcompleted>=11 & classcompleted != .
+replace edulevel= 4 if classcompleted>=15  & classcompleted != .
+replace edulevel= 5 if classcompleted>=16  & classcompleted != . //Attention! I recoded here cause otherwise all missing are in 5 (Anne, 20/06/17)
+label define edulevel 0 "Below primary" 1 "Primary completed", modify
+label define edulevel 2 "High school (8th-10th)", modify
+label define edulevel 3 "HSC/Diploma (11th-12th)", modify
+label define edulevel 4 "Bachelors (13th-15th)", modify
+label define edulevel 5 "Post graduate (15th and more)", modify
+label values edulevel edulevel
+ta edulevel
+ta age edulevel, m
+
+
+********** Order
+order key indid indid2 dummynewmb dummymainmigrant rankingmigrant name jatis jatisother caste
+
+save"NEEMSIS-tracking_v5.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ****************************************
 * CLEAN folder
 ****************************************
