@@ -355,17 +355,14 @@ fre occupcode2022
 
 ************************ Define construction sector dummies (sector 22,26,31,32)
  
-gen construction_coolie=(occupcode2022==3 & occup_sector==22|occupcode2022==3 & occup_sector==26|occupcode2022==3 & occup_sector==31) if year==2020
+gen construction_coolie=(occupcode2022==3 & occup_sector==22|occupcode2022==3 & occup_sector==26|occupcode2022==3 & occup_sector==31) if year==2019
 
-  
-gen construction_regular=(occupcode2022==4 & occup_sector==22|occupcode2022==4 & occupationname=="Welder"|occupcode2022==4 & occupationname=="Welding labour"|occupcode2022==4 & occup_sector==32) if year==2020
-
+gen construction_regular=(occupcode2022==4 & occup_sector==22|occupcode2022==4 & occupationname=="Welder"|occupcode2022==4 & occupationname=="Welding labour"|occupcode2022==4 & occup_sector==32) if year==2019
 
 gen construction_qualified = (occupcode2022==5 & occup_sector==26 & occupationname!="Tv mechanic self employed" ///
 |occupcode2022==6 & occup_sector==61 & occupationname!="Mason maistry" ///
 |occupcode2022==6 & occup_sector==61 & occupationname =="Brickling maistry" | occupcode2022==6 & occup_sector==61 & occupationname =="Maistry (contractor)" ///
-|occupcode2022==6 & occup_sector==61 & occupationname == "Construction maistry" |occupcode2022==6 & occup_sector== 85 & occupationname == "Building contractor") if year==2020	
-
+|occupcode2022==6 & occup_sector==61 & occupationname == "Construction maistry" |occupcode2022==6 & occup_sector== 85 & occupationname == "Building contractor") if year==2019
 
 
 gen cc=.
@@ -515,6 +512,85 @@ list key indid2 if summoc==2, clean noobs
 restore
 
 
+***
 save"NEEMSIS-tracking_occupations_allwide_v4.dta", replace
+
+
+
+********** MOC indiv level
+*How many individuals?
+preserve
+keep if indid!=.
+duplicates drop key indid, force
+*23
+restore
+
+preserve
+keep if indid2!=.
+duplicates drop key indid2, force
+*92
+restore
+
+*total of 115
+
+
+keep if dummymainoccupation==1
+keep key indid indid2 annualincome kindofwork_new occupation profession occupationname sector
+
+preserve
+keep if indid!=.
+drop indid2
+save"NEEMSIS-tracking_occupations_mocindiv_indid.dta", replace
+restore
+
+preserve
+keep if indid2!=.
+drop indid
+save"NEEMSIS-tracking_occupations_mocindiv_indid2.dta", replace
+restore
+
+
+********** Merge with HH database
+use"NEEMSIS-tracking_v5.dta", clear
+
+merge m:1 key indid using "NEEMSIS-tracking_occupations_mocindiv_indid.dta", keepusing(annualincome kindofwork_new occupation profession occupationname sector)
+drop _merge
+foreach x in occupationname annualincome profession sector kindofwork_new occupation {
+rename `x' `x'_o
+}
+merge m:1 key indid2 using "NEEMSIS-tracking_occupations_mocindiv_indid2.dta", keepusing(annualincome kindofwork_new occupation profession occupationname sector)
+drop _merge
+foreach x in annualincome profession sector kindofwork_new occupation {
+replace `x'=`x'_o if `x'==. & `x'_o!=.
+}
+
+replace occupationname=occupationname_o if occupationname=="" & occupationname_o!=""
+
+foreach x in occupationname annualincome profession sector kindofwork_new occupation {
+rename `x' `x'_moc_indiv
+}
+
+drop occupationname_o annualincome_o profession_o sector_o kindofwork_new_o occupation_o
+
+
+********** new var
+gen worker=0
+replace worker=1 if annualincome_moc_indiv!=.
+
+gen working_pop=0
+replace working_pop=1 if age<=14 | age>70
+replace working_pop=2 if age>14 & age<=70 & worker==0
+replace working_pop=3 if age>14 & age<=70 & worker==1
+
+label define working_pop 1"Inactive" 2"Unocc act" 3"Occ act"
+label values working_pop working_pop
+
+
+fre worker
+fre working_pop
+ta working_pop sex, row nofreq
+
+
+save"NEEMSIS-tracking_v6.dta", replace
 ****************************************
 * END
