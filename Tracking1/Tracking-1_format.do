@@ -444,7 +444,7 @@ local newname=substr("`x'",1,strlen("`x'")-1)
 rename `x' `newname'
 }
 
-keep if migmigrationjobname!=""
+*keep if migmigrationjobname!=""
 
 save "NEEMSIS-tracking_indiv-migration_job.dta", replace
 
