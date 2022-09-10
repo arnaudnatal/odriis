@@ -1,33 +1,3 @@
-*-------------------------
-*Arnaud NATAL
-*arnaud.natal@u-bordeaux.fr
-*-----
-*XLSform to XLSquest
-*-----
-*-------------------------
-
-********** Clear
-clear all
-macro drop _all
-
-********** Path to do
-global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-
-********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSform"
-cd"$directory"
-
-global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
-
-
-
-
-
-
-
-
-
 ****************************************
 * NUMBERING GROUPS
 ****************************************
@@ -44,6 +14,13 @@ gen type_num=1 if type=="begin group"
 replace type_num=2 if type=="end group"
 keep n_survey groupname type_num
 sort n_survey
+
+* Check duplicates
+preserve
+duplicates report groupname type_num
+duplicates list groupname type_num
+restore
+
 reshape wide n_survey, i(groupname) j(type_num)
 
 

@@ -1,35 +1,3 @@
-*-------------------------
-*Arnaud NATAL
-*arnaud.natal@u-bordeaux.fr
-*-----
-*XLSform to XLSquest
-*-----
-*-------------------------
-
-********** Clear
-clear all
-macro drop _all
-
-********** Path to do
-global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-
-********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSform"
-cd"$directory"
-
-global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
-
-
-
-
-
-
-
-
-
-
-
 ****************************************
 * NUMBERING REPEAT
 ****************************************
@@ -294,7 +262,6 @@ order id nb nbn hide repeatlevel n_survey1 n_survey2 n_survey r name label count
 sort n_survey nb nbn
 drop id n_survey1 n_survey2 
 
-
 ***** Final format
 order n_survey hide r name label count
 rename nb repeat_nb
@@ -304,6 +271,9 @@ rename repeatlevel repeat_level
 bysort n_survey (repeat_nb repeat_nb2): gen n_survey_p=_n
 order n_survey n_survey_p
 sort n_survey n_survey_p
+replace r="" if n_survey_p==2
+replace r="" if n_survey_p==3
+
 
 save"repeats_final.dta", replace
 ****************************************

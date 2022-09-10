@@ -1,30 +1,3 @@
-*-------------------------
-*Arnaud NATAL
-*arnaud.natal@u-bordeaux.fr
-*-----
-*XLSform to XLSquest
-*-----
-*-------------------------
-
-********** Clear
-clear all
-macro drop _all
-
-********** Path to do
-global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-
-********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSform"
-cd"$directory"
-
-global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
-
-
-
-
-
-
 ****************************************
 * IMPORT: SURVEY
 ****************************************
@@ -143,24 +116,6 @@ replace value_str="" if value_num==-666
 drop order last
 sort list_name value_num
 
-* one
-/*
-bysort list_name: gen order=_n
-by list_name: gen last=1 if _n==_N
-expand 2 if last==1
-bysort list_name (value_num) : replace value_num=-999 if _n==_N
-replace label_mod="" if value_num==-999
-replace value_str="" if value_num==-999
-drop order last
-sort list_name value_num
-*/
-save"choices", replace
-
-*** Reshape to merge without difficulties after
-bysort list_name (value_num): gen n=_n
-reshape wide value_num label_mod value_str, i(list_name) j(n)
-save"choices_wide", replace
-clear all
-
+save"choices_final", replace
 ****************************************
 * END

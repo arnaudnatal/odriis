@@ -1,42 +1,16 @@
-*-------------------------
-*Arnaud NATAL
-*arnaud.natal@u-bordeaux.fr
-*-----
-*XLSform to XLSquest
-*-----
-*-------------------------
+****************************************
+* ADD ANSWERS
+****************************************
 
-********** Clear
+
+use"choices_final", clear
+bysort list_name (value_num): gen n=_n
+reshape wide value_num label_mod value_str, i(list_name) j(n)
+save"choices_wide", replace
 clear all
-macro drop _all
-
-********** Path to do
-global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-
-********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSform"
-cd"$directory"
-
-global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-****************************************
-* ADD ANSWERS WHEN NO DATACHOICELIST
-****************************************
 use"survey_select", clear
 
 preserve

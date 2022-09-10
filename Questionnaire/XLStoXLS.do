@@ -18,12 +18,15 @@ global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSfor
 cd"$directory"
 
 global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
+global file "NEEMSIS2"
+global choicelist "NEEMSIS2-datachoicelist.csv"
 
 
-
-do"$dodir\XLStoXLS-1_import.do"
-do"$dodir\XLStoXLS-2_groups.do"
-do"$dodir\XLStoXLS-3_repeats.do"
-do"$dodir\XLStoXLS-4_questions.do"
-do"$dodir\XLStoXLS-5_append.do"
+qui do"$dodir\XLStoXLS-1_import.do"
+qui do"$dodir\XLStoXLS-1-1_choicelisttoexcel.do"
+qui do"$dodir\XLStoXLS-2_groups.do"
+qui do"$dodir\XLStoXLS-3_repeats.do"
+qui do"$dodir\XLStoXLS-4_questions.do"
+qui do"$dodir\XLStoXLS-5_export.do"
+qui do"$dodir\XLStoXLS-6_clean.do"
+*/
