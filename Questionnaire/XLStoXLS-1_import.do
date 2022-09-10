@@ -17,6 +17,7 @@ global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
 global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSform"
 cd"$directory"
 
+global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
 global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
 
 
@@ -27,7 +28,7 @@ global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
 ****************************************
 * IMPORT: SURVEY
 ****************************************
-import excel "$file", sheet("survey") firstrow allstring clear
+import excel "$dodir\\$file", sheet("survey") firstrow allstring clear
 keep type name label constraint relevance required calculation repeat_count
 drop if type==""
 gen n_survey=_n
@@ -100,7 +101,7 @@ clear all
 ****************************************
 * IMPORT: CHOICES
 ****************************************
-import excel "$file", sheet("choices") firstrow allstring clear
+import excel "$dodir\\$file", sheet("choices") firstrow allstring clear
 keep list_name value label
 drop if list_name==""
 

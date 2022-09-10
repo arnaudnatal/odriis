@@ -17,7 +17,9 @@ global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
 global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSform"
 cd"$directory"
 
+global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
 global file "NEEMSIS_tracking_2022_v10_trans.xlsx"
+
 
 
 
