@@ -2,7 +2,6 @@
 * ADD ANSWERS
 ****************************************
 
-
 use"choices_final", clear
 bysort list_name (value_num): gen n=_n
 reshape wide value_num label_mod value_str, i(list_name) j(n)
