@@ -91,6 +91,21 @@ order hide n_survey n_survey_p t r name label value_num label_mod
 
 sort n_survey n_survey_p
 
+* ID for multiple answer
+gen multi=""
+replace multi="-(multi.)" if hide=="select_multiple"
+replace multi="" if name==""
+
+* Replace type of quest when relevance
+forvalues i=1/20{
+bysort n_survey: replace hide=hide[_n-1] if hide=="" & hide[_n-1]!=""
+}
+
+* Required
+fre required
+gen req=""
+replace req="(req.)" if required=="yes"
+replace req="" if name==""
 
 drop n type constraint list_name required calculation repeat_count groupname repeatname notename value_str relevance
 
