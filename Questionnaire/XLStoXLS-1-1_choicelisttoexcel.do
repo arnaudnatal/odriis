@@ -41,7 +41,7 @@ save"temp", replace
 
 * One base with 2 var
 use"temp", clear
-forvalues i=1(2)302 {
+forvalues i=1(2)290 {
 local j=`i'+1
 
 preserve
@@ -68,7 +68,7 @@ restore
 * Append all
 use "v1", clear
 
-forvalues i=1(2)302 {
+forvalues i=1(2)290 {
 append using "v`i'"
 }
 
