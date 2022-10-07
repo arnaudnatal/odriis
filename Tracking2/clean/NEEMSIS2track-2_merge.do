@@ -183,7 +183,7 @@ drop migrationjoblist_1 migrationjoblist_2 migrationjoblist_3 migrationjoblist_4
 
 drop base sex_label relationshiptohead_label maritalstatus_label casteindividual_label religionindividual_label dummycastespouse_label comefromspouse_label dummyreligionspouse_label religionspouse_label castespouse_label everattendedschool_label classcompleted_label currentlyatschool_label reasonneverattendedschool_label reasondropping_label dummygold_label dummyloan_label dummyworkedpastyear_label reasonnotworkpastyear_label dummymigration_label migrationjoblist_label
 
-drop migrationjobidgroup_count setofmigrationjobidgroup key setoffamilymembers
+drop setoffamilymembers
 
 
 ********** Add name number
@@ -197,8 +197,9 @@ rename namefromearlier name
 merge 1:1 name parent_key using "NEEMSIS2track-individualid_v2"
 drop _merge
 
-order namenumber, first
-
+order parent_key key namenumber, first
+rename parent_key HHID2022
+rename key setofnonmigrants
 
 save"NEEMSIS2track-nonmigindiv", replace
 ****************************************
@@ -413,6 +414,8 @@ local new=substr("`x'",4,.)
 rename `x' `new'
 }
 
+rename parent_key setofmigrants
+
 
 
 save"NEEMSIS2track-migindiv", replace
@@ -434,8 +437,6 @@ save"NEEMSIS2track-migindiv", replace
 ****************************************
 * Occupations
 ****************************************
-
-*NEEMSIS2track-occupations
 
 use"NEEMSIS2track-migoccupations", clear
 
@@ -505,9 +506,109 @@ drop if _merge==2
 drop _merge
 
 
+
+********** Order
+drop setofmigbusinesssourceinvestgrou setofmigoccupations setofmigbusinesslabourers base
+
+rename migdatestartoccup datestartoccup
+rename migkey setofmigoccupations
+
+
 save"NEEMSIS2track-migoccupations_v2", replace
 ****************************************
 * END
 
 
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Occupations
+****************************************
+use"NEEMSIS2track-occupations", clear
+drop kindofwork_label kindofwork2_label setofoccupations base key
+
+
+order parent_key
+rename parent_key setofoccupations
+
+
+save"NEEMSIS2track-occupations_v2", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Append occupations
+****************************************
+use"NEEMSIS2track-occupations_v2", clear
+
+append using "NEEMSIS2track-migoccupations_v2"
+
+rename occupationnumber occupationid
+destring occupationid, replace
+
+order setofoccupations setofmigoccupations
+
+save"NEEMSIS2-tracking_occupations_v1", replace
+****************************************
+* END
+
+
+
+
+
+
+
+****************************************
+* Append individuals
+****************************************
+use"NEEMSIS2track-nonmigindiv", clear
+
+append using "NEEMSIS2track-migindiv"
+
+order HHID2022 setofnonmigrants setofmigrants
+drop base
+
+********** Dummymigrants
+gen dummymigrants=0
+replace dummymigrants=1 if setofmigrants!=""
+ta setofnonmigrants
+ta dummymigrants
+order dummymigrants, after(setofmigrants)
+
+
+
+********** Add HH level var
+merge m:1 HHID2022 using "CLEAN\NEEMSIS2-tracking_v1.dta"
+drop _merge
+
+
+
+save"NEEMSIS2-tracking_indiv_v1", replace
+****************************************
+* END
 
