@@ -13,17 +13,22 @@ compress
 ********** Reshape wide to have one repeat per row
 gen type_num=1 if type=="begin repeat"
 replace type_num=2 if type=="end repeat"
-keep n_survey repeatname type_num
+keep n_survey repeatname type_num label relevance repeat_count
 sort n_survey
-reshape wide n_survey, i(repeatname) j(type_num)
-
-
+/*
+reshape wide n_survey label relevance repeat_count, i(repeatname) j(type_num)
+order repeatname n_survey1 n_survey2 relevance1 relevance2 repeat_count1 repeat_count2 label1 label2
+foreach x in relevance repeat_count label {
+drop `x'2
+rename `x'1 `x'
+}
+order repeatname n_survey1 n_survey2 relevance repeat_count 
 
 ********** Intermediate storage
 save"repeats_wide.dta", replace
+*/
 
-
-
+/*
 ********** Generate first level of repeats
 use"repeats_wide.dta", clear
 forvalues i = 1/9999 {
@@ -45,10 +50,19 @@ save"temp_repeats_wide.dta", replace
 
 
 ********** Generate all others levels of repeats
-forvalues j=2/10 {
-use"repeats_wide.dta", clear
+forvalues j=2/10{
+*set trace on
+local k=`j'-1
 
-merge 1:1 repeatname using "temp_repeats_wide.dta"
+use"repeats_wide.dta", clear
+merge 1:1 repeatname using "temp_rep`k'.dta"
+gen level`j'=1 if _merge==1
+sort n_survey1
+
+*Remplacer title`k'
+capture confirm v title`k'
+if _rc==0{
+replace title`k'=title`k'[_n-1] if title`k'==.
 keep if _merge==1
 drop _merge
 
@@ -56,18 +70,32 @@ forvalues i = 1/99999 {
 sort n_survey1
 drop if n_survey1>n_survey1[_n-1] & n_survey2<n_survey2[_n-1]
 }
-
-gen level`j'=1
-preserve
-gen title`j'=_n
-save"temp_rep`j'.dta", replace
-restore
-
-append using "temp_repeats_wide.dta"
+bysort title`k' (n_survey1): gen title`j'=_n
+append using "temp_rep`k'.dta"
 sort n_survey1
-order level`j', last
-save"temp_repeats_wide.dta", replace
+save"temp_rep`j'.dta", replace
 }
+
+
+if _rc!=0{
+drop _merge
+gen title`j'=.
+*append using "temp_rep`k'.dta"
+*duplicates drop
+*sort n_survey1
+save"temp_rep`j'.dta", replace
+}
+}
+
+
+
+**********
+use"temp_rep10.dta", clear
+
+forvalues i=1/10{
+replace title`i'=title`i'[_n-1] if title`i'==. & level`i'==.
+}
+
 
 
 
@@ -273,6 +301,44 @@ order n_survey n_survey_p
 sort n_survey n_survey_p
 replace r="" if n_survey_p==2
 replace r="" if n_survey_p==3
+*/
+
+
+
+
+
+********** Test with begin and end
+gen rep=""
+replace rep="rep.:" if type_num==1
+replace rep="end:" if type_num==2
+
+
+egen var=concat(rep repeatname), p(" ") 
+drop repeatname rep
+order n_survey var label
+
+
+gen count="count:"
+egen counter=concat(count repeat_count), p(" ")
+drop count repeat_count
+rename counter count
+
+gen rel="rel.:"
+egen relev=concat(rel relevance), p(" ")
+drop rel relevance
+rename relev rel 
+
+rename var var1
+rename count var2
+rename rel var3
+
+reshape long var, i(n_survey) j(num)
+replace label="" if num!=1
+drop if var=="rel.:"
+drop if var=="count:"
+
+order var label
+
 
 
 save"repeats_final.dta", replace

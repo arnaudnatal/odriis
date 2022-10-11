@@ -26,7 +26,25 @@ drop repeat_nb repeat_nb2 repeat_level
 
 order hide n_survey n_survey_p t name req multi label value_num label_mod
 
-export excel using "$dodir\XLSreadable~$file.xlsx", firstrow(variables) replace
+
 
 ****************************************
 * END
+
+
+
+
+
+*2nd test
+tostring value_num, replace
+egen rep=concat(value_num label_mod), p(" - ")
+replace rep="" if rep==". -"
+replace label=rep if rep!="" & multi==""
+replace label=label_mod if hide=="repeat"
+replace hide="_moda" if rep!="" & hide!="repeat"
+
+drop n_survey n_survey_p rep label_mod value_num
+
+gen n=_n
+order hide n
+export excel using "$dodir\XLSreadable~$file.xlsx", firstrow(variables) replace
