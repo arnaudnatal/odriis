@@ -108,6 +108,10 @@ replace req="" if name==""
 
 drop n type constraint list_name required calculation repeat_count groupname repeatname notename value_str relevance
 
+
+replace hide="relevancequest" if substr(label,1,9)=="relevance"
+
+
 save"questions_final", replace
 ****************************************
 * END

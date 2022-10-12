@@ -213,7 +213,7 @@ save"groups_wide_v4", replace
 ****************************************
 
 use"groups_wide_v4", replace
-keep if grouplevel<3
+keep if grouplevel<=3
 drop groupname*
 drop grouptitle*
 keep relevance required label temp_grouptitle n_survey1
@@ -240,6 +240,8 @@ gen hide="group"
 rename group_nb n_survey_p
 
 rename label name
+
+replace hide="grprel" if substr(name,1,9)=="relevance"
 
 save"groups_final.dta", replace
 ****************************************

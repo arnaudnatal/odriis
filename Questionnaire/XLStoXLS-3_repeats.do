@@ -15,6 +15,63 @@ gen type_num=1 if type=="begin repeat"
 replace type_num=2 if type=="end repeat"
 keep n_survey repeatname type_num label relevance repeat_count
 sort n_survey
+
+
+
+
+********** Test with begin and end
+gen rep=""
+replace rep="rep.:" if type_num==1
+replace rep="end:" if type_num==2
+
+
+egen var=concat(rep repeatname), p(" ") 
+drop repeatname rep
+order n_survey var label
+
+
+gen count="count:"
+egen counter=concat(count repeat_count), p(" ")
+drop count repeat_count
+rename counter count
+
+gen rel="relevance:"
+egen relev=concat(rel relevance), p(" ")
+drop rel relevance
+rename relev rel 
+
+rename var var1
+rename count var2
+rename rel var3
+
+reshape long var, i(n_survey) j(num)
+replace label="" if num!=1
+drop if var=="relevance:"
+drop if var=="count:"
+
+order var label
+
+
+rename var name
+
+gen hide="rep"
+order hide n_survey type_num num
+sort n_survey type_num num
+
+replace hide="reprel" if substr(label,1,9)=="relevance"
+
+bysort n_survey (type_num num): gen n_survey_p=_n
+order n_survey n_survey_p
+drop type_num num
+
+
+save"repeats_final.dta", replace
+****************************************
+* END
+
+
+
+
 /*
 reshape wide n_survey label relevance repeat_count, i(repeatname) j(type_num)
 order repeatname n_survey1 n_survey2 relevance1 relevance2 repeat_count1 repeat_count2 label1 label2
@@ -26,9 +83,8 @@ order repeatname n_survey1 n_survey2 relevance repeat_count
 
 ********** Intermediate storage
 save"repeats_wide.dta", replace
-*/
 
-/*
+
 ********** Generate first level of repeats
 use"repeats_wide.dta", clear
 forvalues i = 1/9999 {
@@ -301,46 +357,3 @@ order n_survey n_survey_p
 sort n_survey n_survey_p
 replace r="" if n_survey_p==2
 replace r="" if n_survey_p==3
-*/
-
-
-
-
-
-********** Test with begin and end
-gen rep=""
-replace rep="rep.:" if type_num==1
-replace rep="end:" if type_num==2
-
-
-egen var=concat(rep repeatname), p(" ") 
-drop repeatname rep
-order n_survey var label
-
-
-gen count="count:"
-egen counter=concat(count repeat_count), p(" ")
-drop count repeat_count
-rename counter count
-
-gen rel="rel.:"
-egen relev=concat(rel relevance), p(" ")
-drop rel relevance
-rename relev rel 
-
-rename var var1
-rename count var2
-rename rel var3
-
-reshape long var, i(n_survey) j(num)
-replace label="" if num!=1
-drop if var=="rel.:"
-drop if var=="count:"
-
-order var label
-
-
-
-save"repeats_final.dta", replace
-****************************************
-* END
