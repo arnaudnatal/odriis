@@ -34,15 +34,28 @@ global preamble "NEEMSIS2 tracking 2022"
 
 
 
+
+
+
+
+
+
+
+
+
 ****************************************
 * CLEAN MASTER FILE
 ****************************************
 use"NEEMSIS2track.dta", clear
 
 
+********** Drop duplicates
+duplicates drop householdidoriginal migrationaddress rankingmigrantfromearlier, force
+
 
 ********** Clear variables
 drop householdmigrantslist_1 householdmigrantslist_2 householdmigrantslist_3 householdmigrantslist_4 householdmigrantslist_5 householdmigrantslist_6 householdmigrantslist_7 householdmigrantslist_8 householdmigrantslist_9 householdmigrantslist_10 householdmigrantslist_11 householdmigrantslist_12 householdmigrantslist_13 householdmigrantslist_14 householdmigrantslist_15 householdmigrantslist_16 householdmigrantslist_17 householdmigrantslist_18 householdmigrantslist_19 householdmigrantslist_20 householdmigrantslist_21 householdmigrantslist_22 householdmigrantslist_23 householdmigrantslist_24 householdmigrantslist_25 householdmigrantslist_26 householdmigrantslist_27 householdmigrantslist_28 householdmigrantslist_29 householdmigrantslist_30 householdmigrantslist_31 householdmigrantslist_32 householdmigrantslist_33 householdmigrantslist_34 householdmigrantslist_35 householdmigrantslist_36 householdmigrantslist_37 householdmigrantslist_38 householdmigrantslist_39 householdmigrantslist_40 householdmigrantslist_41 householdmigrantslist_42 householdmigrantslist_43 householdmigrantslist_44 householdmigrantslist_45 householdmigrantslist_46 householdmigrantslist_47 householdmigrantslist_48 householdmigrantslist_49 householdmigrantslist_50 householdmigrantslist_51 householdmigrantslist_52 householdmigrantslist_53 householdmigrantslist_54 householdmigrantslist_55 householdmigrantslist_56 householdmigrantslist_57 householdmigrantslist_58 householdmigrantslist_59 householdmigrantslist_60 householdmigrantslist_61 householdmigrantslist_62 householdmigrantslist_63 householdmigrantslist_64 householdmigrantslist_65 householdmigrantslist_66 householdmigrantslist_67 householdmigrantslist_68 householdmigrantslist_69 householdmigrantslist_70 householdmigrantslist_71 householdmigrantslist_72 householdmigrantslist_73 householdmigrantslist_74 householdmigrantslist_75 householdmigrantslist_76 householdmigrantslist_77 householdmigrantslist_78 householdmigrantslist_79 householdmigrantslist_80 householdmigrantslist_81 householdmigrantslist_82 householdmigrantslist_83 householdmigrantslist_84 householdmigrantslist_85 householdmigrantslist_86 householdmigrantslist_87 householdmigrantslist_88 householdmigrantslist_89 householdmigrantslist_90 householdmigrantslist_91 householdmigrantslist_92 householdmigrantslist_93 householdmigrantslist_94 householdmigrantslist_95 householdmigrantslist_96 householdmigrantslist_97 householdmigrantslist_98 householdmigrantslist_99 householdmigrantslist_100 householdmigrantslist_101 householdmigrantslist_102 householdmigrantslist_103 householdmigrantslist_104 householdmigrantslist_105 householdmigrantslist_106 householdmigrantslist_107 householdmigrantslist_108 householdmigrantslist_109 householdmigrantslist_110 householdmigrantslist_111 householdmigrantslist_112 householdmigrantslist_113 householdmigrantslist_114 householdmigrantslist_115 householdmigrantslist_116 householdmigrantslist_117 householdmigrantslist_118 householdmigrantslist_119 householdmigrantslist_120 householdmigrantslist_121 householdmigrantslist_122 householdmigrantslist_123 householdmigrantslist_124 householdmigrantslist_125 householdmigrantslist_126 householdmigrantslist_127 householdmigrantslist_128 householdmigrantslist_129 householdmigrantslist_130 householdmigrantslist_131 householdmigrantslist_132 householdmigrantslist_133 householdmigrantslist_134 householdmigrantslist_135 householdmigrantslist_136 householdmigrantslist_137 householdmigrantslist_138 householdmigrantslist_139 householdmigrantslist_140 householdmigrantslist_141 householdmigrantslist_142 householdmigrantslist_143 householdmigrantslist_144 householdmigrantslist_145 householdmigrantslist_146 householdmigrantslist_147 householdmigrantslist_148 householdmigrantslist_149 householdmigrantslist_150 householdmigrantslist_151 householdmigrantslist_152 householdmigrantslist_153 householdmigrantslist_154 householdmigrantslist_155 householdmigrantslist_156 householdmigrantslist_157 householdmigrantslist_158 householdmigrantslist_159 householdmigrantslist_160 householdmigrantslist_161 householdmigrantslist_162 householdmigrantslist_163 householdmigrantslist_164 householdmigrantslist_165 householdmigrantslist_166 householdmigrantslist_167 householdmigrantslist_168 householdmigrantslist_169 householdmigrantslist_170 householdmigrantslist_171 householdmigrantslist_172 householdmigrantslist_173 householdmigrantslist_174 householdmigrantslist_175 householdmigrantslist_176 householdmigrantslist_177 householdmigrantslist_178 householdmigrantslist_179 householdmigrantslist_180 householdmigrantslist_181 householdmigrantslist_182 householdmigrantslist_183 householdmigrantslist_184 householdmigrantslist_185 householdmigrantslist_186 householdmigrantslist_187 householdmigrantslist_188 householdmigrantslist_189 householdmigrantslist_190 householdmigrantslist_191 householdmigrantslist_192 householdmigrantslist_193 householdmigrantslist_194 householdmigrantslist_195 householdmigrantslist_196 householdmigrantslist_197 householdmigrantslist_198 householdmigrantslist_199 householdmigrantslist_200 householdmigrantslist_201 householdmigrantslist_202 householdmigrantslist_203 householdmigrantslist_204 householdmigrantslist_205 householdmigrantslist_206 householdmigrantslist_207 householdmigrantslist_208 householdmigrantslist_209 householdmigrantslist_210 householdmigrantslist_211 householdmigrantslist_212
+
 
 drop rankingmigrantfromearlier
 
@@ -116,11 +129,16 @@ rename parent_key HHID2022
 drop geolocationlatitude geolocationlongitude geolocationaltitude geolocationaccuracy
 
 
-save"CLEAN\NEEMSIS2-tracking_v1.dta", replace
+save"NEEMSIS2-tracking_v1.dta", replace
+
+keep HHID2022
+gen tokeep=1
+
+duplicates drop
+
+save"N2track", replace
 ****************************************
 * END
-
-
 
 
 
@@ -137,6 +155,25 @@ save"CLEAN\NEEMSIS2-tracking_v1.dta", replace
 use"NEEMSIS2track-migrationstep", clear
 
 
+********** Duplicates drop
+rename parent_key HHID2022
+destring migmigrationstepnumber, gen(migrationstepid)
+order HHID2022 migrationstepid
+sort HHID2022 migrationstepid
+
+
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop tokeep _merge
+
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
+
+
+********** Clean
 drop migmigration1reason_1 migmigration1reason_2 migmigration1reason_3 migmigration1reason_4 migmigration1reason_5 migmigration1reason_6 migmigration1reason_7 migmigration1reason_8 migmigration1reason_9 migmigration1reason_10 migmigration1reason_77 migsourcemigrationcost_1 migsourcemigrationcost_2 migsourcemigrationcost_3 migsourcemigrationcost_4 migsourcemigrationcost_5 migsourcemigrationcost_66 migsourcemigrationcost_99 base migmigration1type2_label migmigration1reason_label migmigration1kindofwork_label migmigration1kindofwork2_label migsatisfaction_label migmigration1type_label migrationhelptrue_label migsndecimig_label migmigration1forced_label migsourcemigrationcost_label key setofmigmigrationstep
 
 ********** Rename
@@ -145,14 +182,9 @@ local new=substr("`x'",4,.)
 rename `x' `new'
 }
 
-rename migrationstepnumber migrationstepid
 
-order parent_key
-
-
-
-save"CLEAN\NEEMSIS2-tracking_migpath_v0.dta", replace
-
+save"NEEMSIS2-tracking_migpath_v1.dta", replace
+*save"CLEAN\NEEMSIS2-tracking_migpath_v1.dta", replace
 ****************************************
 * END
 
@@ -173,6 +205,7 @@ save"CLEAN\NEEMSIS2-tracking_migpath_v0.dta", replace
 * Non-migrants
 ****************************************
 use"NEEMSIS2track-familymembers", clear
+
 
 ********** Clear variables
 drop reasonneverattendedschool_1 reasonneverattendedschool_2 reasonneverattendedschool_3 reasonneverattendedschool_4 reasonneverattendedschool_5 reasonneverattendedschool_6 reasonneverattendedschool_7 reasonneverattendedschool_8 reasonneverattendedschool_9 reasonneverattendedschool_10 reasonneverattendedschool_11 reasonneverattendedschool_12 reasonneverattendedschool_13
@@ -195,11 +228,25 @@ restore
 
 rename namefromearlier name
 merge 1:1 name parent_key using "NEEMSIS2track-individualid_v2"
+drop if _merge==2
 drop _merge
 
 order parent_key key namenumber, first
 rename parent_key HHID2022
 rename key setofnonmigrants
+
+
+********** Duplicates drop
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop if _merge==2
+drop tokeep _merge
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
+
 
 save"NEEMSIS2track-nonmigindiv", replace
 ****************************************
@@ -214,11 +261,11 @@ save"NEEMSIS2track-nonmigindiv", replace
 
 
 
-
 ****************************************
 * Migrants
 ****************************************
 use"NEEMSIS2track-migquestion", clear
+
 
 
 ********** Clear variables
@@ -418,6 +465,18 @@ rename parent_key setofmigrants
 
 
 
+********** Duplicates drop
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop tokeep _merge
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
+
+
+
 save"NEEMSIS2track-migindiv", replace
 ****************************************
 * END
@@ -513,6 +572,22 @@ drop setofmigbusinesssourceinvestgrou setofmigoccupations setofmigbusinesslabour
 rename migdatestartoccup datestartoccup
 rename migkey setofmigoccupations
 
+split parent_key, p(/)
+drop parent_key2 parent_key3
+rename parent_key1 HHID2022
+order HHID2022
+
+
+********** Duplicates drop
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop tokeep _merge
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
+
 
 save"NEEMSIS2track-migoccupations_v2", replace
 ****************************************
@@ -539,6 +614,21 @@ drop kindofwork_label kindofwork2_label setofoccupations base key
 
 order parent_key
 rename parent_key setofoccupations
+
+split setofoccupations, p(/)
+drop setofoccupations2
+rename setofoccupations1 HHID2022
+order HHID2022
+
+********** Duplicates drop
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop tokeep _merge
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
 
 
 save"NEEMSIS2track-occupations_v2", replace
@@ -573,9 +663,31 @@ destring occupationid, replace
 
 order setofoccupations setofmigoccupations
 
+
+
+********** Duplicates drop
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop tokeep _merge
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
+
+
 save"NEEMSIS2-tracking_occupations_v1", replace
+*save"CLEAN\NEEMSIS2-tracking_occupations_v1", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
 
 
 
@@ -593,6 +705,7 @@ append using "NEEMSIS2track-migindiv"
 order HHID2022 setofnonmigrants setofmigrants
 drop base
 
+
 ********** Dummymigrants
 gen dummymigrants=0
 replace dummymigrants=1 if setofmigrants!=""
@@ -601,14 +714,119 @@ ta dummymigrants
 order dummymigrants, after(setofmigrants)
 
 
+********** Duplicates drop
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop tokeep _merge
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
+
+
 
 ********** Add HH level var
-merge m:1 HHID2022 using "CLEAN\NEEMSIS2-tracking_v1.dta"
-drop _merge
-
-
+merge m:1 HHID2022 using "NEEMSIS2-tracking_v1.dta"
+sort HHID2022 name
+order _merge HHID2022 name
+sort _merge HHID2022 name
 
 save"NEEMSIS2-tracking_indiv_v1", replace
+*save"CLEAN\NEEMSIS2-tracking_indiv_v1", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* SN
+****************************************
+
+********** Business lender
+use"NEEMSIS2track-snbusilendid.dta", clear
+gen snsource="Business lender"
+foreach x in migsnbusilendname migsnbusilendrelation migsnbusilendrelation_label migsnbusilendcaste migsnbusilendcaste_label migsnbusilendothercaste migsnbusilendoccup migsnbusilendoccup_label migsnbusilendotheroccup migsnbusilendsex migsnbusilendsex_label migsnbusilendage migsnbusilendage_label migsnbusilendeduc migsnbusilendeduc_label migsnbusilendliving migsnbusilendliving_label migsnbusilendcompared migsnbusilendcompared_label migsnbusilendduration migsnbusilendmeet migsnbusilendmeet_label migsnbusilendfrequency migsnbusilendfrequency_label migsnbusilendothermeet migsnbusilendinvite migsnbusilendinvite_label migsnbusilendreciprocity migsnbusilendreciprocity_label migsnbusilendintimacy migsnbusilendintimacy_label setofmigsnbusilendid {
+local new=substr("`x'",14,.)
+rename `x' `new'
+}
+
+drop relation_label caste_label occup_label sex_label age_label educ_label living_label compared_label meet_label frequency_label invite_label reciprocity_label intimacy_label
+
+save"NEEMSIS2-alter_busilend", replace
+
+
+********** Find job
+use"NEEMSIS2track-snfindjobgroup.dta", clear
+gen snsource="Find job"
+
+
+save"NEEMSIS2-alter_findjob", replace
+
+
+
+
+********** Help mig
+use"NEEMSIS2track-snhelpmigid.dta", clear
+gen snsource="Help migration"
+
+
+save"NEEMSIS2-alter_helpmigration", replace
+
+
+
+
+
+********** Recommendation asso
+use"NEEMSIS2track-snrecommendassoid.dta", clear
+gen snsource="Recommendation asso"
+
+save"NEEMSIS2-alter_recoasso", replace
+
+
+
+
+
+********** Recommendation for job
+use"NEEMSIS2track-snrecommendforjobgroup.dta", clear
+gen snsource="Recommendation job"
+
+save"NEEMSIS2-alter_recojob", replace
+
+
+
+
+********** Recruit worker
+use"NEEMSIS2track-snrecruitworkergroup.dta", clear
+gen snsource="Recruit worker"
+
+
+save"NEEMSIS2-alter_recruitworker", replace
+
+
+
+
+
+********** Technical help
+use"NEEMSIS2track-sntechnicalhelpgroup.dta", clear
+gen snsource="Technical help"
+
+
+save"NEEMSIS2-alter_technicalhelp", replace
+
+
+
+
+****************************************
+* END
+
+
 
