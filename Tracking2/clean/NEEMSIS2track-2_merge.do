@@ -754,79 +754,240 @@ save"NEEMSIS2-tracking_indiv_v1", replace
 ********** Business lender
 use"NEEMSIS2track-snbusilendid.dta", clear
 gen snsource="Business lender"
-foreach x in migsnbusilendname migsnbusilendrelation migsnbusilendrelation_label migsnbusilendcaste migsnbusilendcaste_label migsnbusilendothercaste migsnbusilendoccup migsnbusilendoccup_label migsnbusilendotheroccup migsnbusilendsex migsnbusilendsex_label migsnbusilendage migsnbusilendage_label migsnbusilendeduc migsnbusilendeduc_label migsnbusilendliving migsnbusilendliving_label migsnbusilendcompared migsnbusilendcompared_label migsnbusilendduration migsnbusilendmeet migsnbusilendmeet_label migsnbusilendfrequency migsnbusilendfrequency_label migsnbusilendothermeet migsnbusilendinvite migsnbusilendinvite_label migsnbusilendreciprocity migsnbusilendreciprocity_label migsnbusilendintimacy migsnbusilendintimacy_label setofmigsnbusilendid {
+drop *_label
+foreach x in migsnbusilendname migsnbusilendrelation migsnbusilendcaste migsnbusilendothercaste migsnbusilendoccup migsnbusilendotheroccup migsnbusilendsex migsnbusilendage migsnbusilendeduc migsnbusilendliving migsnbusilendcompared migsnbusilendduration migsnbusilendmeet migsnbusilendfrequency migsnbusilendothermeet migsnbusilendinvite migsnbusilendreciprocity migsnbusilendintimacy {
 local new=substr("`x'",14,.)
 rename `x' `new'
 }
-
-drop relation_label caste_label occup_label sex_label age_label educ_label living_label compared_label meet_label frequency_label invite_label reciprocity_label intimacy_label
-
+destring migbusinesslenderid, gen(alterid) 
+split parent_key, p(/)
+rename parent_key1 HHID2022
+drop parent_key parent_key* migbusinesslenderid key setofmigsnbusilendid base
+order HHID2022 snsource name
+sort HHID2022 name
+rename relation relationship
+fre occup relationship
+foreach x in occup relationship {
+decode `x', gen(`x'_str)
+drop `x'
+rename `x'_str `x'
+}
 save"NEEMSIS2-alter_busilend", replace
 
 
 ********** Find job
 use"NEEMSIS2track-snfindjobgroup.dta", clear
 gen snsource="Find job"
-
-
+drop migsnfindjobrelationship_label migsnfindjobrelationship_1 migsnfindjobrelationship_2 migsnfindjobrelationship_3 migsnfindjobrelationship_4 migsnfindjobrelationship_5 migsnfindjobrelationship_6 migsnfindjobrelationship_7 migsnfindjobrelationship_8 migsnfindjobrelationship_9 migsnfindjobrelationship_10 migsnfindjobrelationship_11 migsnfindjobrelationship_12 migsnfindjobrelationship_13 migsnfindjobrelationship_14 migsnfindjobrelationship_15 *_label
+foreach x in migsnfindjobnamefromearlier migsnfindjobrelationship migsnfindjobsex migsnfindjobage migsnfindjobcastes migsnfindjobcastesother migsnfindjobeduc migsnfindjoboccup migsnfindjoboccupother migsnfindjobliving migsnfindjobcompared migsnfindjobduration migsnfindjobmeet migsnfindjobmeetother migsnfindjobmeetfrequency migsnfindjobinvite migsnfindjobreciprocity1 migsnfindjobintimacy {
+local new=substr("`x'",13,.)
+rename `x' `new'
+}
+rename namefromearlier name
+rename castes caste
+rename castesother casteother
+split parent_key, p(/)
+rename parent_key1 HHID2022
+drop parent_key parent_key* key setof* base
+order HHID2022 name
+sort HHID2022 name
+foreach x in occup {
+decode `x', gen(`x'_str)
+drop `x'
+rename `x'_str `x'
+}
+rename meetfrequency frequency
 save"NEEMSIS2-alter_findjob", replace
-
 
 
 
 ********** Help mig
 use"NEEMSIS2track-snhelpmigid.dta", clear
 gen snsource="Help migration"
-
-
+drop migsnhelpmigrelationship_1 migsnhelpmigrelationship_2 migsnhelpmigrelationship_3 migsnhelpmigrelationship_4 migsnhelpmigrelationship_5 migsnhelpmigrelationship_6 migsnhelpmigrelationship_7 migsnhelpmigrelationship_8 migsnhelpmigrelationship_9 migsnhelpmigrelationship_10 migsnhelpmigrelationship_11 migsnhelpmigrelationship_12 migsnhelpmigrelationship_13 migsnhelpmigrelationship_14 migsnhelpmigrelationship_15 *_label migsnhelpmigfindjobhow_1 migsnhelpmigfindjobhow_2 migsnhelpmigfindjobhow_3 migsnhelpmigfindjobhow_4 migsnhelpmigfindjobhow_77
+foreach x in migsnhelpmignamenb migsnhelpmigname migsnhelpmigrelationship migsnhelpmigpsex migsnhelpmigage migsnhelpmigcastes migsnhelpmigcastesother migsnhelpmigeduc migsnhelpmigoccuptype migsnhelpmigoccupname migsnhelpmigliving migsnhelpmigcompared migsnhelpmigduration migsnhelpmigmeet migsnhelpmigmeetother migsnhelpmigmeetfrequency migsnhelpmiginvite migsnhelpmigreciprocity1 migsnhelpmigintimacy migsnhelpmigfindjob migsnhelpmigfindjobhow migsnhelpmigfindjobhowother migsnhelpmigmoney migsnhelpmigrecommendations migsnhelpmigrecommendations_labe migsnhelpmigsn {
+local new=substr("`x'",13,.)
+rename `x' `new'
+}
+rename psex sex
+drop recommendations_labe
+count
+destring namenb, gen(alterid)
+drop namenb
+rename castes caste
+rename castesother casteother
+split parent_key, p(/)
+rename parent_key1 HHID2022
+drop parent_key parent_key* key setof* base
+rename occuptype occup
+foreach x in occup {
+decode `x', gen(`x'_str)
+drop `x'
+rename `x'_str `x'
+}
+rename meetfrequency frequency
 save"NEEMSIS2-alter_helpmigration", replace
-
-
 
 
 
 ********** Recommendation asso
 use"NEEMSIS2track-snrecommendassoid.dta", clear
 gen snsource="Recommendation asso"
-
+drop migsnrecommendassorelationship_l migsnrecommendassorelationship_1 migsnrecommendassorelationship_2 migsnrecommendassorelationship_3 migsnrecommendassorelationship_4 migsnrecommendassorelationship_5 migsnrecommendassorelationship_6 migsnrecommendassorelationship_7 migsnrecommendassorelationship_8 migsnrecommendassorelationship_9 *_label migsnrecommendassomeetfrequency_ migsnrecommendassoreciprocity1_l v15 v16 v17 v18 v19 v20
+foreach x in migsnrecommendassonber migsnrecommendassoname migsnrecommendassogroup_count migsnrecommendassorelationship migsnrecommendassosex migsnrecommendassoage migsnrecommendassocastes migsnrecommendassocastesother migsnrecommendassoeduc migsnrecommendassooccup migsnrecommendassooccupother migsnrecommendassoliving migsnrecommendassocompared migsnrecommendassoduration migsnrecommendassomeet migsnrecommendassomeetother migsnrecommendassomeetfrequency migsnrecommendassoinvite migsnrecommendassoreciprocity1 migsnrecommendassointimacy {
+local new=substr("`x'",19,.)
+rename `x' `new'
+}
+drop nber group_count
+rename castes caste
+rename castesother casteother
+foreach x in occup {
+decode `x', gen(`x'_str)
+drop `x'
+rename `x'_str `x'
+}
+split parent_key, p(/)
+rename parent_key1 HHID2022
+drop parent_key parent_key* key setof*
+rename meetfrequency frequency
 save"NEEMSIS2-alter_recoasso", replace
-
-
 
 
 
 ********** Recommendation for job
 use"NEEMSIS2track-snrecommendforjobgroup.dta", clear
 gen snsource="Recommendation job"
-
+drop v3 v4 v5 v6 v7 v8 v9 v10 v11 v12 v13 v14 v15 v16 v17 v18 *_label migsnrecommendforjobcompared_lab migsnrecommendforjobfrequency_la v44 migsnrecommendforjobintimacy_lab
+foreach x in migsnrecommendforjobnamefromearl migsnrecommendforjobrelationship migsnrecommendforjobsex migsnrecommendforjobage migsnrecommendforjobcastes migsnrecommendforjobcastesother migsnrecommendforjobeduc migsnrecommendforjoboccup migsnrecommendforjoboccupother migsnrecommendforjobliving migsnrecommendforjobcompared migsnrecommendforjobduration migsnrecommendforjobmeet migsnrecommendforjobmeetother migsnrecommendforjobfrequency migsnrecommendforjobinvite migsnrecommendforjobreciprocity1 migsnrecommendforjobintimacy {
+local new=substr("`x'",21,.)
+rename `x' `new'
+}
+rename namefromearl name
+rename castes caste
+rename castesother casteother
+foreach x in occup {
+decode `x', gen(`x'_str)
+drop `x'
+rename `x'_str `x'
+}
+split parent_key, p(/)
+rename parent_key1 HHID2022
+drop parent_key parent_key* key setof*
 save"NEEMSIS2-alter_recojob", replace
-
 
 
 
 ********** Recruit worker
 use"NEEMSIS2track-snrecruitworkergroup.dta", clear
 gen snsource="Recruit worker"
-
-
+drop migsnrecruitworkerrelationship_l migsnrecruitworkerrelationship_1 migsnrecruitworkerrelationship_2 migsnrecruitworkerrelationship_3 migsnrecruitworkerrelationship_4 migsnrecruitworkerrelationship_5 migsnrecruitworkerrelationship_6 migsnrecruitworkerrelationship_7 migsnrecruitworkerrelationship_8 migsnrecruitworkerrelationship_9 v13 v14 v15 v16 v17 v18 *_label migsnrecruitworkermeetfrequency_ migsnrecruitworkerreciprocity1_l
+foreach x in migsnrecruitworkernamefromearlie migsnrecruitworkerrelationship migsnrecruitworkersex migsnrecruitworkerage migsnrecruitworkercastes migsnrecruitworkercastesother migsnrecruitworkereduc migsnrecruitworkeroccup migsnrecruitworkeroccupother migsnrecruitworkerliving migsnrecruitworkercompared migsnrecruitworkerduration migsnrecruitworkermeet migsnrecruitworkermeetother migsnrecruitworkermeetfrequency migsnrecruitworkerinvite migsnrecruitworkerreciprocity1 migsnrecruitworkerintimacy {
+local new=substr("`x'",19,.)
+rename `x' `new'
+}
+rename namefromearlie name
+rename castes caste
+rename castesother casteother
+foreach x in occup {
+decode `x', gen(`x'_str)
+drop `x'
+rename `x'_str `x'
+}
+split parent_key, p(/)
+rename parent_key1 HHID2022
+drop parent_key parent_key* key setof*
+rename meetfrequency frequency
 save"NEEMSIS2-alter_recruitworker", replace
-
-
 
 
 
 ********** Technical help
 use"NEEMSIS2track-sntechnicalhelpgroup.dta", clear
 gen snsource="Technical help"
-
-
+drop migsntechnicalhelprelationship_l migsntechnicalhelprelationship_1 migsntechnicalhelprelationship_2 migsntechnicalhelprelationship_3 migsntechnicalhelprelationship_4 migsntechnicalhelprelationship_5 migsntechnicalhelprelationship_6 migsntechnicalhelprelationship_7 migsntechnicalhelprelationship_8 migsntechnicalhelprelationship_9 v13 v14 v15 v16 v17 v18 *_label migsntechnicalhelpmeetfrequency_ migsntechnicalhelpreciprocity1_l
+foreach x in migsntechnicalhelpnamefromearlie migsntechnicalhelprelationship migsntechnicalhelpsex migsntechnicalhelpage migsntechnicalhelpcastes migsntechnicalhelpcastesother migsntechnicalhelpeduc migsntechnicalhelpoccup migsntechnicalhelpoccupother migsntechnicalhelpliving migsntechnicalhelpcompared migsntechnicalhelpduration migsntechnicalhelpmeet migsntechnicalhelpmeetother migsntechnicalhelpmeetfrequency migsntechnicalhelpinvite migsntechnicalhelpreciprocity1 migsntechnicalhelpintimacy {
+local new=substr("`x'",19,.)
+rename `x' `new'
+}
+rename namefromearlie name
+rename castes caste
+rename castesother casteother
+foreach x in occup {
+decode `x', gen(`x'_str)
+drop `x'
+rename `x'_str `x'
+}
+split parent_key, p(/)
+rename parent_key1 HHID2022
+drop parent_key parent_key* key setof*
+rename meetfrequency frequency
 save"NEEMSIS2-alter_technicalhelp", replace
-
-
-
-
 ****************************************
 * END
 
 
 
+
+
+
+
+
+****************************************
+* Append SN
+****************************************
+
+********** Business lender
+use"NEEMSIS2-alter_busilend", clear
+append using "NEEMSIS2-alter_findjob"
+append using "NEEMSIS2-alter_helpmigration"
+append using "NEEMSIS2-alter_recoasso"
+append using "NEEMSIS2-alter_recojob"
+append using "NEEMSIS2-alter_recruitworker"
+append using "NEEMSIS2-alter_technicalhelp"
+count
+drop base
+
+order HHID2022 snsource name
+sort snsource name
+
+ta relationship snsource
+
+replace relationship="Maistry" if relationship=="1"
+replace relationship="Own child not living in the house" if relationship=="2"
+replace relationship="Sibling not living in the house" if relationship=="3"
+replace relationship="Parent not living in the house" if relationship=="4"
+replace relationship="Niece/Nephew not living in the house" if relationship=="5"
+replace relationship="Other family member not living in the house" if relationship=="6"
+replace relationship="Neighbor" if relationship=="7"
+replace relationship="Friend" if relationship=="8"
+replace relationship="Customer/supplier/colleague" if relationship=="9"
+replace relationship="Moneylender" if relationship=="10"
+replace relationship="SHG member" if relationship=="11"
+replace relationship="Employer" if relationship=="12"
+replace relationship="Well known people" if relationship=="13"
+replace relationship="Own child living in the house" if relationship=="14"
+replace relationship="Spouse" if relationship=="15"
+
+replace relationship="Sibling not living in the house" if relationship=="3 4"
+
+replace relationship="Friends" if relationship=="Friend"
+
+fre relationship
+
+replace alterid=1 if alterid==.
+
+
+********** Duplicates drop
+merge m:1 HHID2022 using "N2track"
+drop if _merge==1
+drop if _merge==2
+drop tokeep _merge
+*
+preserve
+duplicates drop HHID2022, force
+count
+restore
+
+save"NEEMSIS2-tracking_alter_v1", replace
+****************************************
+* END

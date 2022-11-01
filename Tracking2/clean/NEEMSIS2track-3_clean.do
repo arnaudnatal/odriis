@@ -205,3 +205,35 @@ save"CLEAN\NEEMSIS2-tracking_migpath.dta", replace
 
 
 
+
+
+
+
+****************************************
+* Tracking alter database
+****************************************
+use "NEEMSIS2-tracking_alter_v1", clear
+
+********** Clean
+drop othercaste otheroccup othermeet
+
+fre reciprocity reciprocity1
+replace reciprocity=reciprocity1 if reciprocity==. & reciprocity1!=.
+drop reciprocity
+
+
+********** Order
+sort HHID2022 snsource alterid name
+order HHID2022 snsource alterid name sex age caste casteother occup occupother occupname relationship educ living compared duration meet meetother frequency invite reciprocity intimacy relationship
+
+
+
+********** Label
+destring findjobhow, replace
+label define findjobhow 1"Recommendation" 2 "Hiring" 3 "Share of network" 4"Help you to find out job opportunities" 77 "Other"
+label values findjobhow findjobhow
+
+
+save"CLEAN\NEEMSIS2-tracking_alter", replace
+****************************************
+* END
