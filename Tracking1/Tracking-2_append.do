@@ -514,7 +514,7 @@ save"NEEMSIS-tracking_v5.dta", replace
 * CLEAN folder
 ****************************************
 
-
+/*
 use"NEEMSIS-tracking_v4.dta", clear
 save"CLEAN\NEEMSIS-tracking_HH.dta", replace
 
@@ -532,6 +532,8 @@ save"CLEAN\NEEMSIS-tracking_snrecoasso.dta", replace
 
 use"NEEMSIS-tracking_contact.dta", clear
 save"CLEAN\NEEMSIS-tracking_contact.dta", replace
+*/
+
 
 ****************************************
 * END
