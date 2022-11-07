@@ -16,12 +16,44 @@ TITLE: RUME
 ****************************************
 * INITIALIZATION
 ****************************************
-global directory = "C:\Users\Arnaud\Documents\_Thesis\_DATA\RUME\"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\Data_RUME\DATA"
 cd "$directory"
 ****************************************
 * END
 
 
+
+****************************************
+* RUME xlsx to dta
+****************************************
+forvalues i=1/43 {
+import excel "xlsx\B`i'.xlsx", firstrow clear
+capture confirm v Codefamily 
+if _rc==0 {
+rename Codefamily HHID2010
+}
+capture confirm v CodeFamily 
+if _rc==0 {
+rename CodeFamily HHID2010
+}
+save"dta\B`i'", replace
+}
+****************************************
+* END
+
+
+
+****************************************
+* HH level
+****************************************
+use"dta\B3", clear
+rename
+
+
+
+
+
+/*
 
 ****************************************
 * RUME check
