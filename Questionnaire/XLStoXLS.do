@@ -18,7 +18,7 @@ global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSfor
 cd"$directory"
 
 global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-global file "Tracking1"
+global file "N1"
 *global choicelist "NEEMSIS2-datachoicelist.csv"
 
 
