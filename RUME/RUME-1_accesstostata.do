@@ -1353,14 +1353,20 @@ label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"" 12"Muthaliyar" 13"Kulalar" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define inside 1"Inside village" 2"Outside village" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
-
 label values dummylabourers yesno
 label values productcastelabourers1 caste
 label values productcastelabourers2 caste
 label values productcastelabourers3 caste
 label values productoriginlabourers inside
 
+*Clean
+duplicates report HHID2010
+
 save"dta\B_labourers", replace
+
+
+
+
 
 
 ********* Farm equipment
@@ -1386,8 +1392,24 @@ label values equipmentpay pay
 label values equipmentlender lender
 label values equipmentpledged yesno
 
+*Clean
+drop if equipmentlist==4
+bysort HHID2010: gen n=_n
+
+reshape wide equipmentlist equipmentnb equipementyear equipmentpay equipmentlender equipmentcost equipmentpledged, i(HHID2010) j(n)
 
 save"dta\B_farmequipment", replace
+
+
+
+
+
+
+
+
+
+
+
 
 
 ********** Goods
@@ -1406,7 +1428,24 @@ label define goodbuying 1"Credit" 2"Instalment" 3"Ready cash" 4"Paid by governme
 label values listgoods goods
 label values goodbuying goodbuying
 
+*Clean
+duplicates drop
+duplicates tag HHID2010 listgoods, gen(tag)
+sort tag HHID2010
+drop tag
+
+bysort HHID2010: gen n=_n
+reshape wide listgoods numbergoods goodyearpurchased goodbuying, i(HHID2010) j(n)
+
 save"dta\B_goods", replace
+
+
+
+
+
+
+
+
 
 
 
@@ -1442,7 +1481,24 @@ label values castebusinesslender caste
 label values lossbusinessinvest yesno
 label values businessskill skill
 
+
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide kindselfemployment businesscastebased yearestablishment businessamountinvest businesssourceinvest businesslender relativesbusinesslender castebusinesslender lossbusinessinvest businessskill, i(HHID2010 INDID2010) j(n)
+
 save"dta\B_SE1", replace
+
+
+
+
+
+
+
+
+
 
 
 ********** SE 2
@@ -1460,7 +1516,21 @@ rename I lowincomeperiod
 rename J lowincomeperiodnbmonth
 rename K lowincomeperiodamount
 
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide goodincomeperiod goodincomeperiodnbmonth goodincomeamount averageincomeperiod averageincomeperiodnbmonth averageincomeperiodamount lowincomeperiod lowincomeperiodnbmonth lowincomeperiodamount, i(HHID2010 INDID2010) j(n)
+
 save"dta\B_SE2", replace
+
+
+
+
+
+
+
 
 
 ********** SE 3
@@ -1489,7 +1559,19 @@ label values ownbusinessexpe yesno
 label values ownbusinessmarket yesno
 label values ownbusinessmanpower yesno
 
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+
 save"dta\B_SE3", replace
+
+
+
+
+
+
+
 
 
 ********** SE 4
@@ -1523,7 +1605,21 @@ label values businesslabourerpension yesno
 label values businesslabourertypejob worktypejob
 label values businesslabourerwagetype wagetype
 
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide namebusinesslabourer relationshipbusinesslabourer castebusinesslabourer businesslabourertypejob businesslabourerwagetype businesslabourerbonus businesslabourerinsurance businesslabourerpension, i(HHID2010 INDID2010) j(n)
+
 save"dta\B_SE4", replace
+
+
+
+
+
+
+
 
 
 ********** SE 5
@@ -1548,7 +1644,25 @@ label values creditperiod creditperiod
 label values creditcope creditcope
 label values creditbuy yesno
 
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide creditsell creditperiod creditcope creditpercentage creditbuy, i(HHID2010 INDID2010) j(n)
+
 save"dta\B_SE5", replace
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1566,7 +1680,19 @@ label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
 label values dummypastbusiness yesno
 
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+
 save"dta\B_SE6", replace
+
+
+
+
+
+
+
 
 
 ********** SJ 1
@@ -1597,7 +1723,22 @@ label values salariedjobtype sjtype
 label values salariedwagetype wagetype
 label values salariedjobfulltime yesno
 
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide joblocation jobdistance kindsalariedjob kindsalariedjobcat casteemployer relationemployer salariedjobtype salariedjobfulltime salariedwagetype, i(HHID2010 INDID2010) j(n)
+
 save"dta\B_SJ1", replace
+
+
+
+
+
+
+
 
 
 ********* SJ 2
@@ -1630,7 +1771,20 @@ label values sjadvancebalance yesno
 label values salariedjobhow getjob
 label values salariedjobhowknow relation
 
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide salariedjobdays salariedjobsalary salariedjobpension salariedjobbonus salariedjobinsurance salariedjobtenure sjdummyadvance sjadvancebalance sjadvanceamount salariedjobhow salariedjobhowknow, i(HHID2010 INDID2010) j(n)
+
 save"dta\B_SJ2", replace
+
+
+
+
+
+
 
 
 ********** Crisis
@@ -1649,7 +1803,18 @@ label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label values crisislostjob yesno
 label values crisislesswork yesno
 
+*Clean
+duplicates report HHID2010
+
 save"dta\B_crisis", replace
+
+
+
+
+
+
+
+
 
 
 
@@ -1716,6 +1881,13 @@ label values dummyadvancebalance yesno
 save"dta\B_migration", replace
 
 
+
+
+
+
+
+
+
 ********** Remittances received
 use"dta\B41", clear
 
@@ -1742,7 +1914,18 @@ label values remrecreduc yesno
 label values remrecfrequency remfreq
 label values remrechow sendrem
 
+*Clean
+drop if dummyremrec==0
+duplicates report HHID2010
+bysort HHID2010: gen n=_n
+reshape wide remrecsourcename1 remrecourcerelation remrecsourceplace remrecfrequency remrectotalamount remrecproduct remrectotalvalue remrechow remrecreduc, i(HHID2010) j(n)
+
 save"dta\B_remrec", replace
+
+
+
+
+
 
 
 
@@ -1763,11 +1946,16 @@ label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define family 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Daughter-in-law" 8"Son-in-law" 9"Sister" 10"Mother-in-law" 11"Father-in-law" 12"Brother elder" 13"Brother younger" 14"Grand children" 15"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define remfreq 1"Monthly" 2"Seasonal" 3"During festival" 4"Annual" 5"Whenever needed" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
-
 label values dummyremsent yesno
 label values individ family
 label values remsentfrequency remfreq
 label values remsentname1 relation
+
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide individ remsentlocation remsentname1 remsenttotalamount remsentfrequency, i(HHID2010 INDID2010) j(n)
 
 save"dta\B_remsent", replace
 ****************************************
