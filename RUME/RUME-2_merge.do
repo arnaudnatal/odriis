@@ -76,6 +76,10 @@ merge 1:1 HHID2010 using "B_crops"
 
 merge 1:1 HHID2010 using "B_landpurchlease"
 
+merge 1:1 HHID2010 using "B_intstopcrops"
+
+merge 1:1 HHID2010 using "B_landleasing"
+
 
 
 ********** Occupations

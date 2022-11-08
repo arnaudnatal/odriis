@@ -46,6 +46,11 @@ save"dta\B`i'", replace
 ****************************************
 * Rename var
 ****************************************
+
+
+
+
+
 ********** Code indiv
 use"dta\B43", clear
 rename CodeIDMember INDID2010
@@ -54,9 +59,18 @@ rename Personinvolved individ
 save"dta\B_INDIDindiv", replace
 
 
+
+
+
+
+
+
+
+
+
+
 ********** Intro
 use"dta\B1", clear
-
 
 *Rename
 rename B villagename
@@ -69,7 +83,6 @@ rename H caste
 rename I castecode
 rename J comefrom
 rename _8Villageout outsider
-
 
 *Label
 label define village 1"ELANTHALMPATTU" 2"GOVULAPURAM" 3"KARUMBUR" 4"KORATTORE" 5"KUVAGAM" 6"MANAMTHAVIZHINTHAPUTHUR" 7"MANAPAKKAM" 8"NATHAM" 9"ORAIYURE" 10"SEMAKOTTAI"
@@ -93,6 +106,17 @@ drop villagename
 save"dta\B_intro", replace
 
 
+
+
+
+
+
+
+
+
+
+
+
 ********** Family members
 use"dta\B2", clear
 
@@ -111,19 +135,28 @@ drop Nuclearfamily RatioEmployment
 
 *Label
 label define sex 1"Male" 2"Female"
-label define relationshiptohead 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Daughter-in-law" 8"Son-in-law" 9"Sister" 10"Mother-in-law" 11"Father-in-law" 12"Brother elder" 13"Brother younger" 14"Grand children" 15"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
-label define yesno 0"No" 1"Yes" 
+label define family 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Daughter-in-law" 8"Son-in-law" 9"Sister" 10"Mother-in-law" 11"Father-in-law" 12"Brother elder" 13"Brother younger" 14"Grand children" 15"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define education 1"Primary" 2"High school" 3"HSC" 4"Diploma" 5"Degree" 6"Post graduate" 7"Enginering" 8"Others" 9"No education" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define typeeducation 1"Technical education" 2"Experience skill in a field" 3"Technical skill" 4"No skill" 66"Irrelevant" 77"Other" 88"DK" 99"NR", replace
 
 label values sex sex
-label values relationshiptohead relationshiptohead
+label values relationshiptohead family
 label values livinghome yesno
 label values education education
 label values studentpresent yesno
 label values typeeducation typeeducation
 
 save"dta\B_family", replace
+
+
+
+
+
+
+
+
+
 
 
 ********** Occupations
@@ -142,12 +175,22 @@ drop if kindofwork==10
 
 *Label
 label define kindofwork 1"Agriculture" 2"Coolie" 3"Agri coolie" 4"NREGS" 5"Investment" 6"Employee" 7"Service" 8"Self-employment" 9"Pension" 10"No occupation" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
-label define yesno 0"No" 1"Yes" 
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
 label values kindofwork kindofwork
 label values stopworking yesno
 
 save"dta\B_occupations", replace
+
+
+
+
+
+
+
+
+
+
 
 
 ********** Pub serv work
@@ -178,6 +221,14 @@ bysort HHID2010 INDID2010: gen n=_n
 reshape wide pubservfield pubservduration pubservpost pubservpayment, i(HHID2010 INDID2010) j(n)
 
 save"dta\B_pubservwork", replace
+
+
+
+
+
+
+
+
 
 
 ********** Memberships
@@ -213,6 +264,13 @@ save"dta\B_memberships", replace
 
 
 
+
+
+
+
+
+
+
 ********** Memberships asso
 use"dta\B6", clear
 
@@ -242,6 +300,12 @@ save"dta\B_membershipsasso", replace
 
 
 
+
+
+
+
+
+
 ********** Expenses
 use"dta\B7", clear
 rename FoodexpensesweekRs foodexpenses
@@ -251,6 +315,16 @@ rename CeremoniesexpensesyearRs ceremoniesexpenses
 rename DeathexpensesyearRs deathexpenses
 
 save"dta\B_expenses", replace
+
+
+
+
+
+
+
+
+
+
 
 
 ********** Loans
@@ -264,7 +338,7 @@ rename E loanlender
 rename F loanlendercat
 rename G lenderrelatives
 rename H lenderscaste
-rename I lenderfrom
+rename I lendernativevillage
 rename J lenderrelation
 rename K otherlenderservices
 rename L otherlenderservices2 
@@ -277,28 +351,38 @@ rename R loandateyear
 
 *Label
 label define loanreasongiven 1"Agriculture" 2"Family expenses" 3"Health expenses" 4"Repay previous loan" 5"House expenses" 6"Investment" 7"Ceremonies" 8"Marriage" 9"Education" 10"Relatives" 11"Death"  66"Irrelevant" 77"Other" 88"DK" 99"NR"
-label define loanlender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define lender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define loanlendercat 1"Informal" 2"Semi-formal" 3"Formal"
 label define relatives 1"Maternal uncle" 2"Brother" 3"Paternal uncle" 4"Cousin (father side)" 5"Nephew (mother side)" 6"Father/Mother in-law" 7"Brother-in-law" 8"Wife relatives" 9"Father brother" 10"No relation" 11"Father" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"" 12"Muthaliyar" 13"Kulalar" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define native 1"Inside village" 2"Outside village" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define relation 1"Colleague" 2"Relative" 3"Labour" 4"Political" 5"Religious" 6"Neighbour" 7"SHG" 8"Businessman" 9"WKP" 10"Financial" 11"Bank" 12"Don't know him" 13"Traditional" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define otherlenderservices 1"Political support" 2"Financial support" 3"Guarantor" 4"Genral informant" 5"Other" 6"None" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
-label define yesno 0"No" 1"Yes"
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
 label values loanreasongiven loanreasongiven
-label values loanlender loanlender
+label values loanlender lender
 destring loanlendercat, replace
 label values loanlendercat loanlendercat
 label values lenderrelatives relatives
 label values lenderscaste caste
-label values lenderfrom native
+label values lendernativevillage yesno
 label values lenderrelation relation
 label values otherlenderservices otherlenderservices
 label values otherlenderservices2 otherlenderservices
 label values loansettled yesno
 
 save"dta\B_loans", replace
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -391,7 +475,7 @@ drop loanlender2 lenderscaste2 lenderrelation2 lenderrelatives2 otherlenderservi
 
 *Label 
 label define borrowerservices 1"Free service" 2"Work for less wage" 3"Provide support" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
-label define yesno 0"No" 1"Yes"
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define amountreceivedmanage 1"Borrowed from other" 2"Pledged the property" 3"Sold the property" 4"Managed with the received amount" 5"Other" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define organiseexpenses 1"Get from others" 2"Sell the property" 3"Pledge the property" 4"Manage with the existing" 5"Other" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define plantorepay 1"Joined a chit fund" 2"Work more" 3"Migrate" 4"Sell asssets" 5"Use normal income from labour" 6"Borrow elsewhere" 7"Nothing special" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
@@ -404,7 +488,7 @@ label define decision 1"Myself" 2"Lender"
 label define terms 1"Fixed duration" 2"Pay when have money" 3"Repay when asked"
 label define problem 1"Borrowing elsewhere" 2"Selling something which was not planned" 3"Lease land" 4"Consumption reduction" 5"Take an additional job" 6"Work more" 7"Relative or friends support" 8"To sell harvest in advance" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define soldproduct 1"Land" 2"Cows" 3"Others livestock" 4"Consumer items" 5"Productive items" 6"Jewels, gold" 8"No product" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
-label define loanlender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define lender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define relatives 1"Maternal uncle" 2"Brother" 3"Paternal uncle" 4"Cousin (father side)" 5"Nephew (mother side)" 6"Father/Mother in-law" 7"Brother-in-law" 8"Wife relatives" 9"Father brother" 10"No relation" 11"Father" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define delay 1"Nothing" 2"Shouting" 3"Put the pressure through the guarantor/person who recommended you" 4"Compromise" 5"Inform to all your relatives" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define action 1"Give you more time for the repayment" 2"Take back collaterals" 3"Pressurize the guarantor" 4"Ask the guarantor to repay" 5"Cancel the debt" 6"Legal action" 7"Physical pressure" 8"Other" 9"No problem" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
@@ -440,12 +524,22 @@ label values problemrepayment problem
 label values repaysoldproduct1 soldproduct
 label values repaysoldproduct2 soldproduct
 label values dummyrepaysoldproduct yesno
-label values helptosettleloan loanlender
+label values helptosettleloan lender
 label values helptosettleloanrelatives relatives
 label values problemdelayrepayment delay
 label values lenderaction action
 
 save"dta\B_mainloans", replace
+
+
+
+
+
+
+
+
+
+
 
 
 ********** Lenders
@@ -471,15 +565,14 @@ rename Q mlweakness2
 rename R mlweakness3
 
 *Label
-label define loanlender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define lender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define lenderaction 1"Did not provide second loan" 2"Modify the loan contract" 3"Stop providing land to cultivate (pressure)" 4"Stop providing water (pressure)" 5"Pressure to sell propety" 6"Psychological pressure through direct contact" 7"Give you more time for the repayment" 8"Take back collaterals" 9"Pressurize the guarantor" 10"Ask the guarantor to repay" 11"Cancel the debt" 12"Send people to make pressure" 13"Nothing" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define yesno 0"No" 1"Yes"
 label define stoplend 1"Stopped lending" 2"Don't have money" 3"Don't trust me" 4"Failed to produce guarantee" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define strength 1"Interest rate" 2"Amount" 3"Duration" 4"Flexibility" 5"Poss to postpone repayment" 6"Quick access" 7"Simple procedure" 8"Poss to whithdraw money" 9"Discretion" 10"Respect" 11"Limited amount of collaterals" 12"Nature of collaterals" 13"Guarantee" 14"Obligatory saving" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define weakness 1"More interest" 2"Demand money not available" 3"Need of recommendation/guarantor" 4"To be return back in exact time" 5"No possible of time extension" 6"Physical violence" 7"Mental torture" 8"Not possible to get in exact time" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
-
-label values mltype loanlender
+label values mltype lender
 label values mlaction1 lenderaction
 label values mlaction2 lenderaction
 label values mlaction3 lenderaction
@@ -495,6 +588,17 @@ label values mlweakness3 weakness
 
 
 save"dta\B_lenders", replace
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -526,6 +630,15 @@ ta n
 reshape wide productname productlender productloanamount productloansettled, i(HHID2010) j(n)
 
 save"dta\B_creditproduct", replace
+
+
+
+
+
+
+
+
+
 
 
 
@@ -567,12 +680,31 @@ save"dta\B_lendtoother", replace
 
 
 
+
+
+
+
+
+
+
+
 ********** Outstanding
 use"dta\B14", clear
 rename CodeIDloan loanid
 rename Balance loanbalance2
 
 save"dta\B_outstanding", replace
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -602,12 +734,24 @@ label values recommendgivenlender relation
 label values recommendgivenlendercaste caste
 
 *Clean
+drop if recommendgivenlist==15 & recommendgivenrelation==66 & recommendgivencaste==66 & dummyrecommendback==66
 duplicates report HHID2010
 bysort HHID2010: gen n=_n
 
 reshape wide recommendgivenlist recommendgivenrelation recommendgivencaste dummyrecommendback recommendgivenlender recommendgivenlendercaste, i(HHID2010) j(n)
 
 save"dta\B_givenreco", replace
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -646,6 +790,15 @@ duplicates report HHID2010
 save"dta\B_receivedreco", replace
 
 
+
+
+
+
+
+
+
+
+
 ********** Chit
 use"dta\B17", clear
 
@@ -667,12 +820,22 @@ label values chitfundpayment chitpay
 
 
 *Clean
+drop if INDID2010==""
 duplicates report HHID2010 INDID2010
 bysort HHID2010 INDID2010: gen n=_n
 
 reshape wide chitfundtype durationchit nbermemberchit chitfundpayment chitfundamount, i(HHID2010 INDID2010) j(n)
 
 save"dta\B_chit", replace
+
+
+
+
+
+
+
+
+
 
 
 ********** Savings
@@ -700,12 +863,19 @@ label values dummydebitcard yesno
 label values dummycreditcard yesno
 
 *Clean
+drop if INDID2010==""
 duplicates report HHID2010 INDID2010
 bysort HHID2010 INDID2010: gen n=_n
 
 reshape wide savingsbankname savingsbankplace savingsamount savingspurposeone savingspurposetwo dummydebitcard dummycreditcard, i(HHID2010 INDID2010) j(n)
 
 save"dta\B_savings", replace
+
+
+
+
+
+
 
 
 ********** Gold
@@ -720,6 +890,14 @@ rename D goldamountpledge
 duplicates report HHID2010
 
 save"dta\B_gold", replace
+
+
+
+
+
+
+
+
 
 
 ********** Insurance
@@ -742,12 +920,21 @@ label values insurancetypetwo insurancetype
 label values insurancebenefit yesno
 
 *Clean
+drop if INDID2010==""
 duplicates report HHID2010 INDID2010
 bysort HHID2010 INDID2010: gen n=_n
 
 reshape wide insurancename insurancetypetwo insurancebenefit insurancejoineddate, i(HHID2010 INDID2010) j(n)
 
 save"dta\B_insurance", replace
+
+
+
+
+
+
+
+
 
 
 ********** House
@@ -774,8 +961,15 @@ label values howbuyhouse2 howbuyhouse
 label values howbuyhouse3 howbuyhouse
 label values housetype housetype
 
-
 save"dta\B_house", replace
+
+
+
+
+
+
+
+
 
 
 ********** Other facilities
@@ -800,6 +994,14 @@ label values housetitle yesno
 label values ownotherhouse yesno
 
 save"dta\B_otherfacilities", replace
+
+
+
+
+
+
+
+
 
 
 ********** Livestock
@@ -860,6 +1062,18 @@ label values interestedrearing2 animals
 duplicates report HHID2010
 
 save"dta\B_livestock", replace
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ********** Land
@@ -934,6 +1148,18 @@ label values waterfromleaseland water
 save"dta\B_land", replace
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ********** Crops
 use"dta\B25", clear
 
@@ -953,7 +1179,6 @@ label define prodland 1"Own land" 2"Lease land" 3"No land" 66"Irrelevant" 77"Oth
 
 label values productlist productlist
 label values producttypeland prodland
-
 
 *Clean
 split productacre, p(,)
@@ -976,6 +1201,16 @@ drop tag
 reshape wide productlist productacre producttypeland productnbbags productpricebag productpricesold productexpenses productlabourcost, i(HHID2010) j(n)
 
 save"dta\B_crops", replace
+
+
+
+
+
+
+
+
+
+
 
 
 ********** Land purchased
@@ -1008,11 +1243,42 @@ label values landleaserrelation relation
 
 *Clean
 duplicates report HHID2010
+
+preserve
+keep HHID2010 dummylandpurchased landpurchasedacres landpurchasedamount landpurchasedhowbuy
+duplicates drop
+drop if dummylandpurchased==0
+duplicates report HHID2010
+save"dta\B_landpurchased", replace
+restore
+
+preserve
+keep HHID2010 dummyleasedland landleasername landleasercaste landleaserrelation
+duplicates drop
+drop if dummyleasedland==0
+duplicates report HHID2010
+save"dta\B_leasedland", replace
+restore
+
+drop dummylandpurchased landpurchasedacres landpurchasedamount landpurchasedhowbuy dummyleasedland landleasername landleasercaste landleaserrelation
+
+drop if otherproductname==""
+duplicates report HHID2010
+
 bysort HHID2010: gen n=_n
 
-reshape wide dummylandpurchased landpurchasedacres landpurchasedamount landpurchasedhowbuy otherproductname otherproductsold otherproductown dummyleasedland landleasername landleasercaste landleaserrelation, i(HHID2010) j(n)
+reshape wide otherproductname otherproductsold otherproductown, i(HHID2010) j(n)
 
-save"dta\B_landpurchlease", replace
+save"dta\B_otherproduct", replace
+
+
+
+
+
+
+
+
+
 
 
 ********** Land 2
@@ -1041,7 +1307,33 @@ label values landleasingrelation relation
 label values productlistintstop productlist
 label values productintstop intstop
 
-save"dta\B_landleasecrops", replace
+*Clean
+preserve
+keep HHID2010 dummyleasingland landleasingname landleasingcaste landleasingrelation
+drop if dummyleasingland==0
+duplicates report HHID2010
+sort HHID2010
+duplicates drop
+duplicates report HHID2010
+save"dta\B_landleasing", replace
+restore
+drop dummyleasingland landleasingname landleasingcaste landleasingrelation
+drop if productintstopreason=="66" & productintstopyear==66
+duplicates report HHID2010
+
+bysort HHID2010: gen n=_n
+
+reshape wide productlistintstop productintstop productintstopreason productintstopyear, i(HHID2010) j(n)
+
+save"dta\B_intstopcrops", replace
+
+
+
+
+
+
+
+
 
 
 ********** Land 3
@@ -1468,12 +1760,12 @@ rename H remsentfrequency
 
 *Label
 label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
-label define relation 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Daughter-in-law" 8"Son-in-law" 9"Sister" 10"Mother-in-law" 11"Father-in-law" 12"Brother elder" 13"Brother younger" 14"Grand children" 15"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define family 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Daughter-in-law" 8"Son-in-law" 9"Sister" 10"Mother-in-law" 11"Father-in-law" 12"Brother elder" 13"Brother younger" 14"Grand children" 15"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 label define remfreq 1"Monthly" 2"Seasonal" 3"During festival" 4"Annual" 5"Whenever needed" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
 
 label values dummyremsent yesno
-label values individ relation
+label values individ family
 label values remsentfrequency remfreq
 label values remsentname1 relation
 
