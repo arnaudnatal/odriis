@@ -631,6 +631,9 @@ duplicates report HHID2010
 drop if productname=="No product"
 duplicates report HHID2010
 
+ta productname
+
+
 bysort HHID2010: gen n=_n
 ta n
 
@@ -679,6 +682,7 @@ duplicates tag HHID2010 INDID2010, gen(tag)
 ta HHID2010 if tag==1
 sort HHID2010
 drop tag
+duplicates drop
 
 bysort HHID2010 INDID2010: gen n=_n
 reshape wide borrowerscaste relationwithborrower amountlent interestlending purposeloanborrower problemrepayment, i(HHID2010 INDID2010) j(n)
@@ -743,9 +747,15 @@ label values recommendgivenlendercaste caste
 *Clean
 drop if recommendgivenlist==15 & recommendgivenrelation==66 & recommendgivencaste==66 & dummyrecommendback==66
 duplicates report HHID2010
+duplicates tag HHID2010, gen(tag)
+sort tag HHID2010
+drop tag
+duplicates drop
 bysort HHID2010: gen n=_n
 
 reshape wide recommendgivenlist recommendgivenrelation recommendgivencaste dummyrecommendback recommendgivenlender recommendgivenlendercaste, i(HHID2010) j(n)
+
+duplicates report HHID2010
 
 save"dta\B_givenreco", replace
 
@@ -829,6 +839,9 @@ label values chitfundpayment chitpay
 *Clean
 drop if INDID2010==""
 duplicates report HHID2010 INDID2010
+duplicates tag HHID2010 INDID2010, gen(tag)
+sort tag HHID2010 INDID2010
+drop tag
 bysort HHID2010 INDID2010: gen n=_n
 
 reshape wide chitfundtype durationchit nbermemberchit chitfundpayment chitfundamount, i(HHID2010 INDID2010) j(n)
@@ -872,6 +885,11 @@ label values dummycreditcard yesno
 *Clean
 drop if INDID2010==""
 duplicates report HHID2010 INDID2010
+duplicates tag HHID2010 INDID2010, gen(tag)
+sort tag HHID2010 INDID2010
+duplicates drop
+drop tag
+
 bysort HHID2010 INDID2010: gen n=_n
 
 reshape wide savingsbankname savingsbankplace savingsamount savingspurposeone savingspurposetwo dummydebitcard dummycreditcard, i(HHID2010 INDID2010) j(n)
@@ -1199,11 +1217,15 @@ destring productacre3, replace
 drop productacre
 rename productacre3 productacre
 
+*Clean2
 duplicates report HHID2010
-bysort HHID2010: gen n=_n
+fre productlist
 duplicates tag HHID2010 productlist, gen(tag)
-sort tag HHID2010
+sort tag HHID2010 productlist producttypeland
 drop tag
+drop if productlist==14
+
+bysort HHID2010 (productlist producttypeland): gen n=_n
 
 reshape wide productlist productacre producttypeland productnbbags productpricebag productpricesold productexpenses productlabourcost, i(HHID2010) j(n)
 
@@ -1376,6 +1398,8 @@ save"dta\B_labourers", replace
 
 
 
+
+
 ********* Farm equipment
 use"dta\B29", clear
 
@@ -1401,7 +1425,9 @@ label values equipmentpledged yesno
 
 *Clean
 drop if equipmentlist==4
-bysort HHID2010: gen n=_n
+duplicates tag HHID2010, gen(tag)
+sort tag HHID2010
+bysort HHID2010 (equipmentlist): gen n=_n
 
 reshape wide equipmentlist equipmentnb equipementyear equipmentpay equipmentlender equipmentcost equipmentpledged, i(HHID2010) j(n)
 
@@ -1616,7 +1642,7 @@ label values businesslabourerwagetype wagetype
 drop if INDID2010==""
 duplicates report HHID2010 INDID2010
 duplicates drop
-bysort HHID2010 INDID2010: gen n=_n
+bysort HHID2010 INDID2010 (relationshipbusinesslabourer castebusinesslabourer businesslabourertypejob): gen n=_n
 reshape wide namebusinesslabourer relationshipbusinesslabourer castebusinesslabourer businesslabourertypejob businesslabourerwagetype businesslabourerbonus businesslabourerinsurance businesslabourerpension, i(HHID2010 INDID2010) j(n)
 
 save"dta\B_SE4", replace
