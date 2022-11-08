@@ -710,10 +710,13 @@ save"dta\B_savings", replace
 
 ********** Gold
 use"dta\B19", clear
+
+*Rename
 rename B goldquantity
 rename C goldquantitypledge
 rename D goldamountpledge
 
+*Clean
 duplicates report HHID2010
 
 save"dta\B_gold", replace
@@ -721,6 +724,8 @@ save"dta\B_gold", replace
 
 ********** Insurance
 use"dta\B20", clear
+
+*Rename
 rename B dummyinsurance
 rename C INDID2010
 rename D insurancename
@@ -728,6 +733,15 @@ rename E insurancetypetwo
 rename F insurancebenefit
 rename G insurancejoineddate
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define insurancetype 1"Life insurance" 2"Health insurance" 3"Crop insurance" 4"Animal insurance" 5"Saving insurance" 6"No insurance" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values dummyinsurance yesno
+label values insurancetypetwo insurancetype
+label values insurancebenefit yesno
+
+*Clean
 duplicates report HHID2010 INDID2010
 bysort HHID2010 INDID2010: gen n=_n
 
@@ -738,6 +752,8 @@ save"dta\B_insurance", replace
 
 ********** House
 use"dta\B21", clear
+
+*Rename
 rename B house
 rename C howbuyhouse1
 rename D howbuyhouse2
@@ -747,11 +763,25 @@ rename G housevalue
 rename H housetype
 rename I houseroom
 
+*Label
+label define house 1"Own house" 2"Joint house" 3"Family property" 4"Rental"
+label define howbuyhouse 1"Hereditary" 2"Savings" 3"Bank loan" 4"Credit from relatives/WKP" 5"Finance" 6"Help from children" 7"Government scheme" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define housetype 1"Concrete house (non gov)" 2"Big traditional tamil house" 3"Medium house" 4"Concrete house" 5"Tile roof house" 6"Thatched roof house" 7"Government house"
+
+label values house house 
+label values howbuyhouse1 howbuyhouse
+label values howbuyhouse2 howbuyhouse
+label values howbuyhouse3 howbuyhouse
+label values housetype housetype
+
+
 save"dta\B_house", replace
 
 
 ********** Other facilities
 use"dta\B22", clear
+
+*Rename
 rename B electricity 
 rename C water
 rename D housetitle
@@ -759,11 +789,23 @@ rename E ownotherhouse
 rename F otherhouserent
 rename G otherhouserentcat
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define electricity 1"General electricity" 2"Single line" 3"Free electricity"
+label define water 1"Own tap" 2"Public tap"
+
+label values electricity electricity
+label values water water
+label values housetitle yesno
+label values ownotherhouse yesno
+
 save"dta\B_otherfacilities", replace
 
 
 ********** Livestock
 use"dta\B23", clear
+
+*Rename
 rename B dummylivestock
 rename C livestocknb_cow
 rename D livestockprice_cow
@@ -792,6 +834,29 @@ rename Z interestedrearingreason1
 rename AA interestedrearing2
 rename AB interestedrearingreason2
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define livestockuse 1"To be sold" 2"For milk" 3"As saving" 4"Keep status" 5"Other" 6"Bullockcart" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define howlost 1"Dead" 2"Sold" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define animals 1"Cows" 2"Goats" 3"Plough and cart bull" 4"Buffalo" 5"Ducks" 6"No animals" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values dummylivestock yesno
+label values livestockuse1_cow livestockuse
+label values livestockuse2_cow livestockuse
+label values livestockuse3_cow livestockuse
+label values livestockuse1_goat livestockuse
+label values livestockuse2_goat livestockuse
+label values livestockuse3_goat livestockuse
+label values dummycattleloss yesno
+label values howlost howlost
+label values cattleinsurance yesno
+label values dummymedicalexpenses yesno
+label values notinterestedrearing1 animals
+label values notinterestedrearing2 animals 
+label values interestedrearing1 animals
+label values interestedrearing2 animals
+
+*Clean
 duplicates report HHID2010
 
 save"dta\B_livestock", replace
@@ -849,18 +914,30 @@ replace waterfromleaseland=waterfromlandtwo2 if ownland2==2
 replace waterfromleaseland=waterfromlandone3 if ownland3==2
 replace waterfromleaseland=waterfromlandtwo3 if ownland3==2
 
-*Check if it is good
-
-
-
 *Clean
 drop ownland1 wetland1 landsize1 waterfromlandone1 waterfromlandtwo1 ownland2 wetland2 landsize2 waterfromlandone2 waterfromlandtwo2 ownland3 wetland3 landsize3 waterfromlandone3 waterfromlandtwo3
+
+destring sizeownland sizeleaseland, dpcomma replace
+
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define drywet 1"Dry" 2"Wet"
+label define water 1"Tank" 2"River/Canal" 3"Bore well" 4"Open well" 5"Only rain"
+
+label values ownland yesno
+label values leaseland yesno
+label values drywetownland drywet
+label values drywetleaseland drywet
+label values waterfromownland water
+label values waterfromleaseland water
 
 save"dta\B_land", replace
 
 
 ********** Crops
 use"dta\B25", clear
+
+*Rename
 rename B productlist
 rename C productacre
 rename D producttypeland
@@ -869,6 +946,26 @@ rename F productpricebag
 rename G productpricesold
 rename H productexpenses
 rename I productlabourcost
+
+*Label
+label define productlist 1"Paddy" 2"Cotton" 3"Sugarcane" 4"Savukku tree" 5"Guava" 6"Mango" 7"Sapotta fruit" 8"Plantain" 9"Ground nut" 10"Millets" 11"Ulundu" 12"Banana" 13"Cashewnut" 14"No crops" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define prodland 1"Own land" 2"Lease land" 3"No land" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values productlist productlist
+label values producttypeland prodland
+
+
+*Clean
+split productacre, p(,)
+gen productacre3=productacre if productacre2==""
+egen productacre4=concat(productacre1 productacre2), p(.)
+replace productacre4="" if productacre3!=""
+replace productacre3=productacre4 if productacre3==""
+order productacre3, after(productacre)
+drop productacre1 productacre2 productacre4
+destring productacre3, replace
+drop productacre
+rename productacre3 productacre
 
 duplicates report HHID2010
 bysort HHID2010: gen n=_n
@@ -883,6 +980,8 @@ save"dta\B_crops", replace
 
 ********** Land purchased
 use"dta\B26", clear
+
+*Rename
 rename B dummylandpurchased
 rename C landpurchasedacres
 rename D landpurchasedamount
@@ -895,6 +994,19 @@ rename J landleasername
 rename K landleasercaste
 rename L landleaserrelation
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define relation 1"Colleague" 2"Relative" 3"Labour" 4"Political" 5"Religious" 6"Neighbour" 7"SHG" 8"Businessman" 9"WKP" 10"Financial" 11"Bank" 12"Don't know him" 13"Traditional" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"" 12"Muthaliyar" 13"Kulalar" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+
+label values dummylandpurchased yesno
+label values dummyleasedland yesno
+label values landleasercaste caste
+label values landleaserrelation relation
+
+
+*Clean
 duplicates report HHID2010
 bysort HHID2010: gen n=_n
 
@@ -905,6 +1017,8 @@ save"dta\B_landpurchlease", replace
 
 ********** Land 2
 use"dta\B27", clear
+
+*Rename
 rename B dummyleasingland
 rename C landleasingname
 rename D landleasingcaste
@@ -914,11 +1028,26 @@ rename G productintstop
 rename H productintstopreason
 rename I productintstopyear
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define relation 1"Colleague" 2"Relative" 3"Labour" 4"Political" 5"Religious" 6"Neighbour" 7"SHG" 8"Businessman" 9"WKP" 10"Financial" 11"Bank" 12"Don't know him" 13"Traditional" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"" 12"Muthaliyar" 13"Kulalar" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define productlist 1"Paddy" 2"Cotton" 3"Sugarcane" 4"Savukku tree" 5"Guava" 6"Mango" 7"Sapotta fruit" 8"Plantain" 9"Ground nut" 10"Millets" 11"Ulundu" 12"Banana" 13"Cashewnut" 14"No crops" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define intstop 1"Interested" 2"Stopped" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values dummyleasingland yesno
+label values landleasingcaste caste
+label values landleasingrelation relation
+label values productlistintstop productlist
+label values productintstop intstop
+
 save"dta\B_landleasecrops", replace
 
 
 ********** Land 3
 use"dta\B28", clear
+
+*Rename
 rename B dummylabourers
 rename C productworkers
 rename D productlabourwage
@@ -927,11 +1056,25 @@ rename F productcastelabourers1
 rename G productcastelabourers2
 rename H productcastelabourers3
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"" 12"Muthaliyar" 13"Kulalar" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define inside 1"Inside village" 2"Outside village" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+
+label values dummylabourers yesno
+label values productcastelabourers1 caste
+label values productcastelabourers2 caste
+label values productcastelabourers3 caste
+label values productoriginlabourers inside
+
 save"dta\B_labourers", replace
 
 
 ********* Farm equipment
 use"dta\B29", clear
+
+*Rename
 rename AEquipment equipmentlist
 rename BHowmany equipmentnb
 rename CWhenbuy equipementyear
@@ -940,15 +1083,36 @@ rename ECreditfrom equipmentlender
 rename FCost equipmentcost
 rename GPledge equipmentpledged
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define equipment 1"Tractor" 2"Bullockcart" 3"Harvster" 4"No equipment" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define pay 1"Income" 2"Savings" 3"Selling assets" 4"Help relatives" 5"Governmental scheme" 6"NGO scheme" 7"Credit" 8"One member work more" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define lender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values equipmentlist equipment
+label values equipmentpay pay
+label values equipmentlender lender
+label values equipmentpledged yesno
+
+
 save"dta\B_farmequipment", replace
 
 
 ********** Goods
 use"dta\B30", clear
+
+*Rename
 rename AGoods listgoods
 rename BNber numbergoods
 rename CYearofpurchase goodyearpurchased
 rename DPaymenttype goodbuying
+
+*Label
+label define goods 1"Car" 2"Bike" 3"Fridge" 4"Costly furniture" 5"Tailoring machine" 6"Cell phone" 7"Land line phone" 8"DVD" 9"Camera" 10"Cooking gas" 11"Computer" 12"Dish antenna" 13"TV" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define goodbuying 1"Credit" 2"Instalment" 3"Ready cash" 4"Paid by government" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values listgoods goods
+label values goodbuying goodbuying
 
 save"dta\B_goods", replace
 
@@ -956,6 +1120,8 @@ save"dta\B_goods", replace
 
 ********** SE 1
 use"dta\B31", clear
+
+*Rename
 rename B INDID2010
 rename C kindselfemployment
 rename D businesscastebased
@@ -968,11 +1134,29 @@ rename J castebusinesslender
 rename K lossbusinessinvest
 rename L businessskill
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define sourceinvest 1"Loan" 2"Own capital" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define lender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mills loan" 14"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define relatives 1"Maternal uncle" 2"Brother" 3"Paternal uncle" 4"Cousin (father side)" 5"Nephew (mother side)" 6"Father/Mother in-law" 7"Brother-in-law" 8"Wife relatives" 9"Father brother" 10"No relation" 11"Father" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"" 12"Muthaliyar" 13"Kulalar" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define skill 1"Family" 2"Friends" 3"School" 4"Experience" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values businesscastebased yesno
+label values businesssourceinvest sourceinvest
+label values businesslender lender
+label values relativesbusinesslender relatives
+label values castebusinesslender caste
+label values lossbusinessinvest yesno
+label values businessskill skill
+
 save"dta\B_SE1", replace
 
 
 ********** SE 2
 use"dta\B32", clear
+
+*Rename
 rename CodeIDmember INDID2010
 rename C goodincomeperiod
 rename D goodincomeperiodnbmonth
@@ -989,6 +1173,8 @@ save"dta\B_SE2", replace
 
 ********** SE 3
 use"dta\B33", clear
+
+*Rename
 rename CodeIDMember INDID2010 
 rename C ownbusinessinterested
 rename D ownbusinesstype
@@ -999,11 +1185,25 @@ rename H ownbusinessexpe
 rename I ownbusinessmarket
 rename J ownbusinessmanpower
 
+*Clean
+destring ownbusinesseduc ownbusinessexpe ownbusinessmarket ownbusinessmanpower, replace
+
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values ownbusinessinterested yesno
+label values ownbusinesseduc yesno
+label values ownbusinessexpe yesno
+label values ownbusinessmarket yesno
+label values ownbusinessmanpower yesno
+
 save"dta\B_SE3", replace
 
 
 ********** SE 4
 use"dta\B34", clear
+
+*Rename
 rename CodeIDmember INDID2010
 rename C dummybusinesslabourers
 rename D namebusinesslabourer
@@ -1015,11 +1215,29 @@ rename I businesslabourerbonus
 rename J businesslabourerinsurance
 rename K businesslabourerpension
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define relation 1"Colleague" 2"Relative" 3"Labour" 4"Political" 5"Religious" 6"Neighbour" 7"SHG" 8"Businessman" 9"WKP" 10"Financial" 11"Bank" 12"Don't know him" 13"Traditional" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define caste 1"Vanniyar" 2"SC" 3"Arunthatiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"" 12"Muthaliyar" 13"Kulalar" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define worktypejob 1"Permanent" 2"Temporary" 3"Seasonal" 66"Irrelevant" 77"Other" 88"DK" 99"NR" 
+label define wagetype 1"Daily" 2"Weekly" 3"Monthly" 4"Piece rate" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values relationshipbusinesslabourer relation
+label values castebusinesslabourer caste
+label values dummybusinesslabourers yesno
+label values businesslabourerbonus yesno
+label values businesslabourerinsurance yesno
+label values businesslabourerpension yesno
+label values businesslabourertypejob worktypejob
+label values businesslabourerwagetype wagetype
+
 save"dta\B_SE4", replace
 
 
 ********** SE 5
 use"dta\B35", clear
+
+*Rename
 rename CodeIDmember INDID2010
 rename C creditsell
 rename D creditperiod
@@ -1027,22 +1245,42 @@ rename E creditcope
 rename F creditpercentage
 rename G creditbuy
 
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define creditsell 1"Never" 2"Time to time" 3"very often" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define creditperiod 1"One week" 2"One month" 3"Seasonal duration" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label define creditcope 1"Add the interest on the selling price" 2"Usual practice" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values creditsell creditsell
+label values creditperiod creditperiod
+label values creditcope creditcope
+label values creditbuy yesno
+
 save"dta\B_SE5", replace
 
 
 
 ********** SE 6
 use"dta\B36", clear
+
+*Rename
 rename CodeIDmember INDID2010
 rename C dummypastbusiness
 rename D pastbusinesstype
 rename E pastbusinessreasonstopped
+
+*Label
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values dummypastbusiness yesno
 
 save"dta\B_SE6", replace
 
 
 ********** SJ 1
 use"dta\B37", clear
+
+*Rename
 rename B INDID2010
 rename C joblocation
 rename D jobdistance
@@ -1053,6 +1291,8 @@ rename H relationemployer
 rename I salariedjobtype
 rename J salariedjobtype2
 rename K salariedwagetype
+
+*Label
 
 save"dta\B_SJ1", replace
 
