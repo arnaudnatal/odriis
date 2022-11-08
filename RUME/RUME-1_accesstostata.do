@@ -43,12 +43,18 @@ save"dta\B`i'", replace
 
 
 
+
+
+
+
+
+
+
+
+
 ****************************************
 * Rename var
 ****************************************
-
-
-
 
 
 ********** Code indiv
@@ -216,6 +222,7 @@ duplicates tag HHID2010 INDID2010, gen(tag)
 ta HHID2010 if tag==1
 sort HHID2010
 drop tag
+ta pubservfield
 
 bysort HHID2010 INDID2010: gen n=_n
 reshape wide pubservfield pubservduration pubservpost pubservpayment, i(HHID2010 INDID2010) j(n)
@@ -238,27 +245,30 @@ use"dta\B5", clear
 rename ACodeIdmember INDID2010
 rename BEvents1 membershipsevents
 rename CWhere1 membershipsplace
-rename BEvents2 membershipseventstwo
-rename CWhere2 membershipsplacetwo
+rename BEvents2 membershipsevents2
+rename CWhere2 membershipsplace2
 rename DHowmanytime membershipsduration
 
 *Label
 label define events 1"Political meeting" 2"Trade union activity" 3"Demonstration" 4"Functions/anniversary" 5"Village/area association meeting" 6"Caste association meeting" 7"Meet with officials" 8"None" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
 
 label values membershipsevents events
-label values membershipseventstwo events
+label values membershipsevents2 events
 
 
 *Clean
 drop if INDID2010==""
 duplicates report HHID2010 INDID2010
 duplicates tag HHID2010 INDID2010, gen(tag)
-ta HHID2010 if tag==1
-sort HHID2010
+sort tag HHID2010
+duplicates drop
+*
+replace membershipsevents2=1 if HHID2010=="RAMPO27" & INDID2010=="F1"
+replace membershipsplace2="MADURAI" if HHID2010=="RAMPO27" & INDID2010=="F1"
+drop if HHID2010=="RAMPO27" & membershipsplace=="MADURAI" & membershipsplace2=="MADURAI"
 drop tag
-
-bysort HHID2010 INDID2010: gen n=_n
-reshape wide membershipsevents membershipsplace membershipseventstwo membershipsplacetwo membershipsduration, i(HHID2010 INDID2010) j(n)
+*
+duplicates report HHID2010 INDID2010
 
 save"dta\B_memberships", replace
 
@@ -289,12 +299,9 @@ label values membershipseventsasso asso
 drop if INDID2010==""
 duplicates report HHID2010 INDID2010
 duplicates tag HHID2010 INDID2010, gen(tag)
-ta HHID2010 if tag==1
-sort HHID2010
+sort tag HHID2010
+duplicates drop
 drop tag
-
-bysort HHID2010 INDID2010: gen n=_n
-reshape wide membershipseventsasso membershipsassoname membershipsdurationasso, i(HHID2010 INDID2010) j(n)
 
 save"dta\B_membershipsasso", replace
 
