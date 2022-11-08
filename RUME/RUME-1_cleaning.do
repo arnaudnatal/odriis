@@ -44,10 +44,932 @@ save"dta\B`i'", replace
 
 
 ****************************************
-* HH level
+* Rename var
 ****************************************
+********** Code indiv
+use"dta\B43", clear
+rename CodeIDMember INDID2010
+rename Personinvolved individ
+
+save"dta\B_INDIDindiv", replace
+
+
+********** Intro
+use"dta\B1", clear
+rename B villagename
+rename C villagearea
+rename D householdid
+rename E address
+rename F caste
+rename G castecat
+rename H religion
+rename I comefrom
+rename J livingvillage
+rename _8Villageout outsider
+
+save"dta\B_intro", replace
+
+
+********** Family members
+use"dta\B2", clear
+rename ACodeidmember INDID2010
+rename BName name
+rename CMaleFemale sex
+rename DRelation relationshiptohead
+rename EAge age
+rename FStay livinghome
+rename GEducation classcompleted
+rename HStudentatpresent studentpresent
+rename ISkills typeeducation
+drop Nuclearfamily RatioEmployment
+
+save"dta\B_family", replace
+
+
+********** Occupations
 use"dta\B3", clear
-rename
+rename ACodeidmember INDID2010
+rename BPersoninvolved individ
+rename COccupation occupationname
+rename COccupationCode2 kindofwork
+rename DAnnualIncome annualincome
+rename G stopworking
+
+drop if kindofwork==10
+
+save"dta\B_occupations", replace
+
+
+********** Pub serv work
+use"dta\B4", clear
+rename ACodeidmember INDID2010
+rename BPersoninvolved individ
+rename CField pubservfield
+rename DSincehowlong pubservduration
+rename EDesignationpost pubservpost
+rename FPaid pubservpayment
+
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates tag HHID2010 INDID2010, gen(tag)
+ta HHID2010 if tag==1
+sort HHID2010
+drop tag
+
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide pubservfield pubservduration pubservpost pubservpayment, i(HHID2010 INDID2010) j(n)
+
+save"dta\B_pubservwork", replace
+
+
+********** Memberships
+use"dta\B5", clear
+rename ACodeIdmember INDID2010
+rename BEvents1 membershipsevents
+rename CWhere1 membershipsplace
+rename BEvents2 membershipseventstwo
+rename CWhere2 membershipsplacetwo
+rename DHowmanytime membershipsduration
+
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates tag HHID2010 INDID2010, gen(tag)
+ta HHID2010 if tag==1
+sort HHID2010
+drop tag
+
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide membershipsevents membershipsplace membershipseventstwo membershipsplacetwo membershipsduration, i(HHID2010 INDID2010) j(n)
+
+save"dta\B_memberships", replace
+
+
+
+********** Memberships asso
+use"dta\B6", clear
+rename B INDID2010
+rename C individ
+rename D membershipseventsasso
+rename E membershipsassoname
+rename F membershipsdurationasso
+
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates tag HHID2010 INDID2010, gen(tag)
+ta HHID2010 if tag==1
+sort HHID2010
+drop tag
+
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide membershipseventsasso membershipsassoname membershipsdurationasso, i(HHID2010 INDID2010) j(n)
+
+save"dta\B_membershipsasso", replace
+
+
+
+********** Expenses
+use"dta\B7", clear
+rename FoodexpensesweekRs foodexpenses
+rename EducationexpensesyearRs educationexpenses
+rename HealthexpensesyearRs healthexpenses
+rename CeremoniesexpensesyearRs ceremoniesexpenses
+rename DeathexpensesyearRs deathexpenses
+
+save"dta\B_expenses", replace
+
+
+********** Loans
+use"dta\B9", clear
+rename B loanid
+rename C loanreasongiven
+rename D lonreasongiven_str
+rename E loanlender
+rename F loanlendercat
+rename G lenderrelatives
+rename H lenderscaste
+rename I lenderfrom
+rename J lenderrelation
+rename K otherlenderservices
+rename L otherlenderservices2 
+rename M loanamount
+rename N loanbalance
+rename O loansettled
+rename P loandate
+rename Q loandatemonth
+rename R loandateyear
+
+save"dta\B_loans", replace
+
+
+
+********** Main loans
+use"dta\B10", clear
+rename B loanid
+rename C loanlender2
+rename D lendername
+rename E lenderscaste2
+rename F lenderrelation2
+rename G lenderrelatives2
+rename H otherlenderservices3
+rename I otherlenderservices4
+rename J borrowerservices
+rename K responsibleforthecredit1
+rename L responsibleforthecredit2
+rename M responsibleforthecredit3
+rename N loanutilisation
+rename O loanreasondetails
+rename P loaneffectivereasondetails
+rename Q effectiveamount
+rename R effectivereceived
+rename S amountreceivedmanage
+rename T organiseexpense1
+rename U organiseexpense2
+rename V plantorepay1
+rename W plantorepay2
+rename X plantorepay3
+rename Y timegetcredit
+rename Z amountgetcredit
+rename AA timewentgetcredit
+rename AB datecredittaken
+rename AC datecredittakenmonth
+rename AD datecredittakenyear
+rename AE periodwaited
+rename AF durationgivenbyyou
+rename AG durationgivenbymoneylender
+rename AH durationtook
+rename AI dummyinterest
+rename AJ interestloan
+rename AK interestfrequency 
+rename AL interestpaid
+rename AM principalpaid
+rename AN loansettled2
+rename AO dummyrecommendation
+rename AP dummyguarantor
+rename AQ recommenddetailscaste
+rename AR guarantordetailscaste
+rename AS recommendloanrelation
+rename AT guarantorloanrelation
+rename AU samepersonreco
+rename AV samepersonguarantor
+rename AW dummyguarantee
+rename AX loanproductpledgecat
+rename AY loanproductpledge
+rename AZ loanproductpledgeamount
+rename BA guarantee
+rename BB guaranteetype
+rename BC totalrepaidprincipal
+rename BD totalrepaiddummyinterest
+rename BE totalrepaidinterest
+rename BF repayduration1
+rename BG repaydecision
+rename BH termsofrepayment
+rename BI problemrepayment
+rename BJ repaysoldamount
+rename BK repaysoldproduct1
+rename BL repaysoldproduct2
+rename BM repaycreditamount
+rename BN dummyrepaytakejob
+rename BO repaytakejob
+rename BP repaywhotakejob1
+rename BQ repaywhotakejob2
+rename BR repaywhotakejob3
+rename BS dummysettleloanworkmore
+rename BT settleloanworkmore
+rename BU settleloanwhoworkmore1
+rename BV settleloanwhoworkmore2
+rename BW settleloanwhoworkmore3
+rename BX helptosettleloan
+rename BY helptosettleloanrelatives
+rename BZ problemdelayrepayment
+rename CA lenderaction
+rename CB loanfromthesameperson
+
+save"dta\B_mainloans", replace
+
+
+********** Lenders
+use"dta\B11", clear
+rename B creditid
+rename C mltype
+rename D mlfrequency
+rename E mlaction1
+rename F mlaction2
+rename G mlaction3
+rename H mlcontinue
+rename I mlstop
+rename J mlstopyear
+rename K mlnberasked
+rename L mlstopreason
+rename M mlstrength1
+rename N mlstrength2
+rename O mlstrength3
+rename P mlweakness1
+rename Q mlweakness2
+rename R mlweakness3
+
+sort HHID2010 creditid
+
+save"dta\B_lenders", replace
+
+
+
+********** Credit on product
+use"dta\B12", clear
+rename B productname
+rename C productlender
+rename D productloanamount
+rename E productloansettled
+
+sort HHID2010
+duplicates report HHID2010
+drop if productname=="No product"
+duplicates report HHID2010
+
+label define productlender
+label values productlender productlender
+
+label define productloansettled
+label values productloansettled productloansettled
+
+bysort HHID2010: gen n=_n
+ta n
+
+reshape wide productname productlender productloanamount productloansettled, i(HHID2010) j(n)
+
+save"dta\B_creditproduct", replace
+
+
+
+********** Lend to other
+use"dta\B13", clear
+rename B INDID2010
+rename C borrowerscaste
+rename D relationwithborrower
+rename E amountlent
+rename F interestlending
+rename G purposeloanborrower
+rename H problemrepayment
+
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates tag HHID2010 INDID2010, gen(tag)
+ta HHID2010 if tag==1
+sort HHID2010
+drop tag
+
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide borrowerscaste relationwithborrower amountlent interestlending purposeloanborrower problemrepayment, i(HHID2010 INDID2010) j(n)
+
+save"dta\B_lendtoother", replace
+
+
+
+********** Outstanding
+use"dta\B14", clear
+rename CodeIDloan loanid
+rename Balance loanbalance2
+
+save"dta\B_outstanding", replace
+
+
+
+********** Given reco
+use"dta\B15", clear
+rename B recommendgivenlist
+rename C recommendgivenrelation
+rename D recommendgivencaste
+rename E dummyrecommendback
+rename F recommendgivenlender
+rename G recommendgivenlendercaste
+
+duplicates report HHID2010
+bysort HHID2010: gen n=_n
+
+reshape wide recommendgivenlist recommendgivenrelation recommendgivencaste dummyrecommendback recommendgivenlender recommendgivenlendercaste, i(HHID2010) j(n)
+
+save"dta\B_givenreco", replace
+
+
+
+********** Received reco
+use"dta\B16", clear
+rename B dummyrecommendrefuse
+rename C reasonrefuserecommendcat
+rename D reasonrefuserecommend
+rename E repaycreditpersoreco
+rename F repaycreditpersorecoamount
+rename G repaycreditpersorecorelation
+rename H repaycreditpersorecocaste
+rename I repaycreditpersorecoborrower
+rename J repaycreditpersorecomanage
+rename K receivereco
+rename L receiverecoreason
+
+duplicates report HHID2010
+
+save"dta\B_receivedreco", replace
+
+
+********** Chit
+use"dta\B17", clear
+rename ChitFund dummychitfund
+rename C INDID2010
+rename D chitfundtype
+rename E durationchit
+rename F nbermemberchit
+rename G chitfundpayment
+rename H chitfundamount
+
+duplicates report HHID2010 INDID2010
+bysort HHID2010 INDID2010: gen n=_n
+
+reshape wide chitfundtype durationchit nbermemberchit chitfundpayment chitfundamount, i(HHID2010 INDID2010) j(n)
+
+save"dta\B_chit", replace
+
+
+********** Savings
+use"dta\B18", clear
+rename B dummysavingaccount
+rename C INDID2010
+rename D savingsbankname
+rename E savingsbankplace
+rename F savingsamount
+rename G savingspurposeone
+rename H savingspurposetwo
+rename I dummydebitcard
+rename J dummycreditcard
+
+duplicates report HHID2010 INDID2010
+bysort HHID2010 INDID2010: gen n=_n
+
+reshape wide savingsbankname savingsbankplace savingsamount savingspurposeone savingspurposetwo dummydebitcard dummycreditcard, i(HHID2010 INDID2010) j(n)
+
+save"dta\B_savings", replace
+
+
+********** Gold
+use"dta\B19", clear
+rename B goldquantity
+rename C goldquantitypledge
+rename D goldamountpledge
+
+duplicates report HHID2010
+
+save"dta\B_gold", replace
+
+
+********** Insurance
+use"dta\B20", clear
+rename B dummyinsurance
+rename C INDID2010
+rename D insurancename
+rename E insurancetypetwo
+rename F insurancebenefit
+rename G insurancejoineddate
+
+duplicates report HHID2010 INDID2010
+bysort HHID2010 INDID2010: gen n=_n
+
+reshape wide insurancename insurancetypetwo insurancebenefit insurancejoineddate, i(HHID2010 INDID2010) j(n)
+
+save"dta\B_insurance", replace
+
+
+********** House
+use"dta\B21", clear
+rename B house
+rename C howbuyhouse1
+rename D howbuyhouse2
+rename E howbuyhouse3
+rename F rentalhouse
+rename G housevalue
+rename H housetype
+rename I houseroom
+
+save"dta\B_house", replace
+
+
+********** Other facilities
+use"dta\B22", clear
+rename B electricity 
+rename C water
+rename D housetitle
+rename E ownotherhouse
+rename F otherhouserent
+rename G otherhouserentcat
+
+save"dta\B_otherfacilities", replace
+
+
+********** Livestock
+use"dta\B23", clear
+rename B dummylivestock
+rename C livestocknb_cow
+rename D livestockprice_cow
+rename E livestockuse1_cow
+rename F livestockuse2_cow
+rename G livestockuse3_cow
+rename H livestocknb_goat
+rename I livestockprice_goat
+rename J livestockuse1_goat
+rename K livestockuse2_goat
+rename L livestockuse3_goat
+rename M dummycattleloss
+rename N cattlelossnb
+rename O howlost
+rename P cattlelossamount
+rename Q cattleinsurance
+rename R cattleinsuranceamount
+rename S dummymedicalexpenses
+rename T medicalexpensesamount
+rename U notinterestedrearing1
+rename V notinterestedrearingreason1
+rename W notinterestedrearing2
+rename X notinterestedrearingreason2
+rename Y interestedrearing1
+rename Z interestedrearingreason1
+rename AA interestedrearing2
+rename AB interestedrearingreason2
+
+duplicates report HHID2010
+
+save"dta\B_livestock", replace
+
+
+********** Land
+use"dta\B24", clear
+duplicates report HHID2010
+rename B ownland
+rename C wetland
+rename D landsize
+rename E waterfromlandone
+rename F waterfromlandtwo
+
+bysort HHID2010: gen n=_n
+
+reshape wide ownland wetland landsize waterfromlandone waterfromlandtwo, i(HHID2010) j(n)
+
+*As NEEMSIS
+gen ownland=.
+replace ownland=0 if ownland1!=1 | ownland2!=1 | ownland3!=1
+replace ownland=1 if ownland1==1 | ownland2==1 | ownland3==1
+gen sizeownland=""
+replace sizeownland=landsize1 if ownland1==1
+replace sizeownland=landsize2 if ownland2==1
+replace sizeownland=landsize3 if ownland3==1
+gen drywetownland=.
+replace drywetownland=wetland1 if ownland1==1
+replace drywetownland=wetland2 if ownland2==1
+replace drywetownland=wetland3 if ownland3==1
+gen waterfromownland=.
+replace waterfromownland=waterfromlandone1 if ownland1==1
+replace waterfromownland=waterfromlandtwo1 if ownland1==1
+replace waterfromownland=waterfromlandone2 if ownland2==1
+replace waterfromownland=waterfromlandtwo2 if ownland2==1
+replace waterfromownland=waterfromlandone3 if ownland3==1
+replace waterfromownland=waterfromlandtwo3 if ownland3==1
+
+gen leaseland=.
+replace leaseland=0 if ownland1!=2 | ownland2!=2 | ownland3!=2
+replace leaseland=1 if ownland1==2 | ownland2==2 | ownland3==2
+gen sizeleaseland=""
+replace sizeleaseland=landsize1 if ownland1==2
+replace sizeleaseland=landsize2 if ownland2==2
+replace sizeleaseland=landsize3 if ownland3==2
+gen drywetleaseland=.
+replace drywetleaseland=wetland1 if ownland1==2
+replace drywetleaseland=wetland2 if ownland2==2
+replace drywetleaseland=wetland3 if ownland3==2
+gen waterfromleaseland=.
+replace waterfromleaseland=waterfromlandone1 if ownland1==2
+replace waterfromleaseland=waterfromlandtwo1 if ownland1==2
+replace waterfromleaseland=waterfromlandone2 if ownland2==2
+replace waterfromleaseland=waterfromlandtwo2 if ownland2==2
+replace waterfromleaseland=waterfromlandone3 if ownland3==2
+replace waterfromleaseland=waterfromlandtwo3 if ownland3==2
+
+*Check if it is good
+
+
+
+*Clean
+drop ownland1 wetland1 landsize1 waterfromlandone1 waterfromlandtwo1 ownland2 wetland2 landsize2 waterfromlandone2 waterfromlandtwo2 ownland3 wetland3 landsize3 waterfromlandone3 waterfromlandtwo3
+
+save"dta\B_land", replace
+
+
+********** Crops
+use"dta\B25", clear
+rename B productlist
+rename C productacre
+rename D producttypeland
+rename E productnbbags
+rename F productpricebag
+rename G productpricesold
+rename H productexpenses
+rename I productlabourcost
+
+duplicates report HHID2010
+bysort HHID2010: gen n=_n
+duplicates tag HHID2010 productlist, gen(tag)
+sort tag HHID2010
+drop tag
+
+reshape wide productlist productacre producttypeland productnbbags productpricebag productpricesold productexpenses productlabourcost, i(HHID2010) j(n)
+
+save"dta\B_crops", replace
+
+
+********** Land purchased
+use"dta\B26", clear
+rename B dummylandpurchased
+rename C landpurchasedacres
+rename D landpurchasedamount
+rename E landpurchasedhowbuy
+rename F otherproductname
+rename G otherproductsold
+rename H otherproductown
+rename I dummyleasedland
+rename J landleasername
+rename K landleasercaste
+rename L landleaserrelation
+
+duplicates report HHID2010
+bysort HHID2010: gen n=_n
+
+reshape wide dummylandpurchased landpurchasedacres landpurchasedamount landpurchasedhowbuy otherproductname otherproductsold otherproductown dummyleasedland landleasername landleasercaste landleaserrelation, i(HHID2010) j(n)
+
+save"dta\B_landpurchlease", replace
+
+
+********** Land 2
+use"dta\B27", clear
+rename B dummyleasingland
+rename C landleasingname
+rename D landleasingcaste
+rename E landleasingrelation
+rename F productlistintstop
+rename G productintstop
+rename H productintstopreason
+rename I productintstopyear
+
+save"dta\B_landleasecrops", replace
+
+
+********** Land 3
+use"dta\B28", clear
+rename B dummylabourers
+rename C productworkers
+rename D productlabourwage
+rename E productoriginlabourers
+rename F productcastelabourers1
+rename G productcastelabourers2
+rename H productcastelabourers3
+
+save"dta\B_labourers", replace
+
+
+********* Farm equipment
+use"dta\B29", clear
+rename AEquipment equipmentlist
+rename BHowmany equipmentnb
+rename CWhenbuy equipementyear
+rename DHowpay equipmentpay
+rename ECreditfrom equipmentlender
+rename FCost equipmentcost
+rename GPledge equipmentpledged
+
+save"dta\B_farmequipment", replace
+
+
+********** Goods
+use"dta\B30", clear
+rename AGoods listgoods
+rename BNber numbergoods
+rename CYearofpurchase goodyearpurchased
+rename DPaymenttype goodbuying
+
+save"dta\B_goods", replace
+
+
+
+********** SE 1
+use"dta\B31", clear
+rename B INDID2010
+rename C kindselfemployment
+rename D businesscastebased
+rename E yearestablishment
+rename F businessamountinvest
+rename G businesssourceinvest
+rename H businesslender
+rename I relativesbusinesslender
+rename J castebusinesslender
+rename K lossbusinessinvest
+rename L businessskill
+
+save"dta\B_SE1", replace
+
+
+********** SE 2
+use"dta\B32", clear
+rename CodeIDmember INDID2010
+rename C goodincomeperiod
+rename D goodincomeperiodnbmonth
+rename E goodincomeamount
+rename F averageincomeperiod
+rename G averageincomeperiodnbmonth
+rename H averageincomeperiodamount
+rename I lowincomeperiod
+rename J lowincomeperiodnbmonth
+rename K lowincomeperiodamount
+
+save"dta\B_SE2", replace
+
+
+********** SE 3
+use"dta\B33", clear
+rename CodeIDMember INDID2010 
+rename C ownbusinessinterested
+rename D ownbusinesstype
+rename E ownbusinessinvest
+rename F ownbusinessinvestamount
+rename G ownbusinesseduc
+rename H ownbusinessexpe
+rename I ownbusinessmarket
+rename J ownbusinessmanpower
+
+save"dta\B_SE3", replace
+
+
+********** SE 4
+use"dta\B34", clear
+rename CodeIDmember INDID2010
+rename C dummybusinesslabourers
+rename D namebusinesslabourer
+rename E relationshipbusinesslabourer
+rename F castebusinesslabourer
+rename G businesslabourertypejob
+rename H businesslabourerwagetype
+rename I businesslabourerbonus
+rename J businesslabourerinsurance
+rename K businesslabourerpension
+
+save"dta\B_SE4", replace
+
+
+********** SE 5
+use"dta\B35", clear
+rename CodeIDmember INDID2010
+rename C creditsell
+rename D creditperiod
+rename E creditcope
+rename F creditpercentage
+rename G creditbuy
+
+save"dta\B_SE5", replace
+
+
+
+********** SE 6
+use"dta\B36", clear
+rename CodeIDmember INDID2010
+rename C dummypastbusiness
+rename D pastbusinesstype
+rename E pastbusinessreasonstopped
+
+save"dta\B_SE6", replace
+
+
+********** SJ 1
+use"dta\B37", clear
+rename B INDID2010
+rename C joblocation
+rename D jobdistance
+rename E kindsalariedjob
+rename F kindsalariedjobcat
+rename G casteemployer
+rename H relationemployer
+rename I salariedjobtype
+rename J salariedjobtype2
+rename K salariedwagetype
+
+save"dta\B_SJ1", replace
+
+
+********* SJ 2
+use"dta\B38", clear
+rename IDMember INDID2010 
+rename C salariedjobdays
+rename D salariedjobsalary
+rename E salariedjobpension
+rename F salariedjobbonus
+rename G salariedjobinsurance
+rename H salariedjobtenure
+rename I sjdummyadvance
+rename J sjadvancebalance
+rename K sjadvanceamount
+rename L salariedjobhow
+rename M salariedjobhowknow
+
+save"dta\B_SJ2", replace
+
+
+********** Crisis
+use"dta\B39", clear
+rename B crisislostjob 
+rename C crisislesswork
+rename D crisiskindofwork
+rename E crisislocation1
+rename F crisislocation2
+
+save"dta\B_crisis", replace
+
+
+
+********** Migration
+use"dta\B40", clear
+rename B dummymigration
+rename C INDID2010
+rename D migrationduration
+rename E migrationdurationmonth
+rename F migrationplace
+rename G migrationdistance
+rename H migrationusually
+rename I migrationtravelcost
+rename J migrationtravelpayment
+rename K migrationjoblist
+rename L migrationtenure
+rename M migrationfindjob
+rename N migrationhelped
+rename O migrationhelpedrelatives
+rename P migrationjobtype
+rename Q migrationjobtype2
+rename R migrationwagetype
+rename S dummyadvance
+rename T migrationadvanceprovider
+rename U migrationadvanceamount
+rename V dummyadvancebalance
+rename W migrationsalary
+rename X migrationpension
+rename Y migrationbonus
+rename Z migrationinsurance
+
+save"dta\B_migration", replace
+
+
+********** Remittances received
+use"dta\B41", clear
+rename B dummyremrec
+rename C remrecsourcename1
+rename D remrecourcerelation
+rename E remrecsourceplace
+rename F remrecfrequency
+rename G remrectotalamount
+rename H remrecproduct
+rename I remrectotalvalue
+rename J remrechow
+rename K remrecreduc
+
+save"dta\B_remrec", replace
+
+
+
+********** Remittances sent
+use"dta\B42", clear
+rename B dummyremsent
+rename CodeIDmember INDID2010
+rename D individ
+rename E remsentlocation
+rename F remsentname1 
+rename G remsenttotalamount
+rename H remsentfrequency
+
+
+save"dta\B_remsent", replace
+****************************************
+* END
+
+
+
+
+
+
+
+****************************************
+* Merge all
+****************************************
+cd "$directory\dta"
+
+********** Indiv level
+use"B_family", clear
+merge 1:1 HHID2010 INDID2010 using "B_pubservwork"
+
+merge 1:1 HHID2010 INDID2010 using "B_memberships"
+
+merge 1:1 HHID2010 INDID2010 using "B_membershipsasso"
+
+merge 1:1 HHID2010 INDID2010 using "B_lendtoother"
+
+merge 1:1 HHID2010 INDID2010 using "B_chit"
+
+merge 1:1 HHID2010 INDID2010 using "B_savings"
+
+merge 1:1 HHID2010 INDID2010 using "B_insurance"
+
+
+********** HH
+use"B_intro", clear
+merge 1:1 HHID2010 using "B_expenses"
+drop _merge
+
+merge 1:1 HHID2010 using "B_creditproduct"
+drop _merge
+
+merge 1:1 HHID2010 using "B_givenreco"
+
+merge 1:1 HHID2010 using "B_receivedreco"
+
+merge 1:1 HHID2010 using "B_gold"
+
+merge 1:1 HHID2010 using "B_house"
+
+merge 1:1 HHID2010 using "B_otherfacilities"
+
+merge 1:1 HHID2010 using "B_livestock"
+
+merge 1:1 HHID2010 using "B_land"
+
+merge 1:1 HHID2010 using "B_crops"
+
+merge 1:1 HHID2010 using "B_landpurchlease"
+
+
+
+********** Occupations
+use"B_occupations", clear
+
+
+
+
+
+********** Loans
+use"B_loans", clear
+
+merge 1:1 HHID2010 loanid using "B_mainloans"
+
+
+
+********** Lenders
+use"B_lenders", clear
+
+
+
+
+
+
+****************************************
+* END
 
 
 
