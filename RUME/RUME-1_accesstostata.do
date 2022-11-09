@@ -59,8 +59,28 @@ save"dta\B`i'", replace
 
 ********** Code indiv
 use"dta\B43", clear
+
+*Rename
 rename CodeIDMember INDID2010
 rename Personinvolved individ
+
+*Label
+label define family 1"Head" 2"Wife" 3"Mother" 4"Father" 5"Son" 6"Daughter" 7"Daughter-in-law" 8"Son-in-law" 9"Sister" 10"Mother-in-law" 11"Father-in-law" 12"Brother elder" 13"Brother younger" 14"Grand children" 15"Nobody" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+
+label values individ family
+
+*Clean
+duplicates report
+duplicates drop
+duplicates tag HHID2010 INDID2010, gen(tag)
+sort tag HHID2010 INDID2010
+bysort HHID2010: egen sumtag=sum(tag)
+sort sumtag HHID2010
+*
+drop if HHID2010=="RAKOR208" & INDID2010=="F2" & individ==1
+drop if HHID2010=="ADSEM123" & INDID2010=="F1" & individ==6
+drop tag sumtag
+duplicates report HHID2010 INDID2010
 
 save"dta\B_INDIDindiv", replace
 
@@ -153,6 +173,22 @@ label values education education
 label values studentpresent yesno
 label values typeeducation typeeducation
 
+*Clean
+duplicates report HHID2010 INDID2010
+duplicates tag HHID2010 INDID2010, gen(tag)
+bysort HHID2010: egen sumtag=sum(tag)
+sort sumtag HHID2010 INDID2010
+
+*replace INDID2010="F1" if name=="SAKTHIVEL" & HHID2010=="VENGP165"
+replace INDID2010="F5" if name=="JAYARAMAN" & HHID2010=="VENGP165"
+*replace INDID2010="F3" if name=="SIVAKAMI" & HHID2010=="VENGP165"
+replace INDID2010="F6" if name=="SUGUNA" & HHID2010=="VENGP165"
+*replace INDID2010="F5" if name=="SIVAKUMAR" & HHID2010=="VENGP165"
+*replace INDID2010="F6" if name=="ARUN KUMAR" & HHID2010=="VENGP165"
+
+drop tag sumtag
+duplicates report HHID2010 INDID2010
+
 save"dta\B_family", replace
 
 
@@ -226,6 +262,7 @@ ta pubservfield
 
 bysort HHID2010 INDID2010: gen n=_n
 reshape wide pubservfield pubservduration pubservpost pubservpayment, i(HHID2010 INDID2010) j(n)
+drop individ
 
 save"dta\B_pubservwork", replace
 
@@ -302,6 +339,7 @@ duplicates tag HHID2010 INDID2010, gen(tag)
 sort tag HHID2010
 duplicates drop
 drop tag
+drop individ
 
 save"dta\B_membershipsasso", replace
 
@@ -803,6 +841,11 @@ label values receivereco yesno
 
 *Clean
 duplicates report HHID2010
+sort HHID2010
+gen n =_n
+order n
+replace HHID2010="ADKU138" if n==24
+drop n
 
 save"dta\B_receivedreco", replace
 
@@ -857,7 +900,7 @@ save"dta\B_chit", replace
 
 
 
-
+/*
 ********** Savings
 use"dta\B18", clear
 
@@ -894,8 +937,11 @@ bysort HHID2010 INDID2010: gen n=_n
 
 reshape wide savingsbankname savingsbankplace savingsamount savingspurposeone savingspurposetwo dummydebitcard dummycreditcard, i(HHID2010 INDID2010) j(n)
 
-save"dta\B_savings", replace
+*Copy and paste 
+*RAKU144 - F1 and F2
 
+save"dta\B_savings", replace
+*/
 
 
 
@@ -1481,7 +1527,7 @@ save"dta\B_goods", replace
 
 
 
-
+/*
 ********** SE 1
 use"dta\B31", clear
 
@@ -1522,8 +1568,10 @@ duplicates drop
 bysort HHID2010 INDID2010: gen n=_n
 reshape wide kindselfemployment businesscastebased yearestablishment businessamountinvest businesssourceinvest businesslender relativesbusinesslender castebusinesslender lossbusinessinvest businessskill, i(HHID2010 INDID2010) j(n)
 
-save"dta\B_SE1", replace
+*Copy paste ANTMTP317
 
+save"dta\B_SE1", replace
+*/
 
 
 
@@ -1870,7 +1918,7 @@ rename M migrationfindjob
 rename N migrationhelped
 rename O migrationhelpedrelatives
 rename P migrationjobtype
-rename Q migrationjobtype2
+rename Q migrationjobtypetwo
 rename R migrationwagetype
 rename S dummyadvance
 rename T migrationadvanceprovider
@@ -1906,10 +1954,25 @@ label values migrationfindjob getjob
 label values migrationhelpedrelatives relatives
 label values migrationhelped relation
 label values migrationjobtype sjtype
-label values migrationjobtype2 migjobtype
+label values migrationjobtypetwo migjobtype
 label values migrationwagetype wagetype
 label values migrationadvanceprovider migrationadvanceprovider
 label values dummyadvancebalance yesno
+
+*Clean
+drop if INDID2010==""
+duplicates report HHID2010 INDID2010
+duplicates drop
+
+bysort HHID2010 INDID2010: gen n=_n
+reshape wide migrationduration migrationdurationmonth migrationplace migrationdistance migrationusually migrationtravelcost migrationtravelpayment migrationjoblist migrationtenure migrationfindjob migrationhelped migrationhelpedrelatives migrationjobtype migrationjobtypetwo migrationwagetype dummyadvance migrationadvanceprovider migrationadvanceamount dummyadvancebalance migrationsalary migrationpension migrationbonus migrationinsurance, i(HHID2010 INDID2010) j(n)
+
+sort HHID2010 INDID2010
+gen n=_n
+order n
+sort n
+replace INDID2010="F1" if n==262
+drop n
 
 save"dta\B_migration", replace
 
@@ -1954,7 +2017,6 @@ bysort HHID2010: gen n=_n
 reshape wide remrecsourcename1 remrecourcerelation remrecsourceplace remrecfrequency remrectotalamount remrecproduct remrectotalvalue remrechow remrecreduc, i(HHID2010) j(n)
 
 save"dta\B_remrec", replace
-
 
 
 
