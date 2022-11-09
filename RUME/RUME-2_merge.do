@@ -195,6 +195,9 @@ gen dummyworkedpastyear=1
 save"dta\B_workedpastyear", replace
 restore
 
+fre kindofwork
+
+
 save"CLEAN\RUME-occupations.dta", replace
 ****************************************
 * END
@@ -257,6 +260,19 @@ drop _merge
 recode dummyworkedpastyear (.=0)
 label values dummyworkedpastyear yesno
 order dummyworkedpastyear, after(typeeducation)
+
+
+*Clean
+rename caste jatis
+
+rename castecode caste
+
+fre education
+recode education (9=0) (8=77)
+label define educ2 0"No education" 1"Primary" 2"High school" 3"HSC" 4"Diploma" 5"Degree" 6"Post graduate" 7"Enginering" 66"Irrelevant" 77"Other"
+label values education educ2
+
+
 
 save"CLEAN\RUME-HH.dta", replace
 ****************************************
