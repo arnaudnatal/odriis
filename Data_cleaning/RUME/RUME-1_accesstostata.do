@@ -264,6 +264,12 @@ bysort HHID2010 INDID2010: gen n=_n
 reshape wide pubservfield pubservduration pubservpost pubservpayment, i(HHID2010 INDID2010) j(n)
 drop individ
 
+gen dummyservpub=1
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label values dummyservpub yesno
+
+order HHID2010 INDID2010 dummy
+
 save"dta\B_pubservwork", replace
 
 
@@ -307,6 +313,13 @@ drop tag
 *
 duplicates report HHID2010 INDID2010
 
+gen dummymemberships=1
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label values dummymemberships yesno
+
+order HHID2010 INDID2010 dummy
+
+
 save"dta\B_memberships", replace
 
 
@@ -340,6 +353,12 @@ sort tag HHID2010
 duplicates drop
 drop tag
 drop individ
+
+gen dummymembershipsasso=1
+label define yesno 0"No" 1"Yes" 66"Irrelevant" 77"Other" 88"DK" 99"NR"
+label values dummymembershipsasso yesno
+
+order HHID2010 INDID2010 dummy
 
 save"dta\B_membershipsasso", replace
 
@@ -725,6 +744,10 @@ duplicates drop
 bysort HHID2010 INDID2010: gen n=_n
 reshape wide borrowerscaste relationwithborrower amountlent interestlending purposeloanborrower problemrepayment, i(HHID2010 INDID2010) j(n)
 
+gen dummylendingmoney=1
+label values dummylendingmoney yesno
+order HHID2010 INDID2010 dummylendingmoney
+
 save"dta\B_lendtoother", replace
 
 
@@ -795,6 +818,11 @@ reshape wide recommendgivenlist recommendgivenrelation recommendgivencaste dummy
 
 duplicates report HHID2010
 
+gen dummyrecommendgiven=1
+label values dummyrecommendgiven yesno
+
+order HHID2010 dummyrecommendgiven
+
 save"dta\B_givenreco", replace
 
 
@@ -847,6 +875,12 @@ order n
 replace HHID2010="ADKU138" if n==24
 drop n
 
+gen dummyrecommendreceived=1
+label values dummyrecommendreceived yesno
+
+order HHID2010 dummyrecommendreceived
+
+
 save"dta\B_receivedreco", replace
 
 
@@ -888,6 +922,12 @@ drop tag
 bysort HHID2010 INDID2010: gen n=_n
 
 reshape wide chitfundtype durationchit nbermemberchit chitfundpayment chitfundamount, i(HHID2010 INDID2010) j(n)
+
+*
+rename dummychitfund chitfundbelongerdummy
+gen dummychitfund=chitfundbelongerdummy
+order HHID2010 INDID2010 dummychitfund chitfundbelongerdummy
+
 
 save"dta\B_chit", replace
 
@@ -1973,6 +2013,8 @@ order n
 sort n
 replace INDID2010="F1" if n==262
 drop n
+
+order HHID2010 INDID2010 dummymigration
 
 save"dta\B_migration", replace
 
