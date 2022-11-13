@@ -125,5 +125,9 @@ restore
      max |   21561.3    9561.3    7061.3
 ----------------------------------------
 */
+
+keep assets* HHID2016
+duplicates drop
+save"NEEMSIS1-assets", replace
 ****************************************
 * END

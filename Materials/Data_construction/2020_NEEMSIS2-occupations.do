@@ -31,8 +31,6 @@ grstyle set plain, box nogrid
 
 
 
-
-
 ****************************************
 * Occupations + profession + sector
 ***************************************
@@ -950,41 +948,13 @@ rename occup_sector2 sector
 
 drop occupcode2020 HHID_panel INDID_panel
 
-save"occupations", replace
+save"_tempNEEMSIS2-occup1", replace
 ****************************************
 * END
 
 
 
 
-
-**label Occupations of workers + unoccupied individuals
-/*
-rename occupcode3 occupation3
-label var occupation3 "Occupations of workers + unoccupied individuals"
-*/
-
-**Generate and label occupation variable only for population on working age (15-60 included)
-/*
-gen occupation4=.
-replace occupation4=occupation3 if age>14 & age<71
-label define occupcode 0 "Unoccupied working age individuals", modify
-label var occupation4 "Occupations of workers + unoccupied working age indiv (15-70)"
-label values occupation4 occupcode
-*/
-
-**Generate active and inactive population in the same variable
-/*
-gen working_pop=.
-replace working_pop = 1 if occupation4==.
-replace working_pop = 2 if occupation4==0	
-replace working_pop = 3 if occupation4>0 & occupation4!=.
-label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
-label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
-label values working_pop working_pop
-
-order occupation1 occupation2 occupation3 occupation4, last
-*/
 
 
 
@@ -995,7 +965,7 @@ order occupation1 occupation2 occupation3 occupation4, last
 ****************************************
 * Main occupation
 ***************************************
-use"occupations", clear
+use"_tempNEEMSIS2-occup1", clear
 /*
 Main occupation is define as the most time consumming occupation.
 */
@@ -1155,5 +1125,166 @@ count
 *1711
 restore
 
+
+drop egoid selected_occupname dummymainoccupation2 othermainoccupation2 everattendedschool classcompleted maxincome tempdum2
+
+order HHID2020 INDID2020 year age occupationid occupationname hoursayear kindofwork_new annualincome profession sector kindofwork occupation construction_coolie construction_regular construction_qualified dummymainoccupation_indiv mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv
+
+save "_tempNEEMSIS2-occup2", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Add all
+***************************************
+use"_tempNEEMSIS2-occup2", clear
+
+
+********** Add all
+merge m:1 HHID2020 INDID2020 using "$data", keepusing(name sex relationshiptohead villageid jatis dummyworkedpastyear livinghome dummylefthousehold)
+drop _merge
+
+
+order name age sex relationshiptohead villageid jatis dummyworkedpastyear livinghome dummylefthousehold, after(INDID2020)
+
+
+* occupcode3 includes individuals counted in working pop but not working 
+gen occupcode3=occupation 
+replace occupcode3=0 if occupationid==.
+
+label define occupcode 0 "No occupation", modify
+label values occupcode3 occupcode
+
+
+**label Occupations of workers + unoccupied individuals
+rename occupcode3 occupation3
+label var occupation3 "Occupations of workers + unoccupied individuals"
+
+**Generate and label occupation variable only for population on working age (15-60 included)
+gen occupation4=.
+replace occupation4=occupation3 if age>14 & age<71
+label define occupcode 0 "Unoccupied working age individuals", modify
+label var occupation4 "Occupations of workers + unoccupied working age indiv (15-70)"
+label values occupation4 occupcode
+
+
+**Generate active and inactive population in the same variable
+
+gen working_pop=.
+replace working_pop = 1 if occupation4==.
+replace working_pop = 2 if occupation4==0	
+replace working_pop = 3 if occupation4>0 & occupation4!=.
+label define working_pop 1 "Inactive" 2 "Unoccupied active" 3 "Occupied active", modify
+label var working_pop "Distribution of inactive and active population accord. to criteria of age 15-70"
+label values working_pop working_pop
+
+
+rename occupation3 occupa_unemployed
+rename occupation4 occupa_unemployed_15_70
+
+
+save "_tempNEEMSIS2-occup3", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+****************************************
+* Indiv + HH level
+***************************************
+use"_tempNEEMSIS2-occup3", clear
+
+*Agri vs non agri
+fre occupation
+
+gen incomeagri=.
+gen incomenonagri=.
+
+replace incomeagri=annualincome if occupation==1
+replace incomeagri=annualincome if occupation==2
+
+replace incomenonagri=annualincome if occupation==3
+replace incomenonagri=annualincome if occupation==4
+replace incomenonagri=annualincome if occupation==5
+replace incomenonagri=annualincome if occupation==6
+replace incomenonagri=annualincome if occupation==7
+
+bysort HHID2020 INDID2020: egen incomeagri_indiv=sum(incomeagri)
+bysort HHID2020 INDID2020: egen incomenonagri_indiv=sum(incomenonagri)
+
+bysort HHID2020: egen incomeagri_HH=sum(incomeagri)
+bysort HHID2020: egen incomenonagri_HH=sum(incomenonagri)
+bysort HHID2020: egen annualincome_HH=sum(annualincome)
+
+drop incomeagri incomenonagri
+
+gen shareincomeagri_indiv=incomeagri_indiv/annualincome_indiv
+gen shareincomenonagri_indiv=incomenonagri_indiv/annualincome_indiv
+gen shareincomeagri_HH=incomeagri_HH/annualincome_HH
+gen shareincomenonagri_HH=incomenonagri_HH/annualincome_HH
+
+
+*Precision
+fre occupation
+gen incagrise=annualincome if occupation==1
+gen incagricasual=annualincome if occupation==2
+gen incnonagricasual=annualincome if occupation==3
+gen incnonagriregnonquali=annualincome if occupation==4
+gen incnonagriregquali=annualincome if occupation==5
+gen incnonagrise=annualincome if occupation==6
+gen incnrega=annualincome if occupation==7
+
+foreach x in agrise agricasual nonagricasual nonagriregnonquali nonagriregquali nonagrise nrega {
+bysort HHID2020 INDID2020: egen inc`x'_indiv=sum(inc`x')
+bysort HHID2020: egen inc`x'_HH=sum(inc`x')
+}
+
+foreach x in agrise agricasual nonagricasual nonagriregnonquali nonagriregquali nonagrise nrega {
+gen shareinc`x'_indiv=inc`x'_indiv/annualincome_indiv
+gen shareinc`x'_HH=inc`x'_HH/annualincome_HH
+}
+
+
+********** Indiv level
+preserve
+keep HHID2020 INDID2020 dummyworkedpastyear mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv working_pop incomeagri_indiv incomenonagri_indiv shareincomeagri_indiv shareincomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv   
+duplicates drop
+order HHID2020 INDID2020 dummyworkedpastyear working_pop
+save"NEEMSIS2-occup_indiv", replace
+restore
+
+********** HH level
+keep HHID2020 INDID2020 dummyworkedpastyear working_pop livinghome dummylefthousehold incomeagri_HH incomenonagri_HH annualincome_HH shareincomeagri_HH shareincomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH  
+duplicates drop
+drop if livinghome==3 | livinghome==4
+drop if dummylefthousehold==1
+*Nb workers
+fre working_pop
+gen nonworker=1 if working_pop==1
+gen worker=1 if working_pop==2 | working_pop==3
+bysort HHID2020: egen nbworker_HH=sum(worker)
+bysort HHID2020: egen nbnonworker_HH=sum(nonworker)
+
+drop INDID2020 dummyworkedpastyear working_pop nonworker worker livinghome dummylefthousehold
+duplicates drop
+save"NEEMSIS2-occup_HH", replace
 ****************************************
 * END

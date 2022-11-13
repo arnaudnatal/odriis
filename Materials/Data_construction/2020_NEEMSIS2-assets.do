@@ -121,5 +121,10 @@ restore
      max |   18059.4    5773.3    4173.3
 ----------------------------------------
 */
+
+keep assets* HHID2020
+duplicates drop
+save"NEEMSIS2-assets", replace
+
 ****************************************
 * END

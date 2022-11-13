@@ -109,5 +109,10 @@ restore
      max |   11761.5      1051       451
 ----------------------------------------
 */
+
+
+keep assets* HHID2010
+duplicates drop
+save"RUME-assets", replace
 ****************************************
 * END
