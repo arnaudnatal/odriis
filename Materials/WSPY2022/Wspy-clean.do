@@ -461,7 +461,9 @@ descogini annualincome_HH3 incomeagri_HH3 incomenonagri_HH3
 * En 2010, 21% de l'inégalité totale est liée aux activités agri, 79% au non-agri
 * Mettre en perspective avec la part de l'agri et du non-agri dans les revenus.
 
+* Quand Sk est inf à share, alors composante inégalisatrice
 /*
+
 share = part de la compo dans l'inégalité totale
 28% de l'inega tota est lié au rev agri
 donc 72% rev non agri
