@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\MEGA\ODRIIS\Materials\WSPY2022\"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Thesis\Thesis_Labour_debt\Analysis"
 cd"$directory"
 
 ********** Database names
