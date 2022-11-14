@@ -224,26 +224,73 @@ destring caste, replace
 label define caste 1"Dalits" 2"Middle" 3"Upper"
 label values caste caste
 
-save"panel_indiv", replace
-preserve
-drop incomeagri_HH incomenonagri_HH annualincome_HH shareincomeagri_HH shareincomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop
-
-
-********** HH
-
-keep HHID_panel year caste villageid villagearea annualincome_HH shareincomeagri_HH shareincomenonagri_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH incomeagri_HH incomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH
-duplicates drop
-ta year
-
+replace sex="1" if sex=="Male"
+replace sex="2" if sex=="Female"
+destring sex, replace
+label define sex 1"Male" 2"Female"
+label values sex sex
 
 *1000
 gen annualincome1000_HH=annualincome_HH/1000
+gen annualincome1000_indiv=annualincome_indiv/1000
 
 * Recode
 replace year=1 if year==2010
 replace year=2 if year==2016
 replace year=3 if year==2020
 sort HHID_panel year
+
+save"panel_indiv_long", replace
+
+preserve
+drop incomeagri_HH incomenonagri_HH annualincome_HH shareincomeagri_HH shareincomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop annualincome1000_HH
+
+foreach x in mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv incomeagri_indiv incomenonagri_indiv shareincomeagri_indiv shareincomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv annualincome1000_indiv {
+local new=substr("`x'",1,strlen("`x'")-3)
+rename `x' `new'
+}
+
+reshape wide name age sex relationshiptohead caste villageid villagearea dummyworkedpastyear working_pop mainocc_profession_in mainocc_occupation_in mainocc_sector_in mainocc_annualincome_in mainocc_occupationname_in annualincome_in nboccupation_in incomeagri_in incomenonagri_in shareincomeagri_in shareincomenonagri_in incagrise_in incagricasual_in incnonagricasual_in incnonagriregnonquali_in incnonagriregquali_in incnonagrise_in incnrega_in shareincagrise_in shareincagricasual_in shareincnonagricasual_in shareincnonagriregnonquali_in shareincnonagriregquali_in shareincnonagrise_in shareincnrega_in annualincome1000_in, i(HHID_panel INDID_panel) j(year)
+
+foreach x in name relationshiptohead {
+gen `x'=""
+replace `x'=`x'1 if `x'=="" & `x'1!=""
+replace `x'=`x'2 if `x'=="" & `x'2!=""
+replace `x'=`x'3 if `x'=="" & `x'3!=""
+}
+foreach x in caste villageid villagearea sex{
+gen `x'=.
+replace `x'=`x'1 if `x'==. & `x'1!=.
+replace `x'=`x'2 if `x'==. & `x'2!=.
+replace `x'=`x'3 if `x'==. & `x'3!=.
+}
+destring age1 age2 age3, replace
+gen age=.
+replace age=age1 if age==. & age1!=.
+replace age=age2-6 if age==. & age2!=.
+replace age=age3-10 if age==. & age3!=.
+
+
+label values sex sex
+
+order HHID_panel INDID_panel name age sex relationshiptohead caste villageid villagearea
+
+label values caste caste
+label values villageid villageid
+label values villagearea area2
+
+drop age1 age2 age3 name1 name2 name3 sex1 sex2 sex3 relationshiptohead1 relationshiptohead2 relationshiptohead3 caste1 caste2 caste3 villageid1 villageid2 villageid3 villagearea1 villagearea2 villagearea3
+
+save"panel_indiv_wide", replace
+restore
+
+
+********** HH
+
+keep HHID_panel year caste villageid villagearea annualincome_HH shareincomeagri_HH shareincomenonagri_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH incomeagri_HH incomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH annualincome1000_HH
+duplicates drop
+ta year
+
 
 *** Reshape
 reshape wide villageid annualincome_HH shareincomeagri_HH shareincomenonagri_HH shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop annualincome1000_HH incomeagri_HH incomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH, i(HHID_panel) j(year)
@@ -259,6 +306,6 @@ sort villageid HHID_panel
 drop villageid1 villageid2 villageid3
 
 
-save"panel_HH", replace
+save"panel_HH_wide", replace
 ****************************************
 * END
