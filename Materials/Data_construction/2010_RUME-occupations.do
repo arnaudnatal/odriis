@@ -614,8 +614,6 @@ save "_tempRUME-occup3", replace
 
 
 
-
-
 ****************************************
 * Indiv + HH level
 ***************************************
@@ -635,6 +633,8 @@ replace incomenonagri=annualincome if occupation==4
 replace incomenonagri=annualincome if occupation==5
 replace incomenonagri=annualincome if occupation==6
 replace incomenonagri=annualincome if occupation==7
+replace incomenonagri=annualincome if kindofwork==9
+
 
 bysort HHID2010 INDID2010: egen incomeagri_indiv=sum(incomeagri)
 bysort HHID2010 INDID2010: egen incomenonagri_indiv=sum(incomenonagri)
