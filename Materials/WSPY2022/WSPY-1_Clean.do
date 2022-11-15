@@ -2,7 +2,7 @@
 cls
 *Arnaud NATAL
 *arnaud.natal@u-bordeaux.fr
-*April 23, 2021
+*November 14, 2022
 *-----
 *WSPY 2022
 *-----
@@ -291,6 +291,7 @@ keep HHID_panel year caste villageid villagearea annualincome_HH shareincomeagri
 duplicates drop
 ta year
 
+save"panel_HH_long", replace
 
 *** Reshape
 reshape wide villageid annualincome_HH shareincomeagri_HH shareincomenonagri_HH shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop annualincome1000_HH incomeagri_HH incomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH, i(HHID_panel) j(year)

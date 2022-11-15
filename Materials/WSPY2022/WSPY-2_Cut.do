@@ -2,7 +2,7 @@
 cls
 *Arnaud NATAL
 *arnaud.natal@u-bordeaux.fr
-*April 23, 2021
+*November 14, 2022
 *-----
 *WSPY 2022
 *-----
@@ -30,7 +30,7 @@ Mesure l'état de désordre d'un système
 Plus alpha est faible, plus GE sensible à des différences
 de revenu dans le bas de la distribution
 GE(0) = Theil L
-GE(1) = Theil T -> If everyone has the same income, equals 0: plus haut plus inégalités 
+GE(1) = Theil T -> If everyone has the same income, equals 0: plus grand plus inégalités 
 GE(2) = Moitité du coefficient de variation au carré
 Décomposable par groupe : inégalité totale peut être décomposée en une composante d’inégalité intragroupe et une composante d’inégalité intergroupe
 
@@ -62,9 +62,21 @@ twoway ///
 * L'étendue de la fonction de densité augmente avec les années.
 * On peut donc supposer que les inégalités augmentent.
 
+preserve
+use"panel_HH_long", clear
+replace annualincome1000_HH=annualincome1000_HH/12
+twoway ///
+(kdensity annualincome1000_HH if year==1 & annualincome1000_HH<80, bwidth(5)) ///
+(kdensity annualincome1000_HH if year==2 & annualincome1000_HH<80, bwidth(5)) ///
+(kdensity annualincome1000_HH if year==3 & annualincome1000_HH<80, bwidth(5))
+tabstat annualincome1000_HH, stat(n mean sd p50 min max) by(year)
+restore
+
+
 
 *** Boxplot
 graph box annualincome1000_HH1 annualincome1000_HH2 annualincome1000_HH3
+*stripplot annualincome1000_HH1 annualincome1000_HH2, box centre vertical cumul cumpr
 * On voit que la boite est de plus en plus grande, ce qui signifie que l'IQR est de plus en plus grand, donc que les inégalités augmentent.
 
 
@@ -254,6 +266,9 @@ use"panel_indiv_wide", clear
 
 
 ********** Step1: Desc
+foreach x in annualincome1000_in1 annualincome1000_in2 annualincome1000_in3 {
+replace `x'=`x'*1000/12
+}
 tabstat annualincome1000_in1 annualincome1000_in2 annualincome1000_in3, stat(n mean sd p50 min max)
 
 tabstat annualincome1000_in1 annualincome1000_in2 annualincome1000_in3, stat(n mean sd q cv)
@@ -286,12 +301,36 @@ ineqdeco annualincome1000_in2, by(sex)
 ineqdeco annualincome1000_in3, by(caste)
 ineqdeco annualincome1000_in3, by(sex)
 
+cls
+preserve
+qreg annualincome1000_in2 i.sex, q(.10)
+qreg annualincome1000_in2 i.sex, q(.25)
+qreg annualincome1000_in2 i.sex, q(.50) 
+qreg annualincome1000_in2 i.sex, q(.75)
+qreg annualincome1000_in2 i.sex, q(.90)
+restore
+
 * Gini, Lorenz
 lorenz estimate annualincome1000_in1, over(caste)
 lorenz graph, overlay
+
 pshare estimate annualincome1000_in1, over(caste) total gini
 pshare stack
 *...
+
+
+tabstat annualincome1000_in1 annualincome1000_in2 annualincome1000_in3, stat(n mean sd p50 min max) by(sex)
+
+lorenz estimate annualincome1000_in1, over(sex)
+lorenz graph, overlay
+
+lorenz estimate annualincome1000_in2, over(sex)
+lorenz graph, overlay
+
+lorenz estimate annualincome1000_in3, over(sex)
+lorenz graph, overlay
+
+
 
 
 
@@ -363,7 +402,9 @@ gen log_inc1000_2010=log(annualincome1000_in1)
 
 oaxaca annualincome1000_in1 age caste_2 caste_3, by(sex) noisily
 
+ta caste, gen(caste_)
 
+decompose annualincome1000_in1 age caste_2 caste_3, by(sex)
 
 ****************************************
 * END
