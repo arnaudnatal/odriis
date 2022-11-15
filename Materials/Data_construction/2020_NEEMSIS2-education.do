@@ -48,12 +48,7 @@ label define edulevel 3 "HSC/Diploma (11th-12th)", modify
 label define edulevel 4 "Bachelors (13th-15th)", modify
 label define edulevel 5 "Post graduate (15th and more)", modify
 label values edulevel edulevel
-tab edulevel if dummy_respondent2020==1
-tab age if edulevel==.
 replace edulevel=0 if edulevel==. & age<4
-tab edulevel livinghome, m
-
-list HHID2020 INDID2020	name age version_HH if livinghome==1 & edulevel==., clean noobs
 
 keep HHID2020 INDID2020 edulevel
 
