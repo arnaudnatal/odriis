@@ -52,6 +52,6 @@ replace edulevel=0 if edulevel==. & age<4
 
 keep HHID2020 INDID2020 edulevel
 
-save"outcomes\NNEMSIS2-education", replace
+save"outcomes\NEMSIS2-education", replace
 ****************************************
 * END
