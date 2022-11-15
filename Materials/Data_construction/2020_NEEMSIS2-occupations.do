@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\MEGA\Thesis\Thesis_Labour_debt\Analysis"
+global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
 cd"$directory"
 
 ********** Database names
@@ -948,7 +948,7 @@ rename occup_sector2 sector
 
 drop occupcode2020 HHID_panel INDID_panel
 
-save"_tempNEEMSIS2-occup1", replace
+save"_temp\NEEMSIS2-occup1", replace
 ****************************************
 * END
 
@@ -965,7 +965,7 @@ save"_tempNEEMSIS2-occup1", replace
 ****************************************
 * Main occupation
 ***************************************
-use"_tempNEEMSIS2-occup1", clear
+use"_temp\NEEMSIS2-occup1", clear
 /*
 Main occupation is define as the most time consumming occupation.
 */
@@ -1130,7 +1130,8 @@ drop egoid selected_occupname dummymainoccupation2 othermainoccupation2 everatte
 
 order HHID2020 INDID2020 year age occupationid occupationname hoursayear kindofwork_new annualincome profession sector kindofwork occupation construction_coolie construction_regular construction_qualified dummymainoccupation_indiv mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv
 
-save "_tempNEEMSIS2-occup2", replace
+save "_temp\NEEMSIS2-occup2", replace
+save "outcomes\NEEMSIS2-occupnew", replace
 ****************************************
 * END
 
@@ -1150,7 +1151,7 @@ save "_tempNEEMSIS2-occup2", replace
 ****************************************
 * Add all
 ***************************************
-use"_tempNEEMSIS2-occup2", clear
+use"_temp\NEEMSIS2-occup2", clear
 
 
 ********** Add all
@@ -1196,7 +1197,7 @@ rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
 
 
-save "_tempNEEMSIS2-occup3", replace
+save "_temp\NEEMSIS2-occup3", replace
 ****************************************
 * END
 
@@ -1210,7 +1211,7 @@ save "_tempNEEMSIS2-occup3", replace
 ****************************************
 * Indiv + HH level
 ***************************************
-use"_tempNEEMSIS2-occup3", clear
+use"_temp\NEEMSIS2-occup3", clear
 
 *Agri vs non agri
 fre occupation
@@ -1268,7 +1269,7 @@ preserve
 keep HHID2020 INDID2020 dummyworkedpastyear mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv working_pop incomeagri_indiv incomenonagri_indiv shareincomeagri_indiv shareincomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv   
 duplicates drop
 order HHID2020 INDID2020 dummyworkedpastyear working_pop
-save"NEEMSIS2-occup_indiv", replace
+save"outcomes\NEEMSIS2-occup_indiv", replace
 restore
 
 ********** HH level
@@ -1285,6 +1286,6 @@ bysort HHID2020: egen nbnonworker_HH=sum(nonworker)
 
 drop INDID2020 dummyworkedpastyear working_pop nonworker worker livinghome dummylefthousehold
 duplicates drop
-save"NEEMSIS2-occup_HH", replace
+save"outcomes\NEEMSIS2-occup_HH", replace
 ****************************************
 * END

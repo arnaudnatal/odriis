@@ -128,6 +128,6 @@ restore
 
 keep assets* HHID2016
 duplicates drop
-save"outcomes\NEEMSIS1-assets", replace
+save"NEEMSIS1-assets", replace
 ****************************************
 * END

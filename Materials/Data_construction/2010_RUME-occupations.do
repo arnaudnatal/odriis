@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\MEGA\ODRIIS\Materials\WSPY2022\"
+global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
 cd"$directory"
 
 ********** Database names
@@ -448,7 +448,7 @@ rename occupation1 profession
 rename occupation2 occupation
 rename occup_sector2 sector
 
-save"_tempRUME-occup1", replace
+save"_temp\RUME-occup1", replace
 ****************************************
 * END
 
@@ -460,7 +460,7 @@ save"_tempRUME-occup1", replace
 ****************************************
 * Main occupation
 ***************************************
-use"_tempRUME-occup1", clear
+use"_temp\RUME-occup1", clear
 /*
 Main occupation is define as the most income generating occupation.
 */
@@ -539,7 +539,8 @@ drop education
 
 order HHID2010 INDID2010 year age occupationid occupationname kindofwork annualincome profession sector kindofwork occupation construction_coolie construction_regular construction_qualified dummymainoccupation_indiv mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv
 
-save "_tempRUME-occup2", replace
+save "_temp\RUME-occup2", replace
+save "outcomes\RUME-occupnew", replace
 ****************************************
 * END
 
@@ -558,7 +559,7 @@ save "_tempRUME-occup2", replace
 ****************************************
 * Add all
 ***************************************
-use"_tempRUME-occup2", clear
+use"_temp\RUME-occup2", clear
 
 
 ********** Add all
@@ -604,7 +605,7 @@ rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
 
 
-save "_tempRUME-occup3", replace
+save "_temp\RUME-occup3", replace
 ****************************************
 * END
 
@@ -617,7 +618,7 @@ save "_tempRUME-occup3", replace
 ****************************************
 * Indiv + HH level
 ***************************************
-use"_tempRUME-occup3", clear
+use"_temp\RUME-occup3", clear
 
 *Agri vs non agri
 fre occupation
@@ -680,7 +681,7 @@ order HHID2010 INDID2010 dummyworkedpastyear working_pop
 duplicates report HHID2010 INDID2010
 duplicates list HHID2010 INDID2010
 drop if HHID2010=="VENNAT350" & INDID2010=="F1" & working_pop==2
-save"RUME-occup_indiv", replace
+save"outcomes\RUME-occup_indiv", replace
 restore
 
 ********** HH level
@@ -696,6 +697,6 @@ bysort HHID2010: egen nbnonworker_HH=sum(nonworker)
 
 drop INDID2010 dummyworkedpastyear working_pop nonworker worker livinghome
 duplicates drop
-save"RUME-occup_HH", replace
+save"outcomes\RUME-occup_HH", replace
 ****************************************
 * END

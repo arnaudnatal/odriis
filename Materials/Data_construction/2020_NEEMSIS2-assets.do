@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\MEGA\ODRIIS\Materials\WSPY2022\"
+global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
 cd"$directory"
 
 ********** Database names
@@ -124,7 +124,7 @@ restore
 
 keep assets* HHID2020
 duplicates drop
-save"NEEMSIS2-assets", replace
+save"outcomes\NEEMSIS2-assets", replace
 
 ****************************************
 * END
