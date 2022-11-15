@@ -15,8 +15,8 @@ global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construc
 cd"$directory"
 
 ********** Database names
-global data = "NEEMSIS1-HH"
-global loans = "NEEMSIS1-loans_mainloans"
+global data = "NEEMSIS2-HH"
+global loans = "NEEMSIS2-loans_mainloans"
 
 
 ********** Scheme
