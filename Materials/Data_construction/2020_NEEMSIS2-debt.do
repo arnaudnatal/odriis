@@ -85,7 +85,7 @@ replace loanamountgold2=loanamountgold if HHID2020=="uuid:fb3e15f2-aede-49d5-8ee
 
 list HHID2020 INDID2020 if loanamountgold2==48
 // 48
-*br if HHID2020=="SEM23" & INDID2020=="Ind_2"
+*br if HHID2020=="uuid:d98030a0-f814-4723-a35e-972e0eeb47783" & INDID2020=="Ind_2"
 replace loanamountgold=goldamountpledge if HHID2020=="uuid:f93966cd-7487-4ab9-992a-a61437b648ff" & INDID2020==2
 replace loanamountgold2=loanamountgold if HHID2020=="uuid:f93966cd-7487-4ab9-992a-a61437b648ff" & INDID2020==2
 
@@ -403,6 +403,25 @@ replace loanlender_rec=6 if loan_database=="GOLD"
 
 *drop if loansettled==1
 tab loanlender loan_database
+
+preserve
+use"$data", clear
+keep HHID2020 submissiondate
+duplicates drop
+save"_temp\NEEMSIS2-date", replace
+restore
+
+drop submissiondate
+merge m:1 HHID2020 using "_temp\NEEMSIS2-date"
+drop if _merge==2
+drop _merge
+
+gen submissiondate2=dofc(submissiondate) 
+format %td submissiondate2
+
+order HHID2020 submissiondate submissiondate2
+drop submissiondate
+rename submissiondate2 submissiondate
 
 save"_temp\NEEMSIS2-loans_v5.dta", replace
 ****************************************
@@ -807,21 +826,21 @@ drop temp
 
 
 ********** Principalpaid negatif
-br HHID2020 INDID2020 loanamount loanbalance2 totalrepaid2 interestpaid2 principalpaid2 th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if principalpaid2<0
+*br HHID2020 INDID2020 loanamount loanbalance2 totalrepaid2 interestpaid2 principalpaid2 th_interest interestfrequency interestloan lender4 repayduration2 loanid  months_diff  if principalpaid2<0
 
-*ici interestpaid2=6912 correspond à 24*interestloan (repayduration=27 mois, ca fait un taux d intéret total dans les clous). donc le principal remboursé  (30 000/27)*24=26667 => ce qui au bout de 24 mois nous donne bien loabbalance
-replace principalpaid2=26667 if HHID2020=="MANAM25" & INDID2020=="Ind_2" & loanid==1
-replace totalrepaid2=principalpaid2+interestpaid2 if HHID2020=="MANAM25" & INDID2020=="Ind_2" & loanid==1
+*ici interestpaid2=6912 correspond à 24*interestloan (repayduration=27 mois, ca fait un taux d intéret total dans les clous). donc le principal remboursé  (30 000/27)*24=26667 => ce qui au bout de 24 mois nous donne bien loanbalance
+replace principalpaid2=26667 if HHID2020=="uuid:54cafca1-f001-489b-ab93-c7752a13617a" & INDID2020==2 & loanid==1
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID2020=="uuid:54cafca1-f001-489b-ab93-c7752a13617a" & INDID2020==2 & loanid==1
 * interespaid correspond a 22*interestloan. principal paid en 22 mois= (30 000/24)*22=27500 => coherent avec loanbalance
-replace principalpaid2=27500 if HHID2020=="MANAM25" & INDID2020=="Ind_2" & loanid==2
-replace totalrepaid2=principalpaid2+interestpaid2 if HHID2020=="MANAM25" & INDID2020=="Ind_2" & loanid==2
+replace principalpaid2=27500 if HHID2020=="uuid:54cafca1-f001-489b-ab93-c7752a13617a" & INDID2020==2 & loanid==2
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID2020=="uuid:54cafca1-f001-489b-ab93-c7752a13617a" & INDID2020==2 & loanid==2
 *pb de 0
-replace totalrepaid2=totalrepaid*10 if HHID2020=="KUV18" & INDID2020=="Ind_1" & loanid==3
-replace principalpaid2=totalrepaid2 - interestpaid2 if HHID2020=="KUV18" & INDID2020=="Ind_1"  & loanid==3
+replace totalrepaid2=totalrepaid*10 if HHID2020=="uuid:b311d822-6486-4be6-8134-de502f98c6f7" & INDID2020==1 & loanid==3
+replace principalpaid2=totalrepaid2 - interestpaid2 if HHID2020=="uuid:b311d822-6486-4be6-8134-de502f98c6f7" & INDID2020==1  & loanid==3
 *interestloan represente très probablement le montant total payé chaque mois (principal + interet). interestpaid est coherent avec 22 mois de paiement (ie 567 INR par mois d interetà. donc principalpaid=(2650-567)*22=45826 => cohérent avec loanbalance
-replace interestloan=567 if HHID2020=="MANAM47" &	INDID2020=="Ind_3" & loanid==2
-replace principalpaid2=45826 if HHID2020=="MANAM47" &	INDID2020=="Ind_3" & loanid==2
-replace totalrepaid2=principalpaid2+interestpaid2 if HHID2020=="MANAM47" & INDID2020=="Ind_3" & loanid==2
+replace interestloan=567 if HHID2020=="uuid:333ee73e-3c9b-460f-954a-497f2c0bade4" &	INDID2020==3 & loanid==2
+replace principalpaid2=45826 if HHID2020=="uuid:333ee73e-3c9b-460f-954a-497f2c0bade4" &	INDID2020==3 & loanid==2
+replace totalrepaid2=principalpaid2+interestpaid2 if HHID2020=="uuid:333ee73e-3c9b-460f-954a-497f2c0bade4" & INDID2020==3 & loanid==2
 * des idées pour les autres ?
 
 
@@ -904,52 +923,52 @@ list loanamount3 loanbalance2 totalrepaid3 principalpaid3 interestpaid2 if test2
 /*** ci dessous j ai commencé à recoder à la main quelques cas pour lesquels loanbalance < loanamount - principalpaid 
  mais j'ai abandonné car beaucoup trop fastidieux et surtout, il se trouve que quand c est possible de retrouver les bons montants en croisant les infos, ca revient à faire le choix mentionné ci dessus 
  */
-
+*sort HHID2020 INDID2020
 *br HHID2020 INDID2020 loanamount loanbalance2 totalrepaid2 interestpaid2 principalpaid2 test th_interest interestfrequency interestloan lender4 repayduration1 repayduration2 loanid  months_diff lendername if test<-1000
 
 /*40 000/24=1667 => loanbalance serait coherent avec 10 mois de principal à payer, donc 14 déjà payés (ok vu que le pret a été contracté il y a 15 mois). donc interestpaid serait 183*14=2562 et principalpaid=230338
 mais totalrepaid serait coherent avec 10 mois remboursés (1667+183)*10
 donc on y va a la hache et on considere que loanbalance est en fait principalpaid
 */
-replace principalpaid3=loanbalance3 if HHID2020=="SEM8" &	INDID2020=="Ind_2" & loanid==5
-replace interestpaid2=totalrepaid3-principalpaid3 if HHID2020=="SEM8" & INDID2020=="Ind_2" & loanid==5
-replace loanbalance3=loanamount3-principalpaid3 if HHID2020=="SEM8" & INDID2020=="Ind_2" & loanid==5
+replace principalpaid3=loanbalance3 if HHID2020=="uuid:cfd551f7-fe2b-4ea3-99cd-4a0f10ba8a59" &	INDID2020==2 & loanid==5
+replace interestpaid2=totalrepaid3-principalpaid3 if HHID2020=="uuid:cfd551f7-fe2b-4ea3-99cd-4a0f10ba8a59" & INDID2020==2 & loanid==5
+replace loanbalance3=loanamount3-principalpaid3 if HHID2020=="uuid:cfd551f7-fe2b-4ea3-99cd-4a0f10ba8a59" & INDID2020==2 & loanid==5
 
 *censé rembourser 2600/mois ((50 000 + 24*516)/24 ), coherent avec 2 mois de remboursement: 4168 est le principal remboursé en 2 mois
-replace loanbalance3=loanamount3-loanbalance3 if HHID2020=="SEM8" & INDID2020=="Ind_2" & loanid==2
+replace loanbalance3=loanamount3-loanbalance3 if HHID2020=="uuid:cfd551f7-fe2b-4ea3-99cd-4a0f10ba8a59" & INDID2020==2 & loanid==2
 
 * loanbalance coherent avec 4 mois restant à payer ( 35 000/24)* 4= 5833. donc a déjà payé 20 mois (ok loan a été contracté il y a 23 mois). donc porincipalpaid en 20 mois=29 167. et interet 20 mois en theorie=2840 => ce qui est ok avec interestpaid
-replace principalpaid3=29167 if HHID2020=="ORA10" &	INDID2020=="Ind_2" & loanid==3
-replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="ORA10" &	INDID2020=="Ind_2" & loanid==3
+replace principalpaid3=29167 if HHID2020=="uuid:c6238723-5f23-40e2-aef5-26b21fd13d53" &	INDID2020==2 & loanid==3
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="uuid:c6238723-5f23-40e2-aef5-26b21fd13d53" &	INDID2020==2 & loanid==3
 
 *interestpaid=24*interestloan. donc si loanbalance est ok, signifie qu a payé 10 278 par mois * 24 en principal. ferait un pret de 36 mois. pas absurde.
-replace principalpaid3=10278*24 if HHID2020=="ORA15" & INDID2020=="Ind_2" & loanid==1
-replace totalrepaid3=principalpaid3+interestpaid2 if  HHID2020=="ORA15" & INDID2020=="Ind_2" & loanid==1
+replace principalpaid3=10278*24 if HHID2020=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID2020==2 & loanid==1
+replace totalrepaid3=principalpaid3+interestpaid2 if  HHID2020=="uuid:e5d9e97a-f3b9-49e1-9cde-1ad11dc43009" & INDID2020==2 & loanid==1
 
 *interestpaid coherent avec 11 mois payés. et loabalance avec 7 mois restant. => ok pour repayduration de 18 mois
-replace principalpaid3=2222*11 if HHID2020=="SEM29" &	INDID2020=="Ind_1" & loanid==1
-replace  totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="SEM29" &	INDID2020=="Ind_1" & loanid==1
+replace principalpaid3=2222*11 if HHID2020=="uuid:3c12e85b-1eff-42e2-8f3e-2084211af237" &	INDID2020==1 & loanid==1
+replace  totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="uuid:3c12e85b-1eff-42e2-8f3e-2084211af237" &	INDID2020==1 & loanid==1
 	
 *loanbalance coherent avec 10 mois restant à payer si on considere une durée classique de 24 mois. interestpaid donnerait sur 24 mois un taux à 20%, ok. 
-replace principalpaid3=1667*14 if HHID2020=="KAR28" &	INDID2020=="Ind_2" & loanid==1
-replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="KAR28" &	INDID2020=="Ind_2" & loanid==1
+replace principalpaid3=1667*14 if HHID2020=="uuid:d78ff1bf-390f-4942-a783-286f51e59d90" &	INDID2020==2 & loanid==1
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="uuid:d78ff1bf-390f-4942-a783-286f51e59d90" &	INDID2020==2 & loanid==1
 
 *loanbalance coherent avec 11 mois à payer si repayduration = 24. donnerait un taux de 27%, ok.
-replace principalpaid3=13*1667 if HHID2020=="SEM6" &	INDID2020=="Ind_2" & loanid==1
-replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="SEM6" &	INDID2020=="Ind_2" & loanid==1
+replace principalpaid3=13*1667 if HHID2020=="uuid:36242106-ac62-4b48-b1b6-9d0a1b288ab2" &	INDID2020==2 & loanid==1
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="uuid:36242106-ac62-4b48-b1b6-9d0a1b288ab2" &	INDID2020==2 & loanid==1
 	
 
 *loanbalance cogerent avec 2 mois restant à payer. avec interestpaid donnerait un taux d interet a 17%
-replace principalpaid3=2084*22 if  HHID2020=="SEM2" & INDID2020=="Ind_4" & loanid==8
-replace totalrepaid3=principalpaid3+interestpaid2 if   HHID2020=="SEM2" & INDID2020=="Ind_4" & loanid==8
+replace principalpaid3=2084*22 if  HHID2020=="uuid:d98030a0-f814-4723-a35e-972e0eeb4778" & INDID2020==4 & loanid==8
+replace totalrepaid3=principalpaid3+interestpaid2 if   HHID2020=="uuid:d98030a0-f814-4723-a35e-972e0eeb4778" & INDID2020==4 & loanid==8
 
 *loanbalance cohérent avec 7 mois restant à payer. 
-replace principalpaid3=1167*17 if loanid==2 & HHID2020=="KAR42" &	INDID2020=="Ind_2"
-replace totalrepaid3=principalpaid3+interestpaid2 if  loanid==2 & HHID2020=="KAR42" &	INDID2020=="Ind_2"
+replace principalpaid3=1167*17 if loanid==2 & HHID2020=="uuid:a459cae1-9e19-4143-8c1f-2b537f105a4f" &	INDID2020==1
+replace totalrepaid3=principalpaid3+interestpaid2 if  loanid==2 & HHID2020=="uuid:a459cae1-9e19-4143-8c1f-2b537f105a4f" &	INDID2020==1
 
 *loanbalance coherent avec3 mois restant à payer
-replace principalpaid3=1250*21 if HHID2020=="SEM2" &	INDID2020=="Ind_4" & loanid==9
-replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="SEM2" &	INDID2020=="Ind_4" & loanid==9
+replace principalpaid3=1250*21 if HHID2020=="uuid:d98030a0-f814-4723-a35e-972e0eeb4778" &	INDID2020==4 & loanid==9
+replace totalrepaid3=principalpaid3+interestpaid2 if HHID2020=="uuid:d98030a0-f814-4723-a35e-972e0eeb4778" &	INDID2020==4 & loanid==9
 
 
 
@@ -1225,7 +1244,7 @@ drop if loanamount3==66
 drop loantest loan3test
 
 
-save"NEEMSIS2-loans_v10.dta", replace
+save"_temp\NEEMSIS2-loans_v10.dta", replace
 ****************************************
 * END
 
@@ -1244,7 +1263,7 @@ save"NEEMSIS2-loans_v10.dta", replace
 ****************************************
 * ANNUALIZED
 ****************************************
-use"NEEMSIS2-loans_v10.dta", clear
+use"_temp\NEEMSIS2-loans_v10.dta", clear
 
 *****
 *Arnaud test yrate
@@ -1286,7 +1305,7 @@ Moneylenders |         7  36.95906        36  .9212121  75.42857
 ----------------------------------------------------------------
 */
 
-save"NEEMSIS2-loans_v11.dta", replace
+save"_temp\NEEMSIS2-loans_v11.dta", replace
 *************************************
 * END
 
@@ -1310,16 +1329,7 @@ save"NEEMSIS2-loans_v11.dta", replace
 ****************************************
 * IMPUTATION
 ****************************************
-use"NEEMSIS2-loans_v11.dta", clear
-
-
-*** Add income
-*drop _merge
-merge m:1 HHID2020 INDID2020 using "NEEMSIS2-HH_v16.dta", keepusing(annualincome_indiv annualincome_HH) 
-drop if _merge==2
-drop _merge
-tab loansettled
-tab householdid2020
+use"_temp\NEEMSIS2-loans_v11.dta", clear
 
 
 *** Debt service pour ML
@@ -1375,7 +1385,7 @@ replace imp1_interest_service=imp1_interest if interest_service==.
 replace imp1_interest_service=. if loansettled==1
 
 
-save"NEEMSIS2-loans_v12.dta", replace
+save"_temp\NEEMSIS2-loans_v12.dta", replace
 *************************************
 * END
 
@@ -1395,47 +1405,16 @@ save"NEEMSIS2-loans_v12.dta", replace
 ****************************************
 * Other measure
 ****************************************
-use"NEEMSIS2-loans_v12.dta", clear
+use"_temp\NEEMSIS2-loans_v12.dta", clear
 
 
-*Nb of ML/indiv/HH
-gen dummymainloans=0
-replace dummymainloans=1 if mainloanname!=""
-tab dummymainloans
 
 
-*** Nber of loan
-gen loans=1
-replace loans=. if loansettled==1
 
 
-*** Loan amount
-clonevar loanamount4=loanamount3
-replace loanamount4=. if loansettled==1
-
-*** Indiv + HH level
-foreach x in loans loanamount4 {
-bysort HHID2020 INDID2020: egen `x'_indiv=sum(`x')
-bysort HHID2020: egen `x'_HH=sum(`x')
-}
-drop loanamount4
-rename loanamount4_indiv loanamount_indiv
-rename loanamount4_HH loanamount_HH
 
 
-*** Services
-clonevar imp1_debt_service2=imp1_debt_service
-clonevar imp1_interest_service2=imp1_interest_service
-
-bysort HHID2020 INDID2020: egen imp1_ds_tot_indiv=sum(imp1_debt_service2)
-bysort HHID2020 INDID2020: egen imp1_is_tot_indiv=sum(imp1_interest_service2)
-
-bysort HHID2020: egen imp1_ds_tot_HH=sum(imp1_debt_service2)
-bysort HHID2020: egen imp1_is_tot_HH=sum(imp1_interest_service2)
-
-drop imp1_debt_service2 imp1_interest_service2
-
-save"NEEMSIS2-loans_v13.dta", replace
+save"_temp\NEEMSIS2-loans_v13.dta", replace
 *************************************
 * END
 
