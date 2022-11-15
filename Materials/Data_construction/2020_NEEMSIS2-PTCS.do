@@ -297,11 +297,73 @@ egen AG = rowmean(workwithot~r understand~g trustingof~r rudetoother toleratefa~
 egen ES = rowmean(managestress nervous changemood feeldepressed easilyupset worryalot staycalm) 
 egen Grit = rowmean(tryhard stickwithg~s  goaftergoal finishwhat~n finishtasks keepworking)
 
-
-
-keep HHID2020 INDID2020 egoid 
-
-
 save"_temp\NEEMSIS2-cogb5", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Locus
+***************************************
+use"_temp\NEEMSIS2-cogb5", clear
+
+
+/*
+1. I like taking responsibility.
+2. I find it best to make decisions by myself rather than to rely on fate.
+3. When I encounter problems or opposition, I usually find ways and means to overcome them.
+4. Success often depends more on luck than on effort.
+5. I often have the feeling that I have little influence over what happens to me.
+6. When I make important decisions, I often look at what others have done.
+*/
+
+global locus locuscontrol1 locuscontrol2 locuscontrol3 locuscontrol4 locuscontrol5 locuscontrol6
+fre $locus
+
+
+***** Reverse locuscontrol4 5 6 for min=intern and max=extern as locuscontrol1 2 3
+forvalues i=4(1)6 {
+vreverse locuscontrol`i', gen(locuscontrol`i'_rv)
+*rename locuscontrol`i' locuscontrol`i'_original
+*rename locuscontrol`i'_rv locuscontrol`i'
+}
+
+global locus locuscontrol1 locuscontrol2 locuscontrol3 locuscontrol4_rv locuscontrol5_rv locuscontrol6_rv
+fre $locus
+
+
+* Score
+egen locus=rowmean($locus)
+replace locus=round(locus, .01)
+label var locus "intern --> extern"
+
+ta locus
+gen locuscat=.
+replace locuscat=1 if locus<3
+replace locuscat=2 if locus==3
+replace locuscat=3 if locus>3
+
+label define locuscast 1"Intern" 2"Mid" 3"Extern"
+label values locuscat locuscat
+
+ta locus locuscat
+
+
+
+
+
+********** To keep
+keep HHID2020 INDID2020 egoid a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 ab1 ab2 ab3 ab4 ab5 ab6 ab7 ab8 ab9 ab10 ab11 ab12 canreadcard1a canreadcard1b canreadcard1c canreadcard2 numeracy1 numeracy2 numeracy3 numeracy4 numeracy5 numeracy6 enjoypeople curious organized managestress interestedbyart tryhard workwithother makeplans sharefeelings nervous stickwithgoals repetitivetasks shywithpeople workhard changemood understandotherfeeling inventive enthusiastic feeldepressed appointmentontime trustingofother goaftergoal easilyupset talktomanypeople liketothink finishwhatbegin putoffduties rudetoother finishtasks toleratefaults worryalot easilydistracted keepworking completeduties talkative newideas staycalm forgiveother activeimagination expressingthoughts helpfulwithothers locuscontrol1 locuscontrol2 locuscontrol3 locuscontrol4 locuscontrol5 locuscontrol6 ra1 rab1 rb1 ra2 rab2 rb2 ra3 rab3 rb3 ra4 rab4 rb4 ra5 rab5 rb5 ra6 rab6 rb6 ra7 rab7 rb7 ra8 rab8 rb8 ra9 rab9 rb9 ra10 rab10 rb10 ra11 rab11 rb11 ra12 rab12 rb12 set_a set_ab set_b raven_tt refuse num_tt lit_tt curious_backup interestedbyart_backup repetitivetasks_backup inventive_backup liketothink_backup newideas_backup activeimagination_backup organized_backup makeplans_backup workhard_backup appointmentontime_backup putoffduties_backup easilydistracted_backup completeduties_backup enjoypeople_backup sharefeelings_backup shywithpeople_backup enthusiastic_backup talktomanypeople_backup talkative_backup expressingthoughts_backup workwithother_backup understandotherfeeling_backup trustingofother_backup rudetoother_backup toleratefaults_backup forgiveother_backup helpfulwithothers_backup managestress_backup nervous_backup changemood_backup feeldepressed_backup easilyupset_backup worryalot_backup staycalm_backup tryhard_backup stickwithgoals_backup goaftergoal_backup finishwhatbegin_backup finishtasks_backup keepworking_backup ars ars2 ars3 cr_curious cr_interestedbyart cr_repetitivetasks cr_inventive cr_liketothink cr_newideas cr_activeimagination cr_organized cr_makeplans cr_workhard cr_appointmentontime cr_putoffduties cr_easilydistracted cr_completeduties cr_enjoypeople cr_sharefeelings cr_shywithpeople cr_enthusiastic cr_talktomanypeople cr_talkative cr_expressingthoughts cr_workwithother cr_understandotherfeeling cr_trustingofother cr_rudetoother cr_toleratefaults cr_forgiveother cr_helpfulwithothers cr_managestress cr_nervous cr_changemood cr_feeldepressed cr_easilyupset cr_worryalot cr_staycalm cr_tryhard cr_stickwithgoals cr_goaftergoal cr_finishwhatbegin cr_finishtasks cr_keepworking cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit OP CO EX AG ES Grit locuscontrol4_rv locuscontrol5_rv locuscontrol6_rv locus locuscat
+
+save"outcomes\NEEMSIS2-PTCS", replace
 ****************************************
 * END
