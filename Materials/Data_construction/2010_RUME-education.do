@@ -2,7 +2,7 @@
 *Arnaud NATAL
 *arnaud.natal@u-bordeaux.fr
 *-----
-*Assets construction
+*Education construction
 *-----
 *-------------------------
 
@@ -30,89 +30,30 @@ grstyle set plain, box nogrid
 
 
 ****************************************
-* ASSETS 2010
+* Education
 ***************************************
 use"$data", clear
 
-/*
-Assets = 
-+ house value
-+ livestock
-+ goods
-+ gold
-+ land
-*/
+*Edulevel
+gen edulevel=.
+replace edulevel=0 if education==9
+replace edulevel=1 if education==1
+replace edulevel=2 if education==2
+replace edulevel=3 if education==3
+replace edulevel=3 if education==4
+replace edulevel=4 if education==5
+replace edulevel=5 if education==6
+replace edulevel=5 if education==7
+replace edulevel=5 if education==8
 
-*** Livestock
-gen livestockamount_cow=8000*livestocknb_cow
-gen livestockamount_goat=1000*livestocknb_goat
-egen livestockamount=rowtotal(livestockamount_cow livestockamount_goat)
+tab education
 
-*** Goods
-forvalues i=1/10 {
-gen goodsvalue`i'=.
-replace goodsvalue`i'=100000*numbergoods`i' if listgoods`i'==1
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==2
-replace goodsvalue`i'=5000*numbergoods`i' if listgoods`i'==3
-replace goodsvalue`i'=5000*numbergoods`i' if listgoods`i'==4
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==5
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==6
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==7
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==8
-replace goodsvalue`i'=5000*numbergoods`i' if listgoods`i'==9
-replace goodsvalue`i'=500*numbergoods`i' if listgoods`i'==10
-replace goodsvalue`i'=10000*numbergoods`i' if listgoods`i'==11
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==12
-replace goodsvalue`i'=3000*numbergoods`i' if listgoods`i'==13
-}
-egen goodstotalamount=rowtotal(goodsvalue1 goodsvalue2 goodsvalue3 goodsvalue4 goodsvalue5 goodsvalue6 goodsvalue7 goodsvalue8 goodsvalue9 goodsvalue10)
+label define edulevel 0"Below primary" 1"Primary completed" 2"High school (8th-10th)" 3"HSC/Diploma (11th-12th)" 4"Bachelors (13th-15th)" 5"Post graduate (15th and more)", replace
+label values edulevel edulevel
+tab edulevel
 
-*** Land
-fre sizeownland drywetownland
-gen amountownland=.
-replace amountownland=600000*sizeownland if drywetownland==1
-replace amountownland=1100000*sizeownland if drywetownland==2
+keep HHID2010 INDID2010 edulevel
 
-***Gold
-gen goldamount=goldquantity*2000
-
-****Total
-egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount housevalue)
-egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount housevalue)
-egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount)
-
-gen assets1000=assets/1000
-gen assets1000_noland=assets_noland/1000
-gen assets1000_noprop=assets_noprop/1000
-
-***Clean
-drop livestockamount_cow livestockamount_goat livestockamount goodsvalue1 goodsvalue2 goodsvalue3 goodsvalue4 goodsvalue5 goodsvalue6 goodsvalue7 goodsvalue8 goodsvalue9 goodsvalue10 goodstotalamount amountownland goldamount
-
-
-********** Variables
-preserve
-keep assets* HHID2010
-duplicates drop
-tabstat assets assets_noland assets_noprop, stat(n mean sd q min max)
-tabstat assets1000 assets1000_noland assets1000_noprop, stat(n mean sd q min max)
-restore
-/*
-   stats |  ass~1000  assets..  assets..
----------+------------------------------
-       N |       405       405       405
-    mean |  1272.978  239.8963  97.21728
-      sd |  1581.578  140.8426  54.90822
-     p25 |     190.5       149      60.5
-     p50 |       701       196        85
-     p75 |      1823     296.5     118.5
-     min |      47.5      47.5        17
-     max |   11761.5      1051       451
-----------------------------------------
-*/
-
-
-keep assets* HHID2010
-duplicates drop
-save"outcomes\RUME-assets", replace
+save"outcomes\RUME-education", replace
 ****************************************
 * END

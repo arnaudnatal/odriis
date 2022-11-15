@@ -16,6 +16,7 @@ cd"$directory"
 
 ********** Database names
 global data = "NEEMSIS2-HH"
+global egos = "NEEMSIS2-ego"
 
 ********** Scheme
 set scheme plotplain_v2
@@ -29,102 +30,278 @@ grstyle set plain, box nogrid
 
 
 
+
+
 ****************************************
-* ASSETS 2020-21
+* Cognitive skills
 ***************************************
+use"$egos", clear
+
+*
+preserve
 use"$data", clear
+keep HHID2020 INDID2020 classcompleted everattendedschool age livinghome
 
-/*
-Assets = 
-+ house value
-+ livestock
-+ goods
-+ gold
-+ land
-*/
+gen edulevel=.
+replace edulevel = 0 if  everattendedschool == 0
+replace edulevel = 0 if classcompleted < 5 & classcompleted != .
+replace edulevel= 1 if classcompleted>=5 & classcompleted != .
+replace edulevel= 2 if classcompleted>=8 & classcompleted != .
+replace edulevel= 3 if classcompleted>=11 & classcompleted != .
+replace edulevel= 4 if classcompleted>=15  & classcompleted != .
+replace edulevel= 5 if classcompleted>=16  & classcompleted != . //Attention! I recoded here cause otherwise all missing are in 5 (Anne, 20/06/17)
+label define edulevel 0 "Below primary" 1 "Primary completed", modify
+label define edulevel 2 "High school (8th-10th)", modify
+label define edulevel 3 "HSC/Diploma (11th-12th)", modify
+label define edulevel 4 "Bachelors (13th-15th)", modify
+label define edulevel 5 "Post graduate (15th and more)", modify
+label values edulevel edulevel
+recode edulevel (.=0)
+save"_temp\_tempNEEMSIS2edulevel", replace
+restore
+*
 
-*** Livestock
-egen livestockamount=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock livestockamount_bullforploughing)
-
-*** Goods
-egen goodstotalamount=rowtotal(goodtotalamount_car goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_camera goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna)
+merge 1:1 HHID2020 INDID2020 using "_temp\_tempNEEMSIS2edulevel", keepusing(edulevel)
+keep if _merge==3
+drop _merge
 
 
-*** Land
-tab drywetownland
+***Raven
+*right answers
+gen set_a1=4
+gen set_a2=5
+gen set_a3=1
+gen set_a4=2
+gen set_a5=6
+gen set_a6=3
+gen set_a7=6
+gen set_a8=2
+gen set_a9=1
+gen set_a10=3
+gen set_a11=4
+gen set_a12=5
 
-replace sizedryownland=sizeownland if drywetownland=="1" & sizedryownland==. & sizeownland!=.
-replace sizewetownland=sizeownland if drywetownland=="2" & sizewetownland==. & sizeownland!=.
+gen set_ab1=4
+gen set_ab2=5
+gen set_ab3=1
+gen set_ab4=6
+gen set_ab5=2
+gen set_ab6=1
+gen set_ab7=3
+gen set_ab8=4
+gen set_ab9=6
+gen set_ab10=3
+gen set_ab11=5
+gen set_ab12=2
 
-egen sizeownland_temp=rowtotal(sizedryownland sizewetownland)
-replace sizeownland=sizeownland_temp if sizeownland==. & sizeownland_temp!=0
-drop sizeownland_temp
+gen set_b1=2
+gen set_b2=6
+gen set_b3=1
+gen set_b4=2
+gen set_b5=1
+gen set_b6=3
+gen set_b7=5
+gen set_b8=6
+gen set_b9=4
+gen set_b10=3
+gen set_b11=4
+gen set_b12=5
 
-gen amountownlanddry=.
-replace amountownlanddry=sizedryownland*900000 if villageid==3 | villageid==9 | villageid==6
-replace amountownlanddry=sizedryownland*1000000 if villageid==10 | villageid==7 | villageid==1 | villageid==8
-replace amountownlanddry=sizedryownland*800000 if villageid==4 | villageid==5 | villageid==2
+*Number of correct answers
+forval i=1(1)12 {
+gen ra`i'=0 	if a`i' !=.
+gen rab`i'=0 	if ab`i' !=.
+gen rb`i'=0 	if b`i' !=.
+}
+forval i=1(1)12 {
+replace ra`i'=1  if a`i'==set_a`i' 	
+replace rab`i'=1 if ab`i'==set_ab`i' 
+replace rb`i'=1  if b`i'==set_b`i' 
+}	
+drop set_a1-set_a12
+drop set_ab1-set_ab12
+drop set_b1-set_b12
 
-gen amountownlandwet=.
-replace amountownlandwet=sizewetownland*1600000 if villageid==3 | villageid==9 | villageid==6
-replace amountownlandwet=sizewetownland*1500000 if villageid==10 | villageid==7 | villageid==1 | villageid==8
-replace amountownlandwet=sizewetownland*1200000 if villageid==4 | villageid==5 | villageid==2
+*Total score 
+egen set_a = rowtotal (ra1 ra2 ra3 ra4 ra5 ra6 ra7 ra8 ra9 ra10 ra11 ra12), missing
+egen set_ab = rowtotal (rab1 rab2 rab3 rab4 rab5 rab6 rab7 rab8 rab9 rab10 rab11 rab12), missing 
+egen set_b = rowtotal (rb1 rb2 rb3 rb4 rb5 rb6 rb7 rb8 rb9 rb10 rb11 rb12), missing
+egen raven_tt = rowtotal (set_a set_b set_ab)
+tab1 set_a set_ab set_b raven_tt
 
-egen amountownland=rowtotal(amountownlanddry amountownlandwet)
-*if both half
-replace amountownland=sizeownland*1250000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==3 | villageid==9 | villageid==6)
-replace amountownland=sizeownland*1250000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==10 | villageid==7 | villageid==1 | villageid==8)
-replace amountownland=sizeownland*1000000 if drywetownland=="1 2" & sizedryownland==. & sizewetownland==. & (villageid==4 | villageid==5 | villageid==2)
 
-fre ownland
-desc sizeownland amountownlanddry amountownlandwet amountownland ownland
-foreach x in sizeownland amountownlanddry amountownlandwet amountownland {
-replace `x'=. if `x'==0 & ownland=="0"
+*********Numeracy & literacy
+global literacy canreadcard1a canreadcard1b canreadcard1c canreadcard2
+global numeracy numeracy1 numeracy2 numeracy3 numeracy4 numeracy5 numeracy6
+global cog $literacy $numeracy
+
+*composite score
+*recode no response as missing for easier analysis
+foreach x of varlist $cog {
+recode `x' (99=.) 
+}
+foreach x of varlist $numeracy {
+recode `x' (2=0)
+}
+foreach x of varlist $literacy {
+recode `x' (1=0) (3=1) (2=0.5) 
+}
+**Look at missing values 	
+mdesc $cog
+
+mdesc $literacy if canreadcard1a==. //those are mostly the same people 
+tab edulevel if canreadcard1a==. //code as can't read if edulevel max primary completed 
+gen refuse=0
+replace refuse=1 if (canreadcard1a+canreadcard1b+canreadcard1c+canreadcard2==.)
+foreach x in $literacy {
+replace `x'=0 if `x'==. & edulevel<=1 & egoid!=0
+}
+
+mdesc numeracy6 numeracy5 numeracy4 numeracy3 numeracy2 if numeracy1==. 
+tab edulevel if numeracy1==. 
+replace refuse=1 if (numeracy1+numeracy2+numeracy3+numeracy4+numeracy5+numeracy6==.)
+
+recode numeracy6 numeracy5 numeracy4 numeracy3 numeracy2 numeracy1 (.=0) if edulevel<=1	
+
+egen num_tt = rowtotal(numeracy1 numeracy2 numeracy3 numeracy4 numeracy5 numeracy6), missing 
+egen lit_tt = rowtotal(canreadcard1a canreadcard1b canreadcard1c canreadcard2), missing 
+
+********** Recode for label
+foreach x of varlist $numeracy {
+recode `x' (0=2)
+}
+foreach x of varlist $literacy {
+recode `x' (0=1) (0.5=2) (1=3) 
 }
 
 
-***Gold
-bysort HHID2020: egen goldquantity_HH=sum(goldquantity)
-gen goldamount=goldquantity_HH*2700
-drop goldquantity_HH
-
-****Total
-egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount housevalue)
-egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount housevalue)
-egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount)
-
-gen assets1000=assets/1000
-gen assets1000_noland=assets_noland/1000
-gen assets1000_noprop=assets_noprop/1000
-
-***Clean
-drop livestockamount goodstotalamount amountownlanddry amountownlandwet amountownland goldamount
 
 
-********** Variables
-preserve
-keep assets* HHID2020
-duplicates drop
-tabstat assets assets_noland assets_noprop, stat(n mean sd q min max)
-tabstat assets1000 assets1000_noland assets1000_noprop, stat(n mean sd q min max)
-restore
+save"_temp\NEEMSIS2-cog", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+****************************************
+* Big-5
+***************************************
+use"_temp\NEEMSIS2-cog", clear
+
+
+*Macro
+global big5 ///
+curious interestedbyart repetitivetasks inventive liketothink newideas activeimagination ///
+organized  makeplans workhard appointmentontime putoffduties easilydistracted completeduties ///
+enjoypeople sharefeelings shywithpeople enthusiastic talktomanypeople  talkative expressingthoughts  ///
+workwithother  understandotherfeeling trustingofother rudetoother toleratefaults  forgiveother  helpfulwithothers ///
+managestress  nervous  changemood feeldepressed easilyupset worryalot  staycalm ///
+tryhard  stickwithgoals   goaftergoal finishwhatbegin finishtasks  keepworking
+
+global locus locuscontrol1 locuscontrol2 locuscontrol3 locuscontrol4 locuscontrol5 locuscontrol6 
+
+fre $big5
+*At baseline
+
+
+
+********** Recode 1
+foreach x in $big5 {
+clonevar `x'_backup=`x'
+replace `x'=. if `x'==99 | `x'==6
+}
+fre completeduties putoffduties
 /*
-   stats |  ass~1000  assets..  assets..
----------+------------------------------
-       N |       632       632       632
-    mean |  1361.496  571.0121  271.3237
-      sd |  2106.882  480.4355   284.931
-     p25 |    332.55     295.1     137.8
-     p50 |     592.6     450.9    211.25
-     p75 |    1515.3    701.85     331.7
-     min |         0         0         0
-     max |   18059.4    5773.3    4173.3
-----------------------------------------
+completeduties_backup putoffduties_backup = max never, with 99 as cat
+completeduties putoffduties = max never, with 99 recoded as missing
 */
 
-keep assets* HHID2020
-duplicates drop
-save"outcomes\NEEMSIS2-assets", replace
 
+
+
+
+********** Recode 2: all so that more is better! 
+foreach var of varlist $big5 {
+recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
+}
+label define big5n3 1"5 - Almost never" 2"4 - Rarely" 3"3 - Sometimes" 4"2 - Quite often" 5"1 - Almost always"
+foreach x in $big5 {
+label values `x' big5n3
+}
+/*
+completeduties_backup putoffduties_backup = max never, with 99 as cat
+completeduties putoffduties = max always, with 99 recoded as missing
+*/
+
+
+
+
+
+
+********** Correction du biais d'"acquiescence"
+*Paires
+local varlist ///
+rudetoother helpfulwit~s  ///
+putoffduties 	completedut~s /// 
+easilydistracted makeplans  ///
+shywithpeople talktomany~e ///
+repetitive~s curious  ///
+nervous staycalm ///  
+worryalot managestress 
+*moyenne des paires pour savoir si ils sont loin de 3, si oui alors biais
+egen ars=rowmean(`varlist') 
+tabstat ars, stat(n mean sd q min max)
+ttest ars==3
+tab ars
+gen ars2=ars-3  
+set graph on
+gen ars3=abs(ars2)
+
+
+
+
+********** Recode 3: reversely coded items 
+foreach var of varlist rudetoother putoffduties easilydistracted shywithpeople repetitive~s nervous changemood feeldepressed easilyupset worryalot {
+recode `var' (5=1) (4=2) (3=3) (2=4) (1=5)
+}
+label define big5n4 5"5 - Almost never" 4"4 - Rarely" 3"3 - Sometimes" 2"2 - Quite often" 1"1 - Almost always"
+foreach x in rudetoother putoffduties easilydistracted shywithpeople repetitive~s nervous changemood feeldepressed easilyupset worryalot {
+label values `x' big5n4
+}
+*corrected items: 
+foreach var of varlist $big5 {
+gen cr_`var'=`var'-ars2 if ars!=. 
+}
+
+
+
+
+	
+********** Big-5 taxonomy	
+egen cr_OP = rowmean(cr_curious cr_interested~t   cr_repetitive~s cr_inventive cr_liketothink cr_newideas cr_activeimag~n)
+egen cr_CO = rowmean(cr_organized  cr_makeplans cr_workhard cr_appointmen~e cr_putoffduties cr_easilydist~d cr_completedu~s) 
+egen cr_EX = rowmean(cr_enjoypeople cr_sharefeeli~s cr_shywithpeo~e  cr_enthusiastic  cr_talktomany~e  cr_talkative cr_expressing~s ) 
+egen cr_AG = rowmean(cr_workwithot~r   cr_understand~g cr_trustingof~r cr_rudetoother cr_toleratefa~s  cr_forgiveother  cr_helpfulwit~s) 
+egen cr_ES = rowmean(cr_managestress  cr_nervous  cr_changemood cr_feeldepres~d cr_easilyupset cr_worryalot  cr_staycalm) 
+egen cr_Grit = rowmean(cr_tryhard  cr_stickwithg~s   cr_goaftergoal cr_finishwhat~n cr_finishtasks  cr_keepworking)
+
+egen OP = rowmean(curious interested~t  repetitive~s inventive liketothink newideas activeimag~n)
+egen CO = rowmean(organized  makeplans workhard appointmen~e putoffduties easilydistracted completedu~s) 
+egen EX = rowmean(enjoypeople sharefeeli~s shywithpeo~e enthusiastic talktomany~e  talkative expressing~s ) 
+egen AG = rowmean(workwithot~r understand~g trustingof~r rudetoother toleratefa~s forgiveother helpfulwit~s) 
+egen ES = rowmean(managestress nervous changemood feeldepressed easilyupset worryalot staycalm) 
+egen Grit = rowmean(tryhard stickwithg~s  goaftergoal finishwhat~n finishtasks keepworking)
+
+
+
+keep HHID2020 INDID2020 egoid 
+
+
+save"_temp\NEEMSIS2-cogb5", replace
 ****************************************
 * END

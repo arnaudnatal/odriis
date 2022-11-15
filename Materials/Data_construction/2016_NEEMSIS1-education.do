@@ -2,7 +2,7 @@
 *Arnaud NATAL
 *arnaud.natal@u-bordeaux.fr
 *-----
-*Assets construction
+*Education construction
 *-----
 *-------------------------
 
@@ -30,104 +30,32 @@ grstyle set plain, box nogrid
 
 
 ****************************************
-* ASSETS 2016-17
+* Education
 ***************************************
 use"$data", clear
 
-/*
-Assets = 
-+ house value
-+ livestock
-+ goods
-+ gold
-+ land
-*/
+gen edulevel=.
+replace edulevel = 0 if  everattendedschool == 0
+replace edulevel = 0 if classcompleted < 5 & classcompleted != .
+replace edulevel= 1 if classcompleted>=5 & classcompleted != .
+replace edulevel= 2 if classcompleted>=8 & classcompleted != .
+replace edulevel= 3 if classcompleted>=11 & classcompleted != .
+replace edulevel= 4 if classcompleted>=15  & classcompleted != .
+replace edulevel= 5 if classcompleted>=16  & classcompleted != . //Attention! I recoded here cause otherwise all missing are in 5 (Anne, 20/06/17)
+label define edulevel 0 "Below primary" 1 "Primary completed", modify
+label define edulevel 2 "High school (8th-10th)", modify
+label define edulevel 3 "HSC/Diploma (11th-12th)", modify
+label define edulevel 4 "Bachelors (13th-15th)", modify
+label define edulevel 5 "Post graduate (15th and more)", modify
+label values edulevel edulevel
+tab edulevel, m
+tab edulevel livinghome, m
+list INDID2016 age if edulevel==. & livinghome==1, clean noobs
+recode edulevel (.=0)
+tab edulevel
 
-*** Livestock
-egen livestockamount=rowtotal(livestockamount_cow livestockamount_goat livestockamount_chicken livestockamount_bullock)
+keep HHID2016 INDID2016 edulevel
 
-*** Goods
-egen goodstotalamount=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodtotalamount_computer goodtotalamount_antenna goodtotalamount_bike goodtotalamount_fridge goodtotalamount_furniture goodtotalamount_tailormach goodtotalamount_phone goodtotalamount_landline goodtotalamount_DVD goodtotalamount_camera)
-
-
-*** Land
-fre sizeownland drywetownland
-gen amountownland=.
-replace amountownland=600000*sizeownland if drywetownland==1
-replace amountownland=800000*sizeownland if drywetownland==2
-*For those who have both type of land, I will use land owned in 2010 to try to deduce the share of dry/wet
-*If it is new HH, half dry half wet assumption
-*New HH
-replace amountownland=700000*sizeownland if HHID2016=="uuid:fa73ad2c-c373-4292-96ad-4e4830209e5d"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:35591049-0c3e-4dac-836a-958f07745c35"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:3f9cffe9-c7a8-4057-afd6-b2e14e4a36b8"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:0542e203-ec33-4e6a-8b6a-17b574ce9bf8"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:5c1a711d-d214-4c67-94b7-2eb8ed6009cd"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:877d0560-5981-491b-b780-6585bf924814"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:8961de1a-1258-45d6-8a77-1b3800aa2f8e"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:9f14556f-8aa4-42d1-a8e8-d82f3d40e3d3"
-replace amountownland=700000*sizeownland if HHID2016=="uuid:f7c0aded-b61a-4d89-ac2b-3e245be4c006"
-*Former HH
-replace amountownland=6*800000+3*600000 if HHID2016=="uuid:6b162917-4b4d-4787-a719-3fe27af6f755"
-replace amountownland=5*800000+1*600000 if HHID2016=="uuid:a6097c43-dd3b-40d0-9d42-7350ecbd35ab"
-replace amountownland=1*800000+2*600000 if HHID2016=="uuid:89f0734d-db4a-4660-8c9f-c54fcd6f8ddb"
-replace amountownland=2.5*800000+2.5*600000 if HHID2016=="uuid:8ddf086d-0993-4ff7-813b-1f63dd46b1bf"
-replace amountownland=6*800000+4*600000 if HHID2016=="uuid:31eb18f2-0c0f-40cc-92f8-40289ba87ddb"
-replace amountownland=1.75*800000+1.75*600000 if HHID2016=="uuid:4127118b-59ff-4db1-a857-1641b70415c9"
-replace amountownland=5*800000+1.5*600000 if HHID2016=="uuid:8aeef32f-8d22-481b-8e71-cbfe49fea98e"
-replace amountownland=0.25*800000+0.75*600000 if HHID2016=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919"
-replace amountownland=6*600000 if HHID2016=="uuid:78817304-5ca2-42d3-9b67-843366b5afde"
-replace amountownland=2*800000+2*600000 if HHID2016=="uuid:5ddaed64-11cb-4a8a-a146-951b9d041a2a"
-replace amountownland=2*800000 if HHID2016=="uuid:e73b9bd7-f7f3-4ac0-b360-ffcd09758ff4"
-replace amountownland=1*800000+0.5*600000 if HHID2016=="uuid:8380069d-0c7d-41f6-b487-dd4e66377170"
-replace amountownland=2*800000 if HHID2016=="uuid:3ed13d21-3fbd-4a33-a557-48b68f5ed065"
-replace amountownland=0.5*800000+0.5*600000 if HHID2016=="uuid:65046bab-4328-4b56-b76f-1e4144ee8dd0"
-replace amountownland=1*600000 if HHID2016=="uuid:96b99b66-dee2-4a30-806e-fd734d974812"
-replace amountownland=0.25*800000+1.75*600000 if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c"
-replace amountownland=1*800000 if HHID2016=="uuid:e847a4d4-ea2a-4a01-95f2-25a37de516e9"
-replace amountownland=2*800000+8*600000 if HHID2016=="uuid:bf24520a-2493-421c-8cdc-cfdea3c93699"
-
-***Gold
-bysort HHID2016: egen goldquantity_HH=sum(goldquantity)
-gen goldamount=goldquantity_HH*2700
-drop goldquantity_HH
-
-****Total
-egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount housevalue)
-egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount housevalue)
-egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount)
-
-gen assets1000=assets/1000
-gen assets1000_noland=assets_noland/1000
-gen assets1000_noprop=assets_noprop/1000
-
-***Clean
-drop livestockamount goodstotalamount amountownland goldamount
-
-
-********** Variables
-preserve
-keep assets* HHID2016
-duplicates drop
-tabstat assets assets_noland assets_noprop, stat(n mean sd q min max)
-tabstat assets1000 assets1000_noland assets1000_noprop, stat(n mean sd q min max)
-restore
-/*
-   stats |  ass~1000  assets..  assets..
----------+------------------------------
-       N |       492       492       492
-    mean |  1056.785  487.6341  221.0872
-      sd |  1955.018  727.2433  405.4324
-     p25 |     182.2    164.65     69.25
-     p50 |   424.225    315.15     131.1
-     p75 |    1094.9     607.6    246.05
-     min |         0         0         0
-     max |   21561.3    9561.3    7061.3
-----------------------------------------
-*/
-
-keep assets* HHID2016
-duplicates drop
-save"outcomes\NEEMSIS1-assets", replace
+save"outcomes\NEEMSIS1-education", replace
 ****************************************
 * END
