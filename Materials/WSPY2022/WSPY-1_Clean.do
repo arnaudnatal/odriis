@@ -10,6 +10,8 @@ do "https://raw.githubusercontent.com/arnaudnatal/odriis/main/Materials/WSPY2022
 *-------------------------
 
 
+*net install rqdeco, from("https://raw.githubusercontent.com/bmelly/Stata/main/")
+
 
 
 ****************************************
@@ -67,7 +69,7 @@ fre villageid
 
 recode villageid (6=7) (7=6)
 
-egen size_HH=sum(1)
+bysort HHID_panel: egen size_HH=sum(1)
 
 save"_temp\wave1", replace
 ****************************************
@@ -133,7 +135,7 @@ order HHID_panel INDID_panel year name age sex relationshiptohead caste villagei
 
 fre villageid
 
-egen size_HH=sum(1)
+bysort HHID_panel: egen size_HH=sum(1)
 
 save"_temp\wave2", replace
 ****************************************
@@ -194,7 +196,7 @@ fre livinghome
 drop if livinghome==3 | livinghome==4
 drop if dummylefthousehold==1
 
-keep HHID_panel INDID_panel name villageid villagearea mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv shareincomeagri_indiv shareincomenonagri_indiv annualincome_HH shareincomeagri_HH shareincomenonagri_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop working_pop dummyworkedpastyear shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH incomeagri_HH incomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH incomeagri_indiv incomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv mainocc_tenureday_indiv cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit locus raven_tt num_tt lit_tt edulevel maritalstatus transferts_HH remittnet_HH
+keep HHID_panel INDID_panel egoid name villageid villagearea mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv shareincomeagri_indiv shareincomenonagri_indiv annualincome_HH shareincomeagri_HH shareincomenonagri_HH nbworker_HH nbnonworker_HH assets assets_noland assets_noprop assets1000 assets1000_noland assets1000_noprop working_pop dummyworkedpastyear shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH incomeagri_HH incomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH incomeagri_indiv incomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv mainocc_tenureday_indiv cr_OP cr_CO cr_EX cr_AG cr_ES cr_Grit locus raven_tt num_tt lit_tt edulevel maritalstatus transferts_HH remittnet_HH
 
 merge 1:1 HHID_panel INDID_panel using "raw\ODRIIS-indiv_wide", keepusing(castecorr2020 agecorr2020 sex2020 relationshiptohead2020)
 keep if _merge==3
@@ -209,7 +211,7 @@ order HHID_panel INDID_panel year name age sex relationshiptohead caste villagei
 
 fre villageid
 
-egen size_HH=sum(1)
+bysort HHID_panel: egen size_HH=sum(1)
 
 save"wave3", replace
 ****************************************
@@ -232,6 +234,8 @@ use"_temp\wave2", clear
 ********** Indiv
 append using "_temp\wave1"
 append using "wave3"
+
+drop egoid
 
 *Deflate
 foreach x in mainocc_annualincome_indiv annualincome_indiv annualincome_HH assets assets_noland assets_noprop assets1000 assets1000_noland incomeagri_HH incomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH assets1000_noprop transferts_HH remittnet_HH{

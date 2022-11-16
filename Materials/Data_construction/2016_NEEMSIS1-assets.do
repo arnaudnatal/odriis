@@ -54,7 +54,11 @@ egen goodstotalamount=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodt
 fre sizeownland drywetownland
 gen amountownland=.
 replace amountownland=600000*sizeownland if drywetownland==1
-replace amountownland=800000*sizeownland if drywetownland==2
+*In 2016-17, according to Venkat, wet at 800 000 per acre
+* Strange une telle deval d'autant plus qu'en 2020 on monte à 1 500.
+* Donc on prend la val de 2010 : 1 100
+replace amountownland=1100000*sizeownland if drywetownland==2
+
 *For those who have both type of land, I will use land owned in 2010 to try to deduce the share of dry/wet
 *If it is new HH, half dry half wet assumption
 *New HH

@@ -1035,12 +1035,9 @@ save"outcomes\NEEMSIS1-loans_mainloans_new.dta", replace
 ****************************************
 use"outcomes\NEEMSIS1-loans_mainloans_new.dta", clear
 
-
-
 *
 drop if loansettled==1
-*drop if loan_database=="MARRIAGE"
-
+drop if loan_database=="MARRIAGE"
 
 
 *** Indiv + HH level
