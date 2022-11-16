@@ -946,9 +946,7 @@ gen mainocc_tenureday=tenure if dummymainoccupation==1
 bysort HHID2016 INDID2016: egen mainocc_tenureday_indiv=max(mainocc_tenureday)
 sort HHID2016 INDID2016
 
-
-save"_temp\NEEMSIS1-occup2", replace
-save"outcomes\NEEMSIS-occupnew", replace
+save"outcomes\NEEMSIS1-occupnew", replace
 ****************************************
 * END
 
@@ -965,7 +963,7 @@ save"outcomes\NEEMSIS-occupnew", replace
 ****************************************
 * Add all
 ***************************************
-use"_temp\NEEMSIS1-occup2", clear
+use"outcomes\NEEMSIS1-occupnew", clear
 
 
 ********** Add all

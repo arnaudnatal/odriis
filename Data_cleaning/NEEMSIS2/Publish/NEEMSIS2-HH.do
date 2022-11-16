@@ -493,9 +493,9 @@ order schemerecipientlist_disability schemeamount_disability schemedate_disabili
 
 ***** Retirement pension
 rename schemerecipientlist9 schemerecipientlist_retirement
-rename schemepensionamount5 schemeonamount_retirement
+rename schemepensionamount5 schemeamount_retirement
 rename schemepensiondate5 schemedate_retirement
-order schemerecipientlist_retirement schemeonamount_retirement schemedate_retirement, after(schemedate_disability)
+order schemerecipientlist_retirement schemeamount_retirement schemedate_retirement, after(schemedate_disability)
 
 
 

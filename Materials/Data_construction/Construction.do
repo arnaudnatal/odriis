@@ -33,6 +33,11 @@ do"2010_RUME-debt"
 do"2016_NEEMSIS1-debt"
 do"2020_NEEMSIS2-debt"
 
+*** Transferts
+do"2010_RUME-transferts"
+do"2016_NEEMSIS1-transferts"
+do"2020_NEEMSIS2-transferts"
+
 *** PTCS
 do"2016_NEEMSIS1-ptcs"
 do"2020_NEEMSIS2-ptcs"

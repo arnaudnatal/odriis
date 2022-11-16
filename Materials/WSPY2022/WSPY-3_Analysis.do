@@ -20,80 +20,183 @@ do "https://raw.githubusercontent.com/arnaudnatal/odriis/main/Materials/WSPY2022
 use"panel_HH_wide", clear
 
 
-
-
-********** Step1: Desc
-
-*** Stat et CV
-tabstat annualincome1000_HH1 annualincome1000_HH2 annualincome1000_HH3, stat(n mean sd cv)
+********** Descriptive
+tabstat monthlyincome2010 monthlyincome2016 monthlyincome2020, stat(n mean sd cv)
 * CV de :
 * 0.74 en 2010;
 * 1.00 en 2016-17;
 * 1.05 en 2020-21.
 * Les inégalités de revenu augmentent entre 2010 et 2020-21.
 
+/*
+preserve
+use"panel_HH_long", clear
 
-*** Kernel
 twoway ///
-(kdensity annualincome1000_HH1, bwidth(20)) ///
-(kdensity annualincome1000_HH2, bwidth(20)) ///
-(kdensity annualincome1000_HH3, bwidth(20))
+(kdensity monthlyincome if year==2010 & monthlyincome<=100000, bwidth(2000)) ///
+(kdensity monthlyincome if year==2016 & monthlyincome<=100000, bwidth(2000)) ///
+(kdensity monthlyincome if year==2020 & monthlyincome<=100000, bwidth(2000)) ///
+, xtitle("Monthly income per household") ytitle("Kernel density") ///
+legend(order(1 "2010" 2 "2016-17" 3 "2020-21") pos(6) col(3)) note("Kernel: epanechnikov" "Bandwidth=2000", size(vsmall))
 * L'étendue de la fonction de densité augmente avec les années.
 * On peut donc supposer que les inégalités augmentent.
 
-preserve
-use"panel_HH_long", clear
-replace annualincome1000_HH=annualincome1000_HH/12
-twoway ///
-(kdensity annualincome1000_HH if year==1 & annualincome1000_HH<80, bwidth(5)) ///
-(kdensity annualincome1000_HH if year==2 & annualincome1000_HH<80, bwidth(5)) ///
-(kdensity annualincome1000_HH if year==3 & annualincome1000_HH<80, bwidth(5))
-tabstat annualincome1000_HH, stat(n mean sd p50 min max) by(year)
+recode year (2010=1) (2016=2) (2020=3)
+
+stripplot monthlyincome, over(year) vert ///
+stack width(500) jitter(1) ///
+box(barw(0.2)) boffset(-0.2) pctile(90) ///
+ms(oh) msize(small) mc(black%30) ///
+xmtick(0.9(0)2.5) xtitle("") ///
+ytitle("Monthly income per household") xlabel(1 "2010" 2 "2016-17" 3 "2020-21",angle(0))
+
 restore
+*/
 
 
+********** Indicators of inequalities
 
-*** Boxplot
-graph box annualincome1000_HH1 annualincome1000_HH2 annualincome1000_HH3
-*stripplot annualincome1000_HH1 annualincome1000_HH2, box centre vertical cumul cumpr
-* On voit que la boite est de plus en plus grande, ce qui signifie que l'IQR est de plus en plus grand, donc que les inégalités augmentent.
+*** Quantile share ratio
+foreach i in 2010 2016 2020 {
+qui sum monthlyincome`i', det
+gl p90p10_`i'=r(p90)/r(p10)
+gl p90p50_`i'=r(p90)/r(p50)
+gl p75p25_`i'=r(p75)/r(p25)
+}
 
+dis $p90p10_2010 
+dis $p90p10_2016
+dis $p90p10_2020
 
+dis $p90p50_2010 
+dis $p90p50_2016
+dis $p90p50_2020
 
-********** Step2: Indicators of inequalities
-
-*** IQR
-ineqdeco annualincome1000_HH1
-ineqdeco annualincome1000_HH2
-ineqdeco annualincome1000_HH3
-* Rapport de :
-* 2.2 en 2010;
-* 3.1 en 2016-17;
-* 3.8 en 2020-21.
-* L'écart entre les plus riches et les plus pauvres se creuse.
-
-
-*** Lorenz
-lorenz estimate annualincome1000_HH1 annualincome1000_HH2 annualincome1000_HH3
-lorenz graph, overlay
-
-
-*** Gini
-pshare estimate annualincome1000_HH1 annualincome1000_HH2 annualincome1000_HH3, gini 
-* Gini passe de .32 à .44 à .49
+dis $p75p25_2010 
+dis $p75p25_2016
+dis $p75p25_2020
 
 
 *** Percentile share
-pshare estimate annualincome1000_HH1 annualincome1000_HH2 annualincome1000_HH3
+pshare estimate monthlyincome2010 monthlyincome2016 monthlyincome2020
+*pshare stack
 * Les 20 % les plus pauvres en 2010, détiennent 8 % des revenus totaux.
-pshare stack
-*pshare histogram
+
+*** Gini
+pshare estimate monthlyincome2010 monthlyincome2016 monthlyincome2020, gini 
+* Gini passe de .32 à .44 à .49
+
+
+*** Lorenz
+lorenz estimate monthlyincome2010 monthlyincome2016 monthlyincome2020
+*lorenz graph, overlay
 
 
 
-*** GE
-ineqdeco annualincome1000_HH1
-*Theil de 0.18895
+
+********** Contribuion of transferts
+* Desc
+tabstat monthlyincome2010 monthlytotinc2010, stat(n mean sd cv)
+tabstat monthlyincome2016 monthlytotincbis2016, stat(n mean sd cv)
+tabstat monthlyincome2020 monthlytotincbis2020, stat(n mean sd cv)
+* Nothing
+
+* Gini
+pshare est monthlyincome2010 monthlytotinc2010, gini
+pshare est monthlyincome2016 monthlytotincbis2016, gini
+pshare est monthlyincome2020 monthlytotincbis2020, gini 
+* Nothing
+
+****************************************
+* END
+
+
+
+****************************************
+* What about individual level?
+***************************************
+use"panel_indiv_wide", clear
+
+********** Descriptive
+tabstat monthlyincome2010 monthlyincome2016 monthlyincome2020, stat(n mean sd cv)
+* CV de :
+* 1.05 en 2010;
+* 1.61 en 2016-17;
+* 1.57 en 2020-21.
+* Les inégalités de revenu augmentent entre 2010 et 2020-21.
+* Beaucoup plus de var que pour les HH
+
+/*
+preserve
+use"panel_indiv_long", clear
+
+twoway ///
+(kdensity monthlyincome_indiv if year==2010 & monthlyincome_indiv<=60000, bwidth(1000)) ///
+(kdensity monthlyincome_indiv if year==2016 & monthlyincome_indiv<=60000, bwidth(1000)) ///
+(kdensity monthlyincome_indiv if year==2020 & monthlyincome_indiv<=60000, bwidth(1000)) ///
+, xtitle("Monthly income per individual") ytitle("Kernel density") ///
+legend(order(1 "2010" 2 "2016-17" 3 "2020-21") pos(6) col(3)) note("Kernel: epanechnikov" "Bandwidth=1000", size(vsmall))
+* L'étendue de la fonction de densité augmente avec les années.
+* On peut donc supposer que les inégalités augmentent.
+
+recode year (2010=1) (2016=2) (2020=3)
+
+stripplot monthlyincome_indiv, over(year) vert ///
+stack width(500) jitter(1) ///
+box(barw(0.2)) boffset(-0.2) pctile(90) ///
+ms(oh) msize(small) mc(black%10) ///
+xmtick(0.9(0)2.5) xtitle("") ///
+ytitle("Monthly income per individual") xlabel(1 "2010" 2 "2016-17" 3 "2020-21",angle(0))
+restore
+*/
+
+
+********** Indicators of inequalities
+*** Quantile share ratio
+foreach i in 2010 2016 2020 {
+qui sum monthlyincome`i', det
+gl p90p10_`i'=r(p90)/r(p10)
+gl p90p50_`i'=r(p90)/r(p50)
+gl p75p25_`i'=r(p75)/r(p25)
+}
+
+dis $p90p10_2010 
+dis $p90p10_2016
+dis $p90p10_2020
+
+dis $p90p50_2010 
+dis $p90p50_2016
+dis $p90p50_2020
+
+dis $p75p25_2010 
+dis $p75p25_2016
+dis $p75p25_2020
+
+
+*** Percentile share
+pshare estimate monthlyincome2010 monthlyincome2016 monthlyincome2020
+*pshare stack
+* Les 20 % les plus pauvres en 2010, détiennent 8 % des revenus totaux.
+
+*** Gini
+pshare estimate monthlyincome2010 monthlyincome2016 monthlyincome2020, gini 
+* Gini passe de .32 à .44 à .49
+
+
+*** Lorenz
+lorenz estimate monthlyincome2010 monthlyincome2016 monthlyincome2020
+*lorenz graph, overlay
+****************************************
+* END
+
+
+
+
+
+
+
+
+
 
 
 
@@ -180,46 +283,6 @@ sum shareincomeagri_HH3 shareincomenonagri_HH3
 
 
 
-
-********** Step5: Profitons du panel pour voir les trajectoires indiv dans l'évolution des inégalités
-/*
-On va prendre le top riche en 2010, regarder l'évo entre 2010 et 2016.
-On va prendre le top pauvre en 2010, regarder l'évo entre 2010 et 2016.
-*/
-
-*** Creation des quantiles
-foreach i in 5 10 20 100 {
-xtile income2010_q`i'=annualincome1000_HH1, n(`i')
-xtile income2016_q`i'=annualincome1000_HH2, n(`i')
-xtile income2020_q`i'=annualincome1000_HH3, n(`i')
-}
-
-*** Création des différences
-gen diff_inc_10_16=annualincome_HH2-annualincome_HH1
-gen diff_inc_16_20=annualincome_HH3-annualincome_HH2
-
-*** Dichotomise diff
-gen diff_inc_dich_10_16=.
-replace diff_inc_dich_10_16=1 if diff_inc_10_16>=0
-replace diff_inc_dich_10_16=2 if diff_inc_10_16<0
-
-gen diff_inc_dich_16_20=.
-replace diff_inc_dich_16_20=1 if diff_inc_16_20>=0
-replace diff_inc_dich_16_20=2 if diff_inc_16_20<0
-
-label define inc_dich 1"Increase" 2"Decrease"
-label values diff_inc_dich_10_16 inc_dich
-label values diff_inc_dich_16_20 inc_dich
-
-
-*** Observations
-ta income2010_q5 diff_inc_dich_10_16, nofreq row
-/*
-Parmi les 20% les plus riches de 2010, 66% ont perdu du revenu entre 2010 et 2016-17
-*/
-ta income2010_q10 diff_inc_dich_10_16, nofreq row
-
-ta income2016_q5 diff_inc_dich_16_20, nofreq row
 
 
 ****************************************
