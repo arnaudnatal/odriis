@@ -9,7 +9,7 @@ cls
 do "https://raw.githubusercontent.com/arnaudnatal/odriis/main/Materials/WSPY2022/_WSPY22.do"
 *-------------------------
 
-*https://www.ideasforindia.in/topics/poverty-inequality/spatial-disparities-in-household-earnings-in-india.html
+
 
 log using WSPY2022.log, replace
 
