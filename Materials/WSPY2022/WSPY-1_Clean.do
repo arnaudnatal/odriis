@@ -10,9 +10,23 @@ do "https://raw.githubusercontent.com/arnaudnatal/odriis/main/Materials/WSPY2022
 *-------------------------
 
 
-*ssc install glcurve
-*ssc install lorenz
-*ssc install ginidesc
+use"NEEMSIS1-ego", clear
+preserve
+merge 1:1 HHID2016 INDID2016 using "NEEMSIS1-HH", keepusing(sex) 
+keep if _merge==3
+ta sex
+restore
+clear
+
+
+use"NEEMSIS2-ego", clear
+preserve
+merge 1:1 HHID2020 INDID2020 using "NEEMSIS2-HH", keepusing(sex) 
+keep if _merge==3
+ta sex
+restore
+clear
+
 
 
 

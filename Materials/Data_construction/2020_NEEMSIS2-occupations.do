@@ -974,7 +974,7 @@ Main occupation is define as the most time consumming occupation.
 merge m:1 HHID2020 INDID2020 using "NEEMSIS2-ego.dta", keepusing(egoid selected_occupname dummymainoccupation2 occupation1 occupation2 occupation3 occupation4 occupation5 occupation6 occupation7 occupation8 nbofoccupations othermainoccupation2)
 drop if _merge==2
 drop _merge occupation1 occupation2 occupation3 occupation4 occupation5 occupation6 occupation7 occupation8
-keep HHID2020 INDID2020 occupationid occupationname hoursayear kindofwork_new annualincome year age everattendedschool classcompleted profession sector kindofwork occupation construction_coolie construction_regular construction_qualified egoid selected_occupname dummymainoccupation2 nbofoccupations othermainoccupation2
+keep HHID2020 INDID2020 occupationid occupationname hoursayear kindofwork_new annualincome year age everattendedschool classcompleted profession sector kindofwork occupation construction_coolie construction_regular construction_qualified egoid selected_occupname dummymainoccupation2 nbofoccupations othermainoccupation2 datestartoccup
 sort HHID2020 INDID2020
 
 gen dummymainoccupation=0 if egoid!=.
@@ -1130,6 +1130,36 @@ drop egoid selected_occupname dummymainoccupation2 othermainoccupation2 everatte
 
 order HHID2020 INDID2020 year age occupationid occupationname hoursayear kindofwork_new annualincome profession sector kindofwork occupation construction_coolie construction_regular construction_qualified dummymainoccupation_indiv mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv
 
+
+
+********** Tenure
+merge m:1 HHID2020 INDID2020 using "$data", keepusing(submissiondate)
+drop if _merge==2
+drop _merge
+
+format datestartoccup %td
+fre datestartoccup
+fre submissiondate
+rename submissiondate submissiondate_o
+gen submissiondate=dofc(submissiondate_o)
+format submissiondate %td
+drop submissiondate_o
+
+gen tenure=submissiondate-datestartoccup
+fre tenure
+gen tenure_month=tenure/30.467
+gen tenure_year=tenure/365
+tabstat tenure_year, stat(min p1 p5 p10 q p90 p95 p99 max)
+
+order datestartoccup submissiondate tenure tenure_month tenure_year, last
+sort tenure_year
+
+gen mainocc_tenureday=tenure if dummymainoccupation==1
+bysort HHID2020 INDID2020: egen mainocc_tenureday_indiv=max(mainocc_tenureday)
+sort HHID2020 INDID2020
+
+
+
 save "_temp\NEEMSIS2-occup2", replace
 save "outcomes\NEEMSIS2-occupnew", replace
 ****************************************
@@ -1266,7 +1296,7 @@ gen shareinc`x'_HH=inc`x'_HH/annualincome_HH
 
 ********** Indiv level
 preserve
-keep HHID2020 INDID2020 dummyworkedpastyear mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv working_pop incomeagri_indiv incomenonagri_indiv shareincomeagri_indiv shareincomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv   
+keep HHID2020 INDID2020 dummyworkedpastyear mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv working_pop incomeagri_indiv incomenonagri_indiv shareincomeagri_indiv shareincomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv mainocc_tenureday_indiv
 duplicates drop
 order HHID2020 INDID2020 dummyworkedpastyear working_pop
 save"outcomes\NEEMSIS2-occup_indiv", replace
