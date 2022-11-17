@@ -196,7 +196,6 @@ replace goldreasonpledgerest="9" if goldreasonpledgerest=="9 11"
 destring goldreasonpledgerest, replace
 gen loanlenderrest=6
 
-
 gen loan_database="GOLD"
 drop if loanamountgold==.
 
@@ -342,6 +341,9 @@ replace loanamount3=loanamount if rest==1
 replace loanbalance2=loanamount if rest==1
 
 fre loan_database
+
+*drop if rest==1
+
 
 save "_temp\NEEMSIS2-gold.dta", replace
 ****************************************
@@ -493,12 +495,11 @@ use"_temp\NEEMSIS2-loans_v6.dta", clear
 
 
 *** Change date format of submissiondate
-rename submissiondate submissiondate_o
-gen submissiondate=dofc(submissiondate_o)
-format submissiondate %td
+fre submissiondate
 
 *** Loan duration
 gen loanduration=submissiondate-loandate
+fre loanduration
 
 *** Type of loan
 fre loanlender
@@ -1321,11 +1322,6 @@ save"_temp\NEEMSIS2-loans_v11.dta", replace
 
 
 
-
-
-
-
-
 ****************************************
 * IMPUTATION
 ****************************************
@@ -1669,7 +1665,7 @@ replace prodpledge_none=1 if strpos(loanproductpledge,"16")
 replace prodpledge_othe=1 if strpos(loanproductpledge,"77")
 
 
-drop submissiondate_o jatis caste rest version_HH pb pb2 pb3 pb4
+drop jatis caste version_HH pb pb2 pb3 pb4
 
 
 save"outcomes\NEEMSIS2-loans_mainloans_new.dta", replace
@@ -1685,19 +1681,14 @@ save"outcomes\NEEMSIS2-loans_mainloans_new.dta", replace
 
 
 
-
-
-
-
-
 ****************************************
 * Indiv and HH level
 ****************************************
 use"outcomes\NEEMSIS2-loans_mainloans_new.dta", clear
 
-
-
 *
+
+
 drop if loansettled==1
 *drop if loan_database=="MARRIAGE"
 
@@ -1711,16 +1702,12 @@ bysort HHID2020 INDID2020: egen loanamount_indiv=sum(loanamount)
 bysort HHID2020: egen loanamount_HH=sum(loanamount)
 
 
-
-
 *** Services
 bysort HHID2020 INDID2020: egen imp1_ds_tot_indiv=sum(imp1_debt_service)
 bysort HHID2020 INDID2020: egen imp1_is_tot_indiv=sum(imp1_interest_service)
 
 bysort HHID2020: egen imp1_ds_tot_HH=sum(imp1_debt_service)
 bysort HHID2020: egen imp1_is_tot_HH=sum(imp1_interest_service)
-
-
 
 
 ********** Individual and HH level for dummies
