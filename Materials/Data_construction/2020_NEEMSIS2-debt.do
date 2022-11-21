@@ -1688,7 +1688,12 @@ use"outcomes\NEEMSIS2-loans_mainloans_new.dta", clear
 
 *
 
+fre loansettled
+ta loanreasongiven if loansettled==1
 
+ta loandate loansettled
+
+*
 drop if loansettled==1
 *drop if loan_database=="MARRIAGE"
 

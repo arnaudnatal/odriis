@@ -34,9 +34,10 @@ grstyle set plain, box nogrid
 ***************************************
 use"$data", clear
 
+fre education
 *Edulevel
 gen edulevel=.
-replace edulevel=0 if education==9
+replace edulevel=0 if education==0
 replace edulevel=1 if education==1
 replace edulevel=2 if education==2
 replace edulevel=3 if education==3
