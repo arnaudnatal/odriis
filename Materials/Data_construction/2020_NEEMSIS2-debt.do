@@ -1720,11 +1720,11 @@ foreach x in lender_WKP lender_rela lender_empl lender_mais lender_coll lender_p
 
 bysort HHID2020 INDID2020: egen nbindiv_`x'=sum(`x')
 gen dumindiv_`x'=0
-replace dumindiv_`x'=1 if nbindiv_`x'>1
+replace dumindiv_`x'=1 if nbindiv_`x'>0
 
 bysort HHID2020: egen nbHH_`x'=sum(`x')
 gen dumHH_`x'=0
-replace dumHH_`x'=11 if nbHH_`x'>1
+replace dumHH_`x'=1 if nbHH_`x'>0
 }
 
 

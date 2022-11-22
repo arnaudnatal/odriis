@@ -527,6 +527,8 @@ gen _loanamount=loanamount*365/loanduration if loanduration>365
 replace yratepaid=_yratepaid*100/_loanamount if loanduration>365
 drop _loanamount _yratepaid
 
+
+
 tab yratepaid
 sort yratepaid
 *tab loanamount if loanamount<1000
@@ -1065,12 +1067,13 @@ foreach x in lender_WKP lender_rela lender_empl lender_mais lender_coll lender_p
 
 bysort HHID2016 INDID2016: egen nbindiv_`x'=sum(`x')
 gen dumindiv_`x'=0
-replace dumindiv_`x'=1 if nbindiv_`x'>1
+replace dumindiv_`x'=1 if nbindiv_`x'>0
 
 bysort HHID2016: egen nbHH_`x'=sum(`x')
 gen dumHH_`x'=0
-replace dumHH_`x'=11 if nbHH_`x'>1
+replace dumHH_`x'=1 if nbHH_`x'>0
 }
+
 
 
 foreach x in lenderamt_WKP lenderamt_rela lenderamt_empl lenderamt_mais lenderamt_coll lenderamt_pawn lenderamt_shop lenderamt_fina lenderamt_frie lenderamt_SHG lenderamt_bank lenderamt_coop lenderamt_suga lenderamt_grou lender4amt_WKP lender4amt_rela lender4amt_labo lender4amt_pawn lender4amt_shop lender4amt_mone lender4amt_frie lender4amt_micr lender4amt_bank lender4amt_neig givenamt_agri givenamt_fami givenamt_heal givenamt_repa givenamt_hous givenamt_inve givenamt_cere givenamt_marr givenamt_educ givenamt_rela givenamt_deat givenamt_nore givenamt_othe givencatamt_econ givencatamt_curr givencatamt_huma givencatamt_soci givencatamt_hous givencatamt_nore givencatamt_othe lendercatamt_semi lendercatamt_info lendercatamt_form {
