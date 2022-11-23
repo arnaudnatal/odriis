@@ -74,41 +74,23 @@ replace amountownland=600000*sizeownland if drywetownland==1
 replace amountownland=1100000*sizeownland if drywetownland==2
 
 ***Gold
-*Pledge vs Real
-ta goldquantity
-ta goldquantitypledge 
-gen test=goldquantity-goldquantitypledge
-ta test
-*Neg means that pledge>total, suppose they reversed
-replace goldquantity=goldquantitypledge if test<0
-drop test
-gen test=goldquantitypledge/goldquantity
-ta test if goldquantity>200
-drop test
-*Amount pledge
-gen test=goldamountpledge/goldquantitypledge
-ta test
-*Higher than 2000 strange as 2000 is the gold price
-ta goldquantitypledge if test>2000
-ta goldamountpledge if test>2000
-*Replace with 2000*quantity
-replace goldamountpledge=goldquantitypledge*2000 if test>2000
-
-*Amount
-gen goldamount=goldquantity*2000
+merge m:1 HHID2010 using "outcomes/RUME-gold_HH", keepusing(goldamount_HH)
+drop _merge
 
 
 ****Total
-egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount housevalue)
-egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount housevalue)
-egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount)
+egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount_HH housevalue)
+egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount_HH housevalue)
+egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount_HH)
 
 gen assets1000=assets/1000
 gen assets1000_noland=assets_noland/1000
 gen assets1000_noprop=assets_noprop/1000
 
+
+
 ***Clean
-drop livestockamount_cow livestockamount_goat livestockamount goodsvalue1 goodsvalue2 goodsvalue3 goodsvalue4 goodsvalue5 goodsvalue6 goodsvalue7 goodsvalue8 goodsvalue9 goodsvalue10 goodstotalamount amountownland goldamount
+drop livestockamount_cow livestockamount_goat goodsvalue1 goodsvalue2 goodsvalue3 goodsvalue4 goodsvalue5 goodsvalue6 goodsvalue7 goodsvalue8 goodsvalue9 goodsvalue10
 
 
 ********** Variables
@@ -133,7 +115,8 @@ restore
 */
 
 
-keep assets* HHID2010
+keep HHID2010 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue
+rename goldamount_HH goldamount
 duplicates drop
 save"outcomes\RUME-assets", replace
 ****************************************
