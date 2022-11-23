@@ -95,10 +95,6 @@ replace amountownland=2*800000+8*600000 if HHID2016=="uuid:bf24520a-2493-421c-8c
 merge m:1 HHID2016 using "outcomes/NEEMSIS1-gold_HH", keepusing(goldamount_HH)
 drop _merge
 
-* Amount
-bysort HHID2016: egen goldquantity_HH=sum(goldquantity)
-gen goldamount=goldquantity_HH*2700
-drop goldquantity_HH
 
 ****Total
 egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount_HH housevalue)

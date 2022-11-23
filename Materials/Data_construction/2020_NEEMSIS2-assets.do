@@ -84,14 +84,13 @@ replace `x'=. if `x'==0 & ownland=="0"
 
 
 ***Gold
-bysort HHID2020: egen goldquantity_HH=sum(goldquantity)
-gen goldamount=goldquantity_HH*2700
-drop goldquantity_HH
+merge m:1 HHID2020 using "outcomes/NEEMSIS2-gold_HH", keepusing(goldamount_HH)
+drop _merge
 
 ****Total
-egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount housevalue)
-egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount housevalue)
-egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount)
+egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount_HH housevalue)
+egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount_HH housevalue)
+egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount_HH)
 
 gen assets1000=assets/1000
 gen assets1000_noland=assets_noland/1000
@@ -122,7 +121,8 @@ restore
 ----------------------------------------
 */
 
-keep assets* HHID2020
+keep HHID2020 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue
+rename goldamount_HH goldamount
 duplicates drop
 save"outcomes\NEEMSIS2-assets", replace
 
