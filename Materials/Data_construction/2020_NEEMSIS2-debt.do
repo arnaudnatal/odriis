@@ -1327,6 +1327,7 @@ save"_temp\NEEMSIS2-loans_v11.dta", replace
 ****************************************
 use"_temp\NEEMSIS2-loans_v11.dta", clear
 
+sum loanamount loanamount2 loanamount3
 
 *** Debt service pour ML
 gen debt_service=.
@@ -1354,11 +1355,11 @@ replace imp_principal=(loanamount3-loanbalance3)*365/loanduration if loanduratio
 *** Imputation interest for moneylenders (.17) and microcredit (.19)
 gen imp1_interest=.
 *Moneylender
-replace imp1_interest=0.37*loanamount if lender4==6 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.37*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
+replace imp1_interest=0.37*loanamount3 if lender4==6 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.37*loanamount3*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
 *Microcredit
-replace imp1_interest=0.22*loanamount if lender4==8 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.22*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
+replace imp1_interest=0.22*loanamount3 if lender4==8 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.22*loanamount3*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
 
 replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
 
@@ -1445,13 +1446,13 @@ rename lendercat_3 lendercat_form
 
 * Amount
 foreach x in WKP rela empl mais coll pawn shop fina frie SHG bank coop suga grou than {
-gen lenderamt_`x'=loanamount if lender_`x'==1
+gen lenderamt_`x'=loanamount3 if lender_`x'==1
 }
 foreach x in WKP rela labo pawn shop mone frie micr bank neig {
-gen lender4amt_`x'=loanamount if lender4_`x'==1
+gen lender4amt_`x'=loanamount3 if lender4_`x'==1
 }
 foreach x in info semi form {
-gen lendercatamt_`x'=loanamount if lendercat_`x'==1
+gen lendercatamt_`x'=loanamount3 if lendercat_`x'==1
 }
 
 
@@ -1474,7 +1475,7 @@ rename loanreasongiven_13 given_othe
 
 *Amt
 foreach x in agri fami heal repa hous inve cere marr educ rela deat nore othe {
-gen givenamt_`x'=loanamount if given_`x'==1
+gen givenamt_`x'=loanamount3 if given_`x'==1
 }
 
 
@@ -1492,7 +1493,7 @@ rename loanreasoncat_7 givencat_othe
 
 *Amt
 foreach x in econ curr huma soci hous nore othe {
-gen givencatamt_`x'=loanamount if givencat_`x'==1
+gen givencatamt_`x'=loanamount3 if givencat_`x'==1
 }
 
 
@@ -1518,7 +1519,7 @@ rename effective_13 effective_othe
 
 *Amt
 foreach x in agri fami heal repa hous inve cere marr educ rela deat nore othe {
-gen effectiveamt_`x'=loanamount if effective_`x'==1
+gen effectiveamt_`x'=loanamount3 if effective_`x'==1
 }
 
 
@@ -1691,6 +1692,7 @@ save"outcomes\NEEMSIS2-loans_mainloans_new.dta", replace
 use"outcomes\NEEMSIS2-loans_mainloans_new.dta", clear
 
 *
+*keep if HHID2020=="uuid:17e456bc-0327-461c-9782-de911c716e4f"
 
 fre loansettled
 ta loanreasongiven if loansettled==1
@@ -1707,8 +1709,8 @@ drop if loansettled==1
 bysort HHID2020 INDID2020: egen nbloans_indiv=sum(1)
 bysort HHID2020: egen nbloans_HH=sum(1)
 
-bysort HHID2020 INDID2020: egen loanamount_indiv=sum(loanamount)
-bysort HHID2020: egen loanamount_HH=sum(loanamount)
+bysort HHID2020 INDID2020: egen loanamount_indiv=sum(loanamount3)
+bysort HHID2020: egen loanamount_HH=sum(loanamount3)
 
 
 *** Services
@@ -1717,7 +1719,12 @@ bysort HHID2020 INDID2020: egen imp1_is_tot_indiv=sum(imp1_interest_service)
 
 bysort HHID2020: egen imp1_ds_tot_HH=sum(imp1_debt_service)
 bysort HHID2020: egen imp1_is_tot_HH=sum(imp1_interest_service)
+*order HHID2020 loan_database imp1_debt_service imp1_is_tot_HH loansettled loanamount loanbalance loanlender
 
+
+*** Loan amount
+rename loanamount loanamount_o
+rename loanamount3 loanamount
 
 ********** Individual and HH level for dummies
 foreach x in lender_WKP lender_rela lender_empl lender_mais lender_coll lender_pawn lender_shop lender_fina lender_frie lender_SHG lender_bank lender_coop lender_suga lender_grou lender_than lender4_WKP lender4_rela lender4_labo lender4_pawn lender4_shop lender4_mone lender4_frie lender4_micr lender4_bank lender4_neig lendercat_info lendercat_semi lendercat_form  given_agri given_fami given_heal given_repa given_hous given_inve given_cere given_marr given_educ given_rela given_deat given_nore given_othe givencat_econ givencat_curr givencat_huma givencat_soci givencat_hous givencat_nore givencat_othe effective_agri effective_fami effective_heal effective_repa effective_hous effective_inve effective_cere effective_marr effective_educ effective_rela effective_deat effective_nore effective_othe othlendserv_poli othlendserv_fina othlendserv_guar othlendserv_gene othlendserv_none othlendserv_othe guarantee_doc guarantee_chit guarantee_shg guarantee_pers guarantee_jewe guarantee_none guarantee_othe borrservices_free borrservices_work borrservices_supp borrservices_none borrservices_othe plantorep_chit plantorep_work plantorep_migr plantorep_asse plantorep_inco plantorep_borr plantorep_othe settlestrat_inco settlestrat_sche settlestrat_borr settlestrat_sell settlestrat_land settlestrat_cons settlestrat_addi settlestrat_work settlestrat_supp settlestrat_harv settlestrat_othe prodpledge_gold prodpledge_land prodpledge_car prodpledge_bike prodpledge_frid prodpledge_furn prodpledge_tail prodpledge_cell prodpledge_line prodpledge_dvd prodpledge_came prodpledge_gas prodpledge_comp prodpledge_dish prodpledge_silv prodpledge_none prodpledge_othe {

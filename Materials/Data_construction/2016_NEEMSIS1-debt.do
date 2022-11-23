@@ -661,6 +661,7 @@ use"_temp\NEEMSIS1-loans_v9-bis.dta", clear
 
 
 
+
 *** Debt service pour ML
 gen debt_service=.
 replace debt_service=totalrepaid2 if loanduration<=365
