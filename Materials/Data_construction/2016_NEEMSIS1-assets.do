@@ -92,6 +92,62 @@ replace amountownland=1*800000 if HHID2016=="uuid:e847a4d4-ea2a-4a01-95f2-25a37d
 replace amountownland=2*800000+8*600000 if HHID2016=="uuid:bf24520a-2493-421c-8cdc-cfdea3c93699"
 
 ***Gold
+ta goldquantity
+ta goldquantitypledge 
+gen test=goldquantity-goldquantitypledge
+ta test
+*Neg means that pledge>total, suppose they reversed
+replace goldquantity=goldquantitypledge if test<0
+drop test
+gen test=goldquantitypledge/goldquantity
+ta test if goldquantity>200
+drop test
+*Amount pledge
+gen test=goldamountpledge/goldquantitypledge
+ta test
+*Higher than 2700 strange as 2700 is the gold price
+ta goldquantitypledge if test>2700
+ta goldamountpledge if test>2700
+ta goldquantity if test>2700 & dummygoldpledge==1
+*Replace with 2000*quantity
+replace goldamountpledge=goldquantitypledge*2700 if test>2700
+drop test
+
+*Amount total 1:1
+ta goldquantity
+ta goldquantitypledge if goldquantity==1600
+ta goldamountpledge if goldquantity==1600
+ta goldreasonpledge if goldquantity==1600
+replace goldquantitypledge=100 if goldquantity==1600
+replace goldamountpledge=10000 if goldquantity==1600
+replace goldquantity=160 if goldquantity==1600
+
+* 1:1
+ta goldquantity
+ta goldquantitypledge if goldquantity==600
+replace goldquantity=60 if goldquantity==600
+
+* 1:1
+ta goldquantity
+ta goldquantitypledge if goldquantity==520
+ta goldamountpledge if goldquantity==520
+ta goldreasonpledge if goldquantity==520
+replace goldquantitypledge=48 if goldquantity==520
+replace goldamountpledge=90000 if goldquantity==520
+replace goldquantity=52 if goldquantity==520
+
+* 1:1
+ta goldquantity
+ta goldquantitypledge if goldquantity==480
+replace goldquantity=48 if goldquantity==480
+
+* 1:1
+ta goldquantity
+ta goldquantitypledge if goldquantity==400
+
+
+
+* Amount
 bysort HHID2016: egen goldquantity_HH=sum(goldquantity)
 gen goldamount=goldquantity_HH*2700
 drop goldquantity_HH

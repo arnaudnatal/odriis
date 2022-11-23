@@ -74,7 +74,29 @@ replace amountownland=600000*sizeownland if drywetownland==1
 replace amountownland=1100000*sizeownland if drywetownland==2
 
 ***Gold
+*Pledge vs Real
+ta goldquantity
+ta goldquantitypledge 
+gen test=goldquantity-goldquantitypledge
+ta test
+*Neg means that pledge>total, suppose they reversed
+replace goldquantity=goldquantitypledge if test<0
+drop test
+gen test=goldquantitypledge/goldquantity
+ta test if goldquantity>200
+drop test
+*Amount pledge
+gen test=goldamountpledge/goldquantitypledge
+ta test
+*Higher than 2000 strange as 2000 is the gold price
+ta goldquantitypledge if test>2000
+ta goldamountpledge if test>2000
+*Replace with 2000*quantity
+replace goldamountpledge=goldquantitypledge*2000 if test>2000
+
+*Amount
 gen goldamount=goldquantity*2000
+
 
 ****Total
 egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount housevalue)
