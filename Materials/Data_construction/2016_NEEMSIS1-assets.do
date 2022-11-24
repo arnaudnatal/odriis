@@ -91,10 +91,14 @@ replace amountownland=0.25*800000+1.75*600000 if HHID2016=="uuid:d00c25d5-5174-4
 replace amountownland=1*800000 if HHID2016=="uuid:e847a4d4-ea2a-4a01-95f2-25a37de516e9"
 replace amountownland=2*800000+8*600000 if HHID2016=="uuid:bf24520a-2493-421c-8cdc-cfdea3c93699"
 
-***Gold
-merge m:1 HHID2016 using "outcomes/NEEMSIS1-gold_HH", keepusing(goldamount_HH)
-drop _merge
 
+
+***Gold
+*merge m:1 HHID2016 using "outcomes/NEEMSIS1-gold_HH", keepusing(goldamount_HH)
+*drop _merge
+
+bysort HHID2016: egen goldquantity_HH=sum(goldquantity)
+gen goldamount_HH=goldquantity_HH*2700
 
 ****Total
 egen assets=rowtotal(livestockamount goodstotalamount amountownland goldamount_HH housevalue)
@@ -128,7 +132,7 @@ restore
 ----------------------------------------
 */
 
-keep HHID2016 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue
+keep HHID2016 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue sizeownland
 rename goldamount_HH goldamount
 duplicates drop
 save"outcomes\NEEMSIS1-assets", replace

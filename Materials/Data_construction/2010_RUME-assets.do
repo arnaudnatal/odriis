@@ -73,6 +73,9 @@ gen amountownland=.
 replace amountownland=600000*sizeownland if drywetownland==1
 replace amountownland=1100000*sizeownland if drywetownland==2
 
+gen sizedryownland=sizeownland if drywetownland==1
+gen sizewetownland=sizeownland if drywetownland==2
+
 ***Gold
 merge m:1 HHID2010 using "outcomes/RUME-gold_HH", keepusing(goldamount_HH)
 drop _merge
@@ -115,7 +118,7 @@ restore
 */
 
 
-keep HHID2010 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue
+keep HHID2010 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue sizeownland
 rename goldamount_HH goldamount
 duplicates drop
 save"outcomes\RUME-assets", replace
