@@ -309,7 +309,14 @@ drop test
 drop goldquantity_HH2010 n HHID2010
 gen goldamount=goldquantity2*2700
 
-tabstat goldquantity goldquantity2, stat(n mean cv q)
+preserve
+bysort HHID2016: egen goldquantity_HH=sum(goldquantity)
+bysort HHID2016: egen goldquantity2_HH=sum(goldquantity2)
+
+keep *_HH
+duplicates drop
+tabstat goldquantity_HH goldquantity2_HH, stat(n mean cv q)
+restore
 
 save"outcomes\NEEMSIS1-gold", replace
 

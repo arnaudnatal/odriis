@@ -29,6 +29,11 @@ grstyle set plain, box nogrid
 
 
 
+
+
+
+
+
 ****************************************
 * Gold 2020-21
 ***************************************
@@ -390,10 +395,10 @@ replace loanamountgold2=20000 if HHID2020=="uuid:c14788bc-235f-4690-b9bf-15bfde3
 
 
 
-/*
-sort goldquantity2 goldquantity_HH HHID2020 INDID2020
-list n HHID2020 INDID2020 goldquantity_HH2010 goldquantity_HH goldquantity2 goldquantitypledge2 goldamountpledge2 if goldquantity2!=., clean noobs 
-drop goldquantity_HH goldamount_HH
+
+*sort goldquantity2 goldquantity_HH HHID2020 INDID2020
+*list n HHID2020 INDID2020 goldquantity_HH2016 goldquantity_HH goldquantity2 goldquantitypledge2 goldamountpledge2 if goldquantity2!=., clean noobs 
+
 
 
 
@@ -430,12 +435,19 @@ drop test
 
 
 ***** Save
-drop goldquantity_HH2010 n HHID2016
+drop goldquantity_HH2016 n HHID2016
 gen goldamount=goldquantity2*2700
 
-tabstat goldquantity goldquantity2, stat(n mean cv q)
+preserve
+bysort HHID2020: egen goldquantity_HH=sum(goldquantity)
+bysort HHID2020: egen goldquantity2_HH=sum(goldquantity2)
 
-save"outcomes\NEEMSIS1-gold", replace
+keep *_HH
+duplicates drop
+tabstat goldquantity_HH goldquantity2_HH, stat(n mean cv q p90 p95 p99 min max)
+restore
+
+save"outcomes\NEEMSIS2-gold", replace
 
 
 ***** HH level
@@ -446,6 +458,6 @@ bysort HHID2020: egen goldamount_HH=sum(goldamount)
 
 keep HHID2020 goldquantity_HH goldquantitypledge_HH goldamountpledge_HH goldamount_HH
 duplicates drop
-save"outcomes\NEEMSIS1-gold_HH", replace
+save"outcomes\NEEMSIS2-gold_HH", replace
 ****************************************
 * END

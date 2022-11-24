@@ -38,7 +38,7 @@ grstyle set plain, box nogrid
 ***************************************
 use"$data1", clear
 
-keep HHID2010 goldquantity sizeownland jatis
+keep HHID2010 sizeownland jatis goldquantity goldquantitypledge goldamountpledge
 decode jatis, gen(jatis_str)
 drop jatis
 rename jatis_str jatis
@@ -66,25 +66,26 @@ save"_temp\tempRUME-gold_HH", replace
 ***************************************
 use"$data2", clear
 
-keep HHID2016 INDID2016 goldquantity sizeownland jatis username
+keep HHID2016 INDID2016 goldquantity goldquantitypledge goldamountpledge sizeownland jatis username
 foreach x in jatis {
 decode `x', gen(`x'_str)
 drop `x'
 rename `x'_str `x'
 }
 
-bysort HHID2016: egen goldquantity_HH=sum(goldquantity)
-drop goldquantity
-rename goldquantity_HH goldquantity
+foreach x in goldquantity goldquantitypledge goldamountpledge {
+bysort HHID2016: egen `x'_HH=sum(`x')
+drop `x'
+rename `x'_HH `x'
+}
 
-keep HHID2016 goldquantity sizeownland jatis username
+keep HHID2016 gold* sizeownland jatis username
 duplicates drop
 
 merge 1:m HHID2016 using "ODRIIS-HH_wide", keepusing(HHID_panel)
 keep if _merge==3
 drop _merge
 gen year=2016
-
 
 save"_temp\tempNEEMSIS1-gold_HH", replace
 ****************************************
@@ -104,16 +105,19 @@ save"_temp\tempNEEMSIS1-gold_HH", replace
 ***************************************
 use"$data3", clear
 
-keep HHID2020 INDID2020 goldquantity sizeownland jatis username
+keep HHID2020 INDID2020 goldquantity goldquantitypledge goldamountpledge sizeownland jatis username goldquantitypledge goldamountpledge
 decode jatis, gen(jatis_str)
 drop jatis
 rename jatis_str jatis
 
-bysort HHID2020: egen goldquantity_HH=sum(goldquantity)
-drop goldquantity
-rename goldquantity_HH goldquantity
+foreach x in goldquantity goldquantitypledge goldamountpledge {
+bysort HHID2020: egen `x'_HH=sum(`x')
+drop `x'
+rename `x'_HH `x'
+}
 
-keep HHID2020 goldquantity sizeownland jatis username
+
+keep HHID2020 goldquantity goldquantitypledge goldamountpledge sizeownland jatis username
 duplicates drop
 
 merge 1:m HHID2020 using "ODRIIS-HH_wide", keepusing(HHID_panel)
@@ -164,48 +168,149 @@ save"_temp\temppanel-gold_HH", replace
 
 
 
+
+
+
+
 ****************************************
 * Labour HH
 ***************************************
 use"outcomes/RUME-occup_indiv", clear
 keep HHID2010 INDID2010 mainocc_occupation_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv
+gen year=2010
 
 append using "outcomes/NEEMSIS1-occup_indiv"
-keep HHID2010 INDID2010 HHID2016 INDID2016 mainocc_occupation_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv
+keep year HHID2010 INDID2010 HHID2016 INDID2016 mainocc_occupation_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv
+replace year=2016 if year==.
 
 append using "outcomes/NEEMSIS2-occup_indiv"
-keep HHID2010 INDID2010 HHID2016 INDID2016 HHID2020 INDID2020 mainocc_occupation_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv
+keep year HHID2010 INDID2010 HHID2016 INDID2016 HHID2020 INDID2020 mainocc_occupation_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv
+replace year=2020 if year==.
+
+gen HHID=""
+foreach x in 2010 2016 2020 {
+replace HHID=HHID`x' if HHID`x'!=""
+}
+
+order HHID year HHID2010 HHID2016 HHID2020
+
+tostring INDID2016 INDID2020, replace
+replace INDID2016="" if INDID2016=="."
+replace INDID2020="" if INDID2020=="."
+gen INDID=""
+foreach x in 2010 2016 2020 {
+replace INDID=INDID`x' if INDID`x'!=""
+}
+order HHID INDID
 
 
+*** HHID_panel
+tostring year, replace
+merge m:m HHID year using "ODRIIS-HH_long", keepusing(HHID_panel)
+keep if _merge==3
+drop _merge
+drop HHID2010 HHID2016 HHID2020 INDID2010 INDID2016 INDID2020
+order HHID_panel
+sort HHID_panel year INDID
+drop if mainocc_occupation_indiv==.
+destring year, replace
 
+save"_temp\temppanelworker", replace
 ****************************************
 * END
 
 
 
-reshape wide HHID goldquantity sizeownland, i(HHID_panel) j(year)
-
-gen evogold1=goldquantity2016-goldquantity2010
-gen evogold2=goldquantity2020-goldquantity2016
 
 
-* 2010 strange
-sort goldquantity2020
-order HHID_panel villageid castecorr goldquantity2010 goldquantity2016 goldquantity2020 evogold1 evogold2 sizeownland2010 sizeownland2016 sizeownland2020
-br
 
-* 2016 strange
-sort goldquantity2016
-order HHID_panel villageid castecorr goldquantity2010 goldquantity2016 goldquantity2020 evogold1 evogold2 sizeownland2010 sizeownland2016 sizeownland2020
-br
 
-* 2010-16 strange
-sort evogold1
-order HHID_panel villageid castecorr goldquantity2010 goldquantity2016 goldquantity2020 evogold1 evogold2 sizeownland2010 sizeownland2016 sizeownland2020
-br
 
-* 2016 strange
-sort goldquantity2016
-order HHID_panel villageid castecorr goldquantity2010 goldquantity2016 goldquantity2020 evogold1 evogold2 sizeownland2010 sizeownland2016 sizeownland2020
-br
 
+
+****************************************
+* Labour HH and gold
+***************************************
+use"_temp\temppanel-gold_HH", clear
+
+merge 1:m HHID_panel year using "_temp\temppanelworker"
+
+
+gen pbdalits=0
+replace pbdalits=1 if (goldquantity>60 & caste=="Dalits")
+
+gen pbnondalits=0
+replace pbnondalits=1 if goldquantity>100 & (caste=="Middle" | caste=="Upper")
+
+bysort HHID_panel: egen pbdalits_HH=max(pbdalits)
+bysort HHID_panel: egen pbnondalits_HH=max(pbnondalits)
+
+
+order HHID_panel year caste jatis goldquantity goldquantitypledge goldamountpledge sizeownland mainocc_occupation_indiv annualincome_indiv pbdalits_HH pbnondalits_HH
+
+sort pbdalits_HH HHID_panel year INDID goldquantity
+*How many HH?
+preserve
+keep HHID_panel year goldquantity goldquantitypledge goldamountpledge sizeownland caste jatis villageid pbdalits_HH pbnondalits_HH
+duplicates drop
+ta year
+ta pbdalits year, col
+/*
+pbdalits_H |               year
+         H |      2010       2016       2020 |     Total
+-----------+---------------------------------+----------
+         0 |       307        373        494 |     1,174 
+           |     75.80      75.81      78.16 |     76.78 
+-----------+---------------------------------+----------
+         1 |        98        119        138 |       355 
+           |     24.20      24.19      21.84 |     23.22 
+-----------+---------------------------------+----------
+     Total |       405        492        632 |     1,529 
+           |    100.00     100.00     100.00 |    100.00 
+*/
+ta pbnondalits year, col
+/*
+pbnondalit |               year
+      s_HH |      2010       2016       2020 |     Total
+-----------+---------------------------------+----------
+         0 |       335        401        529 |     1,265 
+           |     82.72      81.50      83.70 |     82.73 
+-----------+---------------------------------+----------
+         1 |        70         91        103 |       264 
+           |     17.28      18.50      16.30 |     17.27 
+-----------+---------------------------------+----------
+     Total |       405        492        632 |     1,529 
+           |    100.00     100.00     100.00 |    100.00 
+*/
+restore
+
+save"_temp\corrgoldAntony", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Corrections
+****************************************
+use"_temp\corrgoldAntony", clear
+
+
+********** Dalits
+order HHID_panel year caste jatis goldquantity goldquantitypledge goldamountpledge sizeownland mainocc_occupation_indiv annualincome_indiv pbdalits_HH pbnondalits_HH
+
+sort pbdalits_HH HHID_panel year INDID goldquantity
+
+
+
+
+****************************************
+* END
