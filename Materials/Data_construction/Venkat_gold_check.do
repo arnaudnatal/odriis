@@ -311,6 +311,43 @@ sort pbdalits_HH HHID_panel year INDID goldquantity
 
 
 
+********** Dalits
+order HHID_panel year caste jatis goldquantity goldquantitypledge goldamountpledge sizeownland mainocc_occupation_indiv annualincome_indiv pbnondalits_HH pbdalits_HH
+
+sort pbnondalits_HH HHID_panel year INDID goldquantity
+
+keep HHID_panel HHID year goldquantity goldquantitypledge goldamountpledge pbnondalits_HH pbdalits_HH
+duplicates drop
+ta year
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Corrections
+****************************************
+use"outcomes\Goldpb", clear
+
+
+ta pbdalits_HH year
+ta pbnondalits_HH year
+
+
 
 ****************************************
 * END

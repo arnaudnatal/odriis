@@ -39,23 +39,38 @@ use"$data", clear
 keep HHID2010 goldquantity goldquantitypledge goldamountpledge
 duplicates drop
 
-
 ***** Save
 gen goldquantity2=goldquantity
 gen goldquantitypledge2=goldquantitypledge
 gen goldamountpledge2=goldamountpledge
 
+***** Merge
+merge 1:m HHID2010 using"outcomes/Goldpb_wide"
+keep if _merge==3
+drop _merge
+drop HHID2016 HHID2020
 
-***** Realistic quantity?
-ta goldquantity
-/*
-No extrems
-*/
 
-ta goldquantitypledge
-/*
-No extrems
-*/
+***** Realistic quantity? Excel file with Antony
+compress 
+order HHID2010 goldquantity2 goldquantitypledge2 goldamountpledge2 pbdalits_HH2010 pbnondalits_HH2010 goldquantity2016 goldquantitypledge2016 goldamountpledge2016 goldquantity2020 goldquantitypledge2020 goldamountpledge2020
+sort HHID2010
+
+
+
+
+
+
+
+********** Corr
+ta pb 
+sort pb HHID2010
+list HHID2010 goldquantity2 goldquantitypledge2 goldamountpledge2 pb if pb!=0, clean noobs
+
+
+
+
+
 
 
 ***** Pledge vs Owned quantity:
