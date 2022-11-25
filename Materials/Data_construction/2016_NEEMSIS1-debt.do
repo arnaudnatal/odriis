@@ -418,9 +418,12 @@ We can only check 2 things:
 - the duration
 - consistency between total repaid, principal paid and interest paid
 
+However, the duration also depends on total repaid principal paid...
+The only double check is loanamount/loanbalance/totalrepaid/principalpaid/interestpaid
+
 Lets first check the consistency between total repaid, principal paid, interest paid as the rest depends on these values.
 
-However, loanamount - loanbalance, suppose to be principal paid, so leths begin with that
+However, loanamount - loanbalance, suppose to be principal paid, so lets begin with that
 */
 
 
@@ -531,12 +534,7 @@ ta pb1 pb2
 sort HHID2016 INDID2016 loanid
 br HHID2016 INDID2016 loanid loansettled loanamount lender4 loanduration_month loanbalance totalrepaid principalpaid interestpaid test1 test2 interestfrequency interestloan termsofrepayment repayduration1 repayduration2 if pb1==1 & pb2==0
 
-
-
-
-
-
-
+replace loanbalance=loanamount-principalpaid if pb1==1 & pb2==0
 
 
 
@@ -582,33 +580,58 @@ replace interestfrequency=2 if HHID2016=="uuid:ebfb1d75-ba54-49a7-a324-affb036c8
 
 
 
+********** Recheck
+drop test1 pb1 test2 pb2
+gen test1=loanamount-loanbalance-principalpaid
+gen pb1=0
+replace pb1=1 if test1!=0 & test1!=.
+ta pb1
+drop pb1 test1
+
+gen test2=totalrepaid-principalpaid-interestpaid
+gen pb2=0
+replace pb2=1 if test2!=0 & test2!=.
+ta pb2
+drop pb2 test2
 
 
 
 
 
+********** Consistency of duration now
 
-
-
-
-
-
-
-
-
-
-********** All in months!
-
-
-
-*** Repay duration2
+*** Monthly duration of repayment: Repay duration2
 gen repayduration2_month=.
 replace repayduration2_month=repayduration2/4.3452 if repayduration1==1  // weekly
 replace repayduration2_month=repayduration2 if repayduration1==2  // monthly
 replace repayduration2_month=repayduration2*12 if repayduration1==3  // yearly
 replace repayduration2_month=repayduration2*6 if repayduration1==4  // once in six month
 
-*** Interest loan
+*** PB DURATION 1: if nb month repay > loan duration
+gen pb1=0  if repayduration1!=5 & repayduration1!=.
+replace pb1=1 if repayduration2_month>loanduration_month & repayduration1!=5 & repayduration1!=.
+ta pb1
+/*
+Dans 73% des cas, la durée de remboursement est plus ancienne que le prêt.
+Ex:
+un prêt de 75 mois (6 ans), déclaré rembourser tous les ans, depuis 36 ans.
+*/
+br HHID2016 INDID2016 loanid loansettled loanamount lender4 loanduration_month repayduration2_month loanbalance totalrepaid principalpaid termsofrepayment repayduration1 repayduration2 if pb1==1
+
+*** To treat everybody in the same way: if pb1=1, replace by the loan duration
+gen repayduration2_month2=repayduration2_month
+replace repayduration2_month2=loanduration_month if pb1==1
+drop pb1
+
+*** Need to check that repayduration * amount = total repaid but I don't have the amount
+* I will calculate it after by divide total by time
+
+
+
+
+********** Consistency of interest loan
+
+*** Gen interest loan per month
 gen interestloan_month=.
 replace interestloan_month=interestloan*4.3452 if interestfrequency==1  // weekly
 replace interestloan_month=interestloan if interestfrequency==2  // monthly
@@ -616,34 +639,78 @@ replace interestloan_month=interestloan/12 if interestfrequency==3  // yearly
 replace interestloan_month=interestloan/6 if interestfrequency==4  // once in six month
 
 
+** PB AMOUNT: if interest loan * loan duration > interestpaid
+gen test2=.
+replace test2=interestloan_month*loanduration_month if interestloan_month!=.
+gen test3=.
+replace test3=interestpaid-test2 if interestpaid!=.
+gen pb2=0 if dummyinterest==1
+replace pb2=1 if test2<interestpaid & dummyinterest==1
+ta pb2
+/*
+On calcul la borne max qu'ils ont payé: en étant super régulier et payant tel montant
+on atteint pas ce qu'ils déclarent avoir payer en tout...
+*/
+ta test3
+sort test3
+br HHID2016 INDID2016 loanid loansettled loanamount lender4 loanduration_month loanbalance totalrepaid interestpaid test2 test3 interestfrequency interestloan interestloan_month if pb2==1
 
-********** Nb month interest payment
+/*
+On accepte une erreur de 1000 roupies dans le calcul
+*/
+replace interestloan_month=interestpaid/loanduration_month if test3<1000 & test3!=.
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+*
+
+
+
+*** Calculate the nber of month of payment of interest
 gen nbmonth_interest=.
 replace nbmonth_interest=interestpaid/interestloan_month if interestpaid!=. & interestloan_month!=.
 
 
-
-********** PB DURATION 1: if nb month repay > loan duration
-gen pb1=0
-replace pb1=1 if repayduration2_month>loanduration_month
-ta pb1
-/*
-Dans 93% des cas, la durée de remboursement est plus ancienne que le prêt.
-Ex:
-un prêt de 75 mois (6 ans), déclaré rembourser tous les ans, depuis 36 ans.
-*/
-
-*** To treat everybody in the same way: if pb1=1, replace by the loan duration
-gen repayduration2_month2=repayduration2_month
-replace repayduration2_month2=loanduration_month if pb1==1
-drop pb1
-
-
-********** PB DURATION 2: if nb month interest > loan duration
+*** PB DURATION 2: if nb month interest > loan duration
 gen pb2=0 if dummyinterest==1
 replace pb2=1 if nbmonth_interest>loanduration_month & dummyinterest==1
 ta pb2
-sort pb2
 /*
 Dans 25% des cas, la durée théorique de remboursement des intérêts est plus ancienne que le prêt.
 Ex: 
@@ -653,12 +720,15 @@ puis 4500/62.5 -> 72.34
 Il faut 72 mois, à coup de 62 roupies par mois, pour payer les 4500 roupies déjà payé.
 Or, le prêt n'est là que depuis 8 mois
 */
+br HHID2016 INDID2016 loanid loansettled loanamount lender4 loanduration_month nbmonth_interest interestpaid interestfrequency interestloan if pb2==1
 
 
 *** To treat everybody in the same way: if pb2=1, replace by the loan duration
 gen nbmonth_interest2=nbmonth_interest
 replace nbmonth_interest2=loanduration_month if pb2==1
 
+gen test=interestpaid-nbmonth_interest2*interestloan_month
+ta test
 
 
 
@@ -683,959 +753,6 @@ gen test=totalrepaid-principalpaid-interestpaid
 ta test
 sort test
 list HHID2016 INDID2016 loanid test totalrepaid principalpaid interestpaid if test!=0 & test!=., clean noobs
-
-
-
-
-/*
-
-
-
-
-
-
-
-****************************************
-* Cleaning 
-****************************************
-use "_temp\NEEMSIS1-loans_v6.dta", clear
-
-
-*NB MONTHS SINCE THE LOAN WAS TAKEN (unavailable for advances and gold loans)
-
-gen diff_month=(submissiondate-loandate)/(365/12)
-ta diff_month
-list HHID2016 INDID2016 loanid submissiondate loandate if diff_month<0, clean noobs
-
-*diff_month==-7.4958906:
-replace diff_month=4.504109 if HHID2016=="uuid:6c722d1f-d5fa-4d1b-aab9-9f6e8d3bcabd" &	INDID2016==2& loanid==1	
-*diff_month==-6.969863:
-replace diff_month=5.030137 if HHID2016=="uuid:8f9bf965-cb33-4354-a047-cb029a2a43a5" & INDID2016==4	& loanid==1	
-
-*difference en mois entre interview et loandate arrondie a l entier inferieur 
-gen months=floor(diff_month)
-
-
-
-********** Coherence VALUES INTERESTPAID/PRINCIPALPAID/TOTALREPAID
-
-gen test=totalrepaid-principalpaid - interestpaid
-sort test
-list HHID2016 INDID2016 loanid test totalrepaid principalpaid interestpaid if test!=. & test!=0, clean noobs
-
-
-*valeurs 55,66 enregistres a la place de missing value
-replace interestpaid=. if interestpaid==55 | interestpaid==66
-replace principalpaid=. if principalpaid==55 | principalpaid==66 
-replace totalrepaid=. if totalrepaid==66
-
-replace interestpaid=totalrepaid - principalpaid if HHID2016=="uuid:03448664-46ca-4519-8209-de355a7e8b31" & INDID2016==1 & loanid==1
-replace interestpaid=9000 if HHID2016=="uuid:0f421b5c-b081-416c-a8ca-93c430d0961e" &	INDID2016==1 &	loanid==1
-replace interestpaid=9000 if HHID2016=="uuid:8d63df0f-1b86-4f3a-97fc-2abcf338f8bf" &	INDID2016==2 &	loanid==1
-replace interestpaid=20000 if HHID2016=="uuid:9f14556f-8aa4-42d1-a8e8-d82f3d40e3d3" &	INDID2016==5 &	loanid==1
-
-replace interestpaid=14400 if HHID2016=="uuid:0595322c-603f-4c45-a333-9f80c0c140fc" &	INDID2016==1 &	loanid==2
-replace interestpaid=50000 if HHID2016=="uuid:dfe09e8d-99df-4b37-a4db-e9343d9a9f13" &	INDID2016==1 &	loanid==1
-replace interestpaid=18000 if HHID2016=="uuid:78817304-5ca2-42d3-9b67-843366b5afde" &	INDID2016==1 &	loanid==2
-replace interestpaid=1424 if HHID2016=="uuid:e847a4d4-ea2a-4a01-95f2-25a37de516e9" &	INDID2016==2 &	loanid==1
-replace interestpaid=totalrepaid if HHID2016=="uuid:f7c0aded-b61a-4d89-ac2b-3e245be4c006" &	INDID2016==1 &	loanid==1
-replace interestpaid=totalrepaid if HHID2016=="uuid:f7c0aded-b61a-4d89-ac2b-3e245be4c006" &	INDID2016==1 &	loanid==2
-replace principalpaid=200000 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==3
-*instead of 1800:
-replace principalpaid=18000 if HHID2016=="uuid:4e3a8d00-0083-47ce-8acc-4e9e305d68b4" &	INDID2016==1 &	loanid==3
-*looks like a 3 paisa loan, with interest paid monthly on 14 month out of 19:
-replace interestpaid=totalrepaid if HHID2016=="uuid:ebfb1d75-ba54-49a7-a324-affb036c88aa" &	INDID2016==1 &	loanid==1
-*5 et 4 pe intervertis: (9*500=4500)
-replace interestpaid=4500 if HHID2016=="uuid:9fa560ab-71a7-41c5-bdaf-d53da0ad3848" &	INDID2016==1 &	loanid==3
-
-/******for loans that are not microcredit: quand difference entre interest+principal et totalrepaid, ,
-privilegie breakdown interest/principal sinon pb pour attribuer la difference dans les deux cat*/
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:3f2b9b0a-a483-4214-9970-f9e2ce19dd2f" &	INDID2016==1 &	loanid==1
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:45b98913-fe19-44bd-b909-b41246240c8a" &	INDID2016==1 &	loanid==2
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:581b659f-1eb0-42d9-90fd-24779962d15c" &	INDID2016==1 &	loanid==1
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:e6c98c2b-5feb-415d-b265-5718af37f2f8" &	INDID2016==2 &	loanid==4
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:49eaa858-d375-4342-b04c-8ccffa93ea76" &	INDID2016==1 &	loanid==2
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:78ace2c6-a0cf-4eb9-8e2e-aa724df3b886" &	INDID2016==1 &	loanid==1
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:b1974dc2-aad3-49fd-bc31-87bd66179c60" &	INDID2016==1 &	loanid==1
-replace totalrepaid=interestpaid+principalpaid if HHID2016=="uuid:e93eca4e-a0b4-491a-8095-eaf70f0305c2" &	INDID2016==1 &	loanid==1
-
-
-******microcredits:
-/* 14 months have been repaid. with totalrepaid, seems to repay 1100 per month. [with interest+principal=1177. let s consider 1100 (probable that was easier to add the monthly payments than distinguish between interest and principal]
-means for 24 months, a total interest of 32%, which seems plausible. 
-if we abandon the fact that interest may be repaid at the beginning: means 267 interest monthly on average (276 declared) and 833 pincipal
-*ie principal: 833*14=11662 (declared: 12614); interest 3728 (3864 declared)*/
-replace interestpaid=3728 if HHID2016=="uuid:4ab064bb-3340-4bb9-8fe9-933e36cf60e2" &	INDID2016==2 &	loanid==2
-replace principalpaid=11662 if HHID2016=="uuid:4ab064bb-3340-4bb9-8fe9-933e36cf60e2" &	INDID2016==2 &	loanid==2
-
-/*6 month old, seems to have repaid 4 months. (interestpaid=356, interestloan=89)
-interest+principal=3728 (vs 3428 totalrepaid) => 932 monthly (vs 857, et 3072 principal); principal 843 monthly (vs 768. 20 000/24=833)
-albeit total repaid may be more reliable than the breakdown, here it seems that leads to 26 months of settlement, unusual. in both cases, around 12% interest*/
-replace totalrepaid=3728 if HHID2016=="uuid:9dc44802-170f-4aa6-9c19-f633fe8eafc2" &	INDID2016==1 &	loanid==5
-
-
-
-****** INTERESTPAID/PRINCIPALPAID RECORDED BUT TOTALREPAID=ONLY PRINCIPALPAID/INTERESTPAID (temporarily excluded, but solved below with loanbalance)
-
-******interest payment is recorded, but total repaid=only principal (3 cases)
-/*well known person loan contracted 5 years ago with monthly interestloan 2500; totalrepaid (62500)=roughly principalpaid (65000) 
-=> plausible that the interest recorded (that is 19*2500) was paid*/
-replace totalrepaid=principalpaid+interestpaid if HHID2016=="uuid:127cd654-d8fe-470e-811c-f322957b8a1c" &	INDID2016==1 &	loanid==3
-/*5 year old loan of vehicle financier: amount 400 000, to be repaid monthly
-interestfreq=fixed amount, worth 3000. unlikely. total interestpaid declared=63000 (ie 3000*21)
-=> likely that both  principal and declared interestpaid have been paid*/
-replace totalrepaid=principalpaid+interestpaid if HHID2016=="uuid:7f35c399-5e9d-4d1c-bca8-669afdb94697" &	INDID2016==1 &	loanid==1
-*well known person, but looks like a thandal: weekly, fixed amount interest of 10% (3000 out a loan of 30 000). 
-*repay duration=20, and 8 weeks repaid, and (27000/20)*8=10800. principal paid recorded=10400 
-replace totalrepaid=principalpaid+interestpaid if HHID2016=="uuid:22697a91-f33b-4983-809b-c4cfd2041a6f" & INDID2016==1 & loanid==4
-
-******principal payment is recorded, but total repaid=only interest (7cas)
-gen diff_tot_i=totalrepaid-interestpaid
-gen iok_pabs=0
-replace iok_pabs=1 if diff_tot_i==0 & principalpaid!=0 & test<-200
-
-
-******principal payment is recorded, but total repaid=only interest, AND: principal repaid=loanamount but the loan is marked unsettled (4 cas)
-gen diff_loan_p=loanamount-principalpaid
-gen iok_set=0
-replace iok_set=1 if diff_tot_i==0 & diff_loan_p==0 & test<-200
-
-
-
-
-
-
-********** MISSING VALUES 
-
-replace interestpaid=totalrepaid-principalpaid if HHID2016=="uuid:e847a4d4-ea2a-4a01-95f2-25a37de516e9" &	INDID2016==2 &	loanid==2
-replace interestpaid=totalrepaid-principalpaid if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==1 &	loanid==1
-replace interestpaid=totalrepaid-principalpaid if HHID2016=="uuid:bd0c2b2a-5af6-424e-9448-bab856ba25f2" &	INDID2016==1 &	loanid==3
-replace principalpaid=totalrepaid-interestpaid if HHID2016=="uuid:b95c98da-ac19-4b3d-92f5-57ec528ce4cf" *	INDID2016==1 &	loanid==1
-replace interestpaid=0 if HHID2016=="uuid:2d42097c-1f31-4bb8-9a08-7bfac56c60aa" &	INDID2016==1 &	loanid==1
-replace interestpaid=0 if HHID2016=="uuid:ffefbaf9-67e2-4a91-b067-c7e1aa134efa" &	INDID2016==1 &	loanid==2
-
-
-replace interestpaid=0 if totalrepaid==0 & interestpaid==. & dummyinterest==1
-replace principalpaid=0 if totalrepaid==0 & principalpaid==.
-
-replace principalpaid=0 if totalrepaid==interestpaid & principalpaid==. & totalrepaid!=. & loanbalance==loanamount
-
-
-*loan contracted the month of interview, interest principal totalrepaid are missing, may not have started to repay
-replace interestpaid=0 if HHID2016=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919" &	INDID2016==1 &	loanid==3
-replace principalpaid=0 if HHID2016=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919" &	INDID2016==1 &	loanid==3
-replace totalrepaid=0 if HHID2016=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919" &	INDID2016==1 &	loanid==3 
-*microcredit loan contracted 2 month ago:  interest principal totalrepaid are missing, may not have started to repay
-replace interestpaid=0 if HHID2016=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919" &	INDID2016==1 &	loanid==2
-replace principalpaid=0 if HHID2016=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919" &	INDID2016==1 &	loanid==2
-replace totalrepaid=0 if HHID2016=="uuid:b7ed12c8-2cdb-43d7-8d46-a5edeb6ad919" &	INDID2016==1 &	loanid==2
-*2 year old bank loan but declare that totalrepaid=0:
-replace interestpaid=0 if HHID2016=="uuid:b95c98da-ac19-4b3d-92f5-57ec528ce4cf" &	INDID2016==4 &	loanid==1
-replace principalpaid=0 if HHID2016=="uuid:b95c98da-ac19-4b3d-92f5-57ec528ce4cf" &	INDID2016==4 &	loanid==1
-
-***loan less than 1 year old with yearly interest
-replace interestpaid=0 if HHID2016=="uuid:06a570a1-916a-419d-a8ae-5912a8d9002f" &	INDID2016==1 &	loanid==1
-
-***principal missing but totalrepaid=interestpaid
-gen temp=totalrepaid-interestpaid
-replace principalpaid=0 if principalpaid==. & temp==0
-
-***interest missing but principalpaid=0 et totalrepaid=0
-*1 loan of banker, interest to be repaid every six month, loan is less than 6 month old
-replace interestpaid=0 if HHID2016=="uuid:a455df85-e5c8-4fc8-9ade-1ab4d04e9185" &	INDID2016==4 &	loanid==8
-
-
-*NE FONCTIONNE PAS CAR JE NAI PAS LA VARIABLE EN QUESTION
-* loans (by well known person) with interest to be paid yearly, but loan less than 1 year old
-replace interestpaid=0 if interestfreq==3 & diff_month<12 & diff_month!=. & dummyinterest==1 & interestpaid==. & principal==0 & totalrepaid==0 
-
-
-
-***interestpaid missing but principalpaid=0 et totalrepaid=0 (12 cases) - surprising that nothing has been paid in some cases (2-3 years) but may be possible
-replace interestpaid=0 if dummyinterest==1 & interestpaid==. & principal==0 & totalrepaid==0 
-
-
-
-
-***VARIABLE: 
-/*bwda microcredit: 20 000 for 24 months. 13 month old. 20 000/24=around 833 monthly. 
-interestloan=866: too large. interestpaid=10392, ie around 800 monthly. too large even if assuming that only interest has been paid since the beginning.
-principal repaid: 10008. that is roughly 770 monthly.=> unable to impute*/
-gen weird=0
-replace weird=1 if HHID2016=="uuid:390905c9-ee49-4e1e-8a4a-80e4741b7140" &	INDID2016==1 &	loanid==2
-/* 2 year old well known person loan: amount 500 000. yearly interest 15 0000 (0,03 yearly, quite cheap), total repaid 645 000, unsettled. 
-=> the amount repaid declared seem far too big??
-maybe an interest of 150 000 yearly (30% yearly)? would make something like 445000 interest, 200 000 principal, but cannot tell*/
-replace weird=1 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==2
-*same issue: 2 year  old well knwon person loan: amount 400 000, 12 000 yearly interest (0,03 yearly),totalrepaid==588000:
-replace weird=1 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==1
-
-*rien ne fait grand sens sur principalpaid, totalrepaid, loanbalance...
-replace weird=1 if HHID2016=="uuid:dbc0eae9-310c-42d5-b1d8-e7d15a51a784" &	INDID2016==2 &	loanid==1
-
-*emprunte 100 000: deux semaines plus tard, a paye 40 000 interet 60 000 principal. ???
-replace weird=1 if HHID2016=="uuid:cd65012a-e5b1-4f92-8eed-50ba485b62da" &	INDID2016==2 &	loanid==1
-
-
-************ VARIABLES
-gen excl_interest=0
-replace excl_interest=1 if dummyinterest==. |  iok_set==1 | iok_pabs==1 | weird==1 | interestpaid==. & dummyinterest==1 & weird==0
-
-gen excl_debtservice=0
-replace excl_debtservice=1 if dummyinterest==. |  iok_set==1 | iok_pabs==1 | weird==1 
-
-
-
-
-***********************************************************************************
-*************************************** INTEREST BEARING LOAN
-
-*2 microcredits whose repayement has not started and recorded as without interest
-replace dummyinterest=1 if lender4==8 & dummyinterest==0
-
-
-
-
-*********************************************************************************
-**************************************** ABERRANT VALUES OF INTEREST
-
-*loan of 68 INR (for agri), repayduration2=12, yearly interest 1140 - idem loanbalance=68
-* peut etre 68 lakh ? mais fait beaucoup. (ferait sens avec 68 000 - ie 1,7 % yearly interest, plausible pour une coop bank) 
-* j ai remplace par 68 000 ici mais peut etre faudrait il mieux l exclure
-replace loanamount=68000 if HHID2016=="uuid:d4ece943-b0c3-457c-8328-68333afaab41" &	INDID2016==1 &	loanid==1
-replace loanbalance=68000 if HHID2016=="uuid:d4ece943-b0c3-457c-8328-68333afaab41" &	INDID2016==1 &	loanid==1
-
-*interestloan 1500, 1-2 month old: 30 000 interestpaid
-replace interestpaid=3000 if HHID2016=="uuid:6ba477f3-8785-4191-a5da-9af17186dfe5" &	INDID2016==3 &	loanid==6
-replace totalrepaid=3000 if HHID2016=="uuid:6ba477f3-8785-4191-a5da-9af17186dfe5" &	INDID2016==3 &	loanid==6
-*interestloan 1 200, 2 month old: 20 000 interestpaid
-replace interestpaid=2000 if HHID2016=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &	INDID2016==1 &	loanid==2
-replace totalrepaid=2000 if HHID2016=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &	INDID2016==1 &	loanid==2
-*interestloan 1 800, 1 month old: 10 000 interestpaid (pay interest whenever have money)
-replace interestpaid=1000 if HHID2016=="uuid:a80735af-38ec-4daa-aca0-4c87c64ea92f" &	INDID2016==1 &	loanid==1
-replace totalrepaid=1000 if HHID2016=="uuid:a80735af-38ec-4daa-aca0-4c87c64ea92f" &	INDID2016==1 &	loanid==1
-
-*moneylenders loan: (completement outliers) enleve un 0 pour tomber sur des taux a 3 paisa au lieu de 30% par mois
-replace interestpaid=1500 if HHID2016=="uuid:30187ee9-dd3b-4a82-b20f-6ec0db908a4c" &	INDID2016==1 &	loanid==1
-replace interestloan=150 if HHID2016=="uuid:30187ee9-dd3b-4a82-b20f-6ec0db908a4c" &	INDID2016==1 &	loanid==1
-replace totalrepaid=1500 if HHID2016=="uuid:30187ee9-dd3b-4a82-b20f-6ec0db908a4c" &	INDID2016==1 &	loanid==1
-*idem pour un well-known person:
-replace interestpaid=10800 if HHID2016=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &	INDID2016==1 &	loanid==1
-replace interestloan=450 if HHID2016=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &	INDID2016==1 &	loanid==1
-replace totalrepaid=10800 if HHID2016=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &	INDID2016==1 &	loanid==1
-
-*interestpaid=0 instead of 1:
-replace interestpaid=0 if HHID2016=="uuid:877d0560-5981-491b-b780-6585bf924814" &	INDID2016==1 &	loanid==1
-
-
-
-/*************************************************************************************
-**************************************** CHECK TEMPORALITY OF INTEREST PAYMENT (put value 7 when does not really fall in a precise category)
-									+ TEST: compute the precise number of months of interest repaid (using interestloan and interestpaid) 
-to check for aberrant values of interest (not taking into account the fact that some monthly repayments may have been forgotten)
-=> aim: check for dubious values(to be followed later by test for outliers with the "real" duration - not a good way to do, need to mix the two)
-precise number of months will then be kept only for microcredit
-for the others, repayduration2 will be tested and if not usable, time between survey and loan is used*/
-
-
-
-**** MONTLY REPAYMENT (repayduration1 & interestfreq) 
-
-gen month_repaid=.
-replace month_repaid=interestpaid/interestloan if months<=12 & excl_interest==0  & dummyinterest==1 & repayduration1==2 & interestfreq==2
-*comme remboursement microcredit reguliers:
-replace month_repaid=interestpaid/interestloan if months>12 & months!=. & lender4==8
-
-replace month_repaid=months if HHID2016=="uuid:ccf91767-f881-4a7c-b80a-625bde97a4d1" &	INDID2016==1 &	loanid==3
-replace month_repaid=3 if HHID2016=="uuid:c2d03ebc-5c0e-415a-a655-001859f7a68f" *	INDID2016==5 &	loanid==1
-replace interestpaid=580 if HHID2016=="uuid:2fed18dd-dce7-44ce-821b-164c65a718b9" &	INDID2016==2 &	loanid==1
-replace month_repaid=5 if HHID2016=="uuid:2fed18dd-dce7-44ce-821b-164c65a718b9" &	INDID2016==2 &	loanid==1
-/*microcredit: avec le calcul du monthly instalment aec total repaid + interest loan:
-(les deux concordent:  total interest sur 2 ans avec total repaid: 75%. total interest avec interestloan: 75%)*/
-replace principalpaid=7506 if HHID2016=="uuid:a0c7053d-b228-49e4-ae9e-0188603e1811" &	INDID2016==1 &	loanid==2
-replace interestpaid=5580 if HHID2016=="uuid:a0c7053d-b228-49e4-ae9e-0188603e1811" &	INDID2016==1 &	loanid==2
-replace month_repaid=9 if HHID2016=="uuid:a0c7053d-b228-49e4-ae9e-0188603e1811" &	INDID2016==1 &	loanid==2
-replace month_repaid=6 if HHID2016=="uuid:e73b9bd7-f7f3-4ac0-b360-ffcd09758ff4" &	INDID2016==1 &	loanid==1
-replace month_repaid=7 if HHID2016=="uuid:55d4d934-626c-49e7-b1ad-ee4daf8b1a4a" *	INDID2016==1 &	loanid==1
-replace month_repaid=10 if HHID2016=="uuid:7dff3ca3-e693-4df2-a2bd-a60549a1cae7" &	INDID2016==1 &	loanid==1
-replace month_repaid=10 if HHID2016=="uuid:c2d03ebc-5c0e-415a-a655-001859f7a68f" &	INDID2016==4 &	loanid==2
-gen repayduration22=repayduration2
-replace repayduration22=27 if HHID2016=="uuid:508123db-1452-4e98-a882-b556f8a91302" &	INDID2016==1 &	loanid==1
-
-replace month_repaid=0 if months==0 & totalrepaid==0
-replace month_repaid=1 if months==0 & totalrepaid!=0 & totalrepaid!=. & repayduration1==2
-replace month_repaid=0 if HHID2016=="uuid:2d42097c-1f31-4bb8-9a08-7bfac56c60aa" &	INDID2016==1 &	loanid==1
-replace month_repaid=1 if HHID2016=="uuid:544225ab-5dc2-4a81-9d0d-cd21b5d749fa" &	INDID2016==1 &	loanid==3
-replace month_repaid=0 if HHID2016=="uuid:ffefbaf9-67e2-4a91-b067-c7e1aa134efa" &	INDID2016==1 &	loanid==2
-replace month_repaid=4 if HHID2016=="uuid:9dc44802-170f-4aa6-9c19-f633fe8eafc2" &	INDID2016==1 &	loanid==5
-replace repayduration22=24 if HHID2016=="uuid:9dc44802-170f-4aa6-9c19-f633fe8eafc2" &	INDID2016==1 &	loanid==5
-
-
-/*24 month old microcredit: interestpaid, interestloan missing; loanamount=100 000, principalpaid=70 000, totalpaid 100 0000, repayduration 24 months
-unsettled. loanamount/repayduration2= roughly 4176. principalpaid/4176 = roughly 16,8.
-totalrepaid/16 = 6250 (chiffre rond). principalpaid/16=4375 (idem). would mean: interestpaid=(6250-4575)*16=26800. seems plausible.*/
-replace month_repaid=16 if HHID2016=="uuid:8d8cacc3-38f9-4630-9719-edd639102ad0" &	INDID2016==2 &	loanid==1
-replace interestpaid=26800 if HHID2016=="uuid:8d8cacc3-38f9-4630-9719-edd639102ad0" &	INDID2016==2 &	loanid==1
-replace principalpaid=totalrepaid-26800 if HHID2016=="uuid:8d8cacc3-38f9-4630-9719-edd639102ad0" &	INDID2016==2 &	loanid==1
-replace dummyinterest=1 if HHID2016=="uuid:8d8cacc3-38f9-4630-9719-edd639102ad0" &	INDID2016==2 &	loanid==1
-
-
-gen pb=0
-***microcredits: 
-*avec les instalments renseignes, le pret ne serait pas rembourse a la fin de la periode
-replace pb=1 if HHID2016=="uuid:b14c5315-9be2-4edf-9954-a9cee0e13162" &	INDID2016==2 &	loanid==2
-*idem: pour que coherence avec interestloan, il faudrait 51998 totalrepaid au lieu de 49998. mais on aurait un total d interet de 3% pour 39 mois !
-replace pb=1 if HHID2016=="uuid:89f0734d-db4a-4660-8c9f-c54fcd6f8ddb" &	INDID2016==1 &	loanid==1
-*idem: total<principal, et with interest loan, on arrive a 5% d interet poour 24 mois
-*il faudrait 2083 par mois juste pour rembourser le principal; on a ici
-replace pb=1 if HHID2016=="uuid:0bd2d8b2-5a95-4f16-b9cc-5414151710d1" &	INDID2016==1 &	loanid==1
-*idem: total instalment=pile principal; et selon interest loan, on aurait un total de 5% d interet pour 17 mois
-replace pb=1 if HHID2016=="uuid:0742a50d-0a67-46f7-ba6b-b65092b7761b" &	INDID2016==4 &	loanid==1
-/*10 month old microcredit: avec interest loan (3000, a remplacer par 300): seems to have paid 10 month, but at this rythm the loan would not be settled
-en se basant sur interest loan: would mean 1967 monthly, et 16% d interet pour 12 mois 
-=> on pourrait potentiellement imputer completement, mais etrange que le totalrepaid ne fasse pas sens */
-replace pb=1 if HHID2016=="uuid:318a9c1c-e92a-4c81-bafe-eb1973e94702" &	INDID2016==1 &	loanid==1
-*tres etrange: 5 yearly old microcredit, with 700 yearly interest for a loan of 80 000 (0,9% pa). interestloan has been paid 5 times, but only the interest.
-replace pb=1 if HHID2016=="uuid:7e8b1a8c-3964-4a34-abdc-c8c605849b1f" &	INDID2016==2 &	loanid==1
-
-***autres:
-*3 month old loan by relative 3 paisa (900 monthly): but 8000 paid: y a t un pb de 0 en trop ?
-replace pb=1 if HHID2016=="uuid:4ab064bb-3340-4bb9-8fe9-933e36cf60e2" &	INDID2016==1 &	loanid==1
-
-
-
-
-
-
-**** INTEREST WEEKLY REPAYMENT (interestfreq) - LESS THAN ONE YEAR:
-
-replace month_repaid=(interestpaid/interestloan)/4 if months<=12 & excl_interest==0  & dummyinterest==1 & interestfreq==1
-
-*bank loan: repayment interest is recorded weekly, but monthly seems more plausible with the data:
-replace interestfreq=2 if HHID2016=="uuid:233d292c-867e-45ef-aad1-af8ee4ef3804" &	INDID2016==1 &	loanid==1
-replace month_repaid=4 if HHID2016=="uuid:233d292c-867e-45ef-aad1-af8ee4ef3804" &	INDID2016==1 &	loanid==1
-replace repayduration1=2 if HHID2016=="uuid:233d292c-867e-45ef-aad1-af8ee4ef3804" &	INDID2016==1 &	loanid==1
-
-
-
-**** INTEREST ONCE IN 6 MONTHS
-*16 month old friend loan: interest supposed once in 6 months, but has been paid 12 times (means 3 paisa per month for these 12 months)
-replace interestfreq=2 if HHID2016=="uuid:1c8ab7d5-6d4c-41eb-b440-68c930e30c72" &	INDID2016==1 &	loanid==1
-
-*interest paid more often than every six months
-replace interestfreq=7 if HHID2016=="uuid:8ddf086d-0993-4ff7-813b-1f63dd46b1bf" &	INDID2016==1 &	loanid==1
-replace interestfreq=7 if HHID2016=="uuid:d1f4bc1e-b59a-4ddb-831b-266adc1ba452" &	INDID2016==1 &	loanid==1
-replace interestfreq=7 if HHID2016=="uuid:e804beec-7f01-4be3-88d9-fa9ad870149a" &	INDID2016==1 &	loanid==2
-replace interestfreq=7 if HHID2016=="uuid:f2a2808d-0a25-4b77-ac03-c50c501987c2" &	INDID2016==1 &	loanid==2
-
-
-**** INTEREST FIXED AMOUNT
-**compare when interestloan different from interestpaid (supposed to be the same if fixed amount):
-
-*4 year old loan with interestloan paid 4 times
-replace interestfreq=3 if HHID2016=="uuid:2fd71d69-8643-44bc-93f5-8ea6b8289cf8" &	INDID2016==1 &	loanid==2
-
-*12 month old bank loan with interestloan paid 12 times
-replace interestfreq=2 if HHID2016=="uuid:3f9cffe9-c7a8-4057-afd6-b2e14e4a36b8" &	INDID2016==1 &	loanid==2
-
-*19 month old moneylender loan with interestloan paid 15 times
-replace interestfreq=2 if HHID2016=="uuid:ebfb1d75-ba54-49a7-a324-affb036c88aa" &	INDID2016==1 &	loanid==1
-replace month_repaid=15 if HHID2016=="uuid:ebfb1d75-ba54-49a7-a324-affb036c88aa" &	INDID2016==1 &	loanid==1
- 
-*microcredits, weekly or monthly
-replace interestfreq=1 if HHID2016=="uuid:88f78363-66a3-4359-8e33-af913f9b5699" &	INDID2016==1 &	loanid==2
-replace month_repaid=13 if HHID2016=="uuid:88f78363-66a3-4359-8e33-af913f9b5699" &	INDID2016==1 &	loanid==2
-replace interestfreq=2 if HHID2016=="uuid:d32ae647-fc9a-40bf-8161-5919a7a1e6ea" & INDID2016==1 &	loanid==1
-replace month_repaid=25 if HHID2016=="uuid:d32ae647-fc9a-40bf-8161-5919a7a1e6ea" & INDID2016==1 &	loanid==1
-replace interestfreq=2 if HHID2016=="uuid:e847a4d4-ea2a-4a01-95f2-25a37de516e9" &	INDID2016==2 &	loanid==1
-replace month_repaid=4 if HHID2016=="uuid:e847a4d4-ea2a-4a01-95f2-25a37de516e9" &	INDID2016==2 &	loanid==1
-
-/*IMPUTATION UN PEU DOUTEUSE, a voir si exclure:
-microcredit:with repayduration(24 month) and instalments deducted from totalrepaid, would mean more than 100% interest
-and with interestloan and interestpaid, would mean 7% interest in total on the 24 months 
---> if consider that repayduration=12 months, with instalments from total repaid, would mean 11%*/
-replace interestfreq=2 if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==1 &	loanid==1
-replace repayduration22=12 if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==1 &	loanid==1
-replace interestpaid=193 if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==1 &	loanid==1
-replace principalpaid=1667 if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==1 &	loanid==1
-replace month_repaid=1 if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==1 &	loanid==1
-
-/*65 month old moneylender loan with interestloan paid 21 times: peut etre monthly or whenever have money
-->  l essentiel est que ce ne soit pas enregistre en fixed amount, ajout d une valeur dans interestfreq*/
-replace interestfreq=7 if HHID2016=="uuid:7f35c399-5e9d-4d1c-bca8-669afdb94697" & INDID2016==1 &	loanid==1
-
-*idem: 25 month old bank loan with interestloan paid roughly 13 times 
-replace interestfreq=2 if HHID2016=="uuid:3f9cffe9-c7a8-4057-afd6-b2e14e4a36b8" &	INDID2016==1 &	loanid==1
-
-
-***************** LOANS MORE THAN ONE YEAR:
-
-**verification duree de remboursement pour microcredit
-replace month_repaid=interestpaid/interestloan if lender4==8 & months>12 & months!=. & excl_interest==0 & pb==0 & repayduration1==2
-*microcredit contracted 67 months before, put 18 months paid:
-replace month_repaid=18 if HHID2016=="uuid:89f0734d-db4a-4660-8c9f-c54fcd6f8ddb" &	INDID2016==1 &	loanid==2
-
-*IMPOSSIBLE DE FAIRE SENS DE REPAYDURATION2 (nb months repaid or total duration of the loan)
-
-
-
-
-*YEARLY INTEREST
-
-*6 year old loan, interest loan paid 12 times:
-replace interestfreq=4 if HHID2016=="uuid:059ce108-5334-44cd-840c-2e160267046b" &	INDID2016==1 &	loanid==1
-*32 month old loan, interestloan paid 20 times:
-replace interestfreq=7 if HHID2016=="uuid:61facd1e-9777-4333-8ec1-f00d45042f60" &	INDID2016==1 &	loanid==1 & loanid==1
-*between 12 and 13 month old loan, interest loan paid 13 times (to be recorded below in loan_months)
-replace interestfreq=2 if HHID2016=="uuid:6200de71-614d-4732-91e4-b698f362a2c3" &	INDID2016==1 &	loanid==1
-*13 month old loan, interestloan paid 12 times (to be recorded below in loan_months)
-replace interestfreq=2 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==3
-*44 month old loan, interestloan paid 30 times
-replace interestfreq=7 if HHID2016=="uuid:7ae6bf58-39d2-42ca-a4b8-4c435e1e5a1f" &	INDID2016==1 &	loanid==2
-*43 month old loan, interestloan paid 50 times
-replace interestfreq=2 if HHID2016=="uuid:7ae6bf58-39d2-42ca-a4b8-4c435e1e5a1f" &	INDID2016==1 &	loanid==3
-*44 month old loan, interestloan paid around 26 times
-replace interestfreq=7 if HHID2016=="uuid:7ae6bf58-39d2-42ca-a4b8-4c435e1e5a1f" &	INDID2016==1 &	loanid==1
-*30 month old loan, interestloan paid 24 times
-replace interestfreq=7 if  HHID2016=="uuid:8b248da2-20f8-4d33-b1f1-48b1d1756522" &	INDID2016==1 &	loanid==1
-*13 month old loan, interestloan paid 12 times (to be recorded below in loan_months)
-replace interestfreq=2 if HHID2016=="uuid:a83605b5-7618-41a2-b2b7-0838fe3503da" &	INDID2016==1 &	loanid==5
-*24 month old loan, interestloan paid 12 times
-replace interestfreq=7 if HHID2016=="uuid:ba97ea13-f20c-4518-86b9-e29e4e091ce6" &	INDID2016==1 &	loanid==1
-*25 month old loan, interestloan paid 12 times
-replace interestfreq=7 if HHID2016=="uuid:d3f50299-ac34-4600-a662-d15ba1383d6e" &	INDID2016==8 &	loanid==1
-*48 month old loan, interest loan paid 30 times
-replace interestfreq=7 if HHID2016=="uuid:e066c0e4-863e-42fe-8f9f-d52486ee5c58" &	INDID2016==1 &	loanid==3
-*36 month old loan, interstloan paid 20 times
-replace interestfreq=7 if HHID2016=="uuid:ee73e76e-b047-4e85-85fd-b3acc589d1b8" &	INDID2016==1 &	loanid==3
-*24 month old loan, interestloan paid 15 times
-replace interestfreq=7 if HHID2016=="uuid:ee73e76e-b047-4e85-85fd-b3acc589d1b8" &	INDID2016==1 &	loanid==1
-*24 month old, 15 times
-replace interestfreq=7 if  HHID2016=="uuid:ee73e76e-b047-4e85-85fd-b3acc589d1b8" &	INDID2016==1 &	loanid==2
-*99 month old, around 37 times
-replace interestfreq=7 if HHID2016=="uuid:00b05341-085a-46ad-9776-f1272b6872e6" &	INDID2016==1 &	loanid==1
-*15 month old, around 6 times
-replace interestfreq=7 if HHID2016=="uuid:521600d7-e364-42fc-8f0d-f799e74637e1" &	INDID2016==1 &	loanid==5
-*43 month old, around 8 times
-replace interestfreq=7 if HHID2016=="uuid:3502a333-6356-4267-ad32-ad6d32029c51" &	INDID2016==1 &	loanid==2
-/*60 month old bank loan, 10 months repaid (repayduration 36, according to interest loans: would mean 12% yearly. 
-mais on ne sait pas si commence a rembourser il y a 10 mois ou 60...) */
-replace interestfreq=7 if HHID2016=="uuid:c2fda044-d053-47b2-b693-58d34e7f70be" &	INDID2016==1 &	loanid==1
-*13 month old, 10 times
-replace interestfreq=2 if HHID2016=="uuid:e93eca4e-a0b4-491a-8095-eaf70f0305c2" &	INDID2016==1 &	loanid==1
-
-replace interestfreq=7 if HHID2016=="uuid:94e1ec13-3618-4995-bd9d-eb810d9ade40" &	INDID2016==1 &	loanid==2
-replace interestfreq=2 if HHID2016=="uuid:c75ad8b5-c773-408f-8066-f8327ccc6bdc" &	INDID2016==1 &	loanid==2
-replace interestfreq=7 if HHID2016=="uuid:cb4fe354-df11-45c2-b5e8-17b4ab087187" &	INDID2016==1 &	loanid==1
-replace interestfreq=7 if HHID2016=="uuid:f7fae8d2-4c28-44bd-957a-209ed70741f3" &	INDID2016==1 &	loanid==2
-replace interestfreq=7 if HHID2016=="uuid:5f4c151e-62e4-4f22-b88f-2aad8e3dc0f3" &	INDID2016==1 &	loanid==3
-
-
-
-*18 month old agri coop bank, 1 time paid: but loan amount 100 000, yearly interest 600... (and repayduration2=600...)
-replace pb=1 if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b" &	INDID2016==1 &	loanid==1
-
-replace excl_interest=1 if pb==1
-replace excl_debt=1 if pb==1
-
-
-
-
-
-
-
-***************************************************************************************************************************************************************
-****************************************************** ECHANTILLON & VARIABLES - FINAL
-***************************************************************************************************************************************************************
-
-********************************************************************************
-************************************************ ECHANTILLON
-
-
-*pour ne pas multiplier les details, on s en tient a l echantillon ou on peut calculer le debt service et l interest service
-gen included=0
-replace included=1 if excl_debt==0 & excl_int==0
-replace included=. if dummyinterest==.
-
-*bilan sur les prets exclus:
-gen explication=""
-replace explication="principalpaid recorded, but total repaid=only interest" if iok_pabs==1
-replace explication="principalpaid recorded, but total repaid=only interest, AND: principal repaid=loanamount but loan unsettled" if iok_set==1
-replace explication="microcredit pb instalment" if HHID2016=="uuid:390905c9-ee49-4e1e-8a4a-80e4741b7140" &	INDID2016==1 &	loanid==2
-replace explication="microcredit pb instalment" if HHID2016=="uuid:b14c5315-9be2-4edf-9954-a9cee0e13162" &	INDID2016==2 &	loanid==2
-replace explication="microcredit pb instalment" if HHID2016=="uuid:89f0734d-db4a-4660-8c9f-c54fcd6f8ddb" &	INDID2016==1 &	loanid==1
-replace explication="microcredit pb instalment" if HHID2016=="uuid:0bd2d8b2-5a95-4f16-b9cc-5414151710d1" &	INDID2016==1 &	loanid==1
-replace explication="microcredit pb instalment" if HHID2016=="uuid:0742a50d-0a67-46f7-ba6b-b65092b7761b" &	INDID2016==4 &	loanid==1
-replace explication="microcredit pb instalment" if HHID2016=="uuid:318a9c1c-e92a-4c81-bafe-eb1973e94702" &	INDID2016==1 &	loanid==1
-replace explication="what has been repaid is quite higher than expected from interestloan and loanamount, and loan still unsettled" if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==2 | HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==1
-replace explication="incoherence between interestloan, interestpaid and duration" if HHID2016=="uuid:4ab064bb-3340-4bb9-8fe9-933e36cf60e2" &	INDID2016==1 &	loanid==1
-replace explication="totalrepaid recorded, not interestpaid" if HHID2016=="uuid:142053fe-243a-4035-8746-93dd30108d22" &	INDID2016==1 &	loanid==2
-replace explication="totalrepaid recorded, not interestpaid" if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==2 &	loanid==1
-replace explication="interest far too low" if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b" &	INDID2016==1 &	loanid==1
-replace explication="microcredit only interest yearly paid, at a rate pa of 0,9%" if  HHID2016=="uuid:7e8b1a8c-3964-4a34-abdc-c8c605849b1f" &	INDID2016==2 &	loanid==1
-
-
-
-
-********************************************************************************
-************************************* LOAN DURATION
-
-
-
-****FOR MONTHLY, WEEKLY, WHENEVER HAVE MONEY, OR IMPUTED AS UNCLEAR (interestfreq==7) 
-
-/*for microcredit, since regular repayment, duration considered is the precise number of months repaid. 
-for the others, difference between loan date and interview date - arrondi a l entier inferieur*/
-gen loan_months=.
-replace loan_months=months  if interestfreq==1 | interestfreq==2 | interestfreq==6 | interestfreq==7
-replace loan_months=month_repaid if lender4==8 & interestfreq==2
-
-
-*arrondi a l entier superieur sur la base de interestpaid/interestloan
-replace loan_months=13 if HHID2016=="uuid:6200de71-614d-4732-91e4-b698f362a2c3" &	INDID2016==1 &	loanid==1
-replace loan_months=12 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==3
-replace loan_months=12 if HHID2016=="uuid:a83605b5-7618-41a2-b2b7-0838fe3503da" &	INDID2016==1 &	loanid==5
-replace loan_month=1 if loan_month<1 & interestfreq==2 & interestpaid!=0 |  loan_month<1 & interestfreq==6 & interestpaid!=0
-replace loan_month=2 if HHID2016=="uuid:6ba477f3-8785-4191-a5da-9af17186dfe5" &	INDID2016==3 &	loanid==6
-
-
-
-******** USE REPAYDURATION2: 
-
-*if repayduration2 lower than the time since the loan was contracted, may designate the actual time since repayment started (rather than loan total duration)
-*consider than when answered 12, 24 or 36 months, liekly to designate the total duration
-
-***** MONTHLY
-
-*month_repaid (or interestpaid/interestloan) and repayduration2 coherents:
-replace loan_month=repayduration2 if HHID2016=="uuid:07be751d-08a0-4a5c-b1e5-9634a002969b" &	INDID2016==1 &	loanid==1
-replace loan_month=12 if HHID2016=="uuid:3f9cffe9-c7a8-4057-afd6-b2e14e4a36b8" &	INDID2016==1 &	loanid==2
-replace loan_month=repayduration2 if HHID2016=="uuid:62ad7210-2d2c-4e4d-a8c6-6501a63d2fee" &	INDID2016==1 &	loanid==2
-replace loan_month=repayduration2 if HHID2016=="uuid:bb9aa5b8-af37-40d9-9fab-c6e489a9bdc8" &	INDID2016==1 &	loanid==1
-replace loan_month=repayduration2 if HHID2016=="uuid:fb2fc753-1d99-41b9-8d73-89d27b600fd1" &	INDID2016==1 &	loanid==1
-replace loan_month=repayduration2 if HHID2016=="uuid:fb2fc753-1d99-41b9-8d73-89d27b600fd1" &	INDID2016==1 &	loanid==2
-replace loan_month=repayduration2 if HHID2016=="uuid:f78e2a2e-280c-4f60-b991-76b5968c4b84" &	INDID2016==1 &	loanid==2
-replace loan_month=repayduration2 if HHID2016=="uuid:a97afa4a-6283-492c-bf11-dd9269d400da" &	INDID2016==2 &	loanid==2
-*56 months old; repayduration1 yearly and repayduration2=2 years, and interestfreq=monthly and 19 months of interestloan paid
-replace loan_months=24 if HHID2016=="uuid:127cd654-d8fe-470e-811c-f322957b8a1c" &	INDID2016==1 &	loanid==3
-*25 month old loan, repayduration1 yearly and repayduration2=2 years, and interestfreq=monthly and 13 months of interestloan paid
-replace loan_months=24 if HHID2016=="uuid:3f9cffe9-c7a8-4057-afd6-b2e14e4a36b8" &	INDID2016==1 &	loanid==1
-*bank loan contracted 5 years before: frequency is monthly, repayduration2=7; paid nothing
-replace loan_month=repayduration2 if HHID2016=="uuid:c1dc5f5e-c49f-42e2-8460-3b3e2faeb9a9" &	INDID2016==1 &	loanid==1
-
-*if difference between month_repaid and time since the loan was contracted=1 month: take month_repaid 
-drop temp
-gen temp=loan_months-month_repaid
-replace loan_month=month_repaid if temp==1 & interestfreq==2 & totalrepaid!=0 | temp==-1 & interestfreq==2  & totalrepaid!=0
-drop temp
-
-
-
-******* YEARLY INTEREST PAYMENT
-
-
-gen years=.
-replace years=months/12 if interestfreq==3
-gen loan_years=floor(years)
-
-replace loan_years=repayduration2 if HHID2016=="uuid:9dd01961-376f-4f5d-add7-b2af01be9107" &	INDID2016==1 &	loanid==1
-replace loan_years=1 if HHID2016=="uuid:e6c98c2b-5feb-415d-b265-5718af37f2f8" &	INDID2016==2 &	loanid==3
-
-*instead of 0 (because has paid):
-replace loan_year=1 if HHID2016=="uuid:b6802956-c0b6-442e-b416-73d9acd4d137" &	INDID2016==1 &	loanid==2
-replace loan_year=1 if  HHID2016=="uuid:d4ece943-b0c3-457c-8328-68333afaab41" &	INDID2016==1 &	loanid==1
-replace loan_year=1 if HHID2016=="uuid:15a2311a-c10d-462d-8a50-29a67b91b739" &	INDID2016==1 &	loanid==3
-
-**repayduration2 missing:
-*consider that when start to repay bank loan, repayment is regular (dubidous)
-replace loan_year=3 if HHID2016=="uuid:15a2311a-c10d-462d-8a50-29a67b91b739" &	INDID2016==1 &	loanid==1
-
-
-
-
-******* WEEKLY: thandal. consider that interestpaid/interestloan=nb week repaid. arrondi a l entier superieur.
-
-gen weeks=.
-replace weeks=interestpaid/interestloan if interestfreq==1
-gen loan_weeks=round(weeks,1)
-
-
-
-
-******** FIXED AMOUNT
-
-**repayduration1=weekly 
-replace loan_weeks=repayduration2 if HHID2016=="uuid:04126475-75a2-4e1e-9f0d-a5e57163a4e6" &	INDID2016==1 &	loanid==3
-replace loan_weeks=months*4 if HHID2016=="uuid:22697a91-f33b-4983-809b-c4cfd2041a6f" &	INDID2016==1 &	loanid==4
-replace loan_weeks=repayduration2 if HHID2016=="uuid:f39eabe6-b8cd-4bc6-af03-f6b1bf1384eb" &	INDID2016==1 &	loanid==1
-*4 month old thandal. repayduration 30 weeks. 600 principal paid. with 50 weekly, 3 months repaid.
-replace loan_weeks=12 if HHID2016=="uuid:287cdedc-cf23-44f2-8e76-55aba844250a" &	INDID2016==1 &	loanid==1
-
-replace loan_months=months if interestfreq==5 & repayduration1==. & repayduration2==. 
-
-*mystere: 9month old microcredit with fixed amount interest. 8 mois parait le plus plausible 
-replace loan_months=8 if HHID2016=="uuid:318a9c1c-e92a-4c81-bafe-eb1973e94702" &	INDID2016==1 &	loanid==1
-
-*bank, repayduration1=yearly
-replace loan_year=repayduration2 if HHID2016=="uuid:1b1c8141-0b67-42a1-990c-78d15a624f50" &	INDID2016==1 &	loanid==1
-
-
-***** ONCE IN SIX MONTHS
-
-**si rien n a ete rembourse: duree de remboursement=temps depuis que le pret a ete contracte. pose pas de probleme pour debt service
-replace loan_months=months if totalrepaid==0 & repayduration2==. & interestfreq==4
-replace loan_months=months if HHID2016=="uuid:a455df85-e5c8-4fc8-9ade-1ab4d04e9185" &	INDID2016==4 &	loanid==8
-
-**repayduration2 plausible:
-replace loan_month=repayduration2 if HHID2016=="uuid:059ce108-5334-44cd-840c-2e160267046b" &	INDID2016==1 &	loanid==1
-replace loan_month=repayduration2 if HHID2016=="uuid:241622a1-14b6-4cdd-830e-45ea031ae1f3" &	INDID2016==2 &	loanid==2
-
-***bank loan: consider than repayments are regular when start (dubious. but seems to have a lot of delay). interestloan coherent avec repayduration2.
-replace loan_month=12 if HHID2016=="uuid:813a12d2-a425-496e-9441-e3991adb8c30" &	INDID2016==1 &	loanid==1
-
-***repayduration2 missing:
-**12 month old loan, interest paid only one time: replace loan_month==11 (vs 12; plausible) juste pour justifier le fait que rembourse une seule fois 
-replace loan_month=11 if HHID2016=="uuid:0f421b5c-b081-416c-a8ca-93c430d0961e" &	INDID2016==1 &	loanid==1
-**bank loan: consider than repayments are regular when start (dubious. but seems to have a lot of delay)
-replace loan_month=18 if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b" &	INDID2016==1 &	loanid==2
-replace loan_month=48 if HHID2016=="uuid:e6c98c2b-5feb-415d-b265-5718af37f2f8" &	INDID2016==2 & loanid==4
-
-replace loan_month=months if HHID2016=="uuid:78817304-5ca2-42d3-9b67-843366b5afde" &	INDID2016==1 &	loanid==2
-
-*74 month old loan; repayduration2=36, but interestloan repaid 72 times
-replace loan_month=72 if HHID2016=="uuid:059ce108-5334-44cd-840c-2e160267046b" & INDID2016==1 &	loanid==1
-
-
-
-**** INTEREST WHENEVER HAVE MONEY
-
-*repayduration2 credible:
-replace loan_month=repayduration2*12 if HHID2016=="uuid:5972238d-013a-411b-8e6e-14da561e45f7" &	INDID2016==1 &	loanid==2
-replace loan_month=13 if HHID2016=="uuid:e3d5075a-9dad-4278-a125-a2dd01cdf99b" &	INDID2016==1 &	loanid==1
-
-*interestloan paid aroudn 17 times, loan 21 month old, repay principal and interest whenever have money
-replace loan_month=months if HHID2016=="uuid:4e015d7e-1ce4-4f87-bc7d-a9a67c0aab86" &	INDID2016==1 &	loanid==2
-
-/*si repayduration2 seems to represent the total duration of the loan, and is far lower than the time since the loan was contracted:
-to limit the downward bias, set a kind of max value for number of months repaid ie repayduration2 (si coherent)*/
-replace loan_month=repayduration2 if HHID2016=="uuid:584cb9e3-eb1c-4e6a-b6c7-46a58eb17e46" &	INDID2016==1 &	loanid==1
-replace loan_month=repayduration2 if HHID2016=="uuid:8380069d-0c7d-41f6-b487-dd4e66377170" &	INDID2016==2 &	loanid==1
-
-
-
-**** interestfreq=7
-
-*repayduration2 credible:
-replace loan_month=repayduration2*12 if HHID2016=="uuid:3502a333-6356-4267-ad32-ad6d32029c51" &	INDID2016==1 &	loanid==2
-replace loan_month=repayduration2*12 if HHID2016=="uuid:ba97ea13-f20c-4518-86b9-e29e4e091ce6" &	INDID2016==1 &	loanid==1
-
-/*si repayduration2 seems to represent the total duration of the loan, and is far lower than the time since the loan was contracted:
-to limit the downward bias, set a kind of max value for number of months repaid ie repayduration2 (si coherent)*/
-replace loan_month=repayduration2 if HHID2016=="uuid:5f4c151e-62e4-4f22-b88f-2aad8e3dc0f3" &	INDID2016==1 &	loanid==3
-replace loan_month=repayduration2 if HHID2016=="uuid:c2fda044-d053-47b2-b693-58d34e7f70be" & INDID2016==1 &	loanid==1
-
-
-
- 
-replace loan_months=loan_weeks/4 if loan_weeks!=.
-replace loan_months=loan_year*12 if loan_year!=.
-replace loan_months=months if loan_year==0
-
-************ INTERESTFREQ MISSING
-replace loan_months=months if interestfreq==. & totalrepaid==0 & included==1
-replace loan_months=months if dummyinterest==0 & repayduration2==. & included==1
-*microcredit: would mean 13 % pa
-replace loan_month=repayduration2 if HHID2016=="uuid:8d8cacc3-38f9-4630-9719-edd639102ad0" &	INDID2016==2 &	loanid==1
-replace interestfreq=2 if HHID2016=="uuid:8d8cacc3-38f9-4630-9719-edd639102ad0" &	INDID2016==2 &	loanid==1
-
-*repayduration2 useless (total duration)
-replace loan_month=months if HHID2016=="uuid:01e2263f-26de-447d-87c5-f9af8c177bbf" &	INDID2016==1 &	loanid==1
-replace loan_month=months if HHID2016=="uuid:0e075c0e-4b4a-461b-af2c-b61c39347738" &	INDID2016==1 &	loanid==2
-
-****if repayduration2 lower than time since loan contracted, take repayduration2: either real nb of months repaid, or maximum (if coherent with interest)
-replace loan_month=repayduration2*12 if HHID2016=="uuid:127cd654-d8fe-470e-811c-f322957b8a1c" &	INDID2016==1 &	loanid==1
-
-*yearly payment:
-gen temp=.
-replace temp=repayduration2*12 - months if repayduration1==3
-replace temp=. if dummyinterest!=0 | dummyinterest==0 & loan_month!=.
-replace loan_month=repayduration2*12 if temp<0
-drop temp
-*monthly
-gen temp=.
-replace temp=repayduration2 - months if repayduration1==2
-replace temp=. if dummyinterest!=0 | dummyinterest==0 & loan_month!=.
-replace loan_month=repayduration2 if temp<0
-drop temp
-*one in six month:
-replace loan_month=repayduration2*6 if HHID2016=="uuid:2fd71d69-8643-44bc-93f5-8ea6b8289cf8" &	INDID2016==1 &	loanid==3
-replace loan_month=months if HHID2016=="uuid:3ed13d21-3fbd-4a33-a557-48b68f5ed065" &	INDID2016==1 &	loanid==2
-*3 year old loan, repayduration2=2
-replace loan_month=24 if HHID2016=="uuid:7271ec5d-69a1-4a3f-949f-3d98fd6efa1c" &	INDID2016==1 &	loanid==1
-replace repayduration2=3 if HHID2016=="uuid:7271ec5d-69a1-4a3f-949f-3d98fd6efa1c" &	INDID2016==1 &	loanid==1
-
-
-
-*repayduration2> time since loan contracted 
-replace loan_month=months if dummyinterest==0 & loan_month==. & included==1
-
-
-
-************************************************************************************************************************************************************
-*********************************************************** USE LOANBALANCE
-
-replace loanbalance=0 if loansettled==1
-
-**** LOANBALANCE MISSING for unsettled loans: 8 cas
-
-
-*** ISSUE of 0 in loanamount
-*neighbour loan: loanamount 500 000, loanalance 50 000. with 50 000, make monthly interest of 3% instead of 0,3
-replace loanamount=50000 if HHID2016=="uuid:5bd7eec6-42a4-4832-abe2-137e512ee78a" &	INDID2016==1 &	loanid==2
-*same thing, with interest 2% instead of 0,2
-replace loanamount=50000 if HHID2016=="uuid:f7c0aded-b61a-4d89-ac2b-3e245be4c006" &	INDID2016==1 &	loanid==1
-*loan amount 3000, loan balance 20 000
-replace loanamount=10*loanamount if HHID2016=="uuid:a12bbf07-88f1-46fb-a255-6a6b6706f2c3" &	INDID2016==1 &	loanid==2
-replace loanamount=10*loanamount if HHID2016=="uuid:fb4500c5-a106-4dcf-a49b-477722865e9f" &	INDID2016==2 &	loanid==3
-*loanamount 2000, loanbalance 20 000 
-replace loanamount=loanamount*10 if HHID2016=="uuid:e804beec-7f01-4be3-88d9-fa9ad870149a" &	INDID2016==1 &	loanid==3
-*300 neighbour loan vs 3000
-replace loanamount=loanbalance if HHID2016=="uuid:cd94146d-f48f-475c-8416-78e984a3dccd" &	INDID2016==2 &	loanid==1
-*4 ans et qq: loanamount=55, loanbalance =1 000 000, motif: house. si  55 lakh: ca veut dire qu un lakh par an est rembourse ca fait pas mal...
-*a voir plus tard avec le revenu/debt service
-replace loanamount=5500000 if HHID2016=="uuid:9020eaf9-2e69-421d-8c8f-b5bbc44b310c" &	INDID2016==3 &	loanid==1
-
-
-*** ISSUE 0 in loanbalance
-*12 month old bank loan 700 000 INR, with interest thereby at nearly 1% monthly; principalpaid=0, but loanbalance=60 000
-*remplacer loanbalance par 600 000, mais dans le doute ne pas ajouter 100 000 INR dans principalpaid
-replace loanbalance=600000 if HHID2016=="uuid:3502a333-6356-4267-ad32-ad6d32029c51" &	INDID2016==1 &	loanid==2
-*20 INR loan; 18000 repaid, 2000 balance
-replace loanamount=loanamount*1000 if HHID2016=="uuid:abefe76f-bf58-4b71-ab71-1d64a7a33c5e" &	INDID2016==1 &	loanid==1
-*loanamount 5000, loanbalance 50 000. 10 month old loan by moneylender for education. interestpaid 1500  (=10*interestloan)
-* means 3% monthly interest for a loan of 5000). also 5000 written in loaninfo.
-replace loanbalance=loanbalance/10 if HHID2016=="uuid:30187ee9-dd3b-4a82-b20f-6ec0db908a4c" &	INDID2016==1 &	loanid==1
-*loanamount 15 000 by well known. loanbalance 150 000. with 15 000, interestloan means 3% monthly.
-replace loanbalance=loanbalance/10 if HHID2016=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &	INDID2016==1 &	loanid==1
-*DOUTEUX: loanamount=33 000, loanbalance 100 000. for agriculture. vu les tailles des prets pour ce moment, semble plus plausible que ce soit 33 000 et non 330 000.
-replace loanbalance=loanbalance/10 if HHID2016=="uuid:d8256128-806c-4919-8216-9226c3fdc047" &	INDID2016==1 &	loanid==3
-
-
-
-	
-********* LOANBALANCE> LOANAMOUNT:
-
-*** avec princpalpaid!=.:  reste 31 cas - dont 21 microcredit
-
-*update loanbalance with principalpaid for microcredits (interest checked, plausible)
-replace loanbalance=loanamount-principalpaid if lender4==8 & loanbalance>loanamount & loanbalance!=.
-
-replace loanbalance=loanamount-principalpaid if HHID2016=="uuid:fbe2328b-890f-4bcd-82a1-d033c9986aed" &	INDID2016==1 & loanid==1
-
-*mystere: loanamount = 350 000 (idem loaninfo) and loanbalance=800 000. even including the interest does not yield 800 000. principalpaid=0
-replace loanbalance=loanamount-principalpaid if HHID2016=="uuid:15a2311a-c10d-462d-8a50-29a67b91b739" &	INDID2016==1 &	loanid==1
-*mystere: seem to include one missed interest payment and ignore the principal repaid. comme principal paid, interestpaid, et totalrepaid coherents:
-replace loanbalance=loanamount-principalpaid if HHID2016=="uuid:142053fe-243a-4035-8746-93dd30108d22" &	INDID2016==1 &	loanid==1
-*mystere loanamount = 10 000 (idem loaninfo) and loanbalance=14200. if included missed interest payment, would mean like 14% monthly ! en desespoir de cause:
-replace loanbalance=loanamount-principalpaid if HHID2016=="uuid:39110c77-6bc2-4c6c-9e78-f8923d54163b" &	INDID2016==1 &	loanid==2
-
-***avec princpalpaid!=.: 3 cas
-
-replace loanbalance=loanamount if loanbalance>loanamount & loanbalance!=. & principalpaid==. 
-
-
-
-
-********* COHERENCE LOANBALANCE & PRINCIPALPAID 
-
-drop test
-gen test=loanamount-principalpaid - loanbalance
-tab test
-* 0 :  89.3 %
-*5.9% inf, 4.8% sup
-tab lender4 if test!=0 & test!=.
-*moitie de microcredit dans ceux qui ne matchent pas
-
-
-gen ignoreppaid=0
-replace ignoreppaid=1 if test==-principalpaid
-replace ignoreppaid=. if test==0 | test==.
-tab ignoreppaid
-* 16 cas
-
-
-***what is recorded in loanbalance is what has been repaid 
-** is totalrepaid:
-gen btotalrepaid=0
-replace btotalrepaid=1 if loanbalance==totalrepaid & test!=0 & test!=.
-replace btotalrepaid=1 if HHID2016=="uuid:35591049-0c3e-4dac-836a-958f07745c35" &	INDID2016==2 &	loanid==1
-tab btotalrepaid
-*9 cas
-**is the principal repaid
-gen bprincipalpaid=0
-replace bprincipalpaid=1 if loanbalance==principalpaid & test!=0 & test!=.
-tab bprincipal
-*18 cas
-
-*what is recorded in loanbalance is difference between loanamount and what has been repaid, but including interest (surestime le principal rembourse)
-gen mixip=0
-replace mixip=1 if loanbalance==loanamount-totalrepaid & dummyinterest==1 & interestpaid!=0 & test!=0 & test!=.
-replace mixip=1 if HHID2016=="uuid:62ad7210-2d2c-4e4d-a8c6-6501a63d2fee" &	INDID2016==5 &	loanid==1
-replace mixip=1 if HHID2016=="uuid:89f0734d-db4a-4660-8c9f-c54fcd6f8ddb" &	INDID2016==1 &	loanid==2
-replace mixip=1 if loanbalance==loanamount-interestpaid & dummyinterest==1 & interestpaid!=0 & test!=0 & test!=.
-*29 cas
-
-**according to principalpaid, no principal has been paid, but according to loanbalance, some has been paid (8 CAS)
-gen ppaidornot=0
-replace ppaidornot=1 if principalpaid==0 & loanbalance<loanamount 
-*13 cas
-
-*** RECAP
-gen identified=0 
-replace identified=1 if ignoreppaid==1 | btotal==1 | bprincipal==1 | mixip==1 | ppaidornot==1
-*68 cas
-replace test=. if identified==1
-
-
-
-*****microcredit: 
-*with instlaments recorded, means repayduration2=24 weeks and 625 principal paid monthly. means 13% interet pour 6 mois.
-replace loanbalance=loanamount - principalpaid if HHID2016=="uuid:1a8044af-2831-4f69-b815-1acda4e54c8b" &	INDID2016==1 &	loanid==2
-replace repayduration2=24 if HHID2016=="uuid:1a8044af-2831-4f69-b815-1acda4e54c8b" &	INDID2016==1 &	loanid==2
-replace loanbalance=loanamount-principalpaid if lender4==8 & test!=0 & test!=. & included==1
-
-
-********* check les excluded:
-**totalrepaid recorded, not interestpaid: but can be obtained with loanbalance
-replace interestpaid=totalrepaid if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==2 &	loanid==1
-replace included=1 if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==2 &	loanid==1
-replace interestpaid=300000 if HHID2016=="uuid:142053fe-243a-4035-8746-93dd30108d22" &	INDID2016==1 &	loanid==2
-replace principalpaid=200000 if HHID2016=="uuid:142053fe-243a-4035-8746-93dd30108d22" &	INDID2016==1 &	loanid==2
-replace included=1 if HHID2016=="uuid:142053fe-243a-4035-8746-93dd30108d22" &	INDID2016==1 &	loanid==2
-replace principalpaid=loanamount-loanbalance if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==2
-*probaly a mistake in total repaid: means 445 000 interest, while probably 345 000 (interestloan*23 for 24 month old loan) 
-replace interestpaid=345000 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==2
-replace included=1 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==2
-replace principalpaid=loanamount-loanbalance if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==1
-replace interestpaid=totalrepaid-principalpaid if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==1
-replace included=1 if HHID2016=="uuid:6bad1959-158b-4ed4-af07-f257fbc0feeb" &	INDID2016==1 &	loanid==1
-
-**those who had principalpaid!=0 et totalrepaid=interestpaid: according to loanbalance, no principal has been paid:
-replace principalpaid=0 if HHID2016=="uuid:9f650881-8382-48ff-8757-9f012a0dfe8f" &	INDID2016==1 &	loanid==1
-replace included=1 if HHID2016=="uuid:9f650881-8382-48ff-8757-9f012a0dfe8f" &	INDID2016==1 &	loanid==1
-replace principalpaid=0 if HHID2016=="uuid:b6802956-c0b6-442e-b416-73d9acd4d137" &	INDID2016==1 &	loanid==1
-replace included=1 if HHID2016=="uuid:b6802956-c0b6-442e-b416-73d9acd4d137" &	INDID2016==1 &	loanid==1
-replace principalpaid=0 if HHID2016=="uuid:d92d4760-c143-430d-848d-ae199496a356" &	INDID2016==1 &	loanid==2
-replace included=1 if HHID2016=="uuid:d92d4760-c143-430d-848d-ae199496a356" &	INDID2016==1 &	loanid==2
-replace principalpaid=0 if HHID2016=="uuid:c3754c17-d102-41df-93d1-f1bd78466da8" &	INDID2016==1 &	loanid==1
-replace included=1 if HHID2016=="uuid:c3754c17-d102-41df-93d1-f1bd78466da8" &	INDID2016==1 &	loanid==1
-replace principalpaid=0 if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b" &	INDID2016==1 &	loanid==3
-replace included=1 if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b" &	INDID2016==1 &	loanid==3
-replace principalpaid=0 if HHID2016=="uuid:d35fd473-8f07-437a-b6d2-b51962ac7c94" &	INDID2016==1 &	loanid==2
-replace included=1 if HHID2016=="uuid:d35fd473-8f07-437a-b6d2-b51962ac7c94" &	INDID2016==1 &	loanid==2
-
-replace totalrepaid=1100 if HHID2016=="uuid:8e0b0fc2-c75d-4646-a949-4c7749d6b3cc" &	INDID2016==1 &	loanid==1
-replace included=1 if HHID2016=="uuid:8e0b0fc2-c75d-4646-a949-4c7749d6b3cc" &	INDID2016==1 &	loanid==1
-
-
-
-*** loans with pb "identified" + POSITIVE AMOUNTS of principal paid different selon principal paid et loanbalance:
-*apres check: on ne peut pas faire grand chose. considere que principalpaid prevaut sur loanbalance.
-drop test
-gen test=loanamount-principalpaid - loanbalance
-replace loanbalance=loanamount - principalpaid if test!=0 & test!=.
-
-*(bizarre que principalpaid soit encore missing aurait du etre regle???)
-replace principalpaid=totalrepaid-interestpaid if HHID2016=="uuid:d00c25d5-5174-4103-aa12-d49296b6fa3c" &	INDID2016==2 &	loanid==1
-
-
-
-
-
-
-
-
-
-
-gen yratepaid=.
-****if interest paid weekly, monthly or when have money, once in six months, or unclear (interestfreq=7)
-replace yratepaid=interestpaid*100*12/(loan_months*loanamount) if interestfreq==1 | interestfreq==2 | interestfreq==6 | interestfreq==7 | interestfreq==4
-****if interest paid yearly: interestpaid averaged with an integer for number of years 
-gen loan_year2=loan_year
-replace loan_year2=1 if loan_year2<1 
-replace yratepaid=interestpaid*100/(loan_year2*loanamount) if interestfreq==3
-**** if interest=fixed amount
-replace yratepaid=interestpaid*100/loanamount if interestfreq==5
-replace yratepaid=. if included==0 | dummyinterest==0
-
-
-********** CHECK FOR OUTLIERS BY CREDIT SOURCES
-
-*loanamount 50 000, and interestloan 10 000. actually, 500 000 [loaninfo=="Sambath 500000 for Agriculture")
-replace loanamount=500000 if HHID2016=="uuid:f7c0aded-b61a-4d89-ac2b-3e245be4c006" &	INDID2016==1 &	loanid==1
-replace loanbalance=loanamount if HHID2016=="uuid:f7c0aded-b61a-4d89-ac2b-3e245be4c006" &	INDID2016==1 &	loanid==1 
-replace yratepaid=yratepaid/10 if HHID2016=="uuid:f7c0aded-b61a-4d89-ac2b-3e245be4c006" &	INDID2016==1 &	loanid==1
-
-gen outlier_yrate=0
-replace outlier_yrate=1 if yrate>=240 & lender4==1 & yrate!=.
-replace explication="outlier; wkp >240 pa (highest below 115" if yrate>=240 & lender4==1 & yrate!=.
-gen yrate_included=included
-replace yrate_included=0 if outlier_yrate==1
-
-tab yrate_included
-*1078
-tab included
-*1080
-
-*paid rates for those who started to repay:
-tabstat yratepaid if  yrate_included==1 & interestpaid>0 & interestpaid!=., by(lender4) stat(n mean p50 min max)
-/*
-
-     lender4 |         N      mean       p50       min       max
--------------+--------------------------------------------------
-  Well known |       324  24.28248      21.6  1.463415     115.2
-   Relatives |       129  18.83321  16.27119         2        60
-      Labour |        31  18.42413  16.36364         5  41.14286
- Pawn broker |         1  23.07692  23.07692  23.07692  23.07692
- Shop keeper |         2  17.32692  17.32692      12.5  22.15385
-Moneylenders |        58  27.50972        24  2.907692     79.68
-     Friends |        14   20.2881  19.04895   .742268      43.2
- Microcredit |        98  15.63684    13.392     .4992        54
-        Bank |        31  10.61372  10.28571        .9        32
-    Neighbor |        32  22.23268  22.28572  2.727273  41.14286
--------------+--------------------------------------------------
-       Total |       720  21.35884        18     .4992     115.2
-----------------------------------------------------------------
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
