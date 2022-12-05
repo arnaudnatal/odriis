@@ -967,7 +967,7 @@ use"outcomes\NEEMSIS1-occupnew", clear
 
 
 ********** Add all
-merge m:1 HHID2016 INDID2016 using "$data", keepusing(name sex relationshiptohead villageid jatis dummyworkedpastyear livinghome)
+merge m:1 HHID2016 INDID2016 using "$data", keepusing(name age sex relationshiptohead villageid jatis dummyworkedpastyear livinghome)
 drop _merge
 
 

@@ -1185,9 +1185,8 @@ use"_temp\NEEMSIS2-occup2", clear
 
 
 ********** Add all
-merge m:1 HHID2020 INDID2020 using "$data", keepusing(name sex relationshiptohead villageid jatis dummyworkedpastyear livinghome dummylefthousehold)
+merge m:1 HHID2020 INDID2020 using "$data", keepusing(name age sex relationshiptohead villageid jatis dummyworkedpastyear livinghome dummylefthousehold)
 drop _merge
-
 
 order name age sex relationshiptohead villageid jatis dummyworkedpastyear livinghome dummylefthousehold, after(INDID2020)
 
@@ -1213,7 +1212,6 @@ label values occupation4 occupcode
 
 
 **Generate active and inactive population in the same variable
-
 gen working_pop=.
 replace working_pop = 1 if occupation4==.
 replace working_pop = 2 if occupation4==0	

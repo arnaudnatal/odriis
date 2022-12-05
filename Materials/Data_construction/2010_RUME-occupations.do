@@ -563,7 +563,7 @@ use"_temp\RUME-occup2", clear
 
 
 ********** Add all
-merge m:1 HHID2010 INDID2010 using "$data", keepusing(name sex relationshiptohead village jatis dummyworkedpastyear livinghome)
+merge m:1 HHID2010 INDID2010 using "$data", keepusing(name age sex relationshiptohead village jatis dummyworkedpastyear livinghome)
 drop _merge
 
 
