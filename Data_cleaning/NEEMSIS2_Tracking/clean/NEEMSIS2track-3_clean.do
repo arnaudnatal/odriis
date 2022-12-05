@@ -19,7 +19,7 @@ macro drop _all
 cls
 ********** Path to folder "data" folder.
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global directory = "C:\Users\Arnaud\Documents\MEGA\Data\Data_Tracking2022\raw\combine"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\Data_NEEMSIS2_Tracking\raw\combine"
 
 cd"$directory"
 
@@ -209,6 +209,7 @@ save"CLEAN\NEEMSIS2-tracking_migpath.dta", replace
 
 
 
+
 ****************************************
 * Tracking alter database
 ****************************************
@@ -234,6 +235,118 @@ label define findjobhow 1"Recommendation" 2 "Hiring" 3 "Share of network" 4"Help
 label values findjobhow findjobhow
 
 
+********** Purpose 2
+/*
+uuid:0c1cab68-d273-4f7c-acf9-86a69e61d5ee	1	Mahalaksmi	Female	37	Wife
+1= technical help
+2= trust business
+*/
+gen networkpurpose2=""
+replace networkpurpose2="Entrust business" if HHID2022=="uuid:0c1cab68-d273-4f7c-acf9-86a69e61d5ee" & snsource=="Technical help"
+
+
 save"CLEAN\NEEMSIS2-tracking_alter", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+****************************************
+* Tracking alter database
+****************************************
+use"CLEAN\NEEMSIS2-tracking.dta", clear
+
+keep HHID2022 name age sex relationshiptohead dummymigrants sntechnicalhelpnamelist snentrustbusinessnamelist snrecruitworkernamelist snfindsuppliersnamelist snlendtoolsnamelist snfindjobnamelist snrecommendforjobnamelist snrecojobsuccessnamelist
+ta dummymigrant
+drop if dummymigrant==0
+
+
+
+
+/*
+snlist	1	${migsnrecommendassoname1}	
+snlist	2	${migsnrecommendassoname2}	
+snlist	3	${migsnrecommendassoname3}	
+snlist	4	${migsnrecommendassoname4}	
+snlist	5	${migsnrecommendassoname5}	
+snlist	6	${migsnrecommendassoname6}	
+snlist	7	${migsnrecommendassoname7}	
+snlist	8	${migsnrecommendassoname8}	
+snlist	9	${migsnrecommendassoname9}	
+snlist	10	${migsnrecommendassoname10}	
+snlist	11	${migsnrecommendassoname11}	
+snlist	12	${migsnrecommendassoname12}	
+snlist	13	${migsnrecommendassoname13}	
+snlist	14	${migsnrecommendassoname14}	
+snlist	15	${migsnrecommendassoname15}	
+snlist	16	${migsnrecommendassoname16}	
+snlist	17	${migsnrecommendassoname17}	
+snlist	18	${migsnrecommendassoname18}	
+snlist	19	${migsnrecommendassoname19}	
+snlist	20	${migsnrecommendassoname20}	
+snlist	21	${migsnrecommendassoname21}	
+snlist	22	${migsnrecommendassoname22}	
+snlist	23	${migsnrecommendassoname23}	
+snlist	24	${migsnrecommendassoname24}	
+snlist	25	${migsntechnicalhelpname1}	
+snlist	26	${migsntechnicalhelpname2}	
+snlist	27	${migsntechnicalhelpname3}	
+snlist	28	${migsntechnicalhelpname4}	
+snlist	29	${migsntechnicalhelpname5}	
+snlist	30	${migsntechnicalhelpname6}	
+snlist	31	${migsntechnicalhelpname7}	
+snlist	32	${migsnentrustbusinessname1}	
+snlist	33	${migsnentrustbusinessname2}	
+snlist	34	${migsnentrustbusinessname3}	
+snlist	35	${migsnentrustbusinessname4}	
+snlist	36	${migsnentrustbusinessname5}	
+snlist	37	${migsnentrustbusinessname6}	
+snlist	38	${migsnentrustbusinessname7}	
+snlist	39	${migsnrecruitworkername1}	
+snlist	40	${migsnrecruitworkername2}	
+snlist	41	${migsnrecruitworkername3}	
+snlist	42	${migsnrecruitworkername4}	
+snlist	43	${migsnrecruitworkername5}	
+snlist	44	${migsnrecruitworkername6}	
+snlist	45	${migsnrecruitworkername7}	
+snlist	46	${migsnfindsuppliersname1}	
+snlist	47	${migsnfindsuppliersname2}	
+snlist	48	${migsnfindsuppliersname3}	
+snlist	49	${migsnfindsuppliersname4}	
+snlist	50	${migsnfindsuppliersname5}	
+snlist	51	${migsnfindsuppliersname6}	
+snlist	52	${migsnfindsuppliersname7}	
+snlist	53	${migsnlendtoolsname1}	
+snlist	54	${migsnlendtoolsname2}	
+snlist	55	${migsnlendtoolsname3}	
+snlist	56	${migsnlendtoolsname4}	
+snlist	57	${migsnlendtoolsname5}	
+snlist	58	${migsnlendtoolsname6}	
+snlist	59	${migsnlendtoolsname7}	
+snlist	60	${migsnfindjobname1}	
+snlist	61	${migsnfindjobname2}	
+snlist	62	${migsnfindjobname3}	
+snlist	63	${migsnfindjobname4}	
+snlist	64	${migsnfindjobname5}	
+snlist	65	${migsnfindjobname6}	
+snlist	66	${migsnfindjobname7}	
+snlist	67	${migsnrecommendforjobname1}	
+snlist	68	${migsnrecommendforjobname2}	
+snlist	69	${migsnrecommendforjobname3}	
+snlist	70	${migsnrecommendforjobname4}	
+snlist	71	${migsnrecommendforjobname5}	
+snlist	72	${migsnrecommendforjobname6}	
+snlist	73	${migsnrecommendforjobname7}	
+snlist	888	New person
+*/

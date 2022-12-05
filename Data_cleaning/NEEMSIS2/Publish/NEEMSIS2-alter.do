@@ -28,7 +28,7 @@ cd"$directory"
 * Alter
 ****************************************
 
-use"NEEMSIS2-alter.dta", clear
+use"NEEMSIS2-alters.dta", clear
 
 fre egoid
 
@@ -67,6 +67,10 @@ drop INDID_v2 n1 letter
 
 
 fre typesn
+
+
+rename loanmarriageuse1
+rename loanmarriageuse2 businessloanuse1 businessloanuse2 businessloanuse3
 
 
 ********** save

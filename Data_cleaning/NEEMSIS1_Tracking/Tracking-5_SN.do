@@ -16,7 +16,7 @@ Tracking cleaning
 * INITIALIZATION
 ****************************************
 clear all
-global directory "C:\Users\Arnaud\Documents\MEGA\Data\Data_Tracking2019\DATA"
+global directory "C:\Users\Arnaud\Documents\MEGA\Data\Data_NEEMSIS1_Tracking\DATA"
 cd"$directory"
 ****************************************
 * END

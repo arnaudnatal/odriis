@@ -19,7 +19,7 @@ macro drop _all
 cls
 ********** Path to folder "data" folder.
 *global directory = "D:\Documents\_Thesis\_DATA\NEEMSIS2\DATA\APPEND"
-global directory = "C:\Users\Arnaud\Documents\MEGA\Data\Data_Tracking2022\raw\combine"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\Data_NEEMSIS2_Tracking\raw\combine"
 
 cd"$directory"
 
