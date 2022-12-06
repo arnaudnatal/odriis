@@ -659,6 +659,9 @@ save"NEEMSIStrack-SNindiv", replace
 restore
 
 
+keep if alterid!=.
+
+
 save"NEEMSIS1-trackingSN_v2", replace
 ****************************************
 * END

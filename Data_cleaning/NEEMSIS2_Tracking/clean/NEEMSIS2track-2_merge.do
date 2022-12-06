@@ -762,7 +762,7 @@ rename `x' `new'
 destring migbusinesslenderid, gen(alterid) 
 split parent_key, p(/)
 rename parent_key1 HHID2022
-drop parent_key parent_key* migbusinesslenderid key setofmigsnbusilendid base
+drop migbusinesslenderid key setofmigsnbusilendid base
 order HHID2022 snsource name
 sort HHID2022 name
 rename relation relationship
@@ -772,6 +772,17 @@ decode `x', gen(`x'_str)
 drop `x'
 rename `x'_str `x'
 }
+
+*INDID
+drop parent_key2 parent_key3 parent_key4
+split parent_key, p("migquestionnaireid[")
+drop parent_key parent_key1
+split parent_key2, p("]")
+drop parent_key2 parent_key22 parent_key23
+destring parent_key21, gen(INDID_mig)
+drop parent_key21
+order HHID2022 INDID_mig
+
 save"NEEMSIS2-alter_busilend", replace
 
 
@@ -788,7 +799,7 @@ rename castes caste
 rename castesother casteother
 split parent_key, p(/)
 rename parent_key1 HHID2022
-drop parent_key parent_key* key setof* base
+drop key setof* base
 order HHID2022 name
 sort HHID2022 name
 foreach x in occup {
@@ -797,6 +808,17 @@ drop `x'
 rename `x'_str `x'
 }
 rename meetfrequency frequency
+
+*INDID
+drop parent_key2
+split parent_key, p("migquestionnaireid[")
+drop parent_key parent_key1
+split parent_key2, p("]")
+drop parent_key2
+destring parent_key21, gen(INDID_mig)
+drop parent_key21
+order HHID2022 INDID_mig
+
 save"NEEMSIS2-alter_findjob", replace
 
 
@@ -818,7 +840,7 @@ rename castes caste
 rename castesother casteother
 split parent_key, p(/)
 rename parent_key1 HHID2022
-drop parent_key parent_key* key setof* base
+drop key setof* base
 rename occuptype occup
 foreach x in occup {
 decode `x', gen(`x'_str)
@@ -826,6 +848,17 @@ drop `x'
 rename `x'_str `x'
 }
 rename meetfrequency frequency
+
+*INDID
+drop parent_key2
+split parent_key, p("[")
+drop parent_key parent_key1
+split parent_key2, p("]")
+drop parent_key2
+destring parent_key21, gen(migrationstepid)
+drop parent_key21
+order HHID2022 migrationstepid
+
 save"NEEMSIS2-alter_helpmigration", replace
 
 
@@ -848,8 +881,19 @@ rename `x'_str `x'
 }
 split parent_key, p(/)
 rename parent_key1 HHID2022
-drop parent_key parent_key* key setof*
+drop key setof*
 rename meetfrequency frequency
+
+*INDID
+drop parent_key2 parent_key3
+split parent_key, p("migquestionnaireid[")
+drop parent_key parent_key1
+split parent_key2, p("]")
+drop parent_key2 parent_key22
+destring parent_key21, gen(INDID_mig)
+drop parent_key21
+order HHID2022 INDID_mig
+
 save"NEEMSIS2-alter_recoasso", replace
 
 
@@ -872,7 +916,18 @@ rename `x'_str `x'
 }
 split parent_key, p(/)
 rename parent_key1 HHID2022
-drop parent_key parent_key* key setof*
+drop key setof*
+
+*INDID
+drop parent_key2
+split parent_key, p("migquestionnaireid[")
+drop parent_key parent_key1
+split parent_key2, p("]")
+drop parent_key2
+destring parent_key21, gen(INDID_mig)
+drop parent_key21
+order HHID2022 INDID_mig
+
 save"NEEMSIS2-alter_recojob", replace
 
 
@@ -895,8 +950,19 @@ rename `x'_str `x'
 }
 split parent_key, p(/)
 rename parent_key1 HHID2022
-drop parent_key parent_key* key setof*
+drop key setof*
 rename meetfrequency frequency
+
+*INDID
+drop parent_key2
+split parent_key, p("migquestionnaireid[")
+drop parent_key parent_key1
+split parent_key2, p("]")
+drop parent_key2
+destring parent_key21, gen(INDID_mig)
+drop parent_key21
+order HHID2022 INDID_mig
+
 save"NEEMSIS2-alter_recruitworker", replace
 
 
@@ -919,8 +985,19 @@ rename `x'_str `x'
 }
 split parent_key, p(/)
 rename parent_key1 HHID2022
-drop parent_key parent_key* key setof*
+drop key setof*
 rename meetfrequency frequency
+
+*INDID
+drop parent_key2
+split parent_key, p("migquestionnaireid[")
+drop parent_key parent_key1
+split parent_key2, p("]")
+drop parent_key2
+destring parent_key21, gen(INDID_mig)
+drop parent_key21
+order HHID2022 INDID_mig
+
 save"NEEMSIS2-alter_technicalhelp", replace
 ****************************************
 * END

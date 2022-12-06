@@ -42,7 +42,7 @@ global preamble "NEEMSIS2 tracking 2022"
 use "NEEMSIS2-tracking_indiv_v1.dta", clear
 
 ********** Clean
-drop setofnonmigrants setofmigrants setofoccupations setofmigrationjobidgroup setofmigoccupations setofmigmigrationjobidgroup setofmigindoccupmonths setofmigbusinesspaymentinkindgro setofmigremittancessentidgroup setofmigformalsocialcapital setofmigsnentrustbusinessid setofmigsnentrustbusinessgroup setofmigsnfindsuppliersid setofmigsnfindsuppliersgroup setofmigsnlendtoolsid setofmigmigsnlendtoolsgroup setofmigsnfindjobid setofmigsnfindjobgroup setofmigsnrecommendforjobid setofmigsnrecommendforjobgroup setofmigsnrecojobsuccessid setofmigsnrecojobsuccessgroup setofmigcontactgroup setofmigquestionnaireid setofmigsnrecommendassoid_SHG setofmigsnrecommendassoid_pancha setofmigsnrecommendassoid_polit setofmigsnrecommendassoid_pro setofmigsnrecommendassoid_relig setofindividualid setoffamilymembers setoflivestock setofdetailsgoods setofmigmigrationstep
+*drop setofnonmigrants setofmigrants setofoccupations setofmigrationjobidgroup setofmigoccupations setofmigmigrationjobidgroup setofmigindoccupmonths setofmigbusinesspaymentinkindgro setofmigremittancessentidgroup setofmigformalsocialcapital setofmigsnentrustbusinessid setofmigsnentrustbusinessgroup setofmigsnfindsuppliersid setofmigsnfindsuppliersgroup setofmigsnlendtoolsid setofmigmigsnlendtoolsgroup setofmigsnfindjobid setofmigsnfindjobgroup setofmigsnrecommendforjobid setofmigsnrecommendforjobgroup setofmigsnrecojobsuccessid setofmigsnrecojobsuccessgroup setofmigcontactgroup setofmigquestionnaireid setofmigsnrecommendassoid_SHG setofmigsnrecommendassoid_pancha setofmigsnrecommendassoid_polit setofmigsnrecommendassoid_pro setofmigsnrecommendassoid_relig setofindividualid setoffamilymembers setoflivestock setofdetailsgoods setofmigmigrationstep
 
 drop _merge index
 
@@ -144,6 +144,36 @@ fre religion2
 drop religion2
 
 
+*********** INDID
+split setofnonmigrants, p("[")
+drop setofnonmigrants setofnonmigrants1
+split setofnonmigrants2, p("]")
+drop setofnonmigrants2
+destring setofnonmigrants21, gen(INDID_nonmig)
+drop setofnonmigrants21
+
+split setofmigrants, p("[")
+drop setofmigrants setofmigrants1
+split setofmigrants2, p("]")
+drop setofmigrants2
+destring setofmigrants21, gen(INDID_mig)
+drop setofmigrants21
+
+order HHID2022 INDID_nonmig setofoccupations INDID_mig setofmigoccupations setoffamilymembers
+
+drop setofoccupations
+/*
+Je peux merger split family mb dans base occ ca fera
+l'éq de INDID_nonmig, donc c'est bon
+Voyons pour les migrants maintenant
+de même
+*/
+drop setofmigoccupations setoffamilymembers
+
+drop namenumber
+
+drop setofmigrationjobidgroup setofmigmigrationjobidgroup setofmigindoccupmonths setofmigbusinesspaymentinkindgro setofmigremittancessentidgroup setofmigformalsocialcapital setofmigsnentrustbusinessid setofmigsnentrustbusinessgroup setofmigsnfindsuppliersid setofmigsnfindsuppliersgroup setofmigsnlendtoolsid setofmigmigsnlendtoolsgroup setofmigsnfindjobid setofmigsnfindjobgroup setofmigsnrecommendforjobid setofmigsnrecommendforjobgroup setofmigsnrecojobsuccessid setofmigsnrecojobsuccessgroup setofmigcontactgroup setofmigquestionnaireid setofmigsnrecommendassoid_SHG setofmigsnrecommendassoid_pancha setofmigsnrecommendassoid_polit setofmigsnrecommendassoid_pro setofmigsnrecommendassoid_relig setofindividualid setoflivestock setofdetailsgoods setofmigmigrationstep
+
 
 save"CLEAN\NEEMSIS2-tracking.dta", replace
 ****************************************
@@ -163,7 +193,7 @@ use "NEEMSIS2-tracking_occupations_v1.dta", clear
 
 ********** Clean
 order HHID2022
-drop setof*
+drop setofmigsnbusilendid_loan setofmigsnbusilendid_capital
 drop businesssourceinvestgroup_cou businesslabourers_count
 
 order HHID2022 occupationid occupationname kindofwork kindofwork2 monthsayear daysamonth hoursaday hoursayear annualincome datestartoccup yearestablishment businesscastebased businessskill businessamountinvest businesslossinvest businessskillother businesslossinvestamount businesssourceinvest otherbusinesssourceinvestment numberbusinessloan_loan numberbusinessloan_capital, first
@@ -174,6 +204,25 @@ drop parent_key keep_occupposition
 
 order joblocation jobdistance joblocationname typewageemployer relationemployer casteemployer othercasteemployer salariedjobtype salariedwagetype salariedjobbonus salariedjobinsurance salariedjobpension salariedcontract salariedjobtenure salariedjobkindbonus salariedjobbonusamount migrationadvanceamount migrationadvanceprovider migrationadvancefeel dummyadvancebalance advanceamountbalance advancebalanceproblem advancebalanceperception advancebalanceperceptionopen advancebalanceproblemother, after(businesslabourerdate2)
 
+
+****** INDID
+split setofoccupations, p("[")
+drop setofoccupations setofoccupations1
+split setofoccupations2, p("]")
+drop setofoccupations2
+destring setofoccupations21, gen(INDID_nonmig)
+drop setofoccupations21
+
+split setofmigoccupations, p("[")
+drop setofmigoccupations setofmigoccupations1
+split setofmigoccupations2, p("]")
+drop setofmigoccupations2
+destring setofmigoccupations21, gen(INDID_mig)
+drop setofmigoccupations21
+
+order HHID2022 INDID_nonmig INDID_mig
+
+drop if occupationname==""
 
 save"CLEAN\NEEMSIS2-tracking_occupations.dta", replace
 ****************************************
@@ -243,6 +292,11 @@ uuid:0c1cab68-d273-4f7c-acf9-86a69e61d5ee	1	Mahalaksmi	Female	37	Wife
 */
 gen networkpurpose2=""
 replace networkpurpose2="Entrust business" if HHID2022=="uuid:0c1cab68-d273-4f7c-acf9-86a69e61d5ee" & snsource=="Technical help"
+
+
+*** Order
+order HHID2022 INDID_mig migrationstepid
+sort HHID2022 INDID_mig migrationstepid
 
 
 save"CLEAN\NEEMSIS2-tracking_alter", replace
