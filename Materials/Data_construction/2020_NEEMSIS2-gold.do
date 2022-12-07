@@ -339,190 +339,320 @@ Below 400 too
 order HHID2020 INDID2020 goldquantity2 goldquantitypledge2 goldamountpledge2 loanamountgold2 pbdalits_HH2020 pbnondalits_HH2020 corr test goldquantity2020 goldquantitypledge2020 goldamountpledge2020 goldquantity2016 goldquantitypledge2016 goldamountpledge2016
 sort test HHID2020 INDID2020
 
+replace goldamountpledge2=100000 if HHID2020=="uuid:4df12d9e-63a9-48e2-a962-517cc3ec8a65" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:4df12d9e-63a9-48e2-a962-517cc3ec8a65" & INDID2020==2
 
+replace goldamountpledge2=75000 if HHID2020=="uuid:a2e54cd3-e9ca-4dba-945c-acb552cf74bf" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a2e54cd3-e9ca-4dba-945c-acb552cf74bf" & INDID2020==2
 
+replace goldamountpledge2=90000 if HHID2020=="uuid:f43c3bf6-4ffd-4093-860d-8efc06aa29b8" & INDID2020==2
+replace loanamountgold2=90000 if HHID2020=="uuid:f43c3bf6-4ffd-4093-860d-8efc06aa29b8" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:f43c3bf6-4ffd-4093-860d-8efc06aa29b8" & INDID2020==2
 
+replace goldamountpledge2=30000 if HHID2020=="uuid:3f46b232-e813-49da-870e-6427391b3429" & INDID2020==2
+replace loanamountgold2=30000 if HHID2020=="uuid:3f46b232-e813-49da-870e-6427391b3429" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:3f46b232-e813-49da-870e-6427391b3429" & INDID2020==2
 
+replace goldamountpledge2=40000 if HHID2020=="uuid:e6dee14b-0cdd-4c95-ab31-837aa7651b74" & INDID2020==18
+replace loanamountgold2=40000 if HHID2020=="uuid:e6dee14b-0cdd-4c95-ab31-837aa7651b74" & INDID2020==18
+replace corr=1 if HHID2020=="uuid:e6dee14b-0cdd-4c95-ab31-837aa7651b74" & INDID2020==18
 
+replace goldamountpledge2=35000 if HHID2020=="uuid:1e92b7e8-0055-44a9-a77a-674c65efb544" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:1e92b7e8-0055-44a9-a77a-674c65efb544" & INDID2020==2
 
+replace goldamountpledge2=30000 if HHID2020=="uuid:fbe7c190-7c95-40f4-ad97-69b66a5ceb72" & INDID2020==2
+replace loanamountgold2=30000 if HHID2020=="uuid:fbe7c190-7c95-40f4-ad97-69b66a5ceb72" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:fbe7c190-7c95-40f4-ad97-69b66a5ceb72" & INDID2020==2
 
+replace goldamountpledge2=50000 if HHID2020=="uuid:d69cba0a-b431-4f15-8e58-87b998d259e3" & INDID2020==2
+replace loanamountgold2=50000 if HHID2020=="uuid:d69cba0a-b431-4f15-8e58-87b998d259e3" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:d69cba0a-b431-4f15-8e58-87b998d259e3" & INDID2020==2
 
+replace goldamountpledge2=10000 if HHID2020=="uuid:7b70f238-d8fa-471b-8cd7-f89a30c1f9f4" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:7b70f238-d8fa-471b-8cd7-f89a30c1f9f4" & INDID2020==2
 
+replace goldamountpledge2=50000 if HHID2020=="uuid:2bc1e724-7bd9-4f62-9f6f-911d5a747957" & INDID2020==2
+replace loanamountgold2=30000 if HHID2020=="uuid:2bc1e724-7bd9-4f62-9f6f-911d5a747957" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:2bc1e724-7bd9-4f62-9f6f-911d5a747957" & INDID2020==2
 
+replace loanamountgold2=12000 if HHID2020=="uuid:b71a4b81-2329-483e-b100-f883b48c1a91" & INDID2020==5
+replace goldamountpledge2=12000 if HHID2020=="uuid:b71a4b81-2329-483e-b100-f883b48c1a91" & INDID2020==5
+replace corr=1 if HHID2020=="uuid:b71a4b81-2329-483e-b100-f883b48c1a91" & INDID2020==5
 
+replace goldquantitypledge2=10 if HHID2020=="uuid:0eacf77c-4f63-4ffc-80c9-f6b9da59fdba" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:0eacf77c-4f63-4ffc-80c9-f6b9da59fdba" & INDID2020==2
 
+replace goldquantitypledge2=10 if HHID2020=="uuid:286b7eed-e160-458a-9e35-52a2507ed467" & INDID2020==2
+replace loanamountgold2=15000 if HHID2020=="uuid:286b7eed-e160-458a-9e35-52a2507ed467" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:286b7eed-e160-458a-9e35-52a2507ed467" & INDID2020==2
 
+replace goldquantitypledge2=20 if HHID2020=="uuid:61c1b410-c891-4c01-a18c-bafe994489f5" & INDID2020==1
+replace loanamountgold2=10000 if HHID2020=="uuid:61c1b410-c891-4c01-a18c-bafe994489f5" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:61c1b410-c891-4c01-a18c-bafe994489f5" & INDID2020==1
 
+replace goldamountpledge2=40000 if HHID2020=="uuid:65057613-d2d1-4b3c-a9d6-e7e1f3bbf9e7" & INDID2020==4
+replace loanamountgold2=40000 if HHID2020=="uuid:65057613-d2d1-4b3c-a9d6-e7e1f3bbf9e7" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:65057613-d2d1-4b3c-a9d6-e7e1f3bbf9e7" & INDID2020==4
 
+replace goldamountpledge2=50000 if HHID2020=="uuid:cb748595-aa39-4b85-9782-4d10e0e8117f" & INDID2020==2
+replace loanamountgold2=35000 if HHID2020=="uuid:cb748595-aa39-4b85-9782-4d10e0e8117f" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:cb748595-aa39-4b85-9782-4d10e0e8117f" & INDID2020==2
 
+replace goldamountpledge2=45000 if HHID2020=="uuid:a7632ff4-729b-4892-b701-44b74165d41a" & INDID2020==2
+replace loanamountgold2=45000 if HHID2020=="uuid:a7632ff4-729b-4892-b701-44b74165d41a" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a7632ff4-729b-4892-b701-44b74165d41a" & INDID2020==2
 
+replace goldquantitypledge2=20 if HHID2020=="uuid:dcb6b6e2-b20c-4c21-aacf-f460d247b0ef" & INDID2020==2
+replace goldamountpledge2=40000 if HHID2020=="uuid:dcb6b6e2-b20c-4c21-aacf-f460d247b0ef" & INDID2020==2
+replace loanamountgold2=16000 if HHID2020=="uuid:dcb6b6e2-b20c-4c21-aacf-f460d247b0ef" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:dcb6b6e2-b20c-4c21-aacf-f460d247b0ef" & INDID2020==2
 
+replace goldquantity2=20 if HHID2020=="uuid:5d241a40-46cf-4508-852d-d3c125e37604" & INDID2020==1
+replace goldquantitypledge2=16 if HHID2020=="uuid:5d241a40-46cf-4508-852d-d3c125e37604" & INDID2020==1
+replace goldamountpledge2=40000 if HHID2020=="uuid:5d241a40-46cf-4508-852d-d3c125e37604" & INDID2020==1
+replace loanamountgold2=16000 if HHID2020=="uuid:5d241a40-46cf-4508-852d-d3c125e37604" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:5d241a40-46cf-4508-852d-d3c125e37604" & INDID2020==1
 
+replace goldquantitypledge2=20 if HHID2020=="uuid:13eb6e71-2f36-4406-bcfa-b528a9c46d78" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:13eb6e71-2f36-4406-bcfa-b528a9c46d78" & INDID2020==3
 
+replace goldamountpledge2=15000 if HHID2020=="uuid:b33ac02d-ffe0-4a63-8b4a-1ac442b86cf7" & INDID2020==2
+replace loanamountgold2=15000 if HHID2020=="uuid:b33ac02d-ffe0-4a63-8b4a-1ac442b86cf7" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:b33ac02d-ffe0-4a63-8b4a-1ac442b86cf7" & INDID2020==2
 
+replace goldamountpledge2=30000 if HHID2020=="uuid:79cefad2-b1d6-44ea-9d5d-12734c0dffd7" & INDID2020==1
+replace loanamountgold2=30000 if HHID2020=="uuid:79cefad2-b1d6-44ea-9d5d-12734c0dffd7" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:79cefad2-b1d6-44ea-9d5d-12734c0dffd7" & INDID2020==1
 
+replace goldamountpledge2=24500 if HHID2020=="uuid:b6f2cdf0-36d8-4106-905b-13b7d993c193" & INDID2020==16
+replace loanamountgold2=24500 if HHID2020=="uuid:b6f2cdf0-36d8-4106-905b-13b7d993c193" & INDID2020==16
+replace corr=1 if HHID2020=="uuid:b6f2cdf0-36d8-4106-905b-13b7d993c193" & INDID2020==16
 
+replace goldamountpledge2=60000 if HHID2020=="uuid:af69024c-76b5-4331-8c4e-19874ea396e6" & INDID2020==1
+replace loanamountgold2=20000 if HHID2020=="uuid:af69024c-76b5-4331-8c4e-19874ea396e6" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:af69024c-76b5-4331-8c4e-19874ea396e6" & INDID2020==1
 
+replace goldamountpledge2=26000 if HHID2020=="uuid:367ad3c9-e3cb-458e-a6db-5a54e1221981" & INDID2020==3
+replace loanamountgold2=10000 if HHID2020=="uuid:367ad3c9-e3cb-458e-a6db-5a54e1221981" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:367ad3c9-e3cb-458e-a6db-5a54e1221981" & INDID2020==3
 
+replace goldamountpledge2=13000 if HHID2020=="uuid:cc5db495-5a2c-4ea5-9dc3-af828578c005" & INDID2020==2
+replace loanamountgold2=13000 if HHID2020=="uuid:cc5db495-5a2c-4ea5-9dc3-af828578c005" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:cc5db495-5a2c-4ea5-9dc3-af828578c005" & INDID2020==2
 
+replace goldquantitypledge2=18 if HHID2020=="uuid:ff95bdde-6012-4cf6-b7e8-be866fbaa68b" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:ff95bdde-6012-4cf6-b7e8-be866fbaa68b" & INDID2020==2
 
+replace goldquantitypledge2=24 if HHID2020=="uuid:df35dad6-2d25-4bb4-847a-a1dde3ffa944" & INDID2020==1
+replace goldamountpledge2=40000 if HHID2020=="uuid:df35dad6-2d25-4bb4-847a-a1dde3ffa944" & INDID2020==1
+replace loanamountgold2=20000 if HHID2020=="uuid:df35dad6-2d25-4bb4-847a-a1dde3ffa944" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:df35dad6-2d25-4bb4-847a-a1dde3ffa944" & INDID2020==1
 
+replace goldquantitypledge2=24 if HHID2020=="uuid:df35dad6-2d25-4bb4-847a-a1dde3ffa944" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:df35dad6-2d25-4bb4-847a-a1dde3ffa944" & INDID2020==1
 
+replace goldamountpledge2=26000 if HHID2020=="uuid:d18158ec-d0a2-4dfb-80bd-d4109f6b0430" & INDID2020==2
+replace loanamountgold2=20000 if HHID2020=="uuid:d18158ec-d0a2-4dfb-80bd-d4109f6b0430" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:d18158ec-d0a2-4dfb-80bd-d4109f6b0430" & INDID2020==2
 
+replace goldquantitypledge2=24 if HHID2020=="uuid:c76f8b20-2118-499e-ba30-3666f3f6615a" & INDID2020==2
+replace goldamountpledge2=25000 if HHID2020=="uuid:c76f8b20-2118-499e-ba30-3666f3f6615a" & INDID2020==2
+replace loanamountgold2=20000 if HHID2020=="uuid:c76f8b20-2118-499e-ba30-3666f3f6615a" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:c76f8b20-2118-499e-ba30-3666f3f6615a" & INDID2020==2
 
+replace goldamountpledge2=20000 if HHID2020=="uuid:c14788bc-235f-4690-b9bf-15bfde3788ef" & INDID2020==2
+replace loanamountgold2=20000 if HHID2020=="uuid:c14788bc-235f-4690-b9bf-15bfde3788ef" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:c14788bc-235f-4690-b9bf-15bfde3788ef" & INDID2020==2
 
-***** Cleaning Elena
-g	unpledged_goldquantity=goldquantity - goldquantitypledge
-ta unpledged
-ta goldquantity goldquantitypledge if unpledged_g<0 
-ta goldamountpledge if goldquantitypledge==140000
-* 1 cas ou quantité et montant gagés ont été inversés (l inversion est cohérente avec loanamountgold)
-replace goldquantitypledge2=48 if HHID2020=="uuid:3936b5d3-2709-4669-9986-9f427fac869a" & INDID2020==2
-replace goldamountpledge2=140000 if HHID2020=="uuid:3936b5d3-2709-4669-9986-9f427fac869a" & INDID2020==2
+replace goldquantitypledge2=24 if HHID2020=="uuid:a4af1492-5ee4-4609-b17a-d12d9821f8c9" & INDID2020==2
+replace goldamountpledge2=24000 if HHID2020=="uuid:a4af1492-5ee4-4609-b17a-d12d9821f8c9" & INDID2020==2
+replace loanamountgold2=20000 if HHID2020=="uuid:a4af1492-5ee4-4609-b17a-d12d9821f8c9" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a4af1492-5ee4-4609-b17a-d12d9821f8c9" & INDID2020==2
 
-g gold_rate=goldamountpledge2/goldquantitypledge2
-ta gold_rate
-su gold_rate, d
+replace goldquantitypledge2=26 if HHID2020=="uuid:7761b0f9-98a1-42d7-8e92-f77d7fccc9e9" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:7761b0f9-98a1-42d7-8e92-f77d7fccc9e9" & INDID2020==4
 
-list HHID2020 INDID2020 goldquantity  goldquantitypledge2 goldamountpledge2  loanamountgold loanbalance gold_rate if unpledged_g<0, clean noobs
-*la solution la plus "conservative" consiste à considérer que le goldquantity declaré correspond à unpledged gold au lieu de totalgold (sinon il faut soit multiplier par 8 en considérant que c'est des sovereign, bof)
-recode goldquantity goldquantitypledge2 (.=0)
-replace goldquantity2=goldquantity+goldquantitypledge2
+replace goldamountpledge2=10000 if HHID2020=="uuid:7761b0f9-98a1-42d7-8e92-f77d7fccc9e9" & INDID2020==2
+replace loanamountgold2=10000 if HHID2020=="uuid:7761b0f9-98a1-42d7-8e92-f77d7fccc9e9" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:7761b0f9-98a1-42d7-8e92-f77d7fccc9e9" & INDID2020==2
 
+replace goldquantitypledge2=24 if HHID2020=="uuid:23fd63b5-39d4-40c9-810f-193d24449419" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:23fd63b5-39d4-40c9-810f-193d24449419" & INDID2020==2
 
-*** check loanamountgold 
-ta loanamountgold if goldamountpledge!=., mis
-//66 peut etre soit une quantité,  soit une NR => vote pour le NR
-replace loanamountgold2=goldamountpledge2 if HHID2020=="uuid:9bc0d4be-96cd-4d5e-aa71-98313b21905f" & INDID2020==2 //celui la est marqué missing dans le fichier all loans
-//le 8 ici correspond probablement à la quantité
-replace loanamountgold2=goldamountpledge2 if HHID2020=="uuid:435ed027-bac6-423b-ad03-8abc0e9aecf7" & INDID2020==1
-//99 n est probablement pas une quantité;  on remplace par goldamountpledged
-replace loanamountgold2=goldamountpledge2 if loanamountgold==99
+replace goldamountpledge2=43000 if HHID2020=="uuid:1cc952cc-7e84-40a5-8601-221554de4586" & INDID2020==2
+replace loanamountgold2=43000 if HHID2020=="uuid:1cc952cc-7e84-40a5-8601-221554de4586" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:1cc952cc-7e84-40a5-8601-221554de4586" & INDID2020==2
 
-// 24 loanamount ?
-*br if HHID_panel=="ELA23" & INDID_panel=="Ind_2"
-replace loanamountgold=goldamountpledge if HHID2020=="uuid:fb3e15f2-aede-49d5-8eee-514affc34b1a" & INDID2020==1
-replace loanamountgold2=loanamountgold if HHID2020=="uuid:fb3e15f2-aede-49d5-8eee-514affc34b1a" & INDID2020==1
+replace goldquantitypledge2=40 if HHID2020=="uuid:03e32009-5844-412d-a794-19940ae73716" & INDID2020==1
+replace goldamountpledge2=100000 if HHID2020=="uuid:03e32009-5844-412d-a794-19940ae73716" & INDID2020==1
+replace loanamountgold2=20000 if HHID2020=="uuid:03e32009-5844-412d-a794-19940ae73716" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:03e32009-5844-412d-a794-19940ae73716" & INDID2020==1
 
-// 48
-*br if HHID_panel=="SEM23" & INDID_panel=="Ind_2"
-replace loanamountgold=goldamountpledge if HHID2020=="uuid:f93966cd-7487-4ab9-992a-a61437b648ff" & INDID2020==2
-replace loanamountgold2=loanamountgold if HHID2020=="uuid:f93966cd-7487-4ab9-992a-a61437b648ff" & INDID2020==2
+*Un peu délicat celui-ci, à voir si on doit vraiment le corriger ou pas
+replace goldamountpledge2=48000 if HHID2020=="uuid:fcd7d8e8-6265-4a9c-9860-2d03def5253a" & INDID2020==1
+replace loanamountgold2=48000 if HHID2020=="uuid:fcd7d8e8-6265-4a9c-9860-2d03def5253a" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:fcd7d8e8-6265-4a9c-9860-2d03def5253a" & INDID2020==1
 
 
-*** check consistency goldamountpledge goldquantitypled
-ta goldamountpledge2
-ta goldamountpledge2 goldquantitypledge2 if goldamountpledge2<2000
-*on considere que répondu en lakh (on a bien des loanamountgold en milliers)
-replace goldamountpledge2=8000 if goldamountpledge==8
-replace goldamountpledge2=16000 if goldamountpledge==16
-replace goldamountpledge2=40000 if goldamountpledge==40
-* pour ceux qui ne renseignent pas goldamountpledge: soit on impute sur la base d'une valeur pour l or (difficile vu la variabilité), soit on attribue la value du loanamountgold => c est ce qu on fait ici
-replace goldamountpledge2=loanamountgold if goldamountpledge==0 & loanamountgold!=.
+*very small values
+replace corr=1 if goldamountpledge2<1000
+replace goldamountpledge2=loanamountgold2 if goldamountpledge2<1000
 
+*revaloriser
+replace goldamountpledge2=20000 if HHID2020=="uuid:f2e2edac-03f6-40f0-ac2a-8718fbd954e2" & INDID2020==4
+replace loanamountgold2=20000 if HHID2020=="uuid:f2e2edac-03f6-40f0-ac2a-8718fbd954e2" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:f2e2edac-03f6-40f0-ac2a-8718fbd954e2" & INDID2020==4
 
-*** check problems of 0
-g temp=goldamountpledge2/loanamountgold
-g test=0
-replace test=1 if loanamountgold!=. & goldamountpledge2!=. & (goldamountpledge2==10*loanamountgold | loanamountgold==10*goldamountpledge2)
 
-list HHID2020 INDID2020 goldquantity  goldquantitypledge2 goldamountpledge2  loanamountgold gold_rate temp if test==1
-*vu le goldrate, on peut considérer que goldamountpl a un 0 en trop
-replace goldamountpledge2=goldamountpledge2/10 if HHID2020=="uuid:4df12d9e-63a9-48e2-a962-517cc3ec8a65"  & INDID2020==2 | HHID2020=="uuid:7b70f238-d8fa-471b-8cd7-f89a30c1f9f4" & INDID2020==2 | HHID2020=="uuid:a2e54cd3-e9ca-4dba-945c-acb552cf74bf" & INDID2020==2
-* et vice versa, 0 en trop pour loanamount
-replace loanamountgold2=loanamountgold2/10 if HHID2020=="uuid:83d1f6fc-59e8-4afe-b725-2b5eee50cce8"  & INDID2020==4 | HHID2020=="uuid:17e456bc-0327-461c-9782-de911c716e4f"  & INDID2020==2
- 
-drop temp test unpledged_goldquantity gold_rate
-
-
-
-
-
-***** Realistic quantity?
-ta goldquantity2
-preserve
-bysort HHID2020: egen goldHH=sum(goldquantity2)
-keep HHID2020 goldHH
-duplicates drop
-ta goldHH
-restore
-/*
-Outliers, but less than 2016-17!
-Need to correct after
-*/
-
-ta goldquantitypledge2
-/*
-Same
-*/
-
-
-***** Manually recode outliers
-/*
-To check outliers, i use quantity of 2016 also
-*/
-merge m:m HHID2020 using "ODRIIS-HH_wide", keepusing(HHID2016)
-keep if _merge==3
-drop _merge
-merge m:m HHID2016 using "outcomes/NEEMSIS1-gold_HH", keepusing(goldquantity_HH)
-drop if _merge==2
-drop _merge
-rename goldquantity_HH goldquantity_HH2016
-order goldquantity_HH2016, after(goldquantity)
-sort goldquantity2 HHID2020 INDID2020
-gen n=_n
-
-cls
-list n HHID2020 INDID2020 goldquantity_HH2016 goldquantity2 goldquantitypledge2 goldamountpledge2 loanamountgold2 if goldquantity2!=., clean noobs 
-/*
-Above 100 grams it is strange, so check one by one
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-*sort goldquantity2 goldquantity_HH HHID2020 INDID2020
-*list n HHID2020 INDID2020 goldquantity_HH2016 goldquantity_HH goldquantity2 goldquantitypledge2 goldamountpledge2 if goldquantity2!=., clean noobs 
-
-
-
-
-***** Pledge vs Owned quantity:
-gen test=goldquantity2-goldquantitypledge2
-ta test
-/*
-Neg means that pledge>total, suppose they reversed, so need to recoded:
-*/
-replace goldquantity2=goldquantitypledge2 if test<0
 drop test
 
 
-***** Quantity and amount pledge
-gen test=goldamountpledge2/goldquantitypledge2
-ta test
+********** Loan and gold amount
+gen test=goldamountpledge2-loanamountgold2
 /*
-Higher than 2700 strange as 2700 is the gold price
-So, need to check the quantity and the price to observe outliers
+If neg = pb
 */
-ta goldquantitypledge2 if test>2700
-ta goldamountpledge2 if test>2700
+order HHID2020 INDID2020 goldquantity2 goldquantitypledge2 goldamountpledge2 loanamountgold2 pbdalits_HH2020 pbnondalits_HH2020 corr test goldquantity2020 goldquantitypledge2020 goldamountpledge2020 goldquantity2016 goldquantitypledge2016 goldamountpledge2016
+sort test HHID2020 INDID2020
+
+replace loanamountgold2=60000 if HHID2020=="uuid:e75da2e9-598c-4f8d-93f0-91d3329abf96" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:e75da2e9-598c-4f8d-93f0-91d3329abf96" & INDID2020==2
+
+replace loanamountgold2=90000 if HHID2020=="uuid:17e456bc-0327-461c-9782-de911c716e4f" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:17e456bc-0327-461c-9782-de911c716e4f" & INDID2020==2
+
+replace loanamountgold2=40000 if HHID2020=="uuid:a71ae1f6-84f7-4241-982d-840f9d68bf1e" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a71ae1f6-84f7-4241-982d-840f9d68bf1e" & INDID2020==2
+
+replace loanamountgold2=75000 if HHID2020=="uuid:83d1f6fc-59e8-4afe-b725-2b5eee50cce8" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:83d1f6fc-59e8-4afe-b725-2b5eee50cce8" & INDID2020==4
+
+replace loanamountgold2=100000 if HHID2020=="uuid:39f64232-d9be-43c3-ba7f-307cb4caa971" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:39f64232-d9be-43c3-ba7f-307cb4caa971" & INDID2020==1
+
+replace loanamountgold2=8000 if HHID2020=="uuid:ad69e5a5-278c-4190-9136-bbe08a021af8" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:ad69e5a5-278c-4190-9136-bbe08a021af8" & INDID2020==2
+
+replace loanamountgold2=40000 if HHID2020=="uuid:05856ec6-7f65-4ce7-8207-a7205bfe98f4" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:05856ec6-7f65-4ce7-8207-a7205bfe98f4" & INDID2020==1
+
+replace loanamountgold2=20000 if HHID2020=="uuid:6515c11e-c6e5-4ddc-beae-e7811b20d3a2" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6515c11e-c6e5-4ddc-beae-e7811b20d3a2" & INDID2020==2
+
+replace loanamountgold2=20000 if HHID2020=="uuid:72507eba-7ba3-41e6-b9c9-000fd02660eb" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:72507eba-7ba3-41e6-b9c9-000fd02660eb" & INDID2020==2
+
+replace loanamountgold2=20000 if HHID2020=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a91affc5-be97-47b4-9e48-4ae070e467a2" & INDID2020==2
+
+replace loanamountgold2=100000 if HHID2020=="uuid:ceff71c1-cfd4-49c1-89bb-f936c09e7b10" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:ceff71c1-cfd4-49c1-89bb-f936c09e7b10" & INDID2020==2
+
+replace loanamountgold2=200000 if HHID2020=="uuid:d4a5192d-74e4-4cb8-8b48-1d971f68cb54" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:d4a5192d-74e4-4cb8-8b48-1d971f68cb54" & INDID2020==2
+
+replace loanamountgold2=12000 if HHID2020=="uuid:4e56a1a6-6cde-4dbd-881f-d2d0c958ef2b" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:4e56a1a6-6cde-4dbd-881f-d2d0c958ef2b" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:a8f9b181-cd88-4dda-8059-6f97678fe0b5" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:a8f9b181-cd88-4dda-8059-6f97678fe0b5" & INDID2020==1
+
+replace loanamountgold2=10000 if HHID2020=="uuid:de9a94b1-a3d8-4239-a78a-43a9467da0b9" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:de9a94b1-a3d8-4239-a78a-43a9467da0b9" & INDID2020==2
+
+replace goldamountpledge2=18000 if HHID2020=="uuid:975dd5f4-3dcf-4502-abfb-f1bde5962657" & INDID2020==2
+replace loanamountgold2=10000 if HHID2020=="uuid:975dd5f4-3dcf-4502-abfb-f1bde5962657" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:975dd5f4-3dcf-4502-abfb-f1bde5962657" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:63853ef1-cbc0-4a2f-9d66-46d0eb882758" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:63853ef1-cbc0-4a2f-9d66-46d0eb882758" & INDID2020==1
+
+replace loanamountgold2=10000 if HHID2020=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:ff2ee18b-8363-4316-96ea-5a41a37094c0" & INDID2020==1
+
+replace loanamountgold2=10000 if HHID2020=="uuid:88644fe9-66bb-41c7-afce-7e593439ff27" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:88644fe9-66bb-41c7-afce-7e593439ff27" & INDID2020==3
+
+replace loanamountgold2=10000 if HHID2020=="uuid:c8079658-b595-43bd-9d2b-ff751d30580f" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:c8079658-b595-43bd-9d2b-ff751d30580f" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:709d60fb-5c77-48c4-a57d-8034816ae19f" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:709d60fb-5c77-48c4-a57d-8034816ae19f" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:7dcd5a01-7a25-47c3-b6c6-74836281cf4b" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:7dcd5a01-7a25-47c3-b6c6-74836281cf4b" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:8704f7a9-3b73-4ddc-b75a-6822acb20611" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:8704f7a9-3b73-4ddc-b75a-6822acb20611" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:c085269e-a8ea-423f-aff6-ed516652119b" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:c085269e-a8ea-423f-aff6-ed516652119b" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:1944c65c-4f4c-4d6a-be8a-b97086e7a0b0" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:1944c65c-4f4c-4d6a-be8a-b97086e7a0b0" & INDID2020==2
+
+replace loanamountgold2=10000 if HHID2020=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID2020==2
+
+
 /*
-It seems that the quantity is good, so replace the price
+
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+************************************
+
+
+
+
+27
+
 */
-replace goldamountpledge2=goldquantitypledge2*2700 if test>2700
+
+
+
+
+
 drop test
 
 
 
-***** Loan balance consistency
+
+
+
+
+
+
+
+
+********** Clean
+drop goldquantity2016 goldquantitypledge2016 goldamountpledge2016 pbdalits_HH2016 pbnondalits_HH2016 goldquantity22016 goldquantitypledge22016 goldamountpledge22016
+drop goldquantity2020 goldquantitypledge2020 goldamountpledge2020 pbdalits_HH2020 pbnondalits_HH2020 goldquantity22020 goldquantitypledge22020 goldamountpledge22020
+drop pbdalits_HH2010 pbnondalits_HH2010 goldquantity2010 goldquantitypledge2010 goldamountpledge2010 goldquantity22010 goldquantitypledge22010 goldamountpledge22010
+
+ta corr
+* 89 indiv corr
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
