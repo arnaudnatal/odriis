@@ -202,11 +202,6 @@ replace corr=1 if HHID2010=="RAGP174"
 replace goldquantitypledge2=32 if HHID2010=="SIOR375"
 replace corr=1 if HHID2010=="SIOR375"
 
-
-
-
-
-
 replace goldamountpledge2=35000 if HHID2010=="RAMPO22"
 replace corr=1 if HHID2010=="RAMPO22"
 
