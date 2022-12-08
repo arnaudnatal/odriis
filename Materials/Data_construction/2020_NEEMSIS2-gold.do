@@ -594,42 +594,423 @@ replace corr=1 if HHID2020=="uuid:1944c65c-4f4c-4d6a-be8a-b97086e7a0b0" & INDID2
 replace loanamountgold2=10000 if HHID2020=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID2020==2
 replace corr=1 if HHID2020=="uuid:845162bf-a21a-4003-910b-364e995bf863" & INDID2020==2
 
+replace goldquantitypledge2=20 if HHID2020=="uuid:57729fb8-bb58-4941-b4e6-b5fb58ca6de3" & INDID2020==2
+replace goldamountpledge2=50000 if HHID2020=="uuid:57729fb8-bb58-4941-b4e6-b5fb58ca6de3" & INDID2020==2
+replace loanamountgold2=30000 if HHID2020=="uuid:57729fb8-bb58-4941-b4e6-b5fb58ca6de3" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:57729fb8-bb58-4941-b4e6-b5fb58ca6de3" & INDID2020==2
 
-/*
+replace loanamountgold2=10000 if HHID2020=="uuid:63853ef1-cbc0-4a2f-9d66-46d0eb882758" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:63853ef1-cbc0-4a2f-9d66-46d0eb882758" & INDID2020==2
 
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
-************************************
+replace loanamountgold2=10000 if HHID2020=="uuid:88644fe9-66bb-41c7-afce-7e593439ff27" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:88644fe9-66bb-41c7-afce-7e593439ff27" & INDID2020==1
+
+replace loanamountgold2=10000 if HHID2020=="uuid:c8079658-b595-43bd-9d2b-ff751d30580f" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:c8079658-b595-43bd-9d2b-ff751d30580f" & INDID2020==3
+
+replace loanamountgold2=30000 if HHID2020=="uuid:208757f5-b91b-437d-ad82-07e597687cb3" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:208757f5-b91b-437d-ad82-07e597687cb3" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:11423489-b842-4e03-a03b-dd41d159826d" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:11423489-b842-4e03-a03b-dd41d159826d" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:918125d1-463e-4024-95d1-14daa905dba8" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:918125d1-463e-4024-95d1-14daa905dba8" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:c2322fce-f969-4669-89fa-da632c0edecf" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:c2322fce-f969-4669-89fa-da632c0edecf" & INDID2020==2
+
+replace loanamountgold2=4500 if HHID2020=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50" & INDID2020==1
+
+replace loanamountgold2=5000 if HHID2020=="uuid:30ebb748-123d-4a1f-a06a-b0f82800c586" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:30ebb748-123d-4a1f-a06a-b0f82800c586" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:39a74c25-5857-4057-a4fa-2b60c9a36b8d" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:39a74c25-5857-4057-a4fa-2b60c9a36b8d" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:4090e027-0f6e-4d81-8ad1-2cbf95f6895d" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:4090e027-0f6e-4d81-8ad1-2cbf95f6895d" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:4090e027-0f6e-4d81-8ad1-2cbf95f6895d" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:4090e027-0f6e-4d81-8ad1-2cbf95f6895d" & INDID2020==2
+
+replace loanamountgold2=4500 if HHID2020=="uuid:046398a5-ce0d-40c5-b343-300c3c2877d3" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:046398a5-ce0d-40c5-b343-300c3c2877d3" & INDID2020==2
+
+replace loanamountgold2=4500 if HHID2020=="uuid:4adf3c67-9056-4e27-ac96-b21b04458534" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:4adf3c67-9056-4e27-ac96-b21b04458534" & INDID2020==1
+
+replace loanamountgold2=4000 if HHID2020=="uuid:bcfe8f96-597e-4e8c-b875-47971b3414b6" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:bcfe8f96-597e-4e8c-b875-47971b3414b6" & INDID2020==4
+
+replace loanamountgold2=4000 if HHID2020=="uuid:796aac09-8fd4-49df-a585-55979c6d26cf" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:796aac09-8fd4-49df-a585-55979c6d26cf" & INDID2020==1
+
+replace loanamountgold2=6500 if HHID2020=="uuid:33d634e3-33c2-4654-be7f-146d12a9a6d8" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:33d634e3-33c2-4654-be7f-146d12a9a6d8" & INDID2020==2
+
+replace loanamountgold2=4500 if HHID2020=="uuid:40c80fef-29fb-469a-93ec-a88c805e2df4" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:40c80fef-29fb-469a-93ec-a88c805e2df4" & INDID2020==1
+
+replace loanamountgold2=4000 if HHID2020=="uuid:14c66b17-8c7a-48d7-bf56-c7bffb76598a" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:14c66b17-8c7a-48d7-bf56-c7bffb76598a" & INDID2020==3
+
+replace loanamountgold2=5000 if HHID2020=="uuid:4fa79f77-c96f-41e3-bd1e-58875ce84343" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:4fa79f77-c96f-41e3-bd1e-58875ce84343" & INDID2020==3
+
+replace loanamountgold2=4000 if HHID2020=="uuid:5b0b3cb1-c758-499a-8126-2aa9a0348795" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:5b0b3cb1-c758-499a-8126-2aa9a0348795" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:64fdc2fb-b077-441c-996d-be3d7012ecb6" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:64fdc2fb-b077-441c-996d-be3d7012ecb6" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:6960d4d6-aae1-43d5-9bc8-c7969deb70e1" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6960d4d6-aae1-43d5-9bc8-c7969deb70e1" & INDID2020==2
 
 
+replace loanamountgold2=4500 if HHID2020=="uuid:738df800-fa4c-4cee-81f8-72bb53564990" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:738df800-fa4c-4cee-81f8-72bb53564990" & INDID2020==1
 
 
-27
+replace loanamountgold2=5000 if HHID2020=="uuid:9c12d285-9b95-4d15-b147-2a7516154f32" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:9c12d285-9b95-4d15-b147-2a7516154f32" & INDID2020==2
 
-*/
+replace loanamountgold2=5000 if HHID2020=="uuid:b17568cd-919e-49f1-8c09-7ff9e8ccbb4d" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:b17568cd-919e-49f1-8c09-7ff9e8ccbb4d" & INDID2020==1
 
+replace loanamountgold2=10000 if HHID2020=="uuid:caff5415-5d5c-4932-aff5-903c30c0bc79" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:caff5415-5d5c-4932-aff5-903c30c0bc79" & INDID2020==2
 
+replace loanamountgold2=10000 if HHID2020=="uuid:ceab38af-8886-44d9-b1e1-e46850666f24" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:ceab38af-8886-44d9-b1e1-e46850666f24" & INDID2020==2
 
+replace loanamountgold2=5000 if HHID2020=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d" & INDID2020==1
+
+replace loanamountgold2=3500 if HHID2020=="uuid:26a0ddd8-55ba-42d6-862a-248022f689b9" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:26a0ddd8-55ba-42d6-862a-248022f689b9" & INDID2020==2
+
+replace loanamountgold2=3500 if HHID2020=="uuid:26c10846-8095-4881-8c73-4844d1991bf8" & INDID2020==5
+replace corr=1 if HHID2020=="uuid:26c10846-8095-4881-8c73-4844d1991bf8" & INDID2020==5
+
+replace loanamountgold2=4200 if HHID2020=="uuid:eb1ef417-b6fa-40b6-bf6f-890aa0554e90" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:eb1ef417-b6fa-40b6-bf6f-890aa0554e90" & INDID2020==2
+
+replace loanamountgold2=3500 if HHID2020=="uuid:22830cf4-c988-4b70-b6b7-3360162a9d8e" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:22830cf4-c988-4b70-b6b7-3360162a9d8e" & INDID2020==1
+
+replace loanamountgold2=3500 if HHID2020=="uuid:5213dda4-ab5e-49d9-98a7-352c89624702" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:5213dda4-ab5e-49d9-98a7-352c89624702" & INDID2020==4
+
+replace loanamountgold2=5000 if HHID2020=="uuid:65057613-d2d1-4b3c-a9d6-e7e1f3bbf9e7" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:65057613-d2d1-4b3c-a9d6-e7e1f3bbf9e7" & INDID2020==1
+
+replace loanamountgold2=4000 if HHID2020=="uuid:7f8f4ceb-252a-4ac0-9ffe-263eae573a3a" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:7f8f4ceb-252a-4ac0-9ffe-263eae573a3a" & INDID2020==1
+
+replace loanamountgold2=5000 if HHID2020=="uuid:a7b4d739-b69d-4efb-b34a-0b175dd933fe" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a7b4d739-b69d-4efb-b34a-0b175dd933fe" & INDID2020==2
+
+replace loanamountgold2=3200 if HHID2020=="uuid:5f070d84-5bf8-4672-b823-be9057fcde97" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:5f070d84-5bf8-4672-b823-be9057fcde97" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:6058eb4c-e624-4c9c-9c2b-310ff1e4c31d" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6058eb4c-e624-4c9c-9c2b-310ff1e4c31d" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:7acb0977-9b81-4626-bebc-10bc2bb991c5" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:7acb0977-9b81-4626-bebc-10bc2bb991c5" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:e6db4174-a6d2-4fa1-b0e3-ac07e4482e17" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:e6db4174-a6d2-4fa1-b0e3-ac07e4482e17" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:f850acc5-5569-4839-8f1f-74450a2219ec" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:f850acc5-5569-4839-8f1f-74450a2219ec" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:4b63419b-725b-4ccc-ada6-8ad0c857bc62" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:4b63419b-725b-4ccc-ada6-8ad0c857bc62" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:52519387-fefd-4055-8e16-dda3b2bd0a0c" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:52519387-fefd-4055-8e16-dda3b2bd0a0c" & INDID2020==4
+
+replace loanamountgold2=3000 if HHID2020=="uuid:728b18b3-127f-4b02-a779-65e5debecbf9" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:728b18b3-127f-4b02-a779-65e5debecbf9" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:782a507d-89bc-4df6-a516-4a7a96354c00" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:782a507d-89bc-4df6-a516-4a7a96354c00" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:441687fe-0f39-4a82-9e6c-2f5ff37c1b0f" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:441687fe-0f39-4a82-9e6c-2f5ff37c1b0f" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:11d432e5-b567-4279-9729-36fe097f4cb4" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:11d432e5-b567-4279-9729-36fe097f4cb4" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:214eb39d-0ba3-4ba0-b0b5-a960ef211eca" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:214eb39d-0ba3-4ba0-b0b5-a960ef211eca" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:26341970-61d5-4447-92b1-09915e0c06ef" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:26341970-61d5-4447-92b1-09915e0c06ef" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:2fcb35e5-636f-461b-ac19-ae185b22f4e1" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:2fcb35e5-636f-461b-ac19-ae185b22f4e1" & INDID2020==4
+
+replace loanamountgold2=3000 if HHID2020=="uuid:38ef09db-b6c6-46cf-9ae5-6fecaa78cd94" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:38ef09db-b6c6-46cf-9ae5-6fecaa78cd94" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:3918c389-0b8e-41a2-953e-4c7a30552bc2" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:3918c389-0b8e-41a2-953e-4c7a30552bc2" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:61787a6b-6dae-42ff-bfa0-99ccb2a9c7fd" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:61787a6b-6dae-42ff-bfa0-99ccb2a9c7fd" & INDID2020==1
+
+replace loanamountgold2=5000 if HHID2020=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:633153da-cebf-4f97-8304-d573bd8603c4" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:67f0f63a-b528-421c-8430-bc721205aa9d" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:67f0f63a-b528-421c-8430-bc721205aa9d" & INDID2020==1
+
+replace loanamountgold2=5000 if HHID2020=="uuid:6c13a537-b2d6-40b1-8998-969c4e5c9924" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6c13a537-b2d6-40b1-8998-969c4e5c9924" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:6c98513a-eacd-4575-b739-a6db293a8c22" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:6c98513a-eacd-4575-b739-a6db293a8c22" & INDID2020==3
+
+replace loanamountgold2=5000 if HHID2020=="uuid:6e5dc7ba-1133-4c9c-a072-c34620b6b674" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6e5dc7ba-1133-4c9c-a072-c34620b6b674" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:79cefad2-b1d6-44ea-9d5d-12734c0dffd7" & INDID2020==6
+replace corr=1 if HHID2020=="uuid:79cefad2-b1d6-44ea-9d5d-12734c0dffd7" & INDID2020==6
+
+replace loanamountgold2=3500 if HHID2020=="uuid:8d9dd0b1-a274-4c9a-955b-69ad8695d400" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:8d9dd0b1-a274-4c9a-955b-69ad8695d400" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:a06f00c1-5265-4162-857f-b092511cd845" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a06f00c1-5265-4162-857f-b092511cd845" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:bb391b60-00b4-41c2-bb38-3f80f2a64bb0" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:bb391b60-00b4-41c2-bb38-3f80f2a64bb0" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:c184574f-8651-4c3f-bc5d-345417c2f287" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:c184574f-8651-4c3f-bc5d-345417c2f287" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:e4801936-88ec-441b-8b8f-baf943464650" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:e4801936-88ec-441b-8b8f-baf943464650" & INDID2020==3
+
+replace loanamountgold2=3500 if HHID2020=="uuid:e4bae31a-5100-418e-91e1-9255864e93c4" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:e4bae31a-5100-418e-91e1-9255864e93c4" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:f628a4fe-63fc-4851-92a1-72131b8b47ce" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:f628a4fe-63fc-4851-92a1-72131b8b47ce" & INDID2020==3
+
+replace loanamountgold2=5000 if HHID2020=="uuid:fa376985-5b91-4eca-bc3d-d3ac3618bcce" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:fa376985-5b91-4eca-bc3d-d3ac3618bcce" & INDID2020==2
+
+replace loanamountgold2=3500 if HHID2020=="uuid:18103d37-9394-4ffe-9dad-bb6ccfe05209" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:18103d37-9394-4ffe-9dad-bb6ccfe05209" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:1a98e4b7-7335-4ecf-bbca-f32ba570942e" & INDID2020==5
+replace corr=1 if HHID2020=="uuid:1a98e4b7-7335-4ecf-bbca-f32ba570942e" & INDID2020==5
+
+replace loanamountgold2=2500 if HHID2020=="uuid:f9d63bda-c35f-44af-bdfd-d72b2cdcf4cd" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:f9d63bda-c35f-44af-bdfd-d72b2cdcf4cd" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:0b312a9f-9795-423d-8002-e62fdc684775" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:0b312a9f-9795-423d-8002-e62fdc684775" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:468ce2ef-ccef-49b8-bad0-475f9dd2dbdb" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:468ce2ef-ccef-49b8-bad0-475f9dd2dbdb" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:8c386f2c-16ad-4c99-b051-208a4d5cab1e" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:8c386f2c-16ad-4c99-b051-208a4d5cab1e" & INDID2020==1
+
+replace loanamountgold2=2500 if HHID2020=="uuid:aa077042-0015-4f4b-ad9f-8f06c5c8da45" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:aa077042-0015-4f4b-ad9f-8f06c5c8da45" & INDID2020==1
+
+replace loanamountgold2=3200 if HHID2020=="uuid:ce113294-d940-48a3-bc59-4f042ac193f4" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:ce113294-d940-48a3-bc59-4f042ac193f4" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:10438334-31cd-4af6-95bf-4e1f12ccaba7" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:10438334-31cd-4af6-95bf-4e1f12ccaba7" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:11896fd6-3bf9-4bec-987a-45b4f9869dd3" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:11896fd6-3bf9-4bec-987a-45b4f9869dd3" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:14c66b17-8c7a-48d7-bf56-c7bffb76598a" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:14c66b17-8c7a-48d7-bf56-c7bffb76598a" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:376b5457-41ac-4c8e-9ba5-2c323d76f757" & INDID2020==2
+
+replace loanamountgold2=3500 if HHID2020=="uuid:5213dda4-ab5e-49d9-98a7-352c89624702" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:5213dda4-ab5e-49d9-98a7-352c89624702" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:53fb037b-4a2d-43f2-892e-9d9f61a07cd4" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:53fb037b-4a2d-43f2-892e-9d9f61a07cd4" & INDID2020==4
+
+replace loanamountgold2=2500 if HHID2020=="uuid:6b74f19b-ace7-427b-817d-cf8bb1f4c45c" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6b74f19b-ace7-427b-817d-cf8bb1f4c45c" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:6c98513a-eacd-4575-b739-a6db293a8c22" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:6c98513a-eacd-4575-b739-a6db293a8c22" & INDID2020==1
+
+replace loanamountgold2=2500 if HHID2020=="uuid:88c90131-8e7e-4b0c-b283-6fbb8cac0b44" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:88c90131-8e7e-4b0c-b283-6fbb8cac0b44" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:8de7eea7-19ac-4aa1-aea9-8165a083e930" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:8de7eea7-19ac-4aa1-aea9-8165a083e930" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:8f34f9b0-9ddd-43be-ba3f-62db6a23c2c2" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:8f34f9b0-9ddd-43be-ba3f-62db6a23c2c2" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:aa077042-0015-4f4b-ad9f-8f06c5c8da45" & INDID2020==5
+replace corr=1 if HHID2020=="uuid:aa077042-0015-4f4b-ad9f-8f06c5c8da45" & INDID2020==5
+
+replace loanamountgold2=2000 if HHID2020=="uuid:b8181d43-455e-45b2-96e8-64488d2034d7" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:b8181d43-455e-45b2-96e8-64488d2034d7" & INDID2020==2
+
+replace loanamountgold2=5000 if HHID2020=="uuid:e0274b01-0bde-4292-b229-948cec4c4098" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:e0274b01-0bde-4292-b229-948cec4c4098" & INDID2020==2
+
+replace loanamountgold2=4000 if HHID2020=="uuid:e0e6ea69-9726-429f-8ba3-b9e60a340685" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:e0e6ea69-9726-429f-8ba3-b9e60a340685" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:2cdb83ff-7c77-431b-bc10-457d22cba954" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:2cdb83ff-7c77-431b-bc10-457d22cba954" & INDID2020==2
+
+replace loanamountgold2=2600 if HHID2020=="uuid:367ad3c9-e3cb-458e-a6db-5a54e1221981" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:367ad3c9-e3cb-458e-a6db-5a54e1221981" & INDID2020==1
+
+replace loanamountgold2=2000 if HHID2020=="uuid:5ddce4b7-1b6e-4262-bb22-33a8e4eeb2d2" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:5ddce4b7-1b6e-4262-bb22-33a8e4eeb2d2" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:c5343791-4f85-4ca3-befd-41bb5956229a" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:c5343791-4f85-4ca3-befd-41bb5956229a" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:e53470cf-5e62-48df-9042-145dcbaed9e6" & INDID2020==3
+replace corr=1 if HHID2020=="uuid:e53470cf-5e62-48df-9042-145dcbaed9e6" & INDID2020==3
+
+replace loanamountgold2=3000 if HHID2020=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:f435ac6b-11a5-4273-a5a0-d7f2bb74b5f6" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:61c637de-b77c-4a7d-af46-9e1350867a23" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:61c637de-b77c-4a7d-af46-9e1350867a23" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:86d54bc7-b23c-4ad7-ad47-250404d04ccc" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:86d54bc7-b23c-4ad7-ad47-250404d04ccc" & INDID2020==1
+
+replace loanamountgold2=2000 if HHID2020=="uuid:e4d932f3-38fa-4d9d-9ead-15d83031fa80" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:e4d932f3-38fa-4d9d-9ead-15d83031fa80" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:34431382-4504-496e-bec1-7e8074e00fd4" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:34431382-4504-496e-bec1-7e8074e00fd4" & INDID2020==4
+
+replace loanamountgold2=2500 if HHID2020=="uuid:38ef09db-b6c6-46cf-9ae5-6fecaa78cd94" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:38ef09db-b6c6-46cf-9ae5-6fecaa78cd94" & INDID2020==4
+
+replace loanamountgold2=2000 if HHID2020=="uuid:4d909ba9-02c6-4e6b-90ba-4a00d1a6d3f0" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:4d909ba9-02c6-4e6b-90ba-4a00d1a6d3f0" & INDID2020==1
+
+replace loanamountgold2=5000 if HHID2020=="uuid:7fc84ab1-711d-49f9-bfe0-47c7c8ff3cb9" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:7fc84ab1-711d-49f9-bfe0-47c7c8ff3cb9" & INDID2020==1
+
+replace loanamountgold2=4000 if HHID2020=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:82adab4c-fe85-4408-b3b7-2812dee63169" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:8ad24332-a46d-4a5a-82de-79b4a464eb00" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:8e4babda-3c0a-4b3e-b8c0-8e53e745e7e5" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:8e4babda-3c0a-4b3e-b8c0-8e53e745e7e5" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:a18284e6-f96c-453a-8041-b4c9316e8436" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:a18284e6-f96c-453a-8041-b4c9316e8436" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:a4472750-0183-4a1b-9274-8e7ad61732e8" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:a4472750-0183-4a1b-9274-8e7ad61732e8" & INDID2020==1
+
+replace loanamountgold2=3000 if HHID2020=="uuid:aa7330c4-c440-435e-9958-d4e8e5e38911" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:aa7330c4-c440-435e-9958-d4e8e5e38911" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:bcf78ad0-0c91-46d0-9ff9-6fd1b508541c" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:c97d1368-c1b1-4893-ab86-f01a65ce139c" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:c97d1368-c1b1-4893-ab86-f01a65ce139c" & INDID2020==1
+
+replace loanamountgold2=2000 if HHID2020=="uuid:e3ff8654-5079-4cb1-ab14-ce83b63d894a" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:e3ff8654-5079-4cb1-ab14-ce83b63d894a" & INDID2020==2
+
+replace loanamountgold2=1500 if HHID2020=="uuid:210a78d8-7f25-4c12-bef7-92d2b6f8c162" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:210a78d8-7f25-4c12-bef7-92d2b6f8c162" & INDID2020==2
+
+replace loanamountgold2=3500 if HHID2020=="uuid:3e0582ae-290f-4389-b80b-492f404c36a9" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:3e0582ae-290f-4389-b80b-492f404c36a9" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:92ad6585-9e3f-4b0f-85be-1160a8b80161" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:92ad6585-9e3f-4b0f-85be-1160a8b80161" & INDID2020==2
+
+replace loanamountgold2=2800 if HHID2020=="uuid:61c637de-b77c-4a7d-af46-9e1350867a23" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:61c637de-b77c-4a7d-af46-9e1350867a23" & INDID2020==4
+
+replace loanamountgold2=2000 if HHID2020=="uuid:6cb5907a-8a35-4524-80dc-1f67538211d8" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6cb5907a-8a35-4524-80dc-1f67538211d8" & INDID2020==2
+
+replace loanamountgold2=2800 if HHID2020=="uuid:9a535bcb-47f5-476b-825b-be28ba90623b" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:9a535bcb-47f5-476b-825b-be28ba90623b" & INDID2020==1
+
+replace loanamountgold2=2000 if HHID2020=="uuid:25cdd34e-00a0-44b2-bf71-cf9de75221be" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:25cdd34e-00a0-44b2-bf71-cf9de75221be" & INDID2020==1
+
+replace loanamountgold2=2000 if HHID2020=="uuid:2abcfcbc-7317-41ba-a857-f76f6e62fc7c" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:2abcfcbc-7317-41ba-a857-f76f6e62fc7c" & INDID2020==1
+
+replace loanamountgold2=2500 if HHID2020=="uuid:23cefc0a-633a-4095-a111-8d79225478f6" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:23cefc0a-633a-4095-a111-8d79225478f6" & INDID2020==2
+
+replace loanamountgold2=2000 if HHID2020=="uuid:29366c5e-88b6-4104-943c-75431a9dc1c8" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:29366c5e-88b6-4104-943c-75431a9dc1c8" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:67f0f63a-b528-421c-8430-bc721205aa9d" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:67f0f63a-b528-421c-8430-bc721205aa9d" & INDID2020==2
+
+replace loanamountgold2=2500 if HHID2020=="uuid:d7e0a08f-7602-45b0-951c-6d231c1e5dbd" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:d7e0a08f-7602-45b0-951c-6d231c1e5dbd" & INDID2020==1
+
+replace loanamountgold2=2000 if HHID2020=="uuid:ed957b7b-dd9d-4d65-a3aa-e92b0a4823a0" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:ed957b7b-dd9d-4d65-a3aa-e92b0a4823a0" & INDID2020==2
+
+replace loanamountgold2=3000 if HHID2020=="uuid:f628a4fe-63fc-4851-92a1-72131b8b47ce" & INDID2020==4
+replace corr=1 if HHID2020=="uuid:f628a4fe-63fc-4851-92a1-72131b8b47ce" & INDID2020==4
+
+replace loanamountgold2=1000 if HHID2020=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68" & INDID2020==1
+
+replace loanamountgold2=2000 if HHID2020=="uuid:e52dedaf-346a-4e00-a367-5ccb4151bcce" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:e52dedaf-346a-4e00-a367-5ccb4151bcce" & INDID2020==2
+
+replace loanamountgold2=3300 if HHID2020=="uuid:d2d2c607-d3fd-4775-b454-c3eea3935949" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:d2d2c607-d3fd-4775-b454-c3eea3935949" & INDID2020==1
+
+replace loanamountgold2=1000 if HHID2020=="uuid:0938f2f6-a8e3-4703-904a-b71a3c265c63" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:0938f2f6-a8e3-4703-904a-b71a3c265c63" & INDID2020==2
+
+replace loanamountgold2=1000 if HHID2020=="uuid:271b70fb-2479-418e-ae78-390b1923d9ba" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:271b70fb-2479-418e-ae78-390b1923d9ba" & INDID2020==2
+
+replace loanamountgold2=500 if HHID2020=="uuid:32909ac4-754a-49e2-9185-31426db58875" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:32909ac4-754a-49e2-9185-31426db58875" & INDID2020==2
+
+replace loanamountgold2=1000 if HHID2020=="uuid:6eac903a-6982-4424-9d2f-72e59de029e7" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:6eac903a-6982-4424-9d2f-72e59de029e7" & INDID2020==2
+
+replace loanamountgold2=1000 if HHID2020=="uuid:abf4f2fc-dc91-4f76-8a6a-a98b89964c3c" & INDID2020==2
+replace corr=1 if HHID2020=="uuid:abf4f2fc-dc91-4f76-8a6a-a98b89964c3c" & INDID2020==2
+
+replace loanamountgold2=500 if HHID2020=="uuid:8a64479a-8c39-4e21-a6d2-b2ba6884ae82" & INDID2020==1
+replace corr=1 if HHID2020=="uuid:8a64479a-8c39-4e21-a6d2-b2ba6884ae82" & INDID2020==1
 
 
 drop test
-
-
-
-
-
-
-
 
 
 
@@ -642,23 +1023,11 @@ drop pbdalits_HH2010 pbnondalits_HH2010 goldquantity2010 goldquantitypledge2010 
 ta corr
 * 89 indiv corr
 
-
-
-
-
-
-
-
-
-
-
-
-
+gen loanamountgold3=goldamountpledge2
 
 
 
 ***** Save
-drop goldquantity_HH2016 n HHID2016
 gen goldamount=goldquantity2*2700
 
 preserve
