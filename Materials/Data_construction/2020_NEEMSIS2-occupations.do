@@ -36,6 +36,10 @@ grstyle set plain, box nogrid
 ***************************************
 use"$occupations", clear
 
+sort annualincome
+replace annualincome=0 if annualincome<100
+
+
 gen year=2020
 drop if occupationname==""
 
@@ -1159,6 +1163,22 @@ bysort HHID2020 INDID2020: egen mainocc_tenureday_indiv=max(mainocc_tenureday)
 sort HHID2020 INDID2020
 
 
+********** Check
+ta occupation kindofwork
+ta occupationname if occupation==1 & kindofwork==3
+ta occupationname if occupation==1 & kindofwork==4
+
+gen hourlyincome=annualincome/hoursayear
+
+tabstat annualincome, stat(n mean cv p1 p5 p10 q p90 p95 p99 min max) by(kindofwork)
+tabstat hourlyincome, stat(n mean cv p1 p5 p10 q p90 p95 p99 min max) by(kindofwork)
+tabstat annualincome, stat(n mean cv p1 p5 p10 q p90 p95 p99 min max) by(occupation)
+tabstat hourlyincome, stat(n mean cv p1 p5 p10 q p90 p95 p99 min max) by(occupation)
+
+drop hourlyincome
+
+sort annualincome
+order HHID2020 INDID2020 annualincome occupationname kindofwork occupation
 
 save "_temp\NEEMSIS2-occup2", replace
 save "outcomes\NEEMSIS2-occupnew", replace

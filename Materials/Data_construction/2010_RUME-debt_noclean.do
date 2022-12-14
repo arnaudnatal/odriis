@@ -634,95 +634,74 @@ save "_temp\RUME-loans_v5.dta", replace
 
 
 
-****************************************
-* Main loan consistency 1 --> principal / balance
-****************************************
-use "_temp\RUME-loans_v5.dta", clear
 
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* COHERENCE
+****************************************
+use"_temp\RUME-loans_v5.dta", clear
+
+*As Elena, for gold
+replace loanbalance=loanamount if loandate==. & loanlender==6
+*Marriage = no loanbalance so drop it..
+*drop if loandate==. & loanreasongiven==8 & loanbalance==.
+
+
+*Loanbalance>loanamount ?
+replace loanbalance=loanamount if loanbalance>loanamount
+
+*66 as .
+replace interestpaid=. if interestpaid==55 | interestpaid==66
+replace principalpaid=. if principalpaid==55 | principalpaid==66 
 gen totalrepaid=interestpaid+principalpaid
-*keep if lendername!=""
 
-tabstat loanamount loanbalance interestpaid principalpaid totalrepaid, stat(n mean sd p50)
+***Priority to balance or priority to totalrepaid/interestpaid ?
+*Test Balance
+gen test=loanamount-loanbalance
+tab test  // 38/1682 weird loan : 2.26%
+drop test
+
+*Test Paid
+gen test=totalrepaid-interestpaid-principalpaid
+tab test  // 36/710 weird loan : 5.07%
+drop test
 /*
-ML
-   stats |  loanam~t  loanba~e  intere~d  princi~d  totalr~d
----------+--------------------------------------------------
-       N |      1215      1215      1215      1215      1215
-    mean |  24580.41  15755.73  3799.128  8824.685  12623.81
-      sd |  44719.18  35216.43  7468.788  19808.96  25235.02
-     p50 |     12000      8000      1215      2000      4500
-------------------------------------------------------------
-
-
-
-ALL
-   stats |  loanam~t  loanba~e  intere~d  princi~d  totalr~d
----------+--------------------------------------------------
-       N |      2396      2396      1215      1215      1215
-    mean |  19555.52  12965.96  3799.128  8824.685  12623.81
-      sd |  40804.95  34670.94  7468.788  19808.96  25235.02
-     p50 |     10000      5000      1215      2000      4500
-------------------------------------------------------------
-
-
+Check with Isabelle and Elena, but i prefer to use balance as good measure instead of totalrepaid and interestpaid
 */
 
-*1091 ML
-*** Loan duration
-gen loanduration_month=loanduration/30.4167
+gen totalrepaid2=totalrepaid
+gen interestpaid2=interestpaid
+gen principalpaid2=loanamount-loanbalance
 
-/*
-Pb majeur:
-Il manque des informations pour en vérifier d'autres
-C-à-d. qu'on ne peut pas recalculer des informations à la 
-main à partir d'autres
-D'un côté - total des intérêts payés
-D'un autre - montant des intérêt par semaine, mois jours
-MAIS on n'a pas la fréquence
---> We cannot calculte interest paid..
+*Variable donc pour que le tout soit cohérent
+replace totalrepaid2=principalpaid2+interestpaid
 
-Same with the amount:
-We have the total repaid
-We also have the frequency of the monthly/yearly repayment
-BUT not the amount
---> We cannot calculate total repaid
+*Verif loans to main loans
+gen test=totalrepaid2-totalrepaid
+tab test // ok dans 82 % des cas donc ca passe !
+drop test
 
-We always need to mix diferent informations
-We can only check 2 things:
-- the duration
-- consistency between total repaid, principal paid and interest paid
-
-However, the duration also depends on total repaid principal paid...
-The only double check is loanamount/loanbalance/totalrepaid/principalpaid/interestpaid
-
-Lets first check the consistency between total repaid, principal paid, interest paid as the rest depends on these values.
-
-However, loanamount - loanbalance, suppose to be principal paid, so lets begin with that
-
-
-En fait non, 2 choses à faire:
-Vérifier cohérence entre:
-loanamount/loanbalance/principalpaid
-Une fois OK, OK.
-
-Vérifier cohérence entre:
-interestloan/loanduration/interestpaid
-Une fois OK, OK.
-
-mettre en commun pour calculer totalrepaid
-*/
+*Coherence
+gen coherence=loanamount-loanbalance-principalpaid2
+tab coherence
+drop coherence
+gen coherence=totalrepaid2-principalpaid2-interestpaid2
+tab coherence
+drop coherence
 
 
 
-********** Consistency 1 --> balance / principal
-gen test1=loanamount-loanbalance-principalpaid
-ta test1
-/*
-100% des cas c'est ok
-*/
-drop test1
-
-save "_temp\RUME-loans_v6.dta", replace
+save"_temp\RUME-loans_v6", replace
 ****************************************
 * END
 
@@ -740,238 +719,37 @@ save "_temp\RUME-loans_v6.dta", replace
 
 
 ****************************************
-* Main loan consistency 2 --> interest loan / interest paid
+* BALANCE
 ****************************************
-use "_temp\RUME-loans_v6.dta", clear
+use"_temp\RUME-loans_v6.dta", clear
 
-********** Consistency of interest loan / interestpaid
-*** Gen interest loan per month
-gen interestloan_month=.
-replace interestloan_month=interestloan*4.3452 if interestfrequency==1  // weekly
-replace interestloan_month=interestloan if interestfrequency==2  // monthly
-replace interestloan_month=interestloan/12 if interestfrequency==3  // yearly
-replace interestloan_month=interestloan/6 if interestfrequency==4  // once in six month
+replace loanbalance=0 if loansettled==1
 
-** PB AMOUNT: if interest loan * loan duration trop != de interestpaid
-gen test1=.
-replace test1=interestloan_month*loanduration_month if interestloan_month!=.
-gen test2=.
-replace test2=interestpaid-test1 if interestpaid!=.
-gen pb1=0 if dummyinterest==1
-replace pb1=1 if test1!=interestpaid & dummyinterest==1
-ta pb1
-/*
-On calcul la borne max qu'ils ont payé: en étant super régulier et payant tel montant
-on atteint pas ce qu'ils déclarent avoir payer en tout...
-
-On accepte une erreur de 1000 roupies dans le calcul
-*/
-replace interestloan_month=interestpaid/loanduration_month if test2<1000 & test2!=. & test2>-1000
-drop test1 test2 pb1
-gen test1=.
-replace test1=interestloan_month*loanduration_month if interestloan_month!=.
-gen test2=.
-replace test2=interestpaid-test1 if interestpaid!=.
-gen pb1=0 if dummyinterest==1
-replace pb1=1 if test1!=interestpaid & dummyinterest==1
-ta pb1
-
-
-sort test2
-br HHID2010 loanid loansettled loanamount lender4 loanduration_month principalpaid interestpaid test1 test2 interestfrequency interestloan interestloan_month if pb1==1
-/*
-Le moins risqué c'est de garder le plus petit des deux
-*/
-replace interestpaid=interestloan_month*loanduration_month if test2>0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-replace interestloan=interestpaid/loanduration_month if test2<=0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-drop test2 test1 pb1
 
 /*
-Si on garde le plus grand
+*update loanbalance with principalpaid for microcredits (interest checked, plausible)
+replace loanbalance=loanamount-principalpaid if lender4==8 & loanbalance>loanamount & loanbalance!=.
+replace loanbalance=loanamount if loanbalance>loanamount & loanbalance!=. & principalpaid==. 
+
+*verif balance
+gen test=loanamount-principalpaid - loanbalance
+tab test
+* 0 :  89.3 %
+*5.9% inf, 4.8% sup
+tab lender4 if test!=0 & test!=.
+*moitie de microcredit dans ceux qui ne matchent pas
+drop test
+
+*** loans with pb "identified" + POSITIVE AMOUNTS of principal paid different selon principal paid et loanbalance:
+*apres check: on ne peut pas faire grand chose. considere que principalpaid prevaut sur loanbalance.
+gen test=loanamount-principalpaid - loanbalance
+replace loanbalance=loanamount - principalpaid if test!=0 & test!=.
+replace loanbalance=0 if loanbalance<0
+drop test
 */
-*replace interestpaid=interestloan_month*loanduration_month if test2<=0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-*replace interestloan=interestpaid/loanduration_month if test2>0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-*drop test2 test1 pb1
-
-
-********** Total repaid to gen
-replace totalrepaid=principalpaid+interestpaid
-
-
-
-
-tabstat loanamount loanbalance interestpaid principalpaid totalrepaid, stat(n mean sd p50)
-/*
-ML
-   stats |  loanam~t  loanba~e  intere~d  princi~d  totalr~d
----------+--------------------------------------------------
-       N |      1215      1215      1215      1215      1215
-    mean |  24580.41  15755.73  3799.128  8824.685  12623.81
-      sd |  44719.18  35216.43  7468.788  19808.96  25235.02
-     p50 |     12000      8000      1215      2000      4500
-------------------------------------------------------------
-
-
-   stats |  loanam~t  loanba~e  intere~d  princi~d  totalr~d
----------+--------------------------------------------------
-       N |      1215      1215      1211      1215      1211
-    mean |  24580.41  15755.73  3691.221  8824.685  12545.05
-      sd |  44719.18  35216.43   7461.42  19808.96  25256.77
-     p50 |     12000      8000      1200      2000      4500
-------------------------------------------------------------
-
-
-
-
-ALL
-   stats |  loanam~t  loanba~e  intere~d  princi~d  totalr~d
----------+--------------------------------------------------
-       N |      2396      2396      1215      1215      1215
-    mean |  19555.52  12965.96  3799.128  8824.685  12623.81
-      sd |  40804.95  34670.94  7468.788  19808.96  25235.02
-     p50 |     10000      5000      1215      2000      4500
-------------------------------------------------------------
-
-   stats |  loanam~t  loanba~e  intere~d  princi~d  totalr~d
----------+--------------------------------------------------
-       N |      2396      2396      1211      1215      1211
-    mean |  19555.52  12965.96  3691.221  8824.685  12545.05
-      sd |  40804.95  34670.94   7461.42  19808.96  25256.77
-     p50 |     10000      5000      1200      2000      4500
-------------------------------------------------------------
-
-*/
-
-save "_temp\RUME-loans_v7.dta", replace
-****************************************
+save"_temp\RUME-loans_v7.dta", replace
+*************************************
 * END
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-****************************************
-* Annual
-****************************************
-use "_temp\RUME-loans_v7.dta", clear
-
-*****
-*Arnaud test yrate
-gen yratepaid=interestpaid*100/loanamount if loanduration<=365
-
-gen _yratepaid=interestpaid*365/loanduration if loanduration>365
-gen _loanamount=loanamount*365/loanduration if loanduration>365
-
-replace yratepaid=_yratepaid*100/_loanamount if loanduration>365
-drop _loanamount _yratepaid
-
-
-
-tab yratepaid
-sort yratepaid
-*tab loanamount if loanamount<1000
-*drop if loanamount<1000
-
-tabstat yratepaid if interestpaid>0 & interestpaid!=., by(lender4) stat(n mean p50 min max)
-gen monthlyinterestrate=.
-replace monthlyinterestrate=yratepaid if loanduration<=30.4167
-replace monthlyinterestrate=(yratepaid/loanduration)*30.4167 if loanduration>30.4167
-
-tabstat monthlyinterestrate if interestpaid>0 & interestpaid!=., by(lender4) stat(n mean p50 min max)
-
-
-*****
-/*
-ARNAUD BASE:
-     lender4 |         N      mean       p50       min       max
--------------+--------------------------------------------------
-         WKP |       316  45.53768        30  1.499985       720
-   Relatives |       128  35.01362        25  .0033333       180
-      Labour |        31  21.08602  21.66667         4        48
- Pawn broker |         1       100       100       100       100
- Shop keeper |         2        37        37        24        50
-Moneylenders |        57  23.30901  11.57895        .5       300
-     Friends |        13  29.46154        18         4        90
- Microcredit |       101  13.95773     9.152  .3073846        81
-        Bank |        32  66.22486      11.5        .6  1676.471
-    Neighbor |        30  41.88889        28       1.5       144
--------------+--------------------------------------------------
-       Total |       711  36.84462        21  .0033333  1676.471
-----------------------------------------------------------------
-
-
-ARNAUD AFTER CLEAN:
-     lender4 |         N      mean       p50       min       max
--------------+--------------------------------------------------
-         WKP |       340  42.27391  27.14382  1.499985  657.8623
-   Relatives |       134  32.78675      21.5  .0033333       180
-      Labour |        31  21.08602  21.66667         4        48
- Pawn broker |         1       100       100       100       100
- Shop keeper |         2        37        37        24        50
-Moneylenders |        58  24.22504  11.78947        .5       300
-     Friends |        14      27.7        18         4        90
- Microcredit |       104  13.59651     9.125  .3073846        81
-        Bank |        34  61.35638       9.5  .5170122  1676.471
-    Neighbor |        30  40.76588        28  .1647121  128.4163
--------------+--------------------------------------------------
-       Total |       748  34.90669        20  .0033333  1676.471
-----------------------------------------------------------------
-
-
-ELENA AFTER CLEAN:
-     lender4 |         N      mean       p50       min       max
--------------+--------------------------------------------------
-  Well known |       324  24.28248      21.6  1.463415     115.2
-   Relatives |       129  18.83321  16.27119         2        60
-      Labour |        31  18.42413  16.36364         5  41.14286
- Pawn broker |         1  23.07692  23.07692  23.07692  23.07692
- Shop keeper |         2  17.32692  17.32692      12.5  22.15385
-Moneylenders |        58  27.50972        24  2.907692     79.68
-     Friends |        14   20.2881  19.04895   .742268      43.2
- Microcredit |        98  15.63684    13.392     .4992        54
-        Bank |        31  10.61372  10.28571        .9        32
-    Neighbor |        32  22.23268  22.28572  2.727273  41.14286
--------------+--------------------------------------------------
-       Total |       720  21.35884        18     .4992     115.2
-----------------------------------------------------------------
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -539,6 +539,9 @@ drop education
 
 order HHID2010 INDID2010 year age occupationid occupationname kindofwork annualincome profession sector kindofwork occupation construction_coolie construction_regular construction_qualified dummymainoccupation_indiv mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv
 
+ta occupation kindofwork
+
+
 save "_temp\RUME-occup2", replace
 save "outcomes\RUME-occupnew", replace
 ****************************************
