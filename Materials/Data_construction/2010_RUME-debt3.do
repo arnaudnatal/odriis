@@ -638,11 +638,8 @@ save "_temp\RUME-loans_v5.dta", replace
 
 
 
-
-
-
 ****************************************
-* Creation + loanamount
+* Creation + loanamount + 66 
 ****************************************
 use "_temp\RUME-loans_v5.dta", clear
 
@@ -651,7 +648,8 @@ use "_temp\RUME-loans_v5.dta", clear
 gen dummyml=0
 replace dummyml=1 if lendername!=""
 gen corr=0
-gen totalrepaid=interestpaid+principalpaid
+recode principalpaid interestpaid (.=0)
+gen totalrepaid=principalpaid+interestpaid
 foreach x in loanamount loanbalance interestpaid totalrepaid principalpaid interestloan {
 gen `x'2=`x'
 }
@@ -659,13 +657,42 @@ gen loanduration_month=loanduration/30.4167
 
 
 
+
+********** 66
+foreach x in loanamount2 totalrepaid2 interestpaid2 principalpaid2 interestloan2 {
+replace `x'=. if `x'==66
+replace `x'=. if `x'==77
+replace `x'=. if `x'==88
+replace `x'=. if `x'==99
+}
+
+
+
 ********** Consistency loanamount
 sort loanamount
-*br HHID2010 loanid loansettled lender4 loanreasongiven loanamount2 loanbalance2 totalrepaid2 principalpaid2 interestpaid2 interestfrequency interestloan2 termsofrepayment repayduration1 
+*br HHID2010   loanid   loansettled lender4 loanreasongiven loanduration_month loanamount2 loanbalance2 totalrepaid2 principalpaid2 interestpaid2 interestfrequency interestloan2 termsofrepayment repayduration1 
 
 
 
-save "_temp\RUME-loans_v6.dta", replace
+********** Consistency interestpaid2
+sort interestpaid2
+*br HHID2010   loanid   loansettled lender4 loanreasongiven loanduration_month loanamount2 loanbalance2 totalrepaid2 principalpaid2 interestpaid2 interestfrequency interestloan2 termsofrepayment repayduration1 
+
+
+
+********** Consistency interestloan2
+sort interestloan2
+br HHID2010   loanid   loansettled lender4 loanreasongiven loanduration_month loanamount2 loanbalance2 totalrepaid2 principalpaid2 interestpaid2 interestfrequency interestloan2 termsofrepayment repayduration1
+replace interestloan2=300 if HHID2010=="uuid:6c722d1f-d5fa-4d1b-aab9-9f6e8d3bcabd" &  ==1 & loanid==2
+
+
+********** Consistency principalpaid2
+sort principalpaid2
+*br HHID2010   loanid   loansettled lender4 loanreasongiven loanduration_month loanamount2 loanbalance2 totalrepaid2 principalpaid2 interestpaid2 interestfrequency interestloan2 termsofrepayment repayduration1 repayduration2 
+
+
+
+save "_temp\RUME-loans_v7.dta", replace
 ****************************************
 * END
 
@@ -681,40 +708,85 @@ save "_temp\RUME-loans_v6.dta", replace
 ****************************************
 * Balance / principal / amount
 ****************************************
-use "_temp\RUME-loans_v6.dta", clear
+use "_temp\RUME-loans_v7.dta", clear
 
 gen test1=loanamount2-loanbalance2-principalpaid2
 gen pb1=0 if dummyml==1
 replace pb1=1 if test1!=0 & test1!=.
 ta pb1
 /*
-100% des cas c'est ok
+87% des cas c'est ok
+
+136 loans with pb
+We accept 1000 rs of error in the calculation of balance principal
+as principal depends on other variables, I correct loanbalance
+*/
+replace loanbalance2=loanamount2-principalpaid2 if test1<=1000 & test1>=-1000
+drop test1 pb1
+gen test1=loanamount2-loanbalance2-principalpaid2
+gen pb1=0 if dummyml==1
+replace pb1=1 if test1!=0 & test1!=.
+ta pb1
+/*
+90% des cas c'est ok
+
+114 cas à corriger: 
+Est-ce qu'on corrige loanbalance ou est ce qu'on corrige principalpaid?
+Il faut vérifier
+Pour ca on vérifie la cohérence du repayment pour voir si on prioise principalpaid ou loanbalance
 */
 
-save "_temp\RUME-loans_v7.dta", replace
-****************************************
-* END
+
+********** Monthly duration of repayment: Repay duration2
+gen repayduration2_month=.
+replace repayduration2_month=repayduration2/4.3452 if repayduration1==1  // weekly
+replace repayduration2_month=repayduration2 if repayduration1==2  // monthly
+replace repayduration2_month=repayduration2*12 if repayduration1==3  // yearly
+replace repayduration2_month=repayduration2*6 if repayduration1==4  // once in six month
 
 
 
+********** PB DURATION 1: if nb month repay > loan duration
+gen pb2=0  if repayduration1!=5 & repayduration1!=.
+replace pb2=1 if repayduration2_month>loanduration_month & repayduration1!=5 & repayduration1!=.
+ta pb2
+/*
+Dans 73% des cas, la durée de remboursement est plus ancienne que le prêt.
+Ex:
+un prêt de 75 mois (6 ans), déclaré rembourser tous les ans, depuis 36 ans.
+*/
 
 
 
+********** Ccl
+sort HHID2010   loanid
+*br HHID2010   loanid loansettled loanamount lender4 loanduration_month loanbalance totalrepaid principalpaid test1 termsofrepayment repayduration1 repayduration2 repayduration2_month pb2 if pb1==1
+
+/*
+repay duration2 ne correspond jamais (que dans 20% des cas), alors pour traiter tout le monde à la même enseigne, on priorise loanbalance
+*/
+replace principalpaid2=loanamount2-loanbalance2 if pb1==1
+replace corr=2 if pb1==1
+drop test1 pb1 pb2
 
 
+********** Corr principalpaid miss
+*Last point: if missing for principalpaid --> loanbalance
+replace principalpaid2=loanamount2-loanbalance2 if principalpaid2==.
+*br HHID2010   loanid loansettled loanamount lender4 loanduration_month loanbalance totalrepaid principalpaid termsofrepayment repayduration1 repayduration2 repayduration2_month if principalpaid==.
 
 
-
-****************************************
-* Principal repayment consistency
-****************************************
-use "_temp\RUME-loans_v7.dta", clear
-
-drop pb1 test1
 
 save "_temp\RUME-loans_v8.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+
 
 
 
@@ -737,59 +809,62 @@ replace interestloan_month=interestloan2/12 if interestfrequency==3  // yearly
 replace interestloan_month=interestloan2/6 if interestfrequency==4  // once in six month
 
 
+********** Consistency: pb if interest loan > interestpaid
+* On accepte 1000 roupies d'erreur
+gen test=interestloan_month*loanduration_month  // theoretical interestpaid
+gen pb=.
+replace pb=0 if test==interestpaid & dummyml==1
+replace pb=1 if test>interestpaid & dummyml==1
+replace pb=2 if test<interestpaid & dummyml==1
 
+label define pbint 0"No pb" 1"Theo > Paid" 2"Theo < Paid"
+label values pb pbint
 
-********** PB AMOUNT: if interest loan * loan duration trop != de interestpaid
-gen test1=.
-replace test1=interestloan_month*loanduration_month if interestloan_month!=.
-gen test2=.
-replace test2=interestpaid2-test1 if interestpaid2!=.
-gen pb1=0 if dummyinterest==1
-replace pb1=1 if test1!=interestpaid2 & dummyinterest==1
-ta pb1
+gen test2=test-interestpaid
+replace pb=. if test2<=1000 & test2>=-1000
+
+fre pb
 /*
-On calcul la borne max qu'ils ont payé: en étant super régulier et payant tel montant
-on atteint pas ce qu'ils déclarent avoir payer en tout...
-
-On accepte une erreur de 1000 roupies dans le calcul
+-------------------------------------------------------------------
+                      |      Freq.    Percent      Valid       Cum.
+----------------------+--------------------------------------------
+Valid   0 No pb       |        325      13.84      35.52      35.52
+        1 Theo > Paid |        506      21.54      55.30      90.82
+        2 Theo < Paid |         84       3.58       9.18     100.00
+        Total         |        915      38.95     100.00           
+Missing .             |       1434      61.05                      
+Total                 |       2349     100.00                      
+-------------------------------------------------------------------
 */
-replace interestloan_month=interestpaid2/loanduration_month if test2<1000 & test2!=. & test2>-1000
-drop test1 test2 pb1
-gen test1=.
-replace test1=interestloan_month*loanduration_month if interestloan_month!=.
-gen test2=.
-replace test2=interestpaid2-test1 if interestpaid2!=.
-gen pb1=0 if dummyinterest==1
-replace pb1=1 if test1!=interestpaid2 & dummyinterest==1
-ta pb1
+
+ta lender4 pb
+drop interestloan_month pb test test2
 
 
+********** Mano corr
+gen test=interestpaid2/loanamount2
+sort test
+*br HHID2010   loanid loansettled loanreasongiven lender4 loanamount2 principalpaid2 interestpaid2 test interestfrequency interestloan2 loanduration_month corr
 
+replace loanamount2=150000 if HHID2010=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &  ==1 & loanid==1
+replace corr=1 if HHID2010=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &  ==1 & loanid==1
 
-********** Deux strat
-sort test2
-*br HHID2010 loanid loansettled loanamount lender4 loanduration_month principalpaid interestpaid test1 test2 interestfrequency interestloan interestloan_month if pb1==1
-/*
-Garder toujours le plus petit des deux
-*/
-*replace interestpaid2=interestloan_month*loanduration_month if test2>0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-*replace interestloan=interestpaid2/loanduration_month if test2<=0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
+replace interestpaid2=10000 if HHID2010=="uuid:456af75f-2c03-4505-868b-e96dbb00fba9" &  ==1 & loanid==2
+replace corr=1 if HHID2010=="uuid:456af75f-2c03-4505-868b-e96dbb00fba9" &  ==1 & loanid==2
 
-/*
-Garder toujours le plus grand des deux
-*/
-*replace interestpaid2=interestloan_month*loanduration_month if test2<=0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-*replace interestloan2=interestpaid2/loanduration_month if test2>0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
+replace interestpaid2=1500 if HHID2010=="uuid:30187ee9-dd3b-4a82-b20f-6ec0db908a4c" &  ==1 & loanid==1
+replace corr=1 if HHID2010=="uuid:30187ee9-dd3b-4a82-b20f-6ec0db908a4c" &  ==1 & loanid==1
 
+replace interestpaid2=7500 if HHID2010=="uuid:456af75f-2c03-4505-868b-e96dbb00fba9" &  ==1 & loanid==1
+replace corr=1 if HHID2010=="uuid:456af75f-2c03-4505-868b-e96dbb00fba9" &  ==1 & loanid==1
 
+replace interestpaid2=15120 if HHID2010=="uuid:6da195a8-9357-4021-8dd6-6fde2711262f" &  ==1 & loanid==4
+replace corr=1 if HHID2010=="uuid:6da195a8-9357-4021-8dd6-6fde2711262f" &  ==1 & loanid==4
 
+replace interestpaid2=15000 if HHID2010=="uuid:2fed18dd-dce7-44ce-821b-164c65a718b9" &  ==1 & loanid==2
+replace corr=1 if HHID2010=="uuid:2fed18dd-dce7-44ce-821b-164c65a718b9" &  ==1 & loanid==2
 
-********** Solution la moins risqué avec le plus petit
-sort test2
-replace interestpaid2=interestloan_month*loanduration_month if test2>0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-replace interestloan2=interestpaid2/loanduration_month if test2<=0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
-drop test2 test1 pb1
-
+drop test
 
 
 save "_temp\RUME-loans_v9.dta", replace
@@ -806,43 +881,79 @@ save "_temp\RUME-loans_v9.dta", replace
 
 
 
+
 ****************************************
-* Frequency
+* Interest consistency BIG CLEAN
 ****************************************
 use "_temp\RUME-loans_v9.dta", clear
 
 
-**** MONTLY REPAYMENT (repayduration1 & interestfreq) 
 
-gen month_repaid=.
-replace month_repaid=interestpaid2/interestloan2 if loanduration_month<=12 & dummyinterest==1 & repayduration1==2 & interestfrequency==2
-*comme remboursement microcredit reguliers:
-replace month_repaid=interestpaid2/interestloan2 if loanduration_month>12 & loanduration_month!=. & lender4==8
-
-
-**** INTEREST WEEKLY REPAYMENT (interestfreq) - LESS THAN ONE YEAR:
-
-replace month_repaid=(interestpaid2/interestloan2)/4 if loanduration_month<=12 & dummyinterest==1 & interestfrequency==1
+********** Gen interest loan per month
+gen interestloan_month=.
+replace interestloan_month=interestloan2*4.3452 if interestfrequency==1  // weekly
+replace interestloan_month=interestloan2 if interestfrequency==2  // monthly
+replace interestloan_month=interestloan2/12 if interestfrequency==3  // yearly
+replace interestloan_month=interestloan2/6 if interestfrequency==4  // once in six month
 
 
-**** INTEREST ONCE IN 6 MONTHS
+********** Consistency: pb if interest loan > interestpaid
+* On accepte 1000 roupies d'erreur
+gen test=interestloan_month*loanduration_month  // theoretical interestpaid
+gen pb=.
+replace pb=0 if test==interestpaid & dummyml==1
+replace pb=1 if test>interestpaid & dummyml==1
+replace pb=2 if test<interestpaid & dummyml==1
+
+label define pbint 0"No pb" 1"Theo > Paid" 2"Theo < Paid"
+label values pb pbint
+
+gen test2=test-interestpaid
+replace pb=. if test2<=1000 & test2>=-1000
+
+fre pb
+/*
+-------------------------------------------------------------------
+                      |      Freq.    Percent      Valid       Cum.
+----------------------+--------------------------------------------
+Valid   0 No pb       |        325      13.84      35.52      35.52
+        1 Theo > Paid |        506      21.54      55.30      90.82
+        2 Theo < Paid |         84       3.58       9.18     100.00
+        Total         |        915      38.95     100.00           
+Missing .             |       1434      61.05                      
+Total                 |       2349     100.00                      
+-------------------------------------------------------------------
+*/
+
+ta lender4 pb
 
 
-**** INTEREST FIXED AMOUNT
+********** Deux strat
+sort test2
+sort interestloan
+*br HHID2010   loanid loansettled loanamount2 lender4 loanduration_month principalpaid2 interestpaid2 test test2 interestfrequency interestloan2 interestloan_month if pb==1
+/*
+Garder toujours le plus grand des deux
+*/
+*replace interestpaid2=interestloan_month*loanduration_month if test2>0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
+*replace interestloan=interestpaid2/loanduration_month if test2<=0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
 
-***************** LOANS MORE THAN ONE YEAR:
+/*
+Garder toujours le plus petit des deux
+*/
+replace interestpaid2=interestloan_month*loanduration_month if test2<=0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
+replace interestloan2=interestpaid2/loanduration_month if test2>0 & (interestfrequency==1 | interestfrequency==2 | interestfrequency==3 | interestfrequency==4)
 
-**verification duree de remboursement pour microcredit
-replace month_repaid=interestpaid2/interestloan2 if lender4==8 & loanduration_month>12 & loanduration_month!=. & repayduration1==2
 
-*IMPOSSIBLE DE FAIRE SENS DE REPAYDURATION2 (nb months repaid or total duration of the loan)
+drop interestloan_month pb test test2
 
-
-*YEARLY INTEREST
 
 save "_temp\RUME-loans_v10.dta", replace
 ****************************************
 * END
+
+
+
 
 
 
@@ -857,13 +968,12 @@ save "_temp\RUME-loans_v10.dta", replace
 ****************************************
 use "_temp\RUME-loans_v10.dta", clear
 
-********** Total repaid to gen
-replace totalrepaid2=principalpaid2+interestpaid2
 
+********* Annual rate
 
+*** Duration
 gen loan_months=.
-replace loan_months=loanduration_month  if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==7
-replace loan_months=month_repaid if lender4==8 & interestfrequency==2
+replace loan_months=loanduration_month if interestfrequency==1 | interestfrequency==2 | interestfrequency==6
 replace loan_months=1 if loan_months<1
 
 gen years=.
@@ -873,35 +983,42 @@ gen loan_years=floor(years)
 gen loan_year2=loan_year
 replace loan_year2=1 if loan_year2<1 
 
-
-********* Test yrate
-*gen yratepaid=interestpaid2*100/loanamount2 if loanduration<=365
-*gen _yratepaid=interestpaid2*365/loanduration if loanduration>365
-*gen _loanamount=loanamount2*365/loanduration if loanduration>365
-*replace yratepaid=_yratepaid*100/_loanamount if loanduration>365
-*drop _loanamount _yratepaid
-
-
+*** Rate
 gen yratepaid=.
-****if interest paid weekly, monthly or when have money, once in six months, or unclear (interestfreq=7)
-*replace yratepaid=interestpaid2*100*12/(loan_months*loanamount2) if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==7 | interestfrequency==4
+*** if interest paid weekly, monthly or when have money, once in six months
+replace yratepaid=(interestpaid2*100/loanamount2)/(loanduration_month/12) if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==4
 
-replace yratepaid=(interestpaid2*100/loanamount2)*(12/loan_months) if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==7 | interestfrequency==4
 
-****if interest paid yearly: interestpaid averaged with an integer for number of years 
-replace yratepaid=interestpaid2*100/(loan_year2*loanamount2) if interestfrequency==3
-**** if interest=fixed amount
+*** if interest paid yearly: interestpaid averaged with an integer for number of years 
+replace yratepaid=(interestpaid2/loanamount2)*100/loan_year2 if interestfrequency==3
+
+
+*** if interest=fixed amount
 replace yratepaid=interestpaid2*100/loanamount2 if interestfrequency==5
 replace yratepaid=. if dummyinterest==0
 
-tabstat yratepaid if interestpaid2>0 & interestpaid2!=., by(lender4) stat(n mean p50 min max)
 
-
+*** Results
 sort yratepaid
-*br HHID2010 loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month loan_month principalpaid2 interestpaid2 interestfrequency interestloan2 interestloan_month yratepaid
+br HHID2010   loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month loan_month principalpaid2 interestpaid2 interestfrequency interestloan2 yratepaid
 
 
-drop yratepaid
+********** Corr for aberrant values
+replace interestpaid2=10000 if HHID2010=="uuid:a049567e-1188-4e9a-8875-4dce306cffdf" &  ==1 & loanid==1
+
+replace interestpaid2=1500 if HHID2010=="uuid:30187ee9-dd3b-4a82-b20f-6ec0db908a4c" &  ==1 & loanid==1
+
+replace interestpaid2=1000 if HHID2010=="uuid:a80735af-38ec-4daa-aca0-4c87c64ea92f" &  ==1 & loanid==1
+
+
+
+********** Correction
+recode interestpaid2 principalpaid2 totalrepaid2 (.=0)
+replace totalrepaid2=principalpaid2+interestpaid2
+
+
+drop yratepaid loan_months years loan_years loan_year2
+
 
 save "_temp\RUME-loans_v11.dta", replace
 ****************************************
@@ -920,54 +1037,79 @@ save "_temp\RUME-loans_v11.dta", replace
 
 
 ****************************************
-* Annualized
+* Rate
 ****************************************
 use "_temp\RUME-loans_v11.dta", clear
 
-********* Test yrate
-*gen yratepaid=interestpaid2*100/loanamount2 if loanduration<=365
-*gen _yratepaid=interestpaid2*365/loanduration if loanduration>365
-*gen _loanamount=loanamount2*365/loanduration if loanduration>365
-*replace yratepaid=_yratepaid*100/_loanamount if loanduration>365
-*drop _loanamount _yratepaid
+********* Annual rate
 
+*** Duration
+gen loan_months=.
+replace loan_months=loanduration_month if interestfrequency==1 | interestfrequency==2 | interestfrequency==6
+replace loan_months=1 if loan_months<1
 
+gen years=.
+replace years=loanduration_month/12 if interestfrequency==3
+gen loan_years=floor(years)
 
+gen loan_year2=loan_year
+replace loan_year2=1 if loan_year2<1 
+
+*** Rate
 gen yratepaid=.
-****if interest paid weekly, monthly or when have money, once in six months, or unclear (interestfreq=7)
-*replace yratepaid=interestpaid2*100*12/(loan_months*loanamount2) if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==7 | interestfrequency==4
+*** if interest paid weekly, monthly or when have money, once in six months
+replace yratepaid=(interestpaid2*100/loanamount2)/(loanduration_month/12) if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==4
 
-replace yratepaid=(interestpaid2*100/loanamount2)*(12/loan_months) if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==7 | interestfrequency==4
 
-****if interest paid yearly: interestpaid averaged with an integer for number of years 
-replace yratepaid=interestpaid2*100/(loan_year2*loanamount2) if interestfrequency==3
-**** if interest=fixed amount
+*** if interest paid yearly: interestpaid averaged with an integer for number of years 
+replace yratepaid=(interestpaid2/loanamount2)*100/loan_year2 if interestfrequency==3
+
+
+*** if interest=fixed amount
 replace yratepaid=interestpaid2*100/loanamount2 if interestfrequency==5
 replace yratepaid=. if dummyinterest==0
 
-tabstat yratepaid if interestpaid2>0 & interestpaid2!=., by(lender4) stat(n mean p50 min max)
+
+*** Results
+sort yratepaid
+*br HHID2010   loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month loan_month principalpaid2 interestpaid2 interestfrequency interestloan2 interestloan_month yratepaid
+tabstat yratepaid if interestpaid>0 & interestpaid!=., by(lender4) stat(n mean cv p50 min max)
 /*
+
+     lender4 |         N      mean        cv       p50       min       max
+-------------+------------------------------------------------------------
+         WKP |       318  22.07366  1.086563  19.21336  1.459612  317.3917
+   Relatives |       132  19.13189  .9835736   14.6891  .0070737  140.3848
+      Labour |        31  17.08085  .4879091  16.04397  4.952516  38.32025
+ Pawn broker |         1  22.82679         .  22.82679  22.82679  22.82679
+ Shop keeper |         2  17.25294  .3944838  17.25294  12.44037  22.06552
+Moneylenders |        57  21.49041  .5915057  19.14756  4.110365  50.98418
+     Friends |        13  19.11736  .5266889   17.8049         6        36
+ Microcredit |       101  12.55527  .6930656  11.50853  .3862028   49.0299
+        Bank |        32  7.448743  .9797293         6        .5  31.33051
+    Neighbor |        30  19.47744  .5918675   19.6644       .36        36
+-------------+------------------------------------------------------------
+       Total |       717   19.1017   1.00938  15.19212  .0070737  317.3917
+--------------------------------------------------------------------------
+
+
+ELENA:
      lender4 |         N      mean       p50       min       max
 -------------+--------------------------------------------------
-         WKP |       169   24.5042   23.1086  1.857508   77.3306
-   Relatives |       136  24.23407  22.05402   .999451  95.99906
-      Labour |       135   26.6538  25.46514  2.786263       144
- Pawn broker |         3  76.18519  26.87779  25.20721  176.4706
- Shop keeper |         1        18        18        18        18
-Moneylenders |        39  34.68505  30.93224  9.820639  156.4272
-     Friends |        16  40.20706  25.55151         3       144
- Microcredit |        50  24.07873  20.95379  .2667482  76.04175
-        Bank |        14  14.18266  11.69654  1.967068  30.00003
-    Neighbor |       265  27.76618  26.22757      1.75  185.5934
+  Well known |       324  24.28248      21.6  1.463415     115.2
+   Relatives |       129  18.83321  16.27119         2        60
+      Labour |        31  18.42413  16.36364         5  41.14286
+ Pawn broker |         1  23.07692  23.07692  23.07692  23.07692
+ Shop keeper |         2  17.32692  17.32692      12.5  22.15385
+Moneylenders |        58  27.50972        24  2.907692     79.68
+     Friends |        14   20.2881  19.04895   .742268      43.2
+ Microcredit |        98  15.63684    13.392     .4992        54
+        Bank |        31  10.61372  10.28571        .9        32
+    Neighbor |        32  22.23268  22.28572  2.727273  41.14286
 -------------+--------------------------------------------------
-       Total |       828  26.61645  24.33336  .2667482  185.5934
+       Total |       720  21.35884        18     .4992     115.2
 ----------------------------------------------------------------
 */
-
-
-sort yratepaid
-*br HHID2010 loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month loan_month principalpaid2 interestpaid2 interestfrequency interestloan2 interestloan_month yratepaid
-
 
 
 ********** Monthly
@@ -976,7 +1118,7 @@ replace monthlyinterestrate=yratepaid if loanduration<=30.4167
 replace monthlyinterestrate=(yratepaid/loanduration)*30.4167 if loanduration>30.4167
 
 sort monthlyinterestrate
-*br HHID2010 loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month principalpaid2 interestpaid2 interestfrequency interestloan2 interestloan_month yratepaid monthlyinterestrate
+*br HHID2010   loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month principalpaid2 interestpaid2 interestfrequency interestloan2 interestloan_month yratepaid monthlyinterestrate
 
 tabstat monthlyinterestrate, stat(n mean cv p50 min max) by(lender4)
 
@@ -984,6 +1126,20 @@ tabstat monthlyinterestrate, stat(n mean cv p50 min max) by(lender4)
 save "_temp\RUME-loans_v12.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
