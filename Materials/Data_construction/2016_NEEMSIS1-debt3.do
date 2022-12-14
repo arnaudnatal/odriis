@@ -51,6 +51,13 @@ save "_temp\NEEMSIS1-loans_v2.dta", replace
 
 
 
+
+
+
+
+
+
+
 ****************************************
 * GOLD
 ****************************************
@@ -452,6 +459,8 @@ use "_temp\NEEMSIS1-loans_v6.dta", clear
 gen dummyml=0
 replace dummyml=1 if lendername!=""
 gen corr=0
+replace principalpaid=0 if principalpaid==. & dummyml==1
+replace interestpaid=0 if interestpaid==. & dummyml==1
 foreach x in loanamount loanbalance interestpaid totalrepaid principalpaid interestloan {
 gen `x'2=`x'
 }
@@ -819,7 +828,7 @@ replace yratepaid=. if dummyinterest==0
 
 *** Results
 sort yratepaid
-br HHID2016 INDID2016 loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month loan_month principalpaid2 interestpaid2 interestfrequency interestloan2 yratepaid
+*br HHID2016 INDID2016 loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month loan_month principalpaid2 interestpaid2 interestfrequency interestloan2 yratepaid
 
 
 ********** Corr for aberrant values
@@ -895,10 +904,11 @@ sort yratepaid
 tabstat yratepaid if interestpaid>0 & interestpaid!=., by(lender4) stat(n mean cv p50 min max)
 /*
 
+
      lender4 |         N      mean        cv       p50       min       max
 -------------+------------------------------------------------------------
          WKP |       318  22.07366  1.086563  19.21336  1.459612  317.3917
-   Relatives |       132  19.13189  .9835736   14.6891  .0070737  140.3848
+   Relatives |       132  19.18543  .9784927   14.6891  1.981006  140.3848
       Labour |        31  17.08085  .4879091  16.04397  4.952516  38.32025
  Pawn broker |         1  22.82679         .  22.82679  22.82679  22.82679
  Shop keeper |         2  17.25294  .3944838  17.25294  12.44037  22.06552
@@ -906,10 +916,11 @@ Moneylenders |        57  21.49041  .5915057  19.14756  4.110365  50.98418
      Friends |        13  19.11736  .5266889   17.8049         6        36
  Microcredit |       101  12.55527  .6930656  11.50853  .3862028   49.0299
         Bank |        32  7.448743  .9797293         6        .5  31.33051
-    Neighbor |        30  19.47744  .5918675   19.6644       .36        36
+    Neighbor |        30  20.33969  .5410282  20.54406  2.339746        36
 -------------+------------------------------------------------------------
-       Total |       717   19.1017   1.00938  15.19212  .0070737  317.3917
+       Total |       717  19.14763  1.005971  15.46612  .3862028  317.3917
 --------------------------------------------------------------------------
+
 
 
 ELENA:
@@ -1045,19 +1056,19 @@ restore
    stats |       dsr       isr
 ---------+--------------------
        N |       487       487
-    mean |   45.4394  19.82678
-      cv |  1.574831  2.047799
-     p25 |  8.207959  1.766944
-     p50 |  22.45341    6.9172
-     p75 |  52.36449  18.95745
-     p90 |  112.5277  50.14613
-     p95 |  174.1667  83.61819
-     p99 |  334.6478  204.6709
+    mean |  40.96362  15.26302
+      cv |  1.594725  2.289227
+     p25 |  7.011792  .2819549
+     p50 |   20.3666  4.897442
+     p75 |  49.42828   15.1515
+     p90 |  104.3079  39.62397
+     p95 |  145.9626  70.02763
+     p99 |  300.0237  170.8331
      max |  845.3228  527.8712
 ------------------------------
 */
 
-
+drop imp1_ds_tot_HH imp1_is_tot_HH annualincome_HH dsr isr
 
 save "_temp\NEEMSIS1-loans_v13.dta", replace
 ****************************************
@@ -1354,7 +1365,7 @@ replace prodpledge_othe=1 if strpos(loanproductpledge,"77")
 
 
 *** Clean
-drop egoid name jatis sex age villageid villageareaid householdid submissiondate_o
+drop name jatis sex age villageid villageareaid householdid submissiondate_o
 
 order HHID2016 INDID2016 year
 
