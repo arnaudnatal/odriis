@@ -51,11 +51,27 @@ save "_temp\NEEMSIS1-loans_v2.dta", replace
 
 
 
+
+
+
+
+
+
+
 ****************************************
 * GOLD
 ****************************************
-use "$data", clear
-keep HHID2016 INDID2016 egoid submissiondate goldamountpledge goldreasonpledge
+use "outcomes\NEEMSIS1-gold", clear
+
+merge 1:1 HHID2016 INDID2016 using "$data", keepusing(submissiondate)
+drop _merge
+
+drop goldquantity goldquantitypledge goldamountpledge
+rename goldquantity2 goldquantity
+rename goldquantitypledge2 goldquantitypledge
+rename goldamountpledge2 goldamountpledge
+
+keep HHID2016 INDID2016 submissiondate goldamountpledge goldreasonpledge
 gen loan_database="GOLD"
 
 rename goldamountpledge loanamount
@@ -384,62 +400,86 @@ save "_temp\NEEMSIS1-loans_v6.dta", replace
 
 
 
-
-****************************************
-* COHERENCE
-****************************************
-use"_temp\NEEMSIS1-loans_v6.dta", clear
-
-*As Elena, for gold
-replace loanbalance=loanamount if loandate==. & loanlender==6  & lenderfrom==.
-
-*Marriage = no loanbalance so drop it..
-*drop if loandate==. & loanreasongiven==8 & loanbalance==.
-
-
-*Loanbalance>loanamount ?
-replace loanbalance=loanamount if loanbalance>loanamount
-
-*66 as .
-replace interestpaid=. if interestpaid==55 | interestpaid==66
-replace principalpaid=. if principalpaid==55 | principalpaid==66 
-replace totalrepaid=. if totalrepaid==66
-
-***Priority to balance or priority to totalrepaid/interestpaid ?
-*Test Balance
-gen test=loanamount-loanbalance
-tab test  // 38/1682 weird loan : 2.26%
-drop test
-
-*Test Paid
-gen test=totalrepaid-interestpaid-principalpaid
-tab test  // 36/710 weird loan : 5.07%
-drop test
 /*
-Check with Isabelle and Elena, but i prefer to use balance as good measure instead of totalrepaid and interestpaid
+Pb majeur:
+Il manque des informations pour en vérifier d'autres
+C-à-d. qu'on ne peut pas recalculer des informations à la 
+main à partir d'autres
+D'un côté - total des intérêts payés
+D'un autre - montant des intérêt par semaine, mois jours
+MAIS on n'a pas la fréquence
+--> We cannot calculte interest paid..
+
+Same with the amount:
+We have the total repaid
+We also have the frequency of the monthly/yearly repayment
+BUT not the amount
+--> We cannot calculate total repaid
+
+We always need to mix diferent informations
+We can only check 2 things:
+- the duration
+- consistency between total repaid, principal paid and interest paid
+
+However, the duration also depends on total repaid principal paid...
+The only double check is loanamount/loanbalance/totalrepaid/principalpaid/interestpaid
+
+Lets first check the consistency between total repaid, principal paid, interest paid as the rest depends on these values.
+
+However, loanamount - loanbalance, suppose to be principal paid, so lets begin with that
+
+
+En fait non, 2 choses à faire:
+Vérifier cohérence entre:
+loanamount/loanbalance/principalpaid
+Une fois OK, OK.
+
+Vérifier cohérence entre:
+interestloan/loanduration/interestpaid
+Une fois OK, OK.
+
+mettre en commun pour calculer totalrepaid
 */
 
-gen totalrepaid2=totalrepaid
-gen interestpaid2=interestpaid
-gen principalpaid2=loanamount-loanbalance
 
-*Variable donc pour que le tout soit cohérent
-replace totalrepaid2=principalpaid2+interestpaid
 
-*Verif loans to main loans
-gen test=totalrepaid2-totalrepaid
-tab test // ok dans 82 % des cas donc ca passe !
-drop test
 
-*Coherence
-gen coherence=loanamount-loanbalance-principalpaid2
-tab coherence
-drop coherence
-gen coherence=totalrepaid2-principalpaid2-interestpaid2
-tab coherence
-drop coherence
 
-save"_temp\NEEMSIS1-loans_v7.dta", replace
+
+
+
+
+****************************************
+* Creation + loanamount + 66 
+****************************************
+use "_temp\NEEMSIS1-loans_v6.dta", clear
+
+
+********** Creation
+gen dummyml=0
+replace dummyml=1 if lendername!=""
+gen corr=0
+replace principalpaid=0 if principalpaid==. & dummyml==1
+replace interestpaid=0 if interestpaid==. & dummyml==1
+foreach x in loanamount loanbalance interestpaid totalrepaid principalpaid interestloan {
+gen `x'2=`x'
+}
+gen loanduration_month=loanduration/30.4167
+
+
+
+
+********** 66
+foreach x in loanamount2 totalrepaid2 interestpaid2 principalpaid2 interestloan2 {
+replace `x'=. if `x'==66
+replace `x'=. if `x'==77
+replace `x'=. if `x'==88
+replace `x'=. if `x'==99
+}
+
+
+
+save "_temp\NEEMSIS1-loans_v7.dta", replace
 ****************************************
 * END
 
@@ -451,181 +491,97 @@ save"_temp\NEEMSIS1-loans_v7.dta", replace
 
 
 
-
-
-
-
-
 ****************************************
-* BALANCE
+* Rate
 ****************************************
-use"_temp\NEEMSIS1-loans_v7.dta", clear
+use "_temp\NEEMSIS1-loans_v7.dta", clear
 
-replace loanbalance=0 if loansettled==1
+********* Annual rate
 
+*** Duration
+gen loan_months=.
+replace loan_months=loanduration_month if interestfrequency==1 | interestfrequency==2 | interestfrequency==6
+replace loan_months=1 if loan_months<1
 
+gen years=.
+replace years=loanduration_month/12 if interestfrequency==3
+gen loan_years=floor(years)
 
-*update loanbalance with principalpaid for microcredits (interest checked, plausible)
-replace loanbalance=loanamount-principalpaid if lender4==8 & loanbalance>loanamount & loanbalance!=.
-replace loanbalance=loanamount if loanbalance>loanamount & loanbalance!=. & principalpaid==. 
+gen loan_year2=loan_year
+replace loan_year2=1 if loan_year2<1 
 
-*verif balance
-gen test=loanamount-principalpaid - loanbalance
-tab test
-* 0 :  89.3 %
-*5.9% inf, 4.8% sup
-tab lender4 if test!=0 & test!=.
-*moitie de microcredit dans ceux qui ne matchent pas
-drop test
-
-*** loans with pb "identified" + POSITIVE AMOUNTS of principal paid different selon principal paid et loanbalance:
-*apres check: on ne peut pas faire grand chose. considere que principalpaid prevaut sur loanbalance.
-gen test=loanamount-principalpaid - loanbalance
-replace loanbalance=loanamount - principalpaid if test!=0 & test!=.
-replace loanbalance=0 if loanbalance<0
-drop test
-*/
-save"_temp\NEEMSIS1-loans_v8.dta", replace
-*************************************
-* END
+*** Rate
+gen yratepaid=.
+*** if interest paid weekly, monthly or when have money, once in six months
+replace yratepaid=(interestpaid2*100/loanamount2)/(loanduration_month/12) if interestfrequency==1 | interestfrequency==2 | interestfrequency==6 | interestfrequency==4
 
 
+*** if interest paid yearly: interestpaid averaged with an integer for number of years 
+replace yratepaid=(interestpaid2/loanamount2)*100/loan_year2 if interestfrequency==3
 
 
+*** if interest=fixed amount
+replace yratepaid=interestpaid2*100/loanamount2 if interestfrequency==5
+replace yratepaid=. if dummyinterest==0
 
 
-
-
-
-
-
-
-
-
-
-****************************************
-* ANNUALIZED
-****************************************
-use"_temp\NEEMSIS1-loans_v8.dta", clear
-
-*****
-*Arnaud test yrate
-gen yratepaid=interestpaid2*100/loanamount if loanduration<=365
-
-gen _yratepaid=interestpaid2*365/loanduration if loanduration>365
-gen _loanamount=loanamount*365/loanduration if loanduration>365
-
-replace yratepaid=_yratepaid*100/_loanamount if loanduration>365
-drop _loanamount _yratepaid
-
-
-
-tab yratepaid
+*** Results
 sort yratepaid
-*tab loanamount if loanamount<1000
-*drop if loanamount<1000
+*br HHID2016 INDID2016 loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month loan_month principalpaid2 interestpaid2 interestfrequency interestloan2 interestloan_month yratepaid
+tabstat yratepaid if interestpaid>0 & interestpaid!=., by(lender4) stat(n mean cv p50 min max)
+/*
 
-tabstat yratepaid if interestpaid2>0 & interestpaid2!=., by(lender4) stat(n mean p50 min max)
+
+     lender4 |         N      mean        cv       p50       min       max
+-------------+------------------------------------------------------------
+         WKP |       318  22.07366  1.086563  19.21336  1.459612  317.3917
+   Relatives |       132  19.18543  .9784927   14.6891  1.981006  140.3848
+      Labour |        31  17.08085  .4879091  16.04397  4.952516  38.32025
+ Pawn broker |         1  22.82679         .  22.82679  22.82679  22.82679
+ Shop keeper |         2  17.25294  .3944838  17.25294  12.44037  22.06552
+Moneylenders |        57  21.49041  .5915057  19.14756  4.110365  50.98418
+     Friends |        13  19.11736  .5266889   17.8049         6        36
+ Microcredit |       101  12.55527  .6930656  11.50853  .3862028   49.0299
+        Bank |        32  7.448743  .9797293         6        .5  31.33051
+    Neighbor |        30  20.33969  .5410282  20.54406  2.339746        36
+-------------+------------------------------------------------------------
+       Total |       717  19.14763  1.005971  15.46612  .3862028  317.3917
+--------------------------------------------------------------------------
+
+
+
+ELENA:
+     lender4 |         N      mean       p50       min       max
+-------------+--------------------------------------------------
+  Well known |       324  24.28248      21.6  1.463415     115.2
+   Relatives |       129  18.83321  16.27119         2        60
+      Labour |        31  18.42413  16.36364         5  41.14286
+ Pawn broker |         1  23.07692  23.07692  23.07692  23.07692
+ Shop keeper |         2  17.32692  17.32692      12.5  22.15385
+Moneylenders |        58  27.50972        24  2.907692     79.68
+     Friends |        14   20.2881  19.04895   .742268      43.2
+ Microcredit |        98  15.63684    13.392     .4992        54
+        Bank |        31  10.61372  10.28571        .9        32
+    Neighbor |        32  22.23268  22.28572  2.727273  41.14286
+-------------+--------------------------------------------------
+       Total |       720  21.35884        18     .4992     115.2
+----------------------------------------------------------------
+*/
+
+
+********** Monthly
 gen monthlyinterestrate=.
 replace monthlyinterestrate=yratepaid if loanduration<=30.4167
 replace monthlyinterestrate=(yratepaid/loanduration)*30.4167 if loanduration>30.4167
 
-*****
-/*
-     lender4 |         N      mean       p50       min       max
--------------+--------------------------------------------------
-         WKP |       316  45.53768        30  1.499985       720
-   Relatives |       128  35.01362        25  .0033333       180
-      Labour |        31  21.08602  21.66667         4        48
- Pawn broker |         1       100       100       100       100
- Shop keeper |         2        37        37        24        50
-Moneylenders |        57  23.30901  11.57895        .5       300
-     Friends |        13  29.46154        18         4        90
- Microcredit |       101  13.95773     9.152  .3073846        81
-        Bank |        32  66.22486      11.5        .6  1676.471
-    Neighbor |        30  41.88889        28       1.5       144
--------------+--------------------------------------------------
-       Total |       711  36.84462        21  .0033333  1676.471
-----------------------------------------------------------------
+sort monthlyinterestrate
+*br HHID2016 INDID2016 loanid loansettled loanreasongiven lender4 loanamount2 loanbalance2  loanduration loanduration_month principalpaid2 interestpaid2 interestfrequency interestloan2 interestloan_month yratepaid monthlyinterestrate
 
-*/
-
-save"_temp\NEEMSIS1-loans_v9.dta", replace
-*************************************
-* END
-*/
+tabstat monthlyinterestrate, stat(n mean cv p50 min max) by(lender4)
 
 
-
-
-
-
-
-
-
-
-
+save "_temp\NEEMSIS1-loans_v8.dta", replace
 ****************************************
-* MARRIAGE LOANS
-****************************************
-use"_temp\NEEMSIS1-loans_v9.dta", clear
-
-/*
-tab loan_database
-tab loanreasongiven if loan_database=="FINANCE"
-/*
-Essayer bricolage pour en tenir compte quand même
-Sur 1697 prêts, il y en a eu que 15 de remboursés..
-Pourquoi sur les 300, il y en aurait beaucoup ?
-
-1. Je regarde les durée des prêts pour mariage les plus longues : je prends la durée minimale des 25 % des prêts avec la durée la plus longue (ou la durée max des 75 % des prêts avec la durée la plus courte) --> Q3  
-2. Je l'impute aux autres (en utilisant p90, je prends volontairement une durée haute afin de réduire le plus possible le remboursement mensuel. Je ne veux pas surestimer le phénomène, je cherche juste à tenir "un peu" compte des prêts pour mariages)
-3. Je divise le montant du prêt par la durée pour avoir une sorte de remboursement mensuel
-*/
-
-********** 1. vérif de la durée des prêts
-tabstat loanduration if loanreasongiven==8, stat(n mean sd p50 p75 p90 p95 p99 max) 
-*1400 jours
-
-********** 3. vérif du % repayé sur le montant du prêts
-gen ratiotest=totalrepaid/loanamount
-tabstat ratiotest if loanreasongiven==8, stat(n mean sd min p1 p5 p10 q p90 p95 p99 max)
-*Je prends la valeur de Q1 ici pour réduire le montant au max --> 0.21
-
-********** vérif les intérêts
-tab loanlender if loanreasongiven==8
-*informel = pas d'intérêts
-
-
-********** Proba settled
-preserve
-use"NEEMSIS1-loans_v4.dta", clear
-tab loanreasongiven loansettled
-*3 sur 298 
-dis 1-(3/298)
-*disons 0.95
-restore
-
-
-********** Imputation
-clonevar loanduration_wm=loanduration
-clonevar totalrepaid2_wm=totalrepaid2
-clonevar loanamount_wm=loanamount
-clonevar loanbalance_wm=loanbalance
-clonevar interestpaid2_wm=interestpaid2
-
-replace loanamount=. if loan_database=="MARRIAGE"
-replace loanbalance=. if loan_database=="MARRIAGE"
-
-
-replace loanduration_wm=1400 if loan_database=="MARRIAGE"
-replace totalrepaid2_wm=loanamount_wm*0.21*0.95 if loan_database=="MARRIAGE"
-replace interestpaid2_wm=loanamount_wm*0.233*0.95 if loan_database=="MARRIAGE" & lender4==6
-replace interestpaid2_wm=loanamount_wm*0.139*0.95 if loan_database=="MARRIAGE" & lender4==8
-*/
-
-save"_temp\NEEMSIS1-loans_v9-bis.dta", replace
-*************************************
 * END
 
 
@@ -637,19 +593,17 @@ save"_temp\NEEMSIS1-loans_v9-bis.dta", replace
 
 
 
-
-
 ****************************************
-* IMPUTATION
+* Imputations
 ****************************************
-use"_temp\NEEMSIS1-loans_v9-bis.dta", clear
+use "_temp\NEEMSIS1-loans_v8.dta", clear
 
 
 ********** Add income
-*merge m:1 HHID2016 INDID2016 using "NEEMSIS1-HH_v7.dta", keepusing(annualincome_indiv annualincome_HH)
-*drop if _merge==2
-*drop _merge
-
+merge m:1 HHID2016 using "outcomes\NEEMSIS1-occup_HH.dta", keepusing(annualincome_HH)
+drop if _merge==2
+drop _merge
+replace annualincome_HH=20000 if annualincome_HH<20000
 
 
 
@@ -660,7 +614,6 @@ replace debt_service=totalrepaid2*365/loanduration if loanduration>365
 replace debt_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==0 & totalrepaid2==.
 
 
-
 *** Interest service pour ML
 gen interest_service=.
 replace interest_service=interestpaid2 if loanduration<=365
@@ -669,20 +622,19 @@ replace interest_service=0 if loanduration==0 & totalrepaid2==0 | loanduration==
 replace interest_service=0 if dummyinterest==0 & interestpaid2==0 | dummyinterest==0 & interestpaid2==.
 
 
-
 *** Imputation du principal
 gen imp_principal=.
-replace imp_principal=loanamount-loanbalance if loanduration<=365 & debt_service==.
-replace imp_principal=(loanamount-loanbalance)*365/loanduration if loanduration>365 & debt_service==.
+replace imp_principal=loanamount2-loanbalance2 if loanduration<=365 & debt_service==.
+replace imp_principal=(loanamount2-loanbalance2)*365/loanduration if loanduration>365 & debt_service==.
 
 
 
 *** Imputation interest for moneylenders and microcredit
 gen imp1_interest=.
-replace imp1_interest=0.233*loanamount if lender4==6 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.233*loanamount*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
-replace imp1_interest=0.139*loanamount if lender4==8 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.139*loanamount*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
+replace imp1_interest=0.27*loanamount2 if lender4==6 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.27*loanamount2*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
+replace imp1_interest=0.15*loanamount2 if lender4==8 & loanduration<=365 & debt_service==.
+replace imp1_interest=0.15*loanamount2*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
 replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
 
 
@@ -710,11 +662,43 @@ replace imp1_interest_service=imp1_interest if interest_service==.
 replace imp1_interest_service=. if loansettled==1
 replace imp1_interest_service=. if loan_database=="MARRIAGE"
 
-drop totalrepaid2 interestpaid2 principalpaid2
 
 
-save"_temp\NEEMSIS1-loans_v10.dta", replace
-*************************************
+*** Services
+bysort HHID2016: egen imp1_ds_tot_HH=sum(imp1_debt_service)
+bysort HHID2016: egen imp1_is_tot_HH=sum(imp1_interest_service)
+
+
+gen dsr=imp1_ds_tot_HH*100/annualincome_HH
+gen isr=imp1_is_tot_HH*100/annualincome_HH
+
+preserve
+keep HHID2016 dsr isr annualincome_HH imp1_ds_tot_HH imp1_is_tot_HH
+duplicates drop
+tabstat dsr isr, stat(n mean cv q p90 p95 p99 max)
+sort dsr
+restore
+
+/*
+   stats |       dsr       isr
+---------+--------------------
+       N |       487       487
+    mean |  40.96362  15.26302
+      cv |  1.594725  2.289227
+     p25 |  7.011792  .2819549
+     p50 |   20.3666  4.897442
+     p75 |  49.42828   15.1515
+     p90 |  104.3079  39.62397
+     p95 |  145.9626  70.02763
+     p99 |  300.0237  170.8331
+     max |  845.3228  527.8712
+------------------------------
+*/
+
+drop imp1_ds_tot_HH imp1_is_tot_HH annualincome_HH dsr isr
+
+save "_temp\NEEMSIS1-loans_v9.dta", replace
+****************************************
 * END
 
 
@@ -729,7 +713,7 @@ save"_temp\NEEMSIS1-loans_v10.dta", replace
 ****************************************
 * Other measures with dummies, share and amount
 ****************************************
-use"_temp\NEEMSIS1-loans_v10.dta", clear
+use"_temp\NEEMSIS1-loans_v9.dta", clear
 
 
 
@@ -775,13 +759,13 @@ rename lendercat_3 lendercat_form
 
 * Amount
 foreach x in WKP rela empl mais coll pawn shop fina frie SHG bank coop suga grou {
-gen lenderamt_`x'=loanamount if lender_`x'==1
+gen lenderamt_`x'=loanamount2 if lender_`x'==1
 }
 foreach x in WKP rela labo pawn shop mone frie micr bank neig {
-gen lender4amt_`x'=loanamount if lender4_`x'==1
+gen lender4amt_`x'=loanamount2 if lender4_`x'==1
 }
 foreach x in info semi form {
-gen lendercatamt_`x'=loanamount if lendercat_`x'==1
+gen lendercatamt_`x'=loanamount2 if lendercat_`x'==1
 }
 
 
@@ -804,7 +788,7 @@ rename loanreasongiven_13 given_othe
 
 *Amt
 foreach x in agri fami heal repa hous inve cere marr educ rela deat nore othe {
-gen givenamt_`x'=loanamount if given_`x'==1
+gen givenamt_`x'=loanamount2 if given_`x'==1
 }
 
 
@@ -822,7 +806,7 @@ rename loanreasoncat_7 givencat_othe
 
 *Amt
 foreach x in econ curr huma soci hous nore othe {
-gen givencatamt_`x'=loanamount if givencat_`x'==1
+gen givencatamt_`x'=loanamount2 if givencat_`x'==1
 }
 
 
@@ -860,7 +844,7 @@ replace effective_othe=1 if strpos(loaneffectivereason,"77")
 
 *Amt
 foreach x in agri fami heal repa hous inve cere marr educ rela deat nore othe {
-gen effectiveamt_`x'=loanamount if effective_`x'==1
+gen effectiveamt_`x'=loanamount2 if effective_`x'==1
 }
 
 ********** Lender service
@@ -1008,7 +992,7 @@ replace prodpledge_othe=1 if strpos(loanproductpledge,"77")
 
 
 *** Clean
-drop egoid name jatis sex age villageid villageareaid householdid submissiondate_o
+drop name jatis sex age villageid villageareaid householdid submissiondate_o
 
 order HHID2016 INDID2016 year
 
@@ -1041,8 +1025,8 @@ drop if loan_database=="MARRIAGE"
 bysort HHID2016 INDID2016: egen nbloans_indiv=sum(1)
 bysort HHID2016: egen nbloans_HH=sum(1)
 
-bysort HHID2016 INDID2016: egen loanamount_indiv=sum(loanamount)
-bysort HHID2016: egen loanamount_HH=sum(loanamount)
+bysort HHID2016 INDID2016: egen loanamount_indiv=sum(loanamount2)
+bysort HHID2016: egen loanamount_HH=sum(loanamount2)
 
 
 
