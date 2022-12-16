@@ -678,7 +678,7 @@ ta nohead
 drop head
 
 sort HHID2016 INDID2016
-br HHID2016 INDID2016 name age sex egoid relationshiptohead maritalstatus if nohead==1
+*br HHID2016 INDID2016 name age sex egoid relationshiptohead maritalstatus if nohead==1
 
 replace relationshiptohead=1 if HHID2016=="uuid:2c8da432-1be7-4879-b570-dbab81b136ab" & INDID2016==1
 replace pb=1 if HHID2016=="uuid:2c8da432-1be7-4879-b570-dbab81b136ab"
@@ -729,15 +729,11 @@ replace relationshiptohead=1 if HHID2016=="uuid:feea6473-a217-4abf-8a1c-e1dc7cd6
 replace pb=1 if HHID2016=="uuid:feea6473-a217-4abf-8a1c-e1dc7cd6b43d"
 
 
-
-
-
-
 *** Keep head
 keep if relationshiptohead==1
 duplicates report HHID2016
 
-keep HHID2016 INDID2016 name age sex relationshiptohead
+keep HHID2016 INDID2016 name age sex relationshiptohead maritalstatus egoid
 gen dummyhead=1
 
 
@@ -762,7 +758,7 @@ drop _merge
 
 
 *** Rename
-foreach x in INDID2016 name sex relationshiptohead age dummyhead dummyworkedpastyear working_pop mocc_profession mocc_occupation mocc_sector mocc_annualincome mocc_occupationname annualincome nboccupation edulevel {
+foreach x in INDID2016 name sex relationshiptohead age dummyhead dummyworkedpastyear working_pop mocc_profession mocc_occupation mocc_sector mocc_annualincome mocc_occupationname annualincome nboccupation edulevel egoid maritalstatus {
 rename `x' head_`x'
 }
 
@@ -786,13 +782,16 @@ save"_temp\NEEMSIS1-head", replace
 ****************************************
 use"$data", clear
 
-*keep HHID2016 caste jatis
+keep HHID2016
 duplicates drop
 
 merge 1:1 HHID2016 using "_temp\NEEMSIS1-family1"
 drop _merge
 
 merge 1:1 HHID2016 using "_temp\NEEMSIS1-family2"
+drop _merge
+
+merge 1:1 HHID2016 using "_temp\NEEMSIS1-family3"
 drop _merge
 
 merge 1:1 HHID2016 using "_temp\NEEMSIS1-head"

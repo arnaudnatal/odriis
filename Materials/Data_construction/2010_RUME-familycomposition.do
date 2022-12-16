@@ -574,7 +574,7 @@ save"_temp\RUME-head", replace
 ****************************************
 use"$data", clear
 
-keep HHID2010 caste jatis
+keep HHID2010
 duplicates drop
 
 merge 1:1 HHID2010 using "_temp\RUME-family1"
