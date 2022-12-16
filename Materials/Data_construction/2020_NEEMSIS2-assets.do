@@ -29,6 +29,9 @@ grstyle set plain, box nogrid
 
 
 
+
+
+
 ****************************************
 * ASSETS 2020-21
 ***************************************
@@ -85,11 +88,9 @@ replace `x'=. if `x'==0 & ownland=="0"
 
 
 ***Gold
-*merge m:1 HHID2020 using "outcomes/NEEMSIS2-gold_HH", keepusing(goldamount_HH)
-*drop _merge
+merge m:1 HHID2020 using "outcomes/NEEMSIS2-gold_HH", keepusing(goldamount_HH)
+drop _merge
 
-bysort HHID2020: egen goldquantity_HH=sum(goldquantity)
-gen goldamount_HH=goldquantity_HH*2700
 
 
 
