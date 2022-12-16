@@ -216,23 +216,289 @@ restore
 *** Categories
 gen typeoffamily=""
 
+replace typeoffamily="nuclear" if family=="Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Son / Daughter-in-law / Grandchild / Cousin"
+replace typeoffamily="stem" if family=="Mother / Head"
+replace typeoffamily="stem" if family=="Mother / Head / Brother"
+replace typeoffamily="stem" if family=="Mother / Head / Sister"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son / Daughter / Daughter / Son / Wife"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Wife"
+replace typeoffamily="nuclear" if family=="Head / Wife / Wife"
+replace typeoffamily="nuclear" if family=="Head / Wife / Wife / Daughter / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Wife / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son / Daughter / Wife / Daughter / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Brother"
+replace typeoffamily="nuclear" if family=="Father / Mother / Head / Brother / Sister"
+replace typeoffamily="stem" if family=="Head / Father / Mother / Wife / Brother / Daughter / Son / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Son / Other / Other / Other / Mother"
+replace typeoffamily="joint-stem" if family=="Wife / Head / Son-in-law / Son-in-law"
+replace typeoffamily="nuclear" if family=="Head"
+replace typeoffamily="nuclear" if family=="Head / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Daughter / Daughter / Son / Daughter"
+replace typeoffamily="stem" if family=="Head / Daughter / Mother"
+replace typeoffamily="nuclear" if family=="Head / Daughter / Son"
+replace typeoffamily="nuclear" if family=="Head / Daughter / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Daughter / Son / Son"
+replace typeoffamily="stem" if family=="Head / Daughter / Son-in-law"
+replace typeoffamily="stem" if family=="Head / Daughter / Son-in-law / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Daughter-in-law / Head / Son / Grandchild / Son / Daughter-in-law / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Head / Father / Mother"
+replace typeoffamily="nuclear" if family=="Head / Son"
+replace typeoffamily="nuclear" if family=="Head / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Son / Daughter / Daughter"
+replace typeoffamily="stem" if family=="Head / Son / Daughter-in-law / Daughter / Son / Grandchild"
+replace typeoffamily="stem" if family=="Head / Son / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Head / Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Son / Daughter-in-law / Son"
+replace typeoffamily="joint-stem" if family=="Head / Son / Daughter-in-law / Son / Daughter-in-law / Son / Grandchild / Grandchild / Grandchild / Son / Daughter-in-law / Grandchild / Daughter"
+replace typeoffamily="stem" if family=="Head / Son / Daughter-in-law / Son / Son"
+replace typeoffamily="nuclear" if family=="Head / Son / Son"
+replace typeoffamily="stem" if family=="Head / Son / Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Son / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild / Daughter-in-law / Grandchild"
+replace typeoffamily="nuclear" if family=="Head / Son / Son / Son"
+replace typeoffamily="nuclear" if family=="Head / Son / Son / Son / Son"
+replace typeoffamily="stem" if family=="Mother / Head / Daughter-in-law / Grandchild / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Grandchild / Head"
+replace typeoffamily="stem" if family=="Son / Head / Son / Son / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Daughter / Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Daughter-in-law / Head / Wife / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Daughter-in-law / Head / Wife / Son / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="nuclear" if family=="Daughter-in-law / Son / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Daughter-in-law / Son / Grandchild / Grandchild / Grandchild / Son / Head / Daughter"
+replace typeoffamily="stem" if family=="Daughter-in-law / Son / Grandchild / Grandchild / Grandchild / Wife"
+replace typeoffamily="stem" if family=="Daughter-in-law / Son / Grandchild / Grandchild / Son / Wife"
+replace typeoffamily="stem" if family=="Daughter-in-law / Son / Head / Wife / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Father / Wife / Son / Daughter / Mother"
+replace typeoffamily="stem" if family=="Father / Wife / Son / Son / Daughter"
+replace typeoffamily="stem" if family=="Head / Father / Wife / Daughter / Son"
+replace typeoffamily="stem" if family=="Head / Mother / Wife"
+replace typeoffamily="stem" if family=="Head / Mother / Wife / Brother / Brother"
+replace typeoffamily="stem" if family=="Head / Mother / Wife / Daughter"
+replace typeoffamily="stem" if family=="Head / Other / Son / Daughter-in-law / Grandchild"
+replace typeoffamily="nuclear" if family=="Head / Wife"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Daughter / Daughter / Son"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Daughter / Son"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Son"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Son / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Son / Daughter / Son / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter / Daughter / Son / Father / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter / Daughter / Son / Mother"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Daughter / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter / Father / Mother"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Son"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Son / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Son / Daughter / Daughter / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter / Son / Father / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter / Son / Father-in-law / Mother-in-law"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter / Son / Mother"
+replace typeoffamily="nuclear" if family=="Head / Wife / Daughter / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter / Son-in-law / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Father / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Head / Daughter-in-law / Grandchild / Grandchild / Grandchild / Son / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Mother / Brother / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Mother / Daughter / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Mother / Son / Son / Son / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Mother-in-law / Other / Daughter / Daughter / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Sister / Mother"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Daughter / Daughter / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter / Daughter / Son / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter / Father / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter / Mother"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Daughter / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter / Son / Daughter / Son / Son / Mother-in-law"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Daughter / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild / Grandchild / Grandchild / Daughter-in-law"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild / Son / Daughter-in-law / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Son"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Son / Son / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Grandchild / Son / Daughter"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Son / Daughter / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Daughter-in-law / Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Daughter-in-law / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Son / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Daughter-in-law / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Father"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Mother / Brother"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Mother / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Brother / Other / Daughter / Other / Father / Mother"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son / Daughter / Daughter"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Son / Daughter / Daughter / Daughter-in-law / Grandchild / Grandchild / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Daughter / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Daughter / Father"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Daughter / Mother"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Son / Daughter / Mother / Brother / Cousin / Daughter-in-law / Daughter-in-law"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son / Daughter / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Daughter / Son / Father / Mother"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Son / Daughter-in-law / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Son / Daughter-in-law / Daughter-in-law / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="joint-stem" if family=="Head / Wife / Son / Son / Daughter-in-law / Son / Daughter-in-law / Daughter-in-law / Grandchild / Grandchild / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Father"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Father / Mother"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Father / Sister"
+replace typeoffamily="stem" if family=="Head / Wife / Son / Son / Mother"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son / Son"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Head / Wife / Son / Son / Son / Son / Son"
+replace typeoffamily="stem" if family=="Head / Wife / Son-in-law / Daughter / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Mother / Head / Wife"
+replace typeoffamily="stem" if family=="Mother / Head / Wife / Daughter"
+replace typeoffamily="stem" if family=="Mother / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Grandchild / Father / Mother / Brother / Other / Son / Son / Son"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Grandchild / Grandchild / Head / Wife"
+replace typeoffamily="joint-stem" if family=="Son / Daughter-in-law / Grandchild / Grandchild / Grandchild / Head / Wife / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Grandchild / Head / Wife"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Grandchild / Head / Wife / Son"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Grandchild / Son / Son / Son / Head / Wife"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Head / Wife"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Grandchild / Head / Wife / Son"
+replace typeoffamily="stem" if family=="Son / Daughter-in-law / Head / Wife"
+replace typeoffamily="joint-stem" if family=="Son / Daughter-in-law / Head / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Son / Daughter-in-law / Grandchild"
+replace typeoffamily="joint-stem" if family=="Son / Daughter-in-law / Mother / Daughter / Son / Brother / Other / Other / Other / Other / Brother"
+replace typeoffamily="nuclear" if family=="Son / Head / Wife / Son"
+replace typeoffamily="nuclear" if family=="Son / Head / Wife / Son / Daughter"
+replace typeoffamily="joint-stem" if family=="Son-in-law / Daughter / Grandchild / Grandchild / Daughter-in-law / Son / Grandchild / Grandchild / Grandchild / Head / Wife / Son"
+replace typeoffamily="nuclear" if family=="Wife"
+replace typeoffamily="nuclear" if family=="Wife / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Wife / Head"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Daughter / Daughter"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Daughter / Daughter / Son"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter / Daughter / Daughter / Son / Mother"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter / Daughter / Mother-in-law"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Daughter / Son"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Daughter / Son / Son"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter / Daughter / Son / Son / Mother"
+replace typeoffamily="joint-stem" if family=="Wife / Head / Daughter / Daughter-in-law / Daughter-in-law / Son"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Son"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Son / Daughter"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter / Son / Daughter / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter / Son / Daughter / Mother"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter / Son / Father / Mother"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter / Son / Father-in-law"
+replace typeoffamily="nuclear" if family=="Wife / Head / Daughter / Son / Son"
+replace typeoffamily="stem" if family=="Wife / Head / Daughter-in-law / Grandchild / Grandchild / Son"
+replace typeoffamily="stem" if family=="Wife / Head / Mother-in-law"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son / Daughter"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son / Daughter / Daughter"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Daughter / Other / Mother-in-law"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son / Daughter / Son"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Daughter-in-law / Grandchild / Son / Son"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Daughter-in-law / Son / Grandchild / Grandchild"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son / Son"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son / Son / Daughter"
+replace typeoffamily="joint-stem" if family=="Wife / Head / Son / Son / Daughter-in-law / Daughter-in-law / Son / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Son / Daughter-in-law / Grandchild"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Son / Father / Mother"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Son / Mother-in-law"
+replace typeoffamily="nuclear" if family=="Wife / Head / Son / Son / Son"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Son / Son / Daughter-in-law / Grandchild / Grandchild"
+replace typeoffamily="stem" if family=="Wife / Head / Son / Son / Son / Mother"
+replace typeoffamily="nuclear" if family=="Wife / Son"
+replace typeoffamily="joint-stem" if family=="Wife / Son / Daughter-in-law / Grandchild / Son / Daughter-in-law / Grandchild / Grandchild"
 
 
 *** Pb
 ta typeoffamily
 gen pb=0
 
+replace pb=1 if family=="Son / Daughter-in-law / Grandchild / Grandchild"
+replace pb=1 if family=="Head / Son / Daughter-in-law / Grandchild / Cousin"
+replace pb=1 if family=="Mother / Head"
+replace pb=1 if family=="Mother / Head / Brother"
+replace pb=1 if family=="Mother / Head / Sister"
+replace pb=1 if family=="Head / Wife / Son / Son / Daughter / Daughter / Son / Wife"
+replace pb=1 if family=="Head / Wife / Son / Wife"
+replace pb=1 if family=="Head / Wife / Wife"
+replace pb=1 if family=="Head / Wife / Wife / Daughter / Son / Daughter"
+replace pb=1 if family=="Head / Wife / Wife / Son"
+replace pb=1 if family=="Head / Wife / Wife / Son / Daughter-in-law / Grandchild / Grandchild / Grandchild"
+replace pb=1 if family=="Wife / Head / Son / Daughter / Wife / Daughter / Daughter"
+replace pb=1 if family=="Head / Wife / Brother"
+replace pb=1 if family=="Father / Mother / Head / Brother / Sister"
+replace pb=1 if family=="Head / Father / Mother / Wife / Brother / Daughter / Son / Son / Son"
+replace pb=1 if family=="Head / Wife / Son / Son / Son / Other / Other / Other / Mother"
+replace pb=1 if family=="Wife / Head / Son-in-law / Son-in-law"
+
+
 
 sort HHID2016
 order HHID2016 family
 *br if pb==1
-gen remark=""
 
+replace pb=. if HHID2016=="uuid:0a07e84c-5259-49c3-9e27-826a6e2869b9"
 
+replace typeoffamily="nuclear" if HHID2016=="uuid:0da4d673-37df-4750-a325-e3dc56201480"
+replace pb=. if HHID2016=="uuid:0da4d673-37df-4750-a325-e3dc56201480"
+
+replace pb=. if HHID2016=="uuid:187e2011-c2fe-469f-b09d-18a76a4f02a9"
+
+replace typeoffamily="stem" if HHID2016=="uuid:1d812573-8be9-4a1c-948e-1ee90f9ed6e3"
+replace pb=. if HHID2016=="uuid:1d812573-8be9-4a1c-948e-1ee90f9ed6e3"
+
+replace pb=. if HHID2016=="uuid:38c74b3e-f359-4015-bffb-b4b5bb0f166d"
+
+replace typeoffamily="nuclear" if HHID2016=="uuid:4a71a117-e7af-4f8d-875d-5a3af05b5694"
+replace pb=. if HHID2016=="uuid:4a71a117-e7af-4f8d-875d-5a3af05b5694"
+
+replace pb=. if HHID2016=="uuid:62ad7210-2d2c-4e4d-a8c6-6501a63d2fee"
+
+replace typeoffamily="nuclear" if HHID2016=="uuid:7dff3ca3-e693-4df2-a2bd-a60549a1cae7"
+replace pb=. if HHID2016=="uuid:7dff3ca3-e693-4df2-a2bd-a60549a1cae7"
+
+replace pb=. if HHID2016=="uuid:8ebeda34-43ae-4a2c-a133-b955a3ad90da"
+
+replace typeoffamily="nuclear" if HHID2016=="uuid:9a6b611c-4ef6-4fc2-872d-6c25bd2f5406"
+replace pb=. if HHID2016=="uuid:9a6b611c-4ef6-4fc2-872d-6c25bd2f5406"
+
+replace pb=. if HHID2016=="uuid:a455df85-e5c8-4fc8-9ade-1ab4d04e9185"
+
+replace pb=. if HHID2016=="uuid:a83605b5-7618-41a2-b2b7-0838fe3503da"
+
+replace pb=. if HHID2016=="uuid:d4d18676-ba2d-43fd-8ae2-a5b8c626e3c9"
+
+replace pb=. if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b"
+
+replace pb=. if HHID2016=="uuid:ee73e76e-b047-4e85-85fd-b3acc589d1b8"
+
+replace pb=. if HHID2016=="uuid:efeede8c-d7d5-472e-a7a1-b69a79b15bc1"
+
+replace typeoffamily="nuclear" if HHID2016=="uuid:f83761be-3362-4e71-b65b-5d72e3f1a014"
+replace pb=. if HHID2016=="uuid:f83761be-3362-4e71-b65b-5d72e3f1a014"
 
 drop pb
 
-keep HHID2016 family typeoffamily remark
+keep HHID2016 family typeoffamily
 ta typeoffamily
 
 save"_temp\NEEMSIS1-family2", replace
@@ -243,11 +509,14 @@ save"_temp\NEEMSIS1-family2", replace
 
 
 
+
+
+
+
 ****************************************
 * Type of family p2
 ****************************************
 use"$data", clear
-
 
 *** To keep
 keep HHID2016 INDID2016 name age sex relationshiptohead livinghome maritalstatus
@@ -285,7 +554,7 @@ drop _merge
 
 *** How many per gen?
 foreach x in relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_soninlaw relation_daughterinlaw relation_sister relation_brother relation_motherinlaw relation_fatherinlaw relation_grandchildren relation_cousin {
-bysort HHID2010: egen _temp`x'=sum(`x')
+bysort HHID2016: egen _temp`x'=sum(`x')
 drop `x'
 rename _temp`x' `x'
 }
@@ -315,22 +584,43 @@ gen waystem=""
 replace waystem="head-up" if dummygeneration1==0 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==1 
 replace waystem="head-down" if dummygeneration1==0 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==0
 replace waystem="head-down" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==0
+replace waystem="head-down" if dummygeneration1==1 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==0
 replace waystem="head-both" if dummygeneration1==0 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==1
 replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==1
 replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==1
+replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==0 & dummygeneration4==1
+replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==0 & dummygeneration3==0 & dummygeneration4==1
+replace waystem="head-level" if dummygeneration1==0 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==0 & typeoffamily=="stem"
+replace waystem="head-level" if dummygeneration1==0 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==0 & typeoffamily=="joint-stem"
 
 replace waystem="" if typeoffamily=="nuclear"
 
 
+*** Polygamous
+fre sex relationshiptohead
+gen femalewife=0
+replace femalewife=1 if sex==2 & relationshiptohead==2
+bysort HHID2016: egen nbwife=sum(femalewife)
+drop femalewife
+gen dummypolygamous=0
+replace dummypolygamous=1 if nbwife!=1 & nbwife!=0 & nbwife!=. 
+drop nbwife
+
+
+
 *** Keep
-keep HHID2010 family typeoffamily remark nbgeneration* dummygeneration* nbgeneration waystem
+keep HHID2016 family typeoffamily nbgeneration* dummygeneration* nbgeneration waystem dummypolygamous
 duplicates drop
 
 ta waystem typeoffamily, m
 
-drop family typeoffamily remark
+ta dummypolygamous
 
-save"_temp\RUME-family3", replace
+list family typeoffamily if dummypolygamous==1, clean noobs
+
+drop family typeoffamily
+
+save"_temp\NEEMSIS1-family3", replace
 ****************************************
 * END
 
@@ -353,15 +643,103 @@ save"_temp\RUME-family3", replace
 ****************************************
 use"$data", clear
 
+*** To keep
+keep HHID2016 INDID2016 name age sex relationshiptohead livinghome maritalstatus egoid
+fre livinghome
+drop if livinghome==3
+drop if livinghome==4
+drop livinghome
+gen pb=0
+
+*** Identified duplicates
+preserve
 keep if relationshiptohead==1
 duplicates tag HHID2016, gen(tag)
 ta tag
-*br HHID2016 INDID2016 name age sex jatis caste if tag!=0
-drop if HHID2016=="VENGP165" & INDID2016=="F5"
-drop tag
+sort HHID2016
+*br HHID2016 INDID2016 name age sex relationshiptohead maritalstatus if tag!=0
+restore
+
+replace relationshiptohead=. if HHID2016=="uuid:7f621167-4489-4883-9d0e-280295593d49" & INDID2016==3
+replace pb=1 if HHID2016=="uuid:7f621167-4489-4883-9d0e-280295593d49" & INDID2016==3
+
+replace relationshiptohead=. if HHID2016=="uuid:c382b100-2ae2-49a5-a5a0-be7b48fe4e42" & INDID2016==3
+replace pb=1 if HHID2016=="uuid:c382b100-2ae2-49a5-a5a0-be7b48fe4e42" & INDID2016==3
+
+
+*** Identified HH without Head
+gen head=0
+replace head=1 if relationshiptohead==1
+bysort HHID2016: egen head_HH=sum(head)
+ta head_HH
+recode head_HH (0=1) (1=0)
+rename head_HH nohead
+ta nohead
+drop head
+
+sort HHID2016 INDID2016
+br HHID2016 INDID2016 name age sex egoid relationshiptohead maritalstatus if nohead==1
+
+replace relationshiptohead=1 if HHID2016=="uuid:2c8da432-1be7-4879-b570-dbab81b136ab" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:2c8da432-1be7-4879-b570-dbab81b136ab"
+
+replace relationshiptohead=1 if HHID2016=="uuid:4a0b0674-3095-4b92-ab46-2daba0d5414e" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:4a0b0674-3095-4b92-ab46-2daba0d5414e"
+
+replace relationshiptohead=1 if HHID2016=="uuid:6058c905-3f35-461f-b0f0-bbcb46308627" & INDID2016==2
+replace pb=1 if HHID2016=="uuid:6058c905-3f35-461f-b0f0-bbcb46308627"
+
+replace relationshiptohead=1 if HHID2016=="uuid:61eebc2f-dbcf-4c8d-b1c1-db47af15e320" & INDID2016==2
+replace pb=1 if HHID2016=="uuid:61eebc2f-dbcf-4c8d-b1c1-db47af15e320"
+
+replace relationshiptohead=1 if HHID2016=="uuid:676c5651-8aaf-410e-871e-808961fccc69" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:676c5651-8aaf-410e-871e-808961fccc69"
+
+replace relationshiptohead=1 if HHID2016=="uuid:7d58fca3-952b-44b7-93a4-b4a30e7b5b95" & INDID2016==2
+replace pb=1 if HHID2016=="uuid:7d58fca3-952b-44b7-93a4-b4a30e7b5b95"
+
+replace relationshiptohead=1 if HHID2016=="uuid:8c7e529f-bbc0-4977-b2d6-b2b91addd9e0" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:8c7e529f-bbc0-4977-b2d6-b2b91addd9e0"
+
+replace relationshiptohead=1 if HHID2016=="uuid:96becde9-a23f-4f80-a5d0-7adf5ef61a67" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:96becde9-a23f-4f80-a5d0-7adf5ef61a67"
+
+replace relationshiptohead=1 if HHID2016=="uuid:9f14556f-8aa4-42d1-a8e8-d82f3d40e3d3" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:9f14556f-8aa4-42d1-a8e8-d82f3d40e3d3"
+
+replace relationshiptohead=1 if HHID2016=="uuid:a80735af-38ec-4daa-aca0-4c87c64ea92f" & INDID2016==1
+replace p=1 if HHID2016=="uuid:a80735af-38ec-4daa-aca0-4c87c64ea92f"
+
+replace relationshiptohead=1 if HHID2016=="uuid:cc0b53f3-6988-455d-bf5b-7d57ef36521b" & INDID2016==3
+replace pb=1 if HHID2016=="uuid:cc0b53f3-6988-455d-bf5b-7d57ef36521b"
+
+replace relationshiptohead=1 if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:da893017-2541-42dc-9dab-d517d777b92b"
+
+replace relationshiptohead=1 if HHID2016=="uuid:ddf8a47d-0f8e-494f-93d4-1e54a0794f71" & INDID2016==2
+replace pb=1 if HHID2016=="uuid:ddf8a47d-0f8e-494f-93d4-1e54a0794f71"
+
+replace relationshiptohead=1 if HHID2016=="uuid:ea71f70c-adac-4154-9cfd-36595ce10a6d" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:ea71f70c-adac-4154-9cfd-36595ce10a6d"
+
+replace relationshiptohead=1 if HHID2016=="uuid:f7acfeb9-ee27-4196-8d54-a0b41ee17abe" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:f7acfeb9-ee27-4196-8d54-a0b41ee17abe"
+
+replace relationshiptohead=1 if HHID2016=="uuid:feea6473-a217-4abf-8a1c-e1dc7cd6b43d" & INDID2016==1
+replace pb=1 if HHID2016=="uuid:feea6473-a217-4abf-8a1c-e1dc7cd6b43d"
+
+
+
+
+
+
+*** Keep head
+keep if relationshiptohead==1
+duplicates report HHID2016
 
 keep HHID2016 INDID2016 name age sex relationshiptohead
 gen dummyhead=1
+
 
 
 *** Add occupation
@@ -408,7 +786,7 @@ save"_temp\NEEMSIS1-head", replace
 ****************************************
 use"$data", clear
 
-keep HHID2016 caste jatis
+*keep HHID2016 caste jatis
 duplicates drop
 
 merge 1:1 HHID2016 using "_temp\NEEMSIS1-family1"

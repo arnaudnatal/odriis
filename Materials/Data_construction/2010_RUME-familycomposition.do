@@ -339,7 +339,6 @@ replace pb=1 if family=="Head / Wife / Wife / Son"
 sort HHID2010
 order HHID2010 family
 *br if pb==1
-gen remark=""
 
 replace typeoffamily="joint-stem" if HHID2010=="ANDMTP324" 
 replace pb=. if HHID2010=="ANDMTP324"
@@ -348,11 +347,9 @@ replace typeoffamily="joint-stem" if HHID2010=="ANTMTP319"
 replace pb=. if HHID2010=="ANTMTP319"
 
 replace typeoffamily="nuclear" if HHID2010=="PSKOR201"
-replace remark="polygamous" if HHID2010=="PSKOR201"
 replace pb=. if HHID2010=="PSKOR201"
 
 replace typeoffamily="nuclear" if HHID2010=="RAKARU259"
-replace remark="couple + grandchildren" if HHID2010=="RAKARU259"
 replace pb=. if HHID2010=="RAKARU259"
 
 replace typeoffamily="stem" if HHID2010=="RAMPO24"
@@ -369,7 +366,7 @@ replace pb=. if HHID2010=="VENGP165"
 
 drop pb
 
-keep HHID2010 family typeoffamily remark
+keep HHID2010 family typeoffamily
 ta typeoffamily
 
 save"_temp\RUME-family2", replace
@@ -448,25 +445,45 @@ gen waystem=""
 replace waystem="head-up" if dummygeneration1==0 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==1 
 replace waystem="head-down" if dummygeneration1==0 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==0
 replace waystem="head-down" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==0
+replace waystem="head-down" if dummygeneration1==1 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==0
 replace waystem="head-both" if dummygeneration1==0 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==1
 replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==1
 replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==1
+replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==0 & dummygeneration4==1
+replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==0 & dummygeneration3==0 & dummygeneration4==1
+replace waystem="head-level" if dummygeneration1==0 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==0 & typeoffamily=="stem"
+replace waystem="head-level" if dummygeneration1==0 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==0 & typeoffamily=="joint-stem"
 
 replace waystem="" if typeoffamily=="nuclear"
 
 
+*** Polygamous
+fre sex relationshiptohead
+gen femalewife=0
+replace femalewife=1 if sex==2 & relationshiptohead==2
+bysort HHID2010: egen nbwife=sum(femalewife)
+drop femalewife
+gen dummypolygamous=0
+replace dummypolygamous=1 if nbwife!=1 & nbwife!=0 & nbwife!=. 
+drop nbwife
+
+
+
 *** Keep
-keep HHID2010 family typeoffamily remark nbgeneration* dummygeneration* nbgeneration waystem
+keep HHID2010 family typeoffamily nbgeneration* dummygeneration* nbgeneration waystem dummypolygamous
 duplicates drop
 
 ta waystem typeoffamily, m
 
-drop family typeoffamily remark
+ta dummypolygamous
+
+list family typeoffamily if dummypolygamous==1, clean noobs
+
+drop family typeoffamily
 
 save"_temp\RUME-family3", replace
 ****************************************
 * END
-
 
 
 
