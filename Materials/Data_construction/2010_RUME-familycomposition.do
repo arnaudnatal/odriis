@@ -383,6 +383,107 @@ save"_temp\RUME-family2", replace
 
 
 ****************************************
+* Type of family p2
+****************************************
+use"$data", clear
+
+
+*** To keep
+keep HHID2010 INDID2010 name age sex relationshiptohead livinghome
+ta livinghome
+sort HHID2010 INDID2010
+
+*** Relationship to head
+fre relationshiptohead
+recode relationshiptohead (13=12)
+ta relationshiptohead, gen(relation_)
+rename relation_1 relation_head
+rename relation_2 relation_wife
+rename relation_3 relation_mother
+rename relation_4 relation_father
+rename relation_5 relation_son
+rename relation_6 relation_daughter
+rename relation_7 relation_daughterinlaw
+rename relation_8 relation_soninlaw
+rename relation_9 relation_sister
+rename relation_10 relation_motherinlaw
+rename relation_11 relation_fatherinlaw
+rename relation_12 relation_brother
+rename relation_13 relation_grandchildren
+rename relation_14 relation_other
+
+
+*** Merge type of family to count
+merge m:1 HHID2010 using "_temp/RUME-family2"
+drop _merge
+
+
+*** How many per gen?
+foreach x in relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_daughterinlaw relation_soninlaw relation_sister relation_motherinlaw relation_fatherinlaw relation_brother relation_grandchildren {
+bysort HHID2010: egen _temp`x'=sum(`x')
+drop `x'
+rename _temp`x' `x'
+}
+
+gen nbgeneration1=relation_grandchildren
+egen nbgeneration2=rowtotal(relation_son relation_daughter relation_daughterinlaw relation_soninlaw)
+egen nbgeneration3=rowtotal(relation_head relation_wife relation_sister relation_brother)
+egen nbgeneration4=rowtotal(relation_mother relation_father relation_motherinlaw relation_fatherinlaw)
+
+
+*** How many gen?
+forvalues i=1/4 {
+gen dummygeneration`i'=0
+}
+
+forvalues i=1/4 {
+replace dummygeneration`i'=1 if nbgeneration`i'!=0
+}
+
+egen nbgeneration=rowtotal(dummygeneration1 dummygeneration2 dummygeneration3 dummygeneration4)
+
+
+*** Way for stem
+gen waystem=""
+replace waystem="head-up" if dummygeneration1==0 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==1 
+replace waystem="head-down" if dummygeneration1==0 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==0
+replace waystem="head-down" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==0
+replace waystem="head-both" if dummygeneration1==0 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==1
+replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==1 & dummygeneration3==1 & dummygeneration4==1
+replace waystem="head-both" if dummygeneration1==1 & dummygeneration2==0 & dummygeneration3==1 & dummygeneration4==1
+
+replace waystem="" if typeoffamily=="nuclear"
+
+
+*** Keep
+keep HHID2010 family typeoffamily remark nbgeneration* dummygeneration* nbgeneration waystem
+duplicates drop
+
+ta waystem typeoffamily, m
+
+drop family typeoffamily remark
+
+save"_temp\RUME-family3", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
 * Head characteristics
 ****************************************
 use"$data", clear
@@ -437,6 +538,20 @@ save"_temp\RUME-head", replace
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ****************************************
 * Merge all
 ****************************************
@@ -449,6 +564,9 @@ merge 1:1 HHID2010 using "_temp\RUME-family1"
 drop _merge
 
 merge 1:1 HHID2010 using "_temp\RUME-family2"
+drop _merge
+
+merge 1:1 HHID2010 using "_temp\RUME-family3"
 drop _merge
 
 merge 1:1 HHID2010 using "_temp\RUME-head"
