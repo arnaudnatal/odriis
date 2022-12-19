@@ -68,6 +68,7 @@ drop sex2020
 * V2
 ta relationshiptohead relationshiptohead2020
 drop relationshiptohead2020
+ta relationshiptohead sex
 
 * V3
 destring age2020, replace
@@ -794,7 +795,7 @@ save"_temp\NEEMSIS2-family2", replace
 use"$data", clear
 
 *** To keep
-keep HHID2020 INDID2020 name age sex relationshiptohead livinghome maritalstatus
+keep HHID2020 INDID2020 name age sex relationshiptohead* livinghome maritalstatus
 fre livinghome
 drop if livinghome==.
 drop if livinghome==3
@@ -803,8 +804,71 @@ drop livinghome
 
 
 *** Relationship to head
-ta relationshiptohead
 fre relationshiptohead
+ta relationshiptoheadother
+
+
+* Recode
+replace relationshiptohead=1 if HHID2020=="uuid:b71a4b81-2329-483e-b100-f883b48c1a91" & INDID2020==1
+
+replace relationshiptohead=2 if relationshiptohead==77 & relationshiptoheadother=="Husband"  // 2 wife 
+replace relationshiptoheadother="" if relationshiptoheadother=="Husband"
+
+replace relationshiptohead=2 if relationshiptohead==77 & relationshiptoheadother=="Huband"  // 2 wife
+replace relationshiptoheadother="" if relationshiptoheadother=="Huband"
+
+replace relationshiptohead=13 if relationshiptohead==77 & relationshiptoheadother=="Daughter's daughter"  // 13 grand child
+replace relationshiptoheadother="" if relationshiptoheadother=="Daughter's daughter"
+
+replace relationshiptohead=18 if relationshiptohead==77 & relationshiptoheadother=="Brother's wife"  // 18 sister in law
+replace relationshiptoheadother="" if relationshiptoheadother=="Brother's wife"
+
+replace relationshiptohead=18 if relationshiptohead==77 & relationshiptoheadother=="Sister in law"  // 18 sister in law
+replace relationshiptoheadother="" if relationshiptoheadother=="Sister in law"
+
+replace relationshiptohead=18 if relationshiptohead==77 & relationshiptoheadother=="Murugan's wife"  // 18 sister in law
+replace relationshiptoheadother="" if relationshiptoheadother=="Murugan's wife"
+
+replace relationshiptohead=18 if relationshiptohead==77 & relationshiptoheadother=="Sivakandan's wife"  // 18 sister in law
+replace relationshiptoheadother="" if relationshiptoheadother=="Sivakandan's wife"
+
+replace relationshiptohead=18 if relationshiptohead==77 & relationshiptoheadother=="Anbarasan's wife"  // 18 sister in law
+replace relationshiptoheadother="" if relationshiptoheadother=="Anbarasan's wife"
+
+replace relationshiptohead=19 if relationshiptohead==77 & relationshiptoheadother=="Husband's brother"  // 19 brother in law
+replace relationshiptoheadother="" if relationshiptoheadother=="Husband's brother"
+
+replace relationshiptohead=19 if relationshiptohead==77 & relationshiptoheadother=="Brother in law"  // 19 brother in law
+replace relationshiptoheadother="" if relationshiptoheadother=="Brother in law"
+
+replace relationshiptohead=20 if relationshiptohead==77 & relationshiptoheadother=="Mother's sister"  // 20 auntie uncle
+replace relationshiptoheadother="" if relationshiptoheadother=="Mother's sister"
+
+replace relationshiptohead=21 if relationshiptohead==77 & relationshiptoheadother=="Murugan's son"  // 21 nephew niece
+replace relationshiptoheadother="" if relationshiptoheadother=="Murugan's son"
+
+replace relationshiptohead=21 if relationshiptohead==77 & relationshiptoheadother=="Sivakandan's daughter"  // 21 nephew niece
+replace relationshiptoheadother="" if relationshiptoheadother=="Sivakandan's daughter"
+
+replace relationshiptohead=21 if relationshiptohead==77 & relationshiptoheadother=="Anbarasan's son"  // 21 nephew niece
+replace relationshiptoheadother="" if relationshiptoheadother=="Anbarasan's son"
+
+replace relationshiptohead=21 if relationshiptohead==77 & relationshiptoheadother=="Mangalakshmi is sumathi's younger sister's daughter. Mangalakshmi's parents were died so sumathi taking care of her."  // 21 nephew niece
+replace relationshiptoheadother="" if relationshiptoheadother=="Mangalakshmi is sumathi's younger sister's daughter. Mangalakshmi's parents were died so sumathi taking care of her."
+
+
+gen test1=1 if relationshiptohead==77
+bysort HHID2020: egen test2=sum(test1)
+ta test2
+sort HHID2020 INDID2020
+*br if test2!=0
+drop test2 test1
+
+* Label
+codebook relationshiptohead
+label define relationshipwithinhh 18"Sister in law" 19"Brother in law" 20"Auntie/uncle" 21"Nephew/niece", modify
+ta relationshiptohead, m
+
 ta relationshiptohead, gen(relation_)
 rename relation_1 relation_head
 rename relation_2 relation_wife
@@ -822,7 +886,10 @@ rename relation_13 relation_grandchildren
 rename relation_14 relation_grandfather
 rename relation_15 relation_grandmother
 rename relation_16 relation_cousin
-rename relation_17 relation_other
+rename relation_17 relation_sisterinlaw
+rename relation_18 relation_brotherinlaw
+rename relation_19 relation_auntieuncle
+rename relation_20 relation_nephewniece
 
 
 *** Merge type of family to count
@@ -831,7 +898,7 @@ drop _merge
 
 
 *** How many per gen?
-foreach x in relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_soninlaw relation_daughterinlaw relation_sister relation_brother relation_motherinlaw relation_fatherinlaw relation_grandchildren relation_grandfather relation_grandmother relation_cousin {
+foreach x in relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_soninlaw relation_daughterinlaw relation_sister relation_brother relation_motherinlaw relation_fatherinlaw relation_grandchildren relation_grandfather relation_grandmother relation_cousin relation_sisterinlaw relation_brotherinlaw relation_auntieuncle relation_nephewniece {
 bysort HHID2020: egen _temp`x'=sum(`x')
 drop `x'
 rename _temp`x' `x'
@@ -840,9 +907,9 @@ rename _temp`x' `x'
 
 
 gen nbgeneration1=relation_grandchildren
-egen nbgeneration2=rowtotal(relation_son relation_daughter relation_daughterinlaw relation_soninlaw)
-egen nbgeneration3=rowtotal(relation_head relation_wife relation_sister relation_brother)
-egen nbgeneration4=rowtotal(relation_mother relation_father relation_motherinlaw relation_fatherinlaw)
+egen nbgeneration2=rowtotal(relation_son relation_daughter relation_daughterinlaw relation_soninlaw relation_nephewniece)
+egen nbgeneration3=rowtotal(relation_head relation_wife relation_sister relation_brother relation_cousin relation_sisterinlaw relation_brotherinlaw)
+egen nbgeneration4=rowtotal(relation_mother relation_father relation_motherinlaw relation_fatherinlaw relation_auntieuncle)
 egen nbgeneration5=rowtotal(relation_grandmother relation_grandfather)
 
 
@@ -930,6 +997,12 @@ drop if livinghome==3
 drop if livinghome==4
 drop livinghome
 gen pb=0
+
+
+*** Relationship to head
+fre relationshiptohead
+replace relationshiptohead=1 if HHID2020=="uuid:b71a4b81-2329-483e-b100-f883b48c1a91" & INDID2020==1
+
 
 *** Identified duplicates
 preserve
