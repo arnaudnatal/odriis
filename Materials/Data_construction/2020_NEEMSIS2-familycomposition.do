@@ -218,6 +218,8 @@ duplicates drop family, force
 sort family
 *br family
 restore
+compress
+
 
 *** Categories
 gen typeoffamily=""
@@ -516,7 +518,6 @@ ta typeoffamily
 ta typeoffamily
 gen pb=0
 
-
 replace pb=1 if family=="Daughter-in-law / Other / Daughter / Head / Wife"
 replace pb=1 if family=="Head / Father / Mother / Brother"
 replace pb=1 if family=="Head / Father / Mother / Brother / Cousin / Son-in-law / Son-in-law / Brother / Cousin / Son-in-law"
@@ -571,14 +572,204 @@ replace pb=1 if family=="Wife / Head / Daughter / Son / Daughter / Brother / Gra
 replace pb=1 if family=="Wife / Mother-in-law / Head / Brother / Other / Son / Son / Other / Daughter / Daughter"
 
 sort HHID2020
-order HHID2020 family
-br if pb==1
+order HHID2020 family typeoffamily
+*br if pb==1
 
+replace pb=. if HHID2020=="uuid:03e32009-5844-412d-a794-19940ae73716"
 
+replace pb=. if HHID2020=="uuid:070fce41-4193-4620-8eb7-60e8c3898201"
 
+replace pb=. if HHID2020=="uuid:25cdd34e-00a0-44b2-bf71-cf9de75221be"
+
+replace pb=. if HHID2020=="uuid:26c10846-8095-4881-8c73-4844d1991bf8"
+
+replace pb=. if HHID2020=="uuid:2abcfcbc-7317-41ba-a857-f76f6e62fc7c"
+
+replace pb=. if HHID2020=="uuid:31c52e14-e00c-4dcd-a2eb-eed5e6210815"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:39351034-92a0-4681-a206-c3ebeb52653f"
+replace pb=. if HHID2020=="uuid:39351034-92a0-4681-a206-c3ebeb52653f"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:441687fe-0f39-4a82-9e6c-2f5ff37c1b0f"
+replace pb=. if HHID2020=="uuid:441687fe-0f39-4a82-9e6c-2f5ff37c1b0f"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:4ae7e88a-6467-40be-a48a-8f1eaa4a0baf"
+replace pb=. if HHID2020=="uuid:4ae7e88a-6467-40be-a48a-8f1eaa4a0baf"
+
+replace pb=. if HHID2020=="uuid:5d241a40-46cf-4508-852d-d3c125e37604"
+
+replace pb=. if HHID2020=="uuid:5f261b0d-6994-4200-b5ca-73e776d149be"
+
+replace pb=. if HHID2020=="uuid:66f42c1b-3d3b-4121-b4bb-249f136d72e5"
+
+replace pb=. if HHID2020=="uuid:678ba5c4-cee2-49fa-b6c7-e1250ce5295b"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:703d78a1-b9c3-45b5-ac69-163c12745ed0"
+replace pb=. if HHID2020=="uuid:703d78a1-b9c3-45b5-ac69-163c12745ed0"
+
+replace pb=. if HHID2020=="uuid:7262fcdc-4ba9-4d04-835e-443a95a0b0c2"
+
+replace pb=. if HHID2020=="uuid:738df800-fa4c-4cee-81f8-72bb53564990"
+
+replace pb=. if HHID2020=="uuid:73f28c3e-e5f1-4951-954a-7ddfc933a11e"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:74b95f19-a5ed-4cdb-aac8-30ae79a127ca"
+replace pb=. if HHID2020=="uuid:74b95f19-a5ed-4cdb-aac8-30ae79a127ca"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:763e2568-e781-479b-86cb-201f39f2eb3a"
+replace pb=. if HHID2020=="uuid:763e2568-e781-479b-86cb-201f39f2eb3a"
+
+replace pb=. if HHID2020=="uuid:7ce6b544-f79d-40ff-8ef5-40dfa02d9465"
+
+replace pb=. if HHID2020=="uuid:83db958d-b1ad-4544-a3d9-5f582dd900c8"
+
+replace pb=. if HHID2020=="uuid:86574ca0-02c2-4e2b-9d3b-f644d9c6da68"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:86d54bc7-b23c-4ad7-ad47-250404d04ccc"
+replace pb=. if HHID2020=="uuid:86d54bc7-b23c-4ad7-ad47-250404d04ccc"
+
+replace pb=. if HHID2020=="uuid:88644fe9-66bb-41c7-afce-7e593439ff27"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:97438af9-eae1-4e11-9ba7-0a966fcc2a57"
+replace pb=. if HHID2020=="uuid:97438af9-eae1-4e11-9ba7-0a966fcc2a57"
+
+replace pb=. if HHID2020=="uuid:aa077042-0015-4f4b-ad9f-8f06c5c8da45"
+
+replace pb=. if HHID2020=="uuid:af69024c-76b5-4331-8c4e-19874ea396e6"
+
+replace pb=. if HHID2020=="uuid:bb31eb37-cb83-489a-b538-13f12f0b5419"
+
+replace pb=. if HHID2020=="uuid:c214c94b-f4e8-4c5d-8118-0fc69e3ae17c"
+
+replace pb=. if HHID2020=="uuid:c42daed4-b508-45c6-afb1-03bf50ed9420"
+
+replace pb=. if HHID2020=="uuid:c73e8633-ddd2-4cc6-bf39-f25b281b146d"
+
+replace pb=. if HHID2020=="uuid:cc11fc8b-7e06-480d-a91b-ccccd1466e66"
+
+replace pb=. if HHID2020=="uuid:ce113294-d940-48a3-bc59-4f042ac193f4"
+
+replace pb=. if HHID2020=="uuid:ddc4ecff-75f2-4877-8e72-1d100d73c88d"
+
+replace pb=. if HHID2020=="uuid:e2e28cbe-6370-4603-98ef-e10cc11f1be8"
+
+replace pb=. if HHID2020=="uuid:e4bae31a-5100-418e-91e1-9255864e93c4"
+
+replace pb=. if HHID2020=="uuid:e5fd3b85-de2e-4842-908e-027bd523d002"
+
+replace pb=. if HHID2020=="uuid:e772b351-ca9e-493d-b927-3397489040cf"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:e929db9e-dcb2-4dc6-b523-4c39c8848ba1"
+replace pb=. if HHID2020=="uuid:e929db9e-dcb2-4dc6-b523-4c39c8848ba1"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:effc782f-204c-4056-a893-6d4e9fe8c4b9"
+replace pb=. if HHID2020=="uuid:effc782f-204c-4056-a893-6d4e9fe8c4b9"
+
+replace typeoffamily="nuclear" if HHID2020=="uuid:fb3e15f2-aede-49d5-8eee-514affc34b1a"
+replace pb=. if HHID2020=="uuid:fb3e15f2-aede-49d5-8eee-514affc34b1a"
+
+replace typeoffamily="stem" if HHID2020=="uuid:fbd9ed1c-4843-43fb-8ad6-d2ee466a9672"
+replace pb=. if HHID2020=="uuid:fbd9ed1c-4843-43fb-8ad6-d2ee466a9672"
+
+replace pb=. if HHID2020=="uuid:08805e55-b049-4379-8677-fccd5372fb7d"
+
+replace pb=. if HHID2020=="uuid:12659065-bcc2-4803-92ae-b81b8897ee3d"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:26341970-61d5-4447-92b1-09915e0c06ef"
+replace pb=. if HHID2020=="uuid:26341970-61d5-4447-92b1-09915e0c06ef"
+
+replace pb=. if HHID2020=="uuid:2ef3acc0-a9f2-4124-bf9a-479f6f13ce50"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:33a9630e-ba1c-421a-a540-643552c68906"
+replace pb=. if HHID2020=="uuid:33a9630e-ba1c-421a-a540-643552c68906"
+
+replace pb=. if HHID2020=="uuid:3c12e85b-1eff-42e2-8f3e-2084211af237"
+
+replace pb=. if HHID2020=="uuid:40c80fef-29fb-469a-93ec-a88c805e2df4"
+
+replace typeoffamily="stem" if HHID2020=="uuid:4d0712ef-e78d-4199-8498-874050c0aee4"
+replace pb=. if HHID2020=="uuid:4d0712ef-e78d-4199-8498-874050c0aee4"
+
+replace pb=. if HHID2020=="uuid:5055d831-694d-47ea-967c-d5c496f18054"
+
+replace pb=. if HHID2020=="uuid:53fb037b-4a2d-43f2-892e-9d9f61a07cd4"
+
+replace pb=. if HHID2020=="uuid:5672b71a-0908-47a7-bad7-a2d698f59343"
+
+replace pb=. if HHID2020=="uuid:5fa75706-2fb9-48df-a3ca-8f1dc20d441f"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:6058eb4c-e624-4c9c-9c2b-310ff1e4c31d"
+replace pb=. if HHID2020=="uuid:6058eb4c-e624-4c9c-9c2b-310ff1e4c31d"
+
+replace typeoffamily="stem" if HHID2020=="uuid:66442499-ae81-4c2b-9ff7-bd51a34f8b52"
+replace pb=. if HHID2020=="uuid:66442499-ae81-4c2b-9ff7-bd51a34f8b52"
+
+replace pb=. if HHID2020=="uuid:6b74f19b-ace7-427b-817d-cf8bb1f4c45c"
+
+replace typeoffamily="stem" if HHID2020=="uuid:7062e9df-c370-49be-b44d-fcff496a841d"
+replace pb=. if HHID2020=="uuid:7062e9df-c370-49be-b44d-fcff496a841d"
+
+replace pb=. if HHID2020=="uuid:7e4320c5-0180-41de-b783-0d5babc0c913"
+
+replace pb=. if HHID2020=="uuid:8e101d4b-4f24-4d89-a01a-a3b052a9384f"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:98bee3a6-1395-46a9-b5d2-f3b9b4a55c8b"
+replace pb=. if HHID2020=="uuid:98bee3a6-1395-46a9-b5d2-f3b9b4a55c8b"
+
+replace pb=. if HHID2020=="uuid:a82dd992-21e1-4ba7-8d4a-cece977e50e0"
+
+replace typeoffamily="stem" if HHID2020=="uuid:b17568cd-919e-49f1-8c09-7ff9e8ccbb4d"
+replace pb=. if HHID2020=="uuid:b17568cd-919e-49f1-8c09-7ff9e8ccbb4d"
+
+replace pb=. if HHID2020=="uuid:b48ea7a0-e547-4a77-9448-30d5349af560"
+
+replace pb=. if HHID2020=="uuid:bcc8d5ca-1663-4eed-8b78-d87fe86a32bb"
+
+replace pb=. if HHID2020=="uuid:c14788bc-235f-4690-b9bf-15bfde3788ef"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:cc5db495-5a2c-4ea5-9dc3-af828578c005"
+replace pb=. if HHID2020=="uuid:cc5db495-5a2c-4ea5-9dc3-af828578c005"
+
+replace pb=. if HHID2020=="uuid:e0e6ea69-9726-429f-8ba3-b9e60a340685"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:e4801936-88ec-441b-8b8f-baf943464650"
+replace pb=. if HHID2020=="uuid:e4801936-88ec-441b-8b8f-baf943464650"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:e63e2564-f65e-44d8-beca-062121a016a5"
+replace pb=. if HHID2020=="uuid:e63e2564-f65e-44d8-beca-062121a016a5"
+
+replace pb=. if HHID2020=="uuid:f612acf8-feb5-4d29-824f-6ec5448323e0"
 
 
 drop pb
+
+
+
+*** Pb between joint-stem and stem
+gen pb=.
+replace pb=1 if strpos(family,"Brother") 
+replace pb=1 if strpos(family,"Sister") 
+
+*br if pb==1 & typeoffamily=="stem"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:43179492-f693-489b-a554-70bb3e8ae1fa"
+replace pb=. if HHID2020=="uuid:43179492-f693-489b-a554-70bb3e8ae1fa"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:4d0712ef-e78d-4199-8498-874050c0aee4"
+replace pb=. if HHID2020=="uuid:4d0712ef-e78d-4199-8498-874050c0aee4"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:66442499-ae81-4c2b-9ff7-bd51a34f8b52"
+replace pb=. if HHID2020=="uuid:66442499-ae81-4c2b-9ff7-bd51a34f8b52"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:72cbd9f1-7b7e-456b-a173-8bde0c64afbd"
+replace pb=. if HHID2020=="uuid:72cbd9f1-7b7e-456b-a173-8bde0c64afbd"
+
+replace typeoffamily="joint-stem" if HHID2020=="uuid:b17568cd-919e-49f1-8c09-7ff9e8ccbb4d"
+replace pb=. if HHID2020=="uuid:b17568cd-919e-49f1-8c09-7ff9e8ccbb4d"
+
+
+drop pb
+
 
 keep HHID2020 family typeoffamily
 ta typeoffamily
@@ -586,6 +777,8 @@ ta typeoffamily
 save"_temp\NEEMSIS2-family2", replace
 ****************************************
 * END
+
+
 
 
 
