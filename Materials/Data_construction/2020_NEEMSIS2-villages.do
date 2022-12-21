@@ -283,14 +283,10 @@ fre neighborarea
 
 
 
-keep HHID2020 villagearea villagename2010 villagename2016 villagename2016_club town_close near_panruti near_villupur near_tirup near_chengal near_kanchip near_chennai most_remote
-duplicates drop
-
-fre villagename2010
-fre villagename2016
-fre villagename2016_club
+keep HHID2020 villageid village_new area urban rural half livingarea originalvillage neighborvillage neighborvillage2 neighborcity neighborcity2 neighborarea
 
 
-save"outcomes\NEEMSIS1-villages", replace
+
+save"outcomes\NEEMSIS2-villages", replace
 ****************************************
 * END
