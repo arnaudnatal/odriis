@@ -99,10 +99,10 @@ ta age_group
 ta age age_group
 ta age_group, gen(agegroup_)
 rename agegroup_1 agegrp_0_13
-rename agegroup_2 agrgrp_14_17
+rename agegroup_2 agegrp_14_17
 rename agegroup_3 agegrp_18_24
-rename agegroup_4 agrgrp_25_29
-rename agegroup_5 agrgrp_30_34
+rename agegroup_4 agegrp_25_29
+rename agegroup_5 agegrp_30_34
 rename agegroup_6 agegrp_35_39
 rename agegroup_7 agegrp_40_49
 rename agegroup_8 agegrp_50_59
@@ -113,12 +113,12 @@ rename agegroup_11 agegrp_80_100
 
 *** Age and sex
 ta age_group sex
-foreach x in agegrp_0_13 agrgrp_14_17 agegrp_18_24 agrgrp_25_29 agrgrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 {
+foreach x in agegrp_0_13 agegrp_14_17 agegrp_18_24 agegrp_25_29 agegrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 {
 gen male_`x'=0
 gen female_`x'=0
 }
 
-foreach x in agegrp_0_13 agrgrp_14_17 agegrp_18_24 agrgrp_25_29 agrgrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 {
+foreach x in agegrp_0_13 agegrp_14_17 agegrp_18_24 agegrp_25_29 agegrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 {
 replace male_`x'=1 if male==1 & `x'==1
 replace female_`x'=1 if female==1 & `x'==1 
 }
@@ -148,7 +148,7 @@ rename relation_17 relation_other
 
 
 *** HH level
-global var male female agegrp_0_13 agrgrp_14_17 agegrp_18_24 agrgrp_25_29 agrgrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 male_agegrp_0_13 female_agegrp_0_13 male_agrgrp_14_17 female_agrgrp_14_17 male_agegrp_18_24 female_agegrp_18_24 male_agrgrp_25_29 female_agrgrp_25_29 male_agrgrp_30_34 female_agrgrp_30_34 male_agegrp_35_39 female_agegrp_35_39 male_agegrp_40_49 female_agegrp_40_49 male_agegrp_50_59 female_agegrp_50_59 male_agegrp_60_69 female_agegrp_60_69 male_agegrp_70_79 female_agegrp_70_79 male_agegrp_80_100 female_agegrp_80_100 relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_soninlaw relation_daughterinlaw relation_sister relation_brother relation_motherinlaw relation_fatherinlaw relation_grandchildren relation_grandfather relation_grandmother relation_cousin relation_other
+global var male female age_group agegrp_0_13 agegrp_14_17 agegrp_18_24 agegrp_25_29 agegrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 male_agegrp_0_13 female_agegrp_0_13 male_agegrp_14_17 female_agegrp_14_17 male_agegrp_18_24 female_agegrp_18_24 male_agegrp_25_29 female_agegrp_25_29 male_agegrp_30_34 female_agegrp_30_34 male_agegrp_35_39 female_agegrp_35_39 male_agegrp_40_49 female_agegrp_40_49 male_agegrp_50_59 female_agegrp_50_59 male_agegrp_60_69 female_agegrp_60_69 male_agegrp_70_79 female_agegrp_70_79 male_agegrp_80_100 female_agegrp_80_100 relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_soninlaw relation_daughterinlaw relation_sister relation_brother relation_motherinlaw relation_fatherinlaw relation_grandchildren relation_grandfather relation_grandmother relation_cousin relation_other
 
 foreach x in $var {
 bysort HHID2020: egen _temp`x'=sum(`x')
@@ -157,10 +157,33 @@ rename _temp`x' `x'
 }
 
 
-*** HH size
+********** Corr HH size
+
+* HH size
 bysort HHID2020: egen HHsize=sum(1)
 
-keep HHID2020 $var HHsize
+* Count child/adult
+egen HH_count_child=rowtotal(agegrp_0_13)
+egen HH_count_adult=rowtotal(agegrp_14_17 agegrp_18_24 agegrp_25_29 agegrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100)
+
+* Equivalence scale
+gen HH_count_adult_equi=((HH_count_adult-1)*0.7)+1
+gen HH_count_child_equi=HH_count_child*0.5
+gen equiscale_HHsize=HH_count_adult_equi+HH_count_child_equi
+drop HH_count_adult_equi HH_count_child_equi
+
+* Equivalence scale modified
+gen HH_count_adult_equi=((HH_count_adult-1)*0.5)+1
+gen HH_count_child_equi=HH_count_child*0.3
+gen equimodiscale_HHsize=HH_count_adult_equi+HH_count_child_equi
+drop HH_count_adult_equi HH_count_child_equi
+
+* Square root scale
+gen squareroot_HHsize=sqrt(HHsize)
+
+
+
+keep HHID2020 $var HHsize HH_count_child HH_count_adult equiscale_HHsize equimodiscale_HHsize squareroot_HHsize
 duplicates drop
 
 
@@ -1027,7 +1050,7 @@ ta nohead
 drop head
 
 sort HHID2020 INDID2020
-br HHID2020 INDID2020 name age sex egoid relationshiptohead maritalstatus if nohead==1
+*br HHID2020 INDID2020 name age sex egoid relationshiptohead maritalstatus if nohead==1
 
 replace relationshiptohead=1 if HHID2020=="uuid:0e75c80d-e953-475e-b5bd-4a5f3b9755e6" & INDID2020==2
 replace relationshiptohead=1 if HHID2020=="uuid:16edf956-9689-480c-b1ac-55f13c717186" & INDID2020==2
@@ -1111,6 +1134,31 @@ drop _merge
 
 merge 1:1 HHID2020 using "_temp\NEEMSIS2-head"
 drop _merge
+
+
+********* Type of HH head
+*** Head female
+ta head_sex
+gen dummyheadfemale=0
+replace dummyheadfemale=1 if head_sex==2
+
+
+*** Head widow
+gen head_widowseparated=0
+replace head_widowseparated=1 if head_maritalstatus==3 | head_maritalstatus==4
+
+ta head_maritalstatus head_widowseparated 
+ta head_sex head_widowseparated
+
+
+********* Adult and childrens
+gen test=HH_count_adult+agegrp_14_17
+*br family head_sex head_name if test==1
+
+gen dummyoneadult=0
+*replace dummyoneadult=1 if test==1
+drop test
+
 
 save"outcomes\NEEMSIS2-family", replace
 ****************************************
