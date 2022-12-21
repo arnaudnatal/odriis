@@ -286,6 +286,8 @@ fre neighborarea
 keep HHID2020 villageid village_new area urban rural half livingarea originalvillage neighborvillage neighborvillage2 neighborcity neighborcity2 neighborarea
 
 
+fre livingarea
+
 
 save"outcomes\NEEMSIS2-villages", replace
 ****************************************

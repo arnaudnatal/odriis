@@ -36,6 +36,8 @@ grstyle set plain, box nogrid
 ***************************************
 use"$data", clear
 
+ta villageid_new
+
 gen area=""
 
 /* 
@@ -116,12 +118,63 @@ replace most_remote=1 if (villageid_new=="Chinnaputhur")
 
 
 
-keep HHID2016 villagearea villagename2010 villagename2016 villagename2016_club town_close near_panruti near_villupur near_tirup near_chengal near_kanchip near_chennai most_remote
+********** Urban / Rural / Half
+fre villagename2016
+*** Urban
+gen urban=0
+
+replace urban=1 if villagename2016=="Somanur"
+replace urban=1 if villagename2016=="Chennai"
+replace urban=1 if villagename2016=="Chengalpattu"
+replace urban=1 if villagename2016=="Walajabad"
+replace urban=1 if villagename2016=="Tiruppur"
+
+
+*** Rural
+gen rural=0
+
+replace rural=1 if villagename2016=="Chinnaputhur"
+replace rural=1 if villagename2016=="Sembarambakkam"
+replace rural=1 if villagename2016=="Villiambakkam"
+replace rural=1 if villagename2016=="ELA"
+replace rural=1 if villagename2016=="GOV"
+replace rural=1 if villagename2016=="KAR"
+replace rural=1 if villagename2016=="KOR"
+replace rural=1 if villagename2016=="KUV"
+replace rural=1 if villagename2016=="MANAM"
+replace rural=1 if villagename2016=="MAN"
+replace rural=1 if villagename2016=="NAT"
+replace rural=1 if villagename2016=="ORA"
+replace rural=1 if villagename2016=="SEM"
+
+*** Half 
+gen half=0
+
+replace half=1 if villagename2016=="Poonamallee"
+replace half=1 if villagename2016=="Athur"
+
+
+*** Categorical variable
+gen livingarea=0
+replace livingarea=1 if rural==1 & urban==0 & half==0
+replace livingarea=2 if rural==0 & urban==1 & half==0
+replace livingarea=3 if rural==0 & urban==0 & half==1
+
+label define livingarea 1"Rural" 2"Urban" 3"Half"
+label values livingarea livingarea
+
+fre livingarea
+ta villagename2016 if livingarea==0
+
+
+
+keep HHID2016 villagearea villagename2010 villagename2016 villagename2016_club town_close near_panruti near_villupur near_tirup near_chengal near_kanchip near_chennai most_remote rural urban half livingarea
 duplicates drop
 
 fre villagename2010
 fre villagename2016
 fre villagename2016_club
+fre livingarea
 
 
 save"outcomes\NEEMSIS1-villages", replace
