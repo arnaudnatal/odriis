@@ -135,6 +135,23 @@ restore
 keep HHID2016 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue sizeownland
 rename goldamount_HH goldamount
 duplicates drop
+
+
+* Rename
+rename sizeownland assets_sizeownland
+rename housevalue assets_housevalue
+rename livestockamount assets_livestock
+rename goodstotalamount assets_goods
+rename amountownland assets_ownland
+rename goldamount assets_gold
+rename assets_noland assets_totalnoland
+rename assets_noprop assets_totalnoprop
+rename assets assets_total
+rename assets1000 assets_total1000
+rename assets1000_noland assets_totalnoland1000
+rename assets1000_noprop assets_totalnoprop1000
+
+
 save"_temp\NEEMSIS1-ass1", replace
 ****************************************
 * END
