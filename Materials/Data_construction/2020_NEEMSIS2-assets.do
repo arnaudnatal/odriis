@@ -158,6 +158,11 @@ gen test=100-shareassets_housevalue-shareassets_livestock-shareassets_goods-shar
 ta test
 drop test
 
+recode shareassets_housevalue shareassets_livestock shareassets_goods shareassets_ownland shareassets_gold (.=0)
+
+tabstat shareassets_housevalue shareassets_livestock shareassets_goods shareassets_ownland shareassets_gold, stat(n mean cv p50)
+
+
 
 save"_temp\NEEMSIS2-ass1", replace
 ****************************************
