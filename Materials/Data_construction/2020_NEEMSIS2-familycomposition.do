@@ -991,12 +991,12 @@ save"_temp\NEEMSIS2-family3", replace
 use"$data", clear
 
 *** To keep
-keep HHID2020 INDID2020 name age sex relationshiptohead livinghome maritalstatus egoid
+keep HHID2020 INDID2020 name age sex egoid relationshiptohead* livinghome maritalstatus
 fre livinghome
+drop if livinghome==.
 drop if livinghome==3
 drop if livinghome==4
 drop livinghome
-gen pb=0
 
 
 *** Relationship to head
@@ -1013,7 +1013,7 @@ sort HHID2020
 *br HHID2020 INDID2020 name age sex relationshiptohead maritalstatus if tag!=0
 restore
 
-
+replace relationshiptohead=2 if HHID2020=="uuid:5672b71a-0908-47a7-bad7-a2d698f59343" & INDID2020==1
 
 
 *** Identified HH without Head
@@ -1027,10 +1027,18 @@ ta nohead
 drop head
 
 sort HHID2020 INDID2020
-*br HHID2020 INDID2020 name age sex egoid relationshiptohead maritalstatus if nohead==1
+br HHID2020 INDID2020 name age sex egoid relationshiptohead maritalstatus if nohead==1
 
-
-
+replace relationshiptohead=1 if HHID2020=="uuid:0e75c80d-e953-475e-b5bd-4a5f3b9755e6" & INDID2020==2
+replace relationshiptohead=1 if HHID2020=="uuid:16edf956-9689-480c-b1ac-55f13c717186" & INDID2020==2
+replace relationshiptohead=1 if HHID2020=="uuid:607b5085-73ed-4c37-9c6f-55e6d4ac7875" & INDID2020==2
+replace relationshiptohead=1 if HHID2020=="uuid:a01b1cb0-bc31-420c-a1e7-f46d3011c81b" & INDID2020==2
+replace relationshiptohead=1 if HHID2020=="uuid:a4472750-0183-4a1b-9274-8e7ad61732e8" & INDID2020==1
+replace relationshiptohead=1 if HHID2020=="uuid:a807111d-42b8-4fca-95f3-6eec9cef337b" & INDID2020==3
+replace relationshiptohead=1 if HHID2020=="uuid:b33ac02d-ffe0-4a63-8b4a-1ac442b86cf7" & INDID2020==2
+replace relationshiptohead=1 if HHID2020=="uuid:b69ff416-6c97-4406-aa87-375d1d29cdc3" & INDID2020==1
+replace relationshiptohead=1 if HHID2020=="uuid:d2c64ab3-d65d-46d7-b65b-4ad2431c436a" & INDID2020==1
+replace relationshiptohead=1 if HHID2020=="uuid:f2e2edac-03f6-40f0-ac2a-8718fbd954e2" & INDID2020==2
 
 
 
