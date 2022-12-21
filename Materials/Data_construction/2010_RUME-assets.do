@@ -121,6 +121,74 @@ restore
 keep HHID2010 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue sizeownland
 rename goldamount_HH goldamount
 duplicates drop
+save"_temp\RUME-ass1", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+****************************************
+* Expenses 2010
+***************************************
+use"$data", clear
+
+keep HHID2010 foodexpenses educationexpenses healthexpenses ceremoniesexpenses deathexpenses productexpenses1 productexpenses2 productexpenses3 productexpenses4 productexpenses5 
+
+duplicates drop
+
+
+* Annual expenses
+foreach x in productexpenses1 productexpenses2 productexpenses3 productexpenses4 productexpenses5 foodexpenses educationexpenses healthexpenses ceremoniesexpenses deathexpenses {
+replace `x'=0 if `x'==.
+}
+
+gen expenses_total=52*foodexpenses+educationexpenses+healthexpenses+ceremoniesexpenses+deathexpenses
+
+gen expenses_food=52*foodexpenses
+gen expenses_educ=educationexpenses
+gen expenses_heal=healthexpenses
+gen expenses_cere=ceremoniesexpenses+deathexpenses
+
+* Agri
+egen expenses_agri=rowtotal(productexpenses1 productexpenses2 productexpenses3 productexpenses4 productexpenses5)
+
+
+
+drop productexpenses1 productexpenses2 productexpenses3 productexpenses4 productexpenses5 foodexpenses educationexpenses healthexpenses ceremoniesexpenses deathexpenses
+
+foreach x in expenses_food expenses_educ expenses_heal expenses_cere {
+label var `x' "Annual expenses"
+}
+
+label var expenses_total "food+educ+heal+cere+deat"
+
+
+* Share
+foreach x in food educ heal cere {
+gen shareexpenses_`x'=expenses_`x'*100/expenses_total
+}
+
+
+* Test
+gen test1=100-shareexpenses_food-shareexpenses_educ-shareexpenses_heal-shareexpenses_cere
+ta test1
+drop test1
+
+* Reduce
+foreach x in shareexpenses_food shareexpenses_educ shareexpenses_heal shareexpenses_cere {
+replace `x'=round(`x',0.01)
+}
+
+
+merge 1:1 HHID2010 using "_temp\RUME-ass1"
+drop _merge
+
 save"outcomes\RUME-assets", replace
 ****************************************
 * END

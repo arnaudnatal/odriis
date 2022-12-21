@@ -133,7 +133,83 @@ restore
 keep HHID2020 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue sizeownland
 rename goldamount_HH goldamount
 duplicates drop
-save"outcomes\NEEMSIS2-assets", replace
+save"_temp\NEEMSIS2-ass1", replace
+****************************************
+* END
 
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Expenses 2020
+***************************************
+use"$data", clear
+
+keep HHID2020 INDID2020 educationexpenses productexpenses_paddy productexpenses_cotton productexpenses_sugarcane productexpenses_savukku productexpenses_guava productexpenses_groundnut productexpenses_millets productexpenses_cashew productexpenses_other foodexpenses healthexpenses ceremoniesexpenses ceremoniesrelativesexpenses deathexpenses marriageexpenses
+
+
+* Annual expenses
+foreach x in educationexpenses productexpenses_paddy productexpenses_cotton productexpenses_sugarcane productexpenses_savukku productexpenses_guava productexpenses_groundnut productexpenses_millets productexpenses_cashew productexpenses_other foodexpenses healthexpenses ceremoniesexpenses ceremoniesrelativesexpenses deathexpenses marriageexpenses {
+replace `x'=0 if `x'==.
+}
+
+
+* HH level for educ and marriage
+sort HHID2020 INDID2020
+
+bysort HHID2020: egen expenses_educ=sum(educationexpenses)
+bysort HHID2020: egen expenses_marr=sum(marriageexpenses)
+
+
+gen expenses_total=52*foodexpenses+expenses_educ+healthexpenses+ceremoniesexpenses+deathexpenses+ceremoniesrelativesexpenses
+
+gen expenses_food=52*foodexpenses
+gen expenses_heal=healthexpenses
+gen expenses_cere=ceremoniesexpenses+deathexpenses+ceremoniesrelativesexpenses
+
+* Agri
+egen expenses_agri=rowtotal(productexpenses_paddy productexpenses_cotton productexpenses_sugarcane productexpenses_savukku productexpenses_guava productexpenses_groundnut productexpenses_millets productexpenses_cashew productexpenses_other)
+
+
+drop productexpenses_paddy productexpenses_cotton productexpenses_sugarcane productexpenses_savukku productexpenses_guava productexpenses_groundnut productexpenses_millets productexpenses_cashew productexpenses_other educationexpenses foodexpenses healthexpenses ceremoniesexpenses deathexpenses marriageexpenses ceremoniesrelativesexpenses
+
+
+foreach x in expenses_total expenses_food expenses_educ expenses_heal expenses_cere {
+label var `x' "Annual expenses"
+}
+
+
+* Share
+foreach x in food educ heal cere {
+gen shareexpenses_`x'=expenses_`x'*100/expenses_total
+}
+
+
+* Test
+gen test1=100-shareexpenses_food-shareexpenses_educ-shareexpenses_heal-shareexpenses_cere
+ta test1
+drop test1
+
+
+* Reduce
+foreach x in shareexpenses_food shareexpenses_educ shareexpenses_heal shareexpenses_cere {
+replace `x'=round(`x',0.01)
+}
+
+* Drop
+drop INDID2020
+duplicates drop
+
+merge 1:1 HHID2020 using "_temp\NEEMSIS2-ass1"
+drop _merge
+
+save"outcomes\NEEMSIS2-assets", replace
 ****************************************
 * END
