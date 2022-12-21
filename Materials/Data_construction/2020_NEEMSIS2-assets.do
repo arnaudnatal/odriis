@@ -148,6 +148,17 @@ rename assets1000 assets_total1000
 rename assets1000_noland assets_totalnoland1000
 rename assets1000_noprop assets_totalnoprop1000
 
+* Share
+foreach x in housevalue livestock goods ownland gold {
+gen shareassets_`x'=assets_`x'*100/assets_total
+replace shareassets_`x'=round(shareassets_`x',0.01)
+}
+
+gen test=100-shareassets_housevalue-shareassets_livestock-shareassets_goods-shareassets_ownland-shareassets_gold
+ta test
+drop test
+
+
 save"_temp\NEEMSIS2-ass1", replace
 ****************************************
 * END
