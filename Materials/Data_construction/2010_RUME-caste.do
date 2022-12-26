@@ -87,22 +87,36 @@ rename jatiscorr2010 jatiscorr
 
 
 * Manually classify
+fre jatiscorr
 gen caste2=.
-replace caste2=2 if jatiscorr==""
-replace caste2=1 if jatiscorr==""
-replace caste2=1 if jatiscorr==""
-replace caste2=3 if jatiscorr==""
-replace caste2=2 if jatiscorr==""
-replace caste2=2 if jatiscorr==""
-replace caste2=2 if jatiscorr==""
-replace caste2=3 if jatiscorr==""
-replace caste2=2 if jatiscorr==""
-replace caste2=3 if jatiscorr==""
-replace caste2=2 if jatiscorr==""
-*replace caste2= if jatis==
+replace caste2=1 if jatiscorr=="Arunthathiyar"
+replace caste2=2 if jatiscorr=="Asarai"
+replace caste2=3 if jatiscorr=="Chettiyar"
+replace caste2=2 if jatiscorr=="Kulalar"
+replace caste2=3 if jatiscorr=="Mudaliar"
+replace caste2=2 if jatiscorr=="Muslims"
+replace caste2=3 if jatiscorr=="Naidu"
+replace caste2=2 if jatiscorr=="Nattar"
+replace caste2=2 if jatiscorr=="Navithar"
+replace caste2=2 if jatiscorr=="Padayachi"
+replace caste2=3 if jatiscorr=="Rediyar"
+replace caste2=1 if jatiscorr=="SC"
+replace caste2=3 if jatiscorr=="Settu"
+replace caste2=2 if jatiscorr=="Vanniyar"
+replace caste2=3 if jatiscorr=="Yathavar"
 
+replace caste2=88 if jatiscorr=="Other"
+ta caste if caste2==88
+replace caste2=2 if jatiscorr=="Other"
 
+replace caste2=1 if HHID_panel=="MAN22"
 
+ta caste caste2
+
+* Clean
+rename caste2 castecorr
+drop caste villagearea village
+rename castecorr caste
 
 
 save"outcomes\RUME-caste", replace
