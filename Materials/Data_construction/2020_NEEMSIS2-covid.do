@@ -62,7 +62,9 @@ label define exposure 1"Before" 2"During" 3"After"
 label values secondlockdownexposure exposure
 
 ta secondlockdownexposure
-
+gen dummyexposure=secondlockdownexposure
+recode dummyexposure (1=0) (2=.) (3=1)
+label values dummyexposure yesno
 
 
 
@@ -150,7 +152,7 @@ rename covsellland dummysell_land
 rename covsellhouse dummysell_hous
 rename covsellplot dummysell_plot
 
-order HHID2020 secondlockdownexposure start_HH end_HH duration dummysell dummysell_gold dummysell_land dummysell_hous dummysell_plot dummysell_live dummysell_equi dummysell_good
+order HHID2020 dummyexposure secondlockdownexposure start_HH end_HH duration dummysell dummysell_gold dummysell_land dummysell_hous dummysell_plot dummysell_live dummysell_equi dummysell_good
 
 
 ********** Other measures
