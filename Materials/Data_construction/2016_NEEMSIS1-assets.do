@@ -53,6 +53,8 @@ egen goodstotalamount=rowtotal(goodtotalamount_car goodtotalamount_cookgas goodt
 *** Land
 fre sizeownland drywetownland
 gen amountownland=.
+*600 000 strange bc min 800 000 en 2020...
+
 replace amountownland=600000*sizeownland if drywetownland==1
 *In 2016-17, according to Venkat, wet at 800 000 per acre
 * Strange une telle deval d'autant plus qu'en 2020 on monte à 1 500.

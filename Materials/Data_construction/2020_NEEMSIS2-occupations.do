@@ -1071,19 +1071,19 @@ replace dummymainoccupation=tempdum if egoid==.
 
 
 ********** Gen var
-foreach x in kindofwork profession occupation sector annualincome {
+foreach x in kindofwork profession occupation sector annualincome hoursayear {
 gen temp_mainocc_`x'=.
 }
 gen temp_mainocc_occupationname=""
 
-foreach x in kindofwork profession occupation sector annualincome {
+foreach x in kindofwork profession occupation sector annualincome hoursayear {
 replace temp_mainocc_`x'=`x' if dummymainoccupation==1 
 }
 replace temp_mainocc_occupationname=occupationname if dummymainoccupation==1
 
 
 *Individual level now
-foreach x in kindofwork profession occupation sector annualincome {
+foreach x in kindofwork profession occupation sector annualincome hoursayear {
 bysort HHID2020 INDID2020: egen mainocc_`x'=max(temp_mainocc_`x')
 }
 
@@ -1100,7 +1100,7 @@ label values mainocc_occupation occupcode
 label values mainocc_sector sector
 
 *Rename
-foreach x in mainocc_kindofwork mainocc_profession mainocc_occupation mainocc_sector mainocc_annualincome mainocc_occupationname {
+foreach x in mainocc_kindofwork mainocc_profession mainocc_occupation mainocc_sector mainocc_annualincome mainocc_occupationname mainocc_hoursayear {
 rename `x' `x'_indiv
 }
 
@@ -1108,7 +1108,7 @@ rename `x' `x'_indiv
 ***Nb occupation per indiv + annual income per indiv
 bysort HHID2020 INDID2020: egen annualincome_indiv=sum(annualincome)
 bysort HHID2020 INDID2020: egen nboccupation_indiv=sum(1)
-
+bysort HHID2020 INDID2020: egen hoursayear_indiv=sum(hoursayear)
 
 *Clean
 drop maxhours tempdum temp_mainocc_kindofwork temp_mainocc_profession temp_mainocc_occupation temp_mainocc_sector temp_mainocc_annualincome temp_mainocc_occupationname mainoccnamenum _mainocc_occupationname
@@ -1132,7 +1132,7 @@ restore
 
 drop egoid selected_occupname dummymainoccupation2 othermainoccupation2 everattendedschool classcompleted maxincome tempdum2
 
-order HHID2020 INDID2020 year age occupationid occupationname hoursayear kindofwork_new annualincome profession sector kindofwork occupation construction_coolie construction_regular construction_qualified dummymainoccupation_indiv mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv
+order HHID2020 INDID2020 year age occupationid occupationname hoursayear kindofwork_new annualincome profession sector kindofwork occupation construction_coolie construction_regular construction_qualified dummymainoccupation_indiv mainocc_kindofwork_indiv mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv hoursayear_indiv
 
 
 
@@ -1312,16 +1312,56 @@ gen shareinc`x'_HH=inc`x'_HH/annualincome_HH
 }
 
 
+
+
+* Labour supply
+bysort HHID2020: egen hoursayear_HH=sum(hoursayear)
+
+gen hoursayearagri=.
+gen hoursayearnonagri=.
+
+replace hoursayearagri=hoursayear if occupation==1
+replace hoursayearagri=hoursayear if occupation==2
+
+replace hoursayearnonagri=hoursayear if occupation==3
+replace hoursayearnonagri=hoursayear if occupation==4
+replace hoursayearnonagri=hoursayear if occupation==5
+replace hoursayearnonagri=hoursayear if occupation==6
+replace hoursayearnonagri=hoursayear if occupation==7
+
+bysort HHID2020 INDID2020: egen hoursayearagri_indiv=sum(hoursayearagri)
+bysort HHID2020 INDID2020: egen hoursayearnonagri_indiv=sum(hoursayearnonagri)
+
+bysort HHID2020: egen hoursayearagri_HH=sum(hoursayearagri)
+bysort HHID2020: egen hoursayearnonagri_HH=sum(hoursayearnonagri)
+
+drop hoursayearagri hoursayearnonagri
+
+gen sharehoursayearagri_indiv=hoursayearagri_indiv/hoursayear_indiv
+gen sharehoursayearnonagri_indiv=hoursayearnonagri_indiv/hoursayear_indiv
+gen sharehoursayearagri_HH=hoursayearagri_HH/hoursayear_HH
+gen sharehoursayearnonagri_HH=hoursayearnonagri_HH/hoursayear_HH
+
+gen test=1-sharehoursayearagri_indiv-sharehoursayearnonagri_indiv
+ta test
+drop test
+gen test=1-sharehoursayearagri_HH-sharehoursayearnonagri_HH
+ta test
+drop test
+
+
+
 ********** Indiv level
 preserve
-keep HHID2020 INDID2020 dummyworkedpastyear mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv working_pop incomeagri_indiv incomenonagri_indiv shareincomeagri_indiv shareincomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv mainocc_tenureday_indiv
+keep HHID2020 INDID2020 dummyworkedpastyear mainocc_profession_indiv mainocc_occupation_indiv mainocc_sector_indiv mainocc_annualincome_indiv mainocc_occupationname_indiv annualincome_indiv nboccupation_indiv working_pop incomeagri_indiv incomenonagri_indiv shareincomeagri_indiv shareincomenonagri_indiv incagrise_indiv incagricasual_indiv incnonagricasual_indiv incnonagriregnonquali_indiv incnonagriregquali_indiv incnonagrise_indiv incnrega_indiv shareincagrise_indiv shareincagricasual_indiv shareincnonagricasual_indiv shareincnonagriregnonquali_indiv shareincnonagriregquali_indiv shareincnonagrise_indiv shareincnrega_indiv mainocc_tenureday_indiv mainocc_hoursayear_indiv hoursayear_indiv sharehoursayearagri_indiv sharehoursayearnonagri_indiv hoursayearagri_indiv hoursayearnonagri_indiv
+duplicates drop
 duplicates drop
 order HHID2020 INDID2020 dummyworkedpastyear working_pop
 save"outcomes\NEEMSIS2-occup_indiv", replace
 restore
 
 ********** HH level
-keep HHID2020 INDID2020 dummyworkedpastyear working_pop livinghome dummylefthousehold incomeagri_HH incomenonagri_HH annualincome_HH shareincomeagri_HH shareincomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH  
+keep HHID2020 INDID2020 dummyworkedpastyear working_pop livinghome dummylefthousehold incomeagri_HH incomenonagri_HH annualincome_HH shareincomeagri_HH shareincomenonagri_HH incagrise_HH incagricasual_HH incnonagricasual_HH incnonagriregnonquali_HH incnonagriregquali_HH incnonagrise_HH incnrega_HH shareincagrise_HH shareincagricasual_HH shareincnonagricasual_HH shareincnonagriregnonquali_HH shareincnonagriregquali_HH shareincnonagrise_HH shareincnrega_HH hoursayear_HH sharehoursayearagri_HH sharehoursayearnonagri_HH hoursayearagri_HH hoursayearnonagri_HH
 duplicates drop
 drop if livinghome==3 | livinghome==4
 drop if dummylefthousehold==1
