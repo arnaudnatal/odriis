@@ -1372,6 +1372,9 @@ gen worker=1 if working_pop==2 | working_pop==3
 bysort HHID2020: egen nbworker_HH=sum(worker)
 bysort HHID2020: egen nbnonworker_HH=sum(nonworker)
 
+gen nonworkersratio=nbnonworker_HH/nbworker_HH
+sum nonworkersratio
+
 drop INDID2020 dummyworkedpastyear working_pop nonworker worker livinghome dummylefthousehold
 duplicates drop
 save"outcomes\NEEMSIS2-occup_HH", replace

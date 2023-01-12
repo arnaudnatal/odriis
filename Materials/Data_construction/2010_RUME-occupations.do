@@ -698,6 +698,9 @@ gen worker=1 if working_pop==2 | working_pop==3
 bysort HHID2010: egen nbworker_HH=sum(worker)
 bysort HHID2010: egen nbnonworker_HH=sum(nonworker)
 
+gen nonworkersratio=nbnonworker_HH/nbworker_HH
+sum nonworkersratio
+
 drop INDID2010 dummyworkedpastyear working_pop nonworker worker livinghome
 duplicates drop
 save"outcomes\RUME-occup_HH", replace
