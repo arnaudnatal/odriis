@@ -799,6 +799,42 @@ save"_temp\NEEMSIS1-head", replace
 
 
 
+****************************************
+* Dependency ratio
+****************************************
+use"$data", clear
+
+
+*** Nb over age
+egen dep_group=cut(age), at(0 15 65 100)
+ta age dep_group
+ta dep_group, gen(dep_group_)
+
+*** Keep
+keep HHID2016 dep_group_*
+collapse (sum) dep_group_1 dep_group_2 dep_group_3, by(HHID2016)
+
+gen pop_dependents=dep_group_1+dep_group_3
+drop dep_group_1 dep_group_3
+rename dep_group_2 pop_workingage
+
+gen dependencyratio=pop_dependents/pop_workingage
+
+sum dependencyratio
+
+
+save"_temp\NEEMSIS1-depratio", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
 
 ****************************************
 * Merge all
@@ -818,6 +854,9 @@ merge 1:1 HHID2016 using "_temp\NEEMSIS1-family3"
 drop _merge
 
 merge 1:1 HHID2016 using "_temp\NEEMSIS1-head"
+drop _merge
+
+merge 1:1 HHID2016 using "_temp\NEEMSIS1-depratio"
 drop _merge
 
 

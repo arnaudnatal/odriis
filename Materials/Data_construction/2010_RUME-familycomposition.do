@@ -597,6 +597,39 @@ save"_temp\RUME-head", replace
 
 
 
+****************************************
+* Dependency ratio
+****************************************
+use"$data", clear
+
+
+*** Nb over age
+egen dep_group=cut(age), at(0 15 65 100)
+ta age dep_group
+ta dep_group, gen(dep_group_)
+
+*** Keep
+keep HHID2010 dep_group_*
+collapse (sum) dep_group_1 dep_group_2 dep_group_3, by(HHID2010)
+
+gen pop_dependents=dep_group_1+dep_group_3
+drop dep_group_1 dep_group_3
+rename dep_group_2 pop_workingage
+
+gen dependencyratio=pop_dependents/pop_workingage
+
+sum dependencyratio
+
+
+save"_temp\RUME-depratio", replace
+****************************************
+* END
+
+
+
+
+
+
 
 
 
@@ -622,7 +655,8 @@ drop _merge
 merge 1:1 HHID2010 using "_temp\RUME-head"
 drop _merge
 
-
+merge 1:1 HHID2010 using "_temp\RUME-depratio"
+drop _merge
 
 ********* Type of HH head
 *** Head female

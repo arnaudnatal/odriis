@@ -1114,6 +1114,45 @@ save"_temp\NEEMSIS2-head", replace
 
 
 
+****************************************
+* Dependency ratio
+****************************************
+use"$data", clear
+
+
+*** Nb over age
+egen dep_group=cut(age), at(0 15 65 100)
+ta age dep_group
+ta dep_group, gen(dep_group_)
+
+*** Keep
+keep HHID2020 dep_group_*
+collapse (sum) dep_group_1 dep_group_2 dep_group_3, by(HHID2020)
+
+gen pop_dependents=dep_group_1+dep_group_3
+drop dep_group_1 dep_group_3
+rename dep_group_2 pop_workingage
+
+gen dependencyratio=pop_dependents/pop_workingage
+
+sum dependencyratio
+
+
+save"_temp\NEEMSIS2-depratio", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
 
 ****************************************
 * Merge all
@@ -1135,6 +1174,8 @@ drop _merge
 merge 1:1 HHID2020 using "_temp\NEEMSIS2-head"
 drop _merge
 
+merge 1:1 HHID2020 using "_temp\NEEMSIS2-depratio"
+drop _merge
 
 ********* Type of HH head
 *** Head female
