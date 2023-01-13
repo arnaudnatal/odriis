@@ -667,7 +667,6 @@ replace dummyheadfemale=1 if head_sex==2
 
 *** Head widow no
 
-
 ********* Adult and childrens
 gen test=HH_count_adult+agegrp_14_17
 *br family head_sex head_name if test==1
@@ -676,6 +675,12 @@ gen dummyoneadult=0
 replace dummyoneadult=1 if test==1
 drop test
 
+
+********** Sexratio
+gen sexratio=nbmale/nbfemale
+replace sexratio=nbmale if nbfemale==0
+
+ta sexratio
 
 save"outcomes\RUME-family", replace
 ****************************************

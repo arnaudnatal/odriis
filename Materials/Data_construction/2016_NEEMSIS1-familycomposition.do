@@ -884,7 +884,11 @@ gen dummyoneadult=0
 *replace dummyoneadult=1 if test==1
 drop test
 
+********** Sexratio
+gen sexratio=nbmale/nbfemale
+replace sexratio=nbmale if nbfemale==0
 
+ta sexratio
 
 
 save"outcomes\NEEMSIS1-family", replace
