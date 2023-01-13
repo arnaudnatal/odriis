@@ -819,6 +819,7 @@ drop dep_group_1 dep_group_3
 rename dep_group_2 pop_workingage
 
 gen dependencyratio=pop_dependents/pop_workingage
+replace dependencyratio=pop_dependents if pop_workingage==0
 
 sum dependencyratio
 

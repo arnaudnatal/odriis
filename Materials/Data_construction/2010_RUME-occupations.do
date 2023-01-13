@@ -699,6 +699,7 @@ bysort HHID2010: egen nbworker_HH=sum(worker)
 bysort HHID2010: egen nbnonworker_HH=sum(nonworker)
 
 gen nonworkersratio=nbnonworker_HH/nbworker_HH
+replace nonworkersratio=nbnonworker_HH if nbworker_HH==0
 sum nonworkersratio
 
 drop INDID2010 dummyworkedpastyear working_pop nonworker worker livinghome
