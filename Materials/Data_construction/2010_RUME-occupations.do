@@ -28,7 +28,11 @@ grstyle set plain, box nogrid
 *(100/158) if year==2016
 *(100/184) if year==2020
 
-
+/*
+Utilisation of:
+http://mospi.nic.in/classification/national-industrial-classification
+https://mospi.gov.in/web/mospi/national-industrial-classification
+*/
 
 
 
