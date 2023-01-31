@@ -32,9 +32,6 @@ grstyle set plain, box nogrid
 
 
 
-
-
-
 ****************************************
 * Family composition
 ****************************************
@@ -578,8 +575,15 @@ drop if _merge==2
 drop _merge
 
 
+*** Add Caste
+merge 1:1 HHID2010 INDID2010 using "outcomes/RUME-caste", keepusing(jatiscorr caste)
+drop if _merge==2
+drop _merge
+rename jatiscorr jatis
+
+
 *** Rename
-foreach x in INDID2010 name sex relationshiptohead age dummyhead dummyworkedpastyear working_pop mocc_profession mocc_occupation mocc_sector mocc_annualincome mocc_occupationname annualincome nboccupation edulevel {
+foreach x in INDID2010 name sex relationshiptohead age dummyhead dummyworkedpastyear working_pop mocc_profession mocc_occupation mocc_sector mocc_annualincome mocc_occupationname annualincome nboccupation edulevel jatis caste {
 rename `x' head_`x'
 }
 

@@ -88,6 +88,15 @@ rename caste2 caste
 fre caste
 drop villageid villagearea
 
+preserve
+collapse (mean) caste, by(HHID2020)
+ta caste
+restore
+
+preserve
+collapse (mean) caste, by(HHID_panel)
+ta caste
+restore
 
 save"outcomes\NEEMSIS2-caste", replace
 ****************************************
