@@ -981,11 +981,11 @@ save"outcomes\NEEMSIS1-occupnew", replace
 ***************************************
 use"outcomes\NEEMSIS1-occupnew", clear
 
-
+fre occupation
 ********** Add all
 merge m:1 HHID2016 INDID2016 using "$data", keepusing(name age sex relationshiptohead villageid jatis dummyworkedpastyear livinghome)
 drop _merge
-
+fre occupation
 
 order name age sex relationshiptohead villageid jatis dummyworkedpastyear livinghome, after(INDID2016)
 
@@ -996,13 +996,15 @@ replace occupcode3=0 if occupationid==.
 
 label define occupcode 0 "No occupation", modify
 label values occupcode3 occupcode
-
+fre occupcode3
 
 **label Occupations of workers + unoccupied individuals
 rename occupcode3 occupation3
 label var occupation3 "Occupations of workers + unoccupied individuals"
+fre occupation3
 
-**Generate and label occupation variable only for population on working age (15-60 included)
+
+**Generate and label occupation variable only for population on working age (15-70 included)
 gen occupation4=.
 replace occupation4=occupation3 if age>14 & age<71
 label define occupcode 0 "Unoccupied working age individuals", modify
@@ -1011,7 +1013,6 @@ label values occupation4 occupcode
 
 
 **Generate active and inactive population in the same variable
-
 gen working_pop=.
 replace working_pop = 1 if occupation4==.
 replace working_pop = 2 if occupation4==0	
@@ -1023,7 +1024,8 @@ label values working_pop working_pop
 
 rename occupation3 occupa_unemployed
 rename occupation4 occupa_unemployed_15_70
-
+fre occupa_unemployed_15_70
+fre working_pop
 
 save "_temp\NEEMSIS1-occup3", replace
 ****************************************
