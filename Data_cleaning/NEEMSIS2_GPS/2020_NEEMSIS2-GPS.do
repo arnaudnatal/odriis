@@ -201,7 +201,6 @@ replace jatisdetails="Vanniyar" if jatisdetails=="Vanniyar "
 replace jatisdetails="Vanniyar" if strpos(jatisdetails,"Vanniar")
 
 
-
 ********** Desc
 fre jatisdetails
 
@@ -209,4 +208,30 @@ fre jatisdetails
 save"NEEMSIS2-GPS_2023feb6_v2.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Loc
+****************************************
+/*
+*ssc install shp2dta
+shp2dta using "Data/TAMILNADU_DISTRICT_BDY", database("TND") coordinates("TND_XY") genid(id) replace	
+
+use"TND", clear
+
+spmap using "TND_XY", id(id)
+*/
+****************************************
+* END
+
+
+
 
