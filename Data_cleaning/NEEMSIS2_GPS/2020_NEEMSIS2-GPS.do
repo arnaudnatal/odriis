@@ -26,6 +26,10 @@ grstyle set plain, box nogrid
 
 
 
+
+
+
+
 ****************************************
 * GPS
 ***************************************
@@ -60,9 +64,149 @@ label values householdidoriginal hhid
 * Rename order
 rename _uuid HHID2023
 rename _submission_time submissiondate
-order HHID2023
+rename _housegeolocation_latitude gps_latitude
+rename _housegeolocation_longitude gps_longitude
+rename _housegeolocation_altitude gps_altitude
+rename _housegeolocation_precision gps_precision
+
+* Decode
+decode householdvillageoriginal, gen(householdvillageoriginal_str)
+split householdvillageoriginal_str, p(--)
+rename householdvillageoriginal_str1 village
+rename householdvillageoriginal_str2 villagearea
+
+decode householdidoriginal, gen(householdidoriginal_str)
+split householdidoriginal_str, p(-/)
+rename householdidoriginal_str1 address
+rename householdidoriginal_str3 HHID_panel
+
+
+* Head
+rename householdidoriginal_str2 hhhead
+split hhhead, p(,)
+split hhhead2, p(" ")
+drop hhhead2 hhhead22
+rename hhhead21 head_age
+destring head_age, replace
+
+split hhhead1, p("(")
+rename hhhead11 head_name
+rename hhhead12 head_sex
+drop hhhead hhhead1
+replace head_sex="1" if head_sex=="Male"
+replace head_sex="2" if head_sex=="Female"
+destring head_sex, replace
+label define sex 1"Male" 2"Female"
+label values head_sex sex
+fre head_sex
+
+
+* Size
+compress
+format address %50s
+format placeatpresent %50s
+format housecomments %50s
+format comments %50s
+format houseaddress %50s
+
+
+
+* Order
+order HHID2023 HHID_panel username otherusername recordingdate village villagearea address head_name head_sex head_age dummypresent placeatpresent jatisdetails jatis houseaddress housegeolocation gps_latitude gps_longitude gps_altitude gps_precision housecomments comments submissiondate
+
+drop householdvillageoriginal householdidoriginal housegeolocation
+rename householdvillageoriginal_str householdvillageoriginal
+rename householdidoriginal_str householdidoriginal
+
+sort HHID_panel
+
+save"NEEMSIS2-GPS_2023feb6.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
 
 
 
 ****************************************
+* Clean Jatis
+****************************************
+use"NEEMSIS2-GPS_2023feb6.dta", clear
+
+
+********** Drop duplicates
+preserve
+sort jatisdetails
+keep jatisdetails
+duplicates drop
+list jatisdetails, clean noobs
+*export excel "jatis.xlsx", replace
+restore
+
+
+
+********** Replace
+* Gounder
+replace jatisdetails="Gounder" if jatisdetails=="Gounder"
+replace jatisdetails="Gounder" if strpos(jatisdetails,"Gounder")
+
+* Kavara
+replace jatisdetails="Kavara" if jatisdetails=="Kavara"
+replace jatisdetails="Kavara" if jatisdetails=="Kavara "
+
+* Kavunter
+replace jatisdetails="Kavunter" if jatisdetails=="Kavunter"
+
+* Padayachi
+replace jatisdetails="Padayachi" if jatisdetails=="Padayachi"
+replace jatisdetails="Padayachi" if jatisdetails=="Padayachi"
+replace jatisdetails="Padayachi" if jatisdetails=="Padayatchi"
+replace jatisdetails="Padayachi" if strpos(jatisdetails,"Padayachi")
+
+* Paraiyar
+replace jatisdetails="Paraiyar" if jatisdetails=="Para"
+replace jatisdetails="Paraiyar" if jatisdetails=="Parayar"
+replace jatisdetails="Paraiyar" if jatisdetails=="Parayar "
+
+* Rediyar
+replace jatisdetails="Rediyar" if jatisdetails=="Reddi"
+replace jatisdetails="Rediyar" if jatisdetails=="Reddiar"
+
+* SC
+replace jatisdetails="SC" if jatisdetails=="SC"
+replace jatisdetails="SC" if jatisdetails=="Sc"
+
+* Sakkiliar
+replace jatisdetails="Sakkiliar" if jatisdetails=="Sakili"
+replace jatisdetails="Sakkiliar" if jatisdetails=="Sakkili"
+
+* Valluvan
+replace jatisdetails="Valluvan" if jatisdetails=="Valluvan"
+
+* Vanniyar
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniar"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vaniar"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniar"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniar"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniarr"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniat"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniatlr"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniyar"
+replace jatisdetails="Vanniyar" if jatisdetails=="Vanniyar "
+replace jatisdetails="Vanniyar" if strpos(jatisdetails,"Vanniar")
+
+
+
+********** Desc
+fre jatisdetails
+
+
+save"NEEMSIS2-GPS_2023feb6_v2.dta", replace
+****************************************
 * END
+
