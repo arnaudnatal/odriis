@@ -101,6 +101,15 @@ label values head_sex sex
 fre head_sex
 
 
+* Village space
+replace village=substr(village,1,strlen(village)-1)
+
+
+* HHID_panel space
+replace HHID_panel=substr(HHID_panel,2,strlen(HHID_panel))
+
+
+
 * Size
 compress
 format address %50s
@@ -137,6 +146,7 @@ save"NEEMSIS2-GPS_2023feb6.dta", replace
 * Clean Jatis
 ****************************************
 use"NEEMSIS2-GPS_2023feb6.dta", clear
+
 
 
 ********** Drop duplicates
@@ -202,6 +212,22 @@ replace jatisdetails="Vanniyar" if strpos(jatisdetails,"Vanniar")
 
 
 ********** Desc
+fre jatisdetails
+
+
+
+
+********** Correction Antony - 8 feb 2023
+/*
+ORA12 is Sakkiliar, which is a subcaste of Arunthatiyar.
+However, other households "SC" from Oraiyure are Paraiyar.
+*/
+ta HHID_panel if jatisdetails=="Sakkiliar" & village=="Oraiyure"
+
+replace jatisdetails="Paraiyar" if HHID_panel=="ORA17"
+replace jatisdetails="Paraiyar" if HHID_panel=="ORA29"
+replace jatisdetails="Paraiyar" if HHID_panel=="ORA3"
+replace jatisdetails="Paraiyar" if jatisdetails=="SC" & village=="Oraiyure"
 fre jatisdetails
 
 
