@@ -59,3 +59,36 @@ keep HHID2016 INDID2016 edulevel
 save"outcomes\NEEMSIS1-education", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+****************************************
+* Education de l'UNESCO
+***************************************
+use"$data", clear
+
+label define education 0"No education" 1"Pre-primary level" 2"Primary level" 3"Secondary level" 4"Tertiary level"
+
+* Méthode 1: NEEMSIS-1 et NEEMSIS-2
+gen educ_attainment=1 if classcompleted>=1&classcompleted<5
+replace educ_attainment=2 if classcompleted>=5&classcompleted<10
+replace educ_attainment=3 if classcompleted>=10&classcompleted<11
+replace educ_attainment=4 if classcompleted>=11
+replace educ_attainment=0 if classcompleted==.
+label values educ_attainment education
+
+* Méthode 2: RUME, NEEMSIS-1 et NEEMSIS-2
+gen educ_attainment2=educ_attainment
+replace educ_attainment2=0 if educ_attainment==1
+label values educ_attainment2 education
+
+keep HHID2016 INDID2016 educ_attainment educ_attainment2
+
+save"outcomes\NEEMSIS1-education_oit", replace
+****************************************
+* END
+
