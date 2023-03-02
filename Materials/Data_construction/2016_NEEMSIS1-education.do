@@ -88,7 +88,7 @@ label values educ_attainment2 education
 
 keep HHID2016 INDID2016 educ_attainment educ_attainment2
 
-save"outcomes\NEEMSIS1-education_oit", replace
+save"outcomes\NEEMSIS1-education_kilm", replace
 ****************************************
 * END
 
