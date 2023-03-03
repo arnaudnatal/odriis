@@ -295,8 +295,103 @@ label val sector_kilm4_V2 sector_kilm4_V2
 keep HHID2010 INDID2010 occupation kindofwork str_kindofwork profession_mainoccup sector_mainoccup occupationname_mainoccup educ_attainment educ_attainment2 agecat workingage youth employed employee selfemployed sector_kilm4 agri industry services sector_kilm4_V2
 
 save"_temp/_temp_RUME-kilm_v4.dta", replace
-save"outcomes/RUME-kilm.dta", replace
 ****************************************
 * END
 
 
+
+
+
+
+
+
+****************************************
+* KILM 5 - Employment by profession
+****************************************
+use "RUME-HH.dta", clear
+
+* Merge Kindofwork de la moc
+merge 1:1 HHID2010 INDID2010 using "_temp/_temp_RUME-kilm_v4.dta"
+drop _merge
+ta employed
+
+*
+gen kilm5=.
+replace kilm5=6 if profession_mainoccup==11
+replace kilm5=6 if profession_mainoccup==12 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==12 & educ_attainment2<=2
+replace kilm5=6 if profession_mainoccup==13 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==13 & educ_attainment2<=2
+replace kilm5=6 if profession_mainoccup==14 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==14 & educ_attainment2<=2
+replace kilm5=7 if profession_mainoccup==22 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==22 & educ_attainment2<=2
+replace kilm5=7 if profession_mainoccup==23
+replace kilm5=7 if profession_mainoccup==24
+replace kilm5=7 if profession_mainoccup==25
+replace kilm5=7 if profession_mainoccup==26
+replace kilm5=8 if profession_mainoccup==27
+replace kilm5=8 if profession_mainoccup==28
+replace kilm5=8 if profession_mainoccup==29
+replace kilm5=8 if profession_mainoccup==30
+replace kilm5=7 if profession_mainoccup==31 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==31 & educ_attainment2<=2
+replace kilm5=7 if profession_mainoccup==32 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==32 & educ_attainment2<=2
+replace kilm5=7 if profession_mainoccup==33 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==33 & educ_attainment2<=2
+replace kilm5=2 if profession_mainoccup==41
+replace kilm5=2 if profession_mainoccup==42
+replace kilm5=2 if profession_mainoccup==43
+replace kilm5=2 if profession_mainoccup==44
+replace kilm5=2 if profession_mainoccup==45
+replace kilm5=2 if profession_mainoccup==46
+replace kilm5=2 if profession_mainoccup==47
+replace kilm5=2 if profession_mainoccup==51
+replace kilm5=1 if profession_mainoccup==52
+replace kilm5=3 if profession_mainoccup==61
+replace kilm5=3 if profession_mainoccup==71
+replace kilm5=3 if profession_mainoccup==72
+replace kilm5=8 if profession_mainoccup==73
+replace kilm5=5 if profession_mainoccup==81
+replace kilm5=5 if profession_mainoccup==82
+replace kilm5=5 if profession_mainoccup==83
+replace kilm5=5 if profession_mainoccup==84
+replace kilm5=5 if profession_mainoccup==85
+replace kilm5=4 if profession_mainoccup==86
+replace kilm5=1 if profession_mainoccup==91 & educ_attainment2>=4
+replace kilm5=5 if profession_mainoccup==91 & educ_attainment2<4
+replace kilm5=5 if profession_mainoccup==91 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==91 & educ_attainment2<=2
+replace kilm5=9 if profession_mainoccup==93
+replace kilm5=9 if profession_mainoccup==94
+replace kilm5=5 if profession_mainoccup==95
+replace kilm5=8 if profession_mainoccup==96
+replace kilm5=5 if profession_mainoccup==97 & educ_attainment2>2
+replace kilm5=9 if profession_mainoccup==97 & educ_attainment2<=2
+replace kilm5=2 if profession_mainoccup==101
+replace kilm5=5 if profession_mainoccup==102
+replace kilm5=9 if profession_mainoccup==111
+replace kilm5=9 if profession_mainoccup==901
+replace kilm5=9 if profession_mainoccup==902
+replace kilm5=9 if profession_mainoccup==903
+replace kilm5=7 if profession_mainoccup==904
+replace kilm5=7 if profession_mainoccup==905
+replace kilm5=7 if profession_mainoccup==906
+replace kilm5=6 if profession_mainoccup==907
+replace kilm5=9 if profession_mainoccup==999
+
+label define kilm5 1"Directeurs et gérants" 2"Professions intellectuelles et scientifiques" 3"Professions intermédiaires" 4"Employés administratifs" 5"Commerçants et vendeurs" 6"Agriculteurs et ouvriers qualifiés agri" 7"Métiers qualifiés industrie et artisanat" 8"Conducteurs" 9"Professions élémentaires" 10"Professions militaires"
+label val kilm5 kilm5
+
+* Elementary occupations
+gen elementaryoccup=(kilm5==9) if employed==1
+
+
+***
+keep HHID2010 INDID2010 occupation kindofwork str_kindofwork profession_mainoccup sector_mainoccup occupationname_mainoccup educ_attainment educ_attainment2 agecat workingage youth employed employee selfemployed sector_kilm4 agri industry services sector_kilm4_V2 kilm5 elementaryoccup
+
+save"_temp/_temp_RUME-kilm_v5.dta", replace
+save"outcomes/RUME-kilm.dta", replace
+****************************************
+* END
