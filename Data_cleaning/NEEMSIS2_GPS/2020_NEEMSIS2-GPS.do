@@ -33,7 +33,7 @@ grstyle set plain, box nogrid
 ****************************************
 * GPS
 ***************************************
-import excel "NEEMSIS2_GPS_2023feb6.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
+import excel "NEEMSIS2_GPS_2023mar6.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
 
 * Clean
 drop username1 username2 username3 username4 username5 username6 username7 username8 username9 username10 username77
@@ -120,7 +120,7 @@ rename householdidoriginal_str householdidoriginal
 
 sort HHID_panel
 
-save"NEEMSIS2-GPS_2023feb6.dta", replace
+save"NEEMSIS2-GPS_2023.dta", replace
 ****************************************
 * END
 
@@ -260,7 +260,7 @@ save"NEEMSIS2-GPS_2023feb24_offline.dta", replace
 ****************************************
 * Clean Jatis
 ****************************************
-use"NEEMSIS2-GPS_2023feb6.dta", clear
+use"NEEMSIS2-GPS_2023.dta", clear
 
 
 append using "NEEMSIS2-GPS_2023feb24_offline.dta"
@@ -370,7 +370,7 @@ save"NEEMSIS2-GPS.dta", replace
 
 
 
-/*
+
 ****************************************
 * Loc
 ****************************************
@@ -382,4 +382,3 @@ export delimited using "projection.csv", replace
 
 ****************************************
 * END
-*/
