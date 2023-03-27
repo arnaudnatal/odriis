@@ -33,7 +33,7 @@ grstyle set plain, box nogrid
 ****************************************
 * GPS
 ***************************************
-import excel "NEEMSIS2_GPS_2023mar6.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
+import excel "NEEMSIS2_GPS_2023mar22.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
 
 * Clean
 drop username1 username2 username3 username4 username5 username6 username7 username8 username9 username10 username77
