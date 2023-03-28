@@ -514,6 +514,7 @@ ta dummyremrecipientlist
 keep HHID2020 INDID2020 dummyremreceived dummyremrecipientlist remrecipientsourcename1 remrecipientsourcenametwo1 remreceivedsourcerelation1 remreceivedsourceoccup1 remreceivedsourceplace1 remreceivedmoney1 remgift1 remreceivedservices1 remreceivedfrequency1 remreceivedamount1 remreceivedtotalamount1 remreceivedmean1 remgiftnb1 remgiftamount1 remreceivedsourceoccupother1 remreceivedservicesother1 covremreceived1 remrecipientsourcename2 remrecipientsourcenametwo2 remreceivedsourcerelation2 remreceivedsourceoccup2 remreceivedsourceplace2 remreceivedmoney2 remgift2 remreceivedservices2 remreceivedfrequency2 remreceivedamount2 remreceivedtotalamount2 remreceivedmean2 remgiftnb2 remgiftamount2 remreceivedsourceoccupother2 remreceivedservicesother2 covremreceived2 remrecipientsourcename3 remrecipientsourcenametwo3 remreceivedsourcerelation3 remreceivedsourceoccup3 remreceivedsourceplace3 remreceivedmoney3 remgift3 remreceivedservices3 remreceivedfrequency3 remreceivedamount3 remreceivedtotalamount3 remreceivedmean3 remgiftnb3 remgiftamount3 remreceivedsourceoccupother3 remreceivedservicesother3 covremreceived3 remrecipientsourcename4 remrecipientsourcenametwo4 remreceivedsourcerelation4 remreceivedsourceoccup4 remreceivedsourceplace4 remreceivedmoney4 remgift4 remreceivedservices4 remreceivedfrequency4 remreceivedamount4 remreceivedtotalamount4 remreceivedmean4 remgiftnb4 remgiftamount4 remreceivedsourceoccupother4 remreceivedservicesother4 covremreceived4
 
 reshape long remrecipientsourcename remrecipientsourcenametwo remreceivedsourcerelation remreceivedsourceoccup remreceivedsourceplace remreceivedmoney remgift remreceivedservices remreceivedfrequency remreceivedamount remreceivedtotalamount remreceivedmean remgiftnb remgiftamount remreceivedsourceoccupother remreceivedservicesother covremreceived, i(HHID2020 INDID2020) j(remrec)
+
 keep if remrecipientsourcename!=.
 
 
@@ -612,6 +613,381 @@ keep HHID2020 INDID2020 dummyremsent dummyremsenderlist remsentname1 remsentname
 
 reshape long remsentname remsentnametwo remsentdummyvillage remsentrelation remsentoccup remsentplace remsentmoney remsentgift remsentservices remsentsourceoccupother remsentservicesother remsentfrequency remsentamount remsenttotalamount remsentmean remsentgiftnb remsentgiftamount covremsent, i(HHID2020 INDID2020) j(remsent)
 
+keep if remsentname!=.
+
+
+
+
+*** Info
+ta remsentname
+ta remsentnametwo
+ta remsentdummyvillage
+ta remsentmoney
+ta remsentgift
+ta remsentservices
+ta remsentservicesother
+ta covremsent
+
+
+*** For others name
+preserve
+keep if remsentname==31
+keep if remsentdummyvillage==0
+*
+ta remsentrelation
+ta remsentoccup
+ta remsentsourceoccupother
+ta remsentplace
+restore
+
+
+*** If sent money
+preserve
+keep if remsentmoney==1
+*
+ta remsentfrequency
+sum remsentamount remsenttotalamount
+ta remsentmean
+restore
+
+
+*** If gift
+preserve
+keep if remsentgift==1
+*
+sum remsentgiftnb remsentgiftamount
+restore
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Financial practices (loans)
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+*** Loans HH
+preserve
+duplicates drop HHID2020, force
+ta dummyloans
+ta covrefusalloan
+restore
+
+
+*** Loans indiv
+ta dummyborrowerlist
+sum nbloansbyborrower
+
+
+*** Main loans
+ta threemainloans
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Financial practices (income assets)
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+*** Income assets
+preserve
+duplicates drop HHID2020, force
+*
+ta dummyincomeassets
+restore
+
+
+*** Amount income assets
+preserve
+duplicates drop HHID2020, force
+keep if dummyincomeassets==1
+*
+sum incomeassets
+restore
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Financial practices (lending)
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+
+*** Lending money
+preserve
+duplicates drop HHID2020, force
+*
+ta dummylendingmoney
+restore
+
+
+*** Lender
+ta dummyhhlenderlist
+
+
+*** Lending details
+preserve
+keep if dummyhhlenderlist==1
+*
+ta borrowerscaste
+ta borrowerssex
+ta relationwithborrower
+sum amoutlent interestlending
+ta purposeloanborrower
+ta problemrepayment
+ta dummyloanfromborrower
+ta covlendrepayment
+ta covlending
+ta datelendingmoney
+restore
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Financial practices (recommendations)
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+*** Recommendations
+preserve
+duplicates drop HHID2020, force
+*
+ta dummyrecommendgiven
+restore
+
+
+*** Individual details
+ta dummyrecommendgivenlist
+
+
+*** Recommendations details
+preserve
+keep if dummyrecommendgivenlist==1
+*
+ta dummyrecommendrefuse
+restore
+
+
+*** Why refuse?
+preserve
+keep if dummyrecommendgivenlist==1
+keep if dummyrecommendrefuse==1
+*
+ta reasonrefuserecommend
+restore
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Financial practices (chitfund)
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+*** Chitfund
+preserve
+duplicates drop HHID2020, force
+ta dummychitfund
+restore
+
+
+*** Chitfund individual level
+ta dummychitfundbelongerlist
+
+
+*** Chitfund number
+preserve
+keep if dummychitfundbelongerlist==1
+*
+ta nbchitfunds
+restore
+
+
+*** Chitfund details
+preserve
+keep HHID2020 INDID2020 dummychitfund dummychitfundbelongerlist chitfundbelongernumber nbchitfunds chitfundtype1 durationchit1 nbermemberchit1 chitfundpayment1 chitfundpaymentamount1 chitfundamount1 covchitfundstop1 covchitfundreturn1 chitfundtype2 durationchit2 nbermemberchit2 chitfundpayment2 chitfundpaymentamount2 chitfundamount2 covchitfundstop2 covchitfundreturn2 chitfundtype3 durationchit3 nbermemberchit3 chitfundpayment3 chitfundpaymentamount3 chitfundamount3 covchitfundstop3
+
+reshape long chitfundtype durationchit nbermemberchit chitfundpayment chitfundpaymentamount chitfundamount covchitfundstop covchitfundreturn, i(HHID2020 INDID2020) j(chitnb)
+keep if chitfundtype!=.
+
+ta chitfundtype
+sum durationchit nbermemberchit
+ta chitfundpayment
+sum chitfundpaymentamount chitfundamount
+ta covchitfundstop
+
+keep if covchitfundstop=="1"
+ta covchitfundreturn
+restore
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Financial practices (savings)
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+
+****************************************
+* END
 
 
 
