@@ -105,8 +105,8 @@ keep if everattendedschool==1
 keep if classcompleted>9
 keep if after10thstandard!=5
 *
-ta subjectafter10th
-ta othersubjectafter10th
+ta subjectsafter10th
+ta othersubjectsafter10th
 restore
 
 
@@ -159,7 +159,7 @@ preserve
 keep if everattendedschool==0
 *
 ta reasonneverattendedschool
-ta otherreasonneverattendedschool
+*ta otherreasonneverattendedschool
 restore
 
 
@@ -174,7 +174,7 @@ restore
 
 *** COVID
 preserve
-keep if reasondropping==15 | currentlyatschool==1
+keep if strpos(reasondropping,"15") | currentlyatschool==1
 *
 ta covgoingbackschool
 restore
@@ -315,7 +315,6 @@ restore
 ta dummymigrantlist
 
 
-
 *** Job?
 preserve
 keep if dummymigrantlist==1
@@ -324,11 +323,30 @@ ta migrationjoblist
 restore
 
 
-*** Where?
-preserve
-keep if dummymigrantlist==1
-drop if migrationjoblist==9
-*
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Migration database
+****************************************
+use"raw/$migrations", clear
+
+
+*** Details
 ta migrationarea
 ta migrationplace
 sum migrationdistance
@@ -351,45 +369,22 @@ ta migrationmainoccup
 ta migrationskill
 ta migrationreason
 ta migrationotherreason
-restore
-
-
-*** Advance
-preserve
-keep if dummymigrantlist==1
-drop if migrationjoblist==9
-*
 ta dummyadvance
-restore
 
 
 *** Advance details
 preserve
-keep if dummymigrantlist==1
-drop if migrationjoblist==9
 keep if dummyadvance==1
 *
 ta migrationadvanceprovider
 ta migrationadvancereceiver
 sum migrationadvanceamount
 ta migrationadvancefeel
-restore
-
-
-*** Advance balance
-preserve
-keep if dummymigrantlist==1
-drop if migrationjoblist==9
-keep if dummyadvance==1
-*
 ta dummyadvancebalance
 restore
 
-
 *** Balance details
 preserve
-keep if dummymigrantlist==1
-drop if migrationjoblist==9
 keep if dummyadvance==1
 keep if dummyadvancebalance==1
 *
@@ -401,8 +396,6 @@ restore
 
 *** Migration child
 preserve
-keep if dummymigrantlist==1
-drop if migrationjoblist==9
 keep if migrationtype==2
 *
 ta migrationchild
@@ -410,13 +403,65 @@ restore
 
 
 *** COVID
-preserve
-keep if dummymigrantlist==1
-drop if migrationjoblist==9
-*
 ta covdealcovid19
 
+
+*** COVID details
+preserve
+keep if strpos(covdealcovid19,"2")
+*
+ta covmealemployer
 restore
+
+
+*** If meal yes COVID details
+preserve
+keep if strpos(covdealcovid19,"2")
+keep if strpos(covmealemployer,"1")
+*
+ta covmealemployerfree
+restore
+
+
+*** COVID advance
+preserve
+keep if dummyadvance==1
+*
+ta covpressureadvance
+restore
+
+
+*** COVID advance details
+preserve
+keep if dummyadvance==1
+keep if covpressureadvance==1
+*
+ta covpressuremanage
+ta covpressuremanageother
+restore
+
+
+*** COVID migration
+preserve
+keep if strpos(covdealcovid19,"3") | strpos(covdealcovid19,"4")
+*
+ta covmigrationagain
+restore
+
+
+*** COVID migration details
+preserve
+keep if strpos(covdealcovid19,"3") | strpos(covdealcovid19,"4")
+keep if covmigrationagain=="1"
+*
+ta covmigrationagaindate
+ta covmigrationagainreason
+ta covmigrationotherreason
+restore
+
+
+*** COVID work again
+ta covstayworkagain
 
 
 ****************************************
@@ -430,6 +475,142 @@ restore
 
 
 
+
+
+
+
+
+
+
+
+****************************************
+* Remittances received module
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+*** How many HH?
+preserve
+duplicates drop HHID2020, force
+ta dummyremreceived
+restore
+
+
+*** How many individuals?
+ta dummyremrecipientlist
+
+
+
+*** Reshape
+keep HHID2020 INDID2020 dummyremreceived dummyremrecipientlist remrecipientsourcename1 remrecipientsourcenametwo1 remreceivedsourcerelation1 remreceivedsourceoccup1 remreceivedsourceplace1 remreceivedmoney1 remgift1 remreceivedservices1 remreceivedfrequency1 remreceivedamount1 remreceivedtotalamount1 remreceivedmean1 remgiftnb1 remgiftamount1 remreceivedsourceoccupother1 remreceivedservicesother1 covremreceived1 remrecipientsourcename2 remrecipientsourcenametwo2 remreceivedsourcerelation2 remreceivedsourceoccup2 remreceivedsourceplace2 remreceivedmoney2 remgift2 remreceivedservices2 remreceivedfrequency2 remreceivedamount2 remreceivedtotalamount2 remreceivedmean2 remgiftnb2 remgiftamount2 remreceivedsourceoccupother2 remreceivedservicesother2 covremreceived2 remrecipientsourcename3 remrecipientsourcenametwo3 remreceivedsourcerelation3 remreceivedsourceoccup3 remreceivedsourceplace3 remreceivedmoney3 remgift3 remreceivedservices3 remreceivedfrequency3 remreceivedamount3 remreceivedtotalamount3 remreceivedmean3 remgiftnb3 remgiftamount3 remreceivedsourceoccupother3 remreceivedservicesother3 covremreceived3 remrecipientsourcename4 remrecipientsourcenametwo4 remreceivedsourcerelation4 remreceivedsourceoccup4 remreceivedsourceplace4 remreceivedmoney4 remgift4 remreceivedservices4 remreceivedfrequency4 remreceivedamount4 remreceivedtotalamount4 remreceivedmean4 remgiftnb4 remgiftamount4 remreceivedsourceoccupother4 remreceivedservicesother4 covremreceived4
+
+reshape long remrecipientsourcename remrecipientsourcenametwo remreceivedsourcerelation remreceivedsourceoccup remreceivedsourceplace remreceivedmoney remgift remreceivedservices remreceivedfrequency remreceivedamount remreceivedtotalamount remreceivedmean remgiftnb remgiftamount remreceivedsourceoccupother remreceivedservicesother covremreceived, i(HHID2020 INDID2020) j(remrec)
+keep if remrecipientsourcename!=.
+
+
+
+*** Info
+ta remrecipientsourcename
+ta remrecipientsourcenametwo
+ta remreceivedsourceoccup
+ta remreceivedsourceoccupother
+ta remreceivedmoney
+ta remgift
+ta remreceivedservices
+ta remreceivedservicesother
+ta covremreceived
+
+
+*** Specific for other relation
+preserve
+keep if remrecipientsourcename==31
+*
+ta remreceivedsourcerelation
+ta remreceivedsourceplace
+restore
+
+
+*** For those who received money
+preserve
+keep if remreceivedmoney==1
+*
+ta remreceivedfrequency
+ta remreceivedamount
+ta remreceivedtotalamount
+ta remreceivedmean
+ta remgiftnb
+restore
+
+
+*** For those who received gift
+preserve
+keep if remgift==1
+*
+ta remgiftnb
+ta remgiftamount
+restore
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Remittances sent module
+****************************************
+use"raw/$household", clear
+
+
+
+*** Basic selection to remove those who were not here in 20202-21
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+*** How many HH?
+preserve
+duplicates drop HHID2020, force
+ta dummyremsent
+restore
+
+
+*** How many individuals?
+ta dummyremsenderlist
+
+
+*** Reshape
+keep HHID2020 INDID2020 dummyremsent dummyremsenderlist remsentname1 remsentnametwo1 remsentdummyvillage1 remsentrelation1 remsentoccup1 remsentplace1 remsentmoney1 remsentgift1 remsentservices1 remsentsourceoccupother1 remsentservicesother1 remsentfrequency1 remsentamount1 remsenttotalamount1 remsentmean1 remsentgiftnb1 remsentgiftamount1 covremsent1 remsentname2 remsentnametwo2 remsentdummyvillage2 remsentrelation2 remsentoccup2 remsentplace2 remsentmoney2 remsentgift2 remsentservices2 remsentsourceoccupother2 remsentservicesother2 remsentfrequency2 remsentamount2 remsenttotalamount2 remsentmean2 remsentgiftnb2 remsentgiftamount2 covremsent2 remsentname3 remsentnametwo3 remsentdummyvillage3 remsentrelation3 remsentoccup3 remsentplace3 remsentmoney3 remsentgift3 remsentservices3 remsentsourceoccupother3 remsentservicesother3 remsentfrequency3 remsentamount3 remsenttotalamount3 remsentmean3 remsentgiftnb3 remsentgiftamount3 covremsent3 remsentname4 remsentnametwo4 remsentdummyvillage4 remsentrelation4 remsentoccup4 remsentplace4 remsentmoney4 remsentgift4 remsentservices4 remsentsourceoccupother4 remsentservicesother4 remsentfrequency4 remsentamount4 remsenttotalamount4 remsentmean4 remsentgiftnb4 remsentgiftamount4 covremsent4 remsentname5 remsentnametwo5 remsentdummyvillage5 remsentrelation5 remsentoccup5 remsentplace5 remsentmoney5 remsentgift5 remsentservices5 remsentsourceoccupother5 remsentservicesother5 remsentfrequency5 remsentamount5 remsenttotalamount5 remsentmean5 remsentgiftnb5 remsentgiftamount5 covremsent5
+
+reshape long remsentname remsentnametwo remsentdummyvillage remsentrelation remsentoccup remsentplace remsentmoney remsentgift remsentservices remsentsourceoccupother remsentservicesother remsentfrequency remsentamount remsenttotalamount remsentmean remsentgiftnb remsentgiftamount covremsent, i(HHID2020 INDID2020) j(remsent)
 
 
 
