@@ -147,6 +147,14 @@ log close
 
 
 
+
+
+
+
+
+
+
+
 log using "2_Employment.log", nomsg replace
 ****************************************
 * 2. Employment
@@ -171,6 +179,11 @@ tabulate stopworking
 ****************************************
 * END
 log close
+
+
+
+
+
 
 
 
@@ -344,6 +357,11 @@ log close
 
 
 
+
+
+
+
+
 log using "23_Crisis.log", nomsg replace
 ****************************************
 * 2.3. Problems in your work since 2008
@@ -360,6 +378,9 @@ tabulate crisislocation2
 ****************************************
 * END
 log close
+
+
+
 
 
 
@@ -420,6 +441,7 @@ log close
 
 
 
+
 log using "41_Remittancesreceived.log", nomsg replace
 ****************************************
 * 4.1. Remittances received
@@ -457,6 +479,8 @@ log close
 
 
 
+
+
 log using "42_Remittancessent.log", nomsg replace
 ****************************************
 * 4.2. Remittances sent
@@ -482,6 +506,7 @@ tabulate remsentfrequency
 ****************************************
 * END
 log close
+
 
 
 
@@ -588,6 +613,7 @@ log close
 
 
 
+
 log using "53_Lenders.log", nomsg replace
 ****************************************
 * 5.3. Lenders
@@ -659,6 +685,10 @@ log close
 
 
 
+
+
+
+
 log using "55_Lending.log", nomsg replace
 ****************************************
 * 5.5. Lending money
@@ -686,6 +716,10 @@ tabulate problemrepayment
 ****************************************
 * END
 log close
+
+
+
+
 
 
 
@@ -734,7 +768,6 @@ log close
 
 
 
-
 log using "57_Recommendation.log", nomsg replace
 ****************************************
 * 5.7. Recommendation received
@@ -761,9 +794,6 @@ tabulate receivereco
 ****************************************
 * END
 log close
-
-
-
 
 
 
@@ -802,11 +832,6 @@ summarize chitfundamount
 ****************************************
 * END
 log close
-
-
-
-
-
 
 
 
@@ -887,6 +912,9 @@ log close
 
 
 
+
+
+
 log using "511_Insurance.log", nomsg replace
 ****************************************
 * 5.11. Insurance
@@ -915,7 +943,6 @@ tabulate insurancejoineddate
 ****************************************
 * END
 log close
-
 
 
 
@@ -972,15 +999,6 @@ log close
 
 
 
-
-
-
-
-
-
-
-
-
 log using "62_Crops.log", nomsg replace
 ****************************************
 * 6.2. Crops
@@ -1005,6 +1023,8 @@ summarize productlabourcost if productlabourcost!=99
 ****************************************
 * END
 log close
+
+
 
 
 
@@ -1041,6 +1061,10 @@ log close
 
 
 
+
+
+
+
 log using "62_Othersproducts.log", nomsg replace
 ****************************************
 * 6.2. Other products
@@ -1048,16 +1072,18 @@ log using "62_Othersproducts.log", nomsg replace
 use"RUME-HH", clear
 
 * Selection
-keep HHID2010 otherproductname1 otherproductsold1 otherproductown1 otherproductname2 otherproductsold2 otherproductown2 
+keep HHID2010 otherproductname1 otherproductsold1 otherproductown1 otherproductname2 otherproductsold2 otherproductown2
+duplicates drop
+reshape long otherproductname otherproductsold otherproductown, i(HHID2010) j(n)
+drop if otherproductname==""
 
-
+* Tables
+tabulate otherproductname
+summarize otherproductsold otherproductown
 
 ****************************************
 * END
 log close
-
-
-
 
 
 
@@ -1075,12 +1101,19 @@ use"RUME-HH", clear
 
 * Selection
 keep HHID2010 dummylabourers productworkers productlabourwage productoriginlabourers productcastelabourers1 productcastelabourers2 productcastelabourers3
+duplicates drop
+
+* Tables
+tabulate dummylabourers
+summarize productworkers productlabourwage
+tabulate productoriginlabourers
+tabulate productcastelabourers1
+tabulate productcastelabourers2
+tabulate productcastelabourers3
 
 ****************************************
 * END
 log close
-
-
 
 
 
@@ -1106,13 +1139,34 @@ duplicates drop
 
 * Tables
 tabulate dummylivestock
+summarize livestocknb_cow livestockprice_cow
+tabulate livestockuse1_cow
+tabulate livestockuse2_cow
+tabulate livestockuse3_cow
+summarize livestocknb_goat livestockprice_goat
+tabulate livestockuse1_goat
+tabulate livestockuse2_goat
+tabulate livestockuse3_goat
+tabulate dummycattleloss
+tabulate cattlelossnb
+tabulate howlost
+summarize cattlelossamount
+tabulate cattleinsurance
+summarize cattleinsuranceamount
+tabulate dummymedicalexpenses
+summarize medicalexpensesamount
+tabulate notinterestedrearing1
+tabulate notinterestedrearingreason1
+tabulate notinterestedrearing2
+tabulate notinterestedrearingreason2
+tabulate interestedrearing1
+tabulate interestedrearingreason1
+tabulate interestedrearing2
+tabulate interestedrearingreason2
 
 ****************************************
 * END
 log close
-
-
-
 
 
 
@@ -1131,13 +1185,200 @@ log using "64_Equipment.log", nomsg replace
 use"RUME-HH", clear
 
 * Selection
-use"RUME-HH", clear
 keep HHID2010 equipmentlist1 equipmentnb1 equipementyear1 equipmentpay1 equipmentlender1 equipmentcost1 equipmentpledged1 equipmentlist2 equipmentnb2 equipementyear2 equipmentpay2 equipmentlender2 equipmentcost2 equipmentpledged2
 duplicates drop
+reshape long equipmentlist equipmentnb equipementyear equipmentpay equipmentlender equipmentcost equipmentpledged, i(HHID2010) j(n)
+drop if equipmentlist==.
+
+* Tables
+tabulate equipmentlist
+summarize equipmentnb equipementyear
+tabulate equipmentpay
+tabulate equipmentlender
+summarize equipmentcost
+tabulate equipmentpledged
 
 ****************************************
 * END
 log close
+
+
+
+
+
+
+
+
+
+
+
+log using "71_Expenses.log", nomsg replace
+****************************************
+* 7.1. Expenses
+****************************************
+use"RUME-HH", clear
+
+* Selection
+keep HHID2010 foodexpenses educationexpenses healthexpenses ceremoniesexpenses deathexpenses
+duplicates drop
+
+* Tables
+summarize foodexpenses educationexpenses healthexpenses ceremoniesexpenses deathexpenses
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "72_Consumer.log", nomsg replace
+****************************************
+* 7.2. Consumer goods
+****************************************
+use"RUME-HH", clear
+
+* Selection
+keep HHID2010 listgoods* numbergoods* goodyearpurchased* goodbuying*
+duplicates drop
+reshape long listgoods numbergoods goodyearpurchased goodbuying, i(HHID2010) j(n)
+drop if listgoods==.
+
+* Tables
+tabulate listgoods
+summarize numbergoods
+summarize goodyearpurchased if goodyearpurchased!=66
+tabulate goodbuying
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "8_Housing.log", nomsg replace
+****************************************
+* 8. Housing and facilities
+****************************************
+use"RUME-HH", clear
+
+* Selection
+keep HHID2010 house howbuyhouse1 howbuyhouse2 howbuyhouse3 rentalhouse housevalue housetype houseroom electricity water housetitle ownotherhouse otherhouserent otherhouserentcat
+duplicates drop
+
+
+********** Housing
+* Tables
+tabulate house
+tabulate howbuyhouse1
+tabulate howbuyhouse2
+tabulate howbuyhouse3
+summarize rentalhouse if rentalhouse!=0
+summarize housevalue
+tabulate housetype
+summarize houseroom
+tabulate housetitle
+tabulate ownotherhouse
+tabulate otherhouserent
+
+
+
+********** Facilities
+* Tables
+tabulate electricity
+tabulate water
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "9_Publicservicework.log", nomsg replace
+****************************************
+* 9. Public service works
+****************************************
+* Household
+use"RUME-HH", clear
+keep HHID2010 dummypubserv
+duplicates drop
+tabulate dummypubserv
+
+* Selection
+use"RUME-HH", clear
+keep HHID2010 INDID2010 pubservfield* pubservduration* pubservpost* pubservpayment*
+duplicates drop
+reshape long pubservfield pubservduration pubservpost pubservpayment, i(HHID2010 INDID2010) j(n)
+drop if pubservfield==""
+
+* Tables
+tabulate pubservfield
+summarize pubservduration
+tabulate pubservpost
+tabulate pubservpayment
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
