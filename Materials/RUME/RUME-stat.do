@@ -1369,6 +1369,36 @@ log close
 
 
 
+log using "10_Memberships.log", nomsg replace
+****************************************
+* 10. Memeberships
+****************************************
+use"RUME-HH", clear
+
+********** Participation to political public events last year
+* Tables
+tabulate dummymemberships
+tabulate membershipsevents
+tabulate membershipsevents2
+tabulate membershipsplace
+tabulate membershipsplace2
+summarize membershipsduration
+
+
+
+********** SHG, association, cooperatives
+* Tables
+tabulate dummymembershipsasso
+tabulate membershipseventsasso
+tabulate membershipsassoname
+summarize membershipsdurationasso
+
+****************************************
+* END
+log close
+
+
+
 
 
 
