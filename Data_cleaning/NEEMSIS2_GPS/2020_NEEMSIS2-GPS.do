@@ -33,7 +33,7 @@ grstyle set plain, box nogrid
 ****************************************
 * GPS
 ***************************************
-import excel "NEEMSIS2_GPS_2023mar22.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
+import excel "NEEMSIS2_GPS_2023mar29.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
 
 * Clean
 drop username1 username2 username3 username4 username5 username6 username7 username8 username9 username10 username77
@@ -241,6 +241,11 @@ What is the new address?
 Arnaud will ask to Vivek
 */
 
+* Gen HHID2023
+gen HHID2023=_n
+tostring HHID2023, replace
+
+
 
 save"NEEMSIS2-GPS_2023feb24_offline.dta", replace
 ****************************************
@@ -313,6 +318,8 @@ replace jatisdetails="Paraiyar" if jatisdetails=="Parayar "
 * Rediyar
 replace jatisdetails="Rediyar" if jatisdetails=="Reddi"
 replace jatisdetails="Rediyar" if jatisdetails=="Reddiar"
+replace jatisdetails="Rediyar" if jatisdetails=="Reddiyar"
+
 
 * SC
 replace jatisdetails="SC" if jatisdetails=="SC"
@@ -358,9 +365,73 @@ replace jatisdetails="Paraiyar" if jatisdetails=="SC" & village=="Oraiyure"
 fre jatisdetails
 
 
+save"NEEMSIS2-GPS_temp.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Duplicates
+****************************************
+use"NEEMSIS2-GPS_temp.dta", clear
+
+*
+bysort HHID_panel: gen tag=_N
+order tag, after(username)
+sort tag HHID_panel
+ta tag
+
+* Who?
+preserve
+duplicates drop HHID_panel, force
+ta tag
+keep HHID_panel
+gen done=1
+save"NEEMSIS2-GPS_done", replace
+restore
+
+
+* Clean
+drop __version__
+
+* Drop duplicates
+preserve
+import excel "NEEMSIS2-GPS_duplicates", firstrow clear
+drop tokeep
+rename AB tokeep
+
+order tokeep, after(HHID_panel)
+sort HHID_panel
+
+keep HHID2023 tokeep
+save"NEEMSIS2-GPS_duplicates", replace
+restore
+
+merge 1:1 HHID2023 using "NEEMSIS2-GPS_duplicates"
+drop _merge
+ta tokeep
+drop if tokeep==0
+order HHID2023 HHID_panel tokeep tag
+drop tokeep tag
+bysort HHID_panel: gen n=_N
+ta n
+drop n
+
 save"NEEMSIS2-GPS.dta", replace
 ****************************************
 * END
+
 
 
 

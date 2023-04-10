@@ -42,6 +42,181 @@ grstyle set plain, box nogrid
 
 
 ****************************************
+* Education module, question Mary
+****************************************
+use"raw/$household", clear
+
+
+keep HHID2020 INDID2020 name age dummylefthousehold livinghome canread everattendedschool classcompleted after10thstandard durationafter10th typeofhigheredu subjectsafter10th othersubjectsafter10th newtraining reservation reservationgrade reservationkind reservationother currentlyatschool educationexpenses amountschoolfees bookscost transportcost reasonneverattendedschool reasondropping otherreasondroppingschool covgoingbackschool decisiondropping decisiondroppingother dummyscholarship scholarshipamount scholarshipduration converseinenglish
+rename age age_o
+rename livinghome livinghome_o
+
+
+merge 1:m HHID2020 name using "raw/eductest"
+keep if _merge==3
+drop _merge
+
+rename age r_age
+rename livinghome r_livinghome
+
+rename age_o age
+rename livinghome_o livinghome
+
+
+merge 1:m HHID2020 name using "raw/N2-pre"
+keep if _merge==3
+drop _merge
+
+
+order HHID2020 INDID2020 name livinghome age
+
+label var currentlyatschool "currentlyatschool"
+label var r_currentlyatschool "r_currentlyatschool"
+
+ta data datafromearlier if decisiondropping==.
+
+preserve
+keep HHID2020 INDID2020 data datafromearlier decisiondropping dummylefthousehold livinghome age currentlyatschool everattendedschool
+
+save "C:\Users\Arnaud\Downloads\NEEMSIS2-edupreload", replace
+
+*
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+keep if currentlyatschool==0 | everattendedschool==0
+
+ta data datafromearlier if decisiondropping==.
+
+
+restore 
+
+********* Selection
+drop if dummylefthousehold==1
+drop if livinghome==3
+drop if livinghome==4
+drop if age<15
+
+
+
+
+********** Raw vs me
+ta decisiondropping r_decisiondropping, m
+
+
+
+
+********** Decision dropping
+ta currentlyatschool everattendedschool, m
+/*
+ : Are you |
+ currently |
+  enrolled |
+in school, |    : Have you ever
+college or |   attended school?
+ technical |        No        Yes |     Total
+-----------+----------------------+----------
+        No |        28      1,638 |     1,666 
+       Yes |         2        227 |       229 
+         . |       530          0 |       530 
+-----------+----------------------+----------
+     Total |       560      1,865 |     2,425
+*/
+
+
+
+
+ta decisiondropping, m
+ta r_decisiondropping, m
+/*
+: Who made the decision that you should |
+                   drop-out or not to g |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+                               Yourself |        604       24.91       24.91
+            Parents/Other family elders |        451       18.60       43.51
+Both parents/other family elders and yo |         59        2.43       45.94
+                               Teachers |          1        0.04       45.98
+                                      . |      1,310       54.02      100.00
+----------------------------------------+-----------------------------------
+                                  Total |      2,425      100.0
+
+*/
+
+
+
+
+
+keep if currentlyatschool==0 | everattendedschool==0
+
+ta decisiondropping datafromearlier, m
+ta decisiondropping data, m
+ta r_decisiondropping data, m
+
+
+/*
+   should drop-out or |    datafromearlier
+             not to g |         0          1 |     Total
+----------------------+----------------------+----------
+             Yourself |       276        328 |       604 
+Parents/Other family  |       295        156 |       451 
+Both parents/other fa |        30         29 |        59 
+             Teachers |         1          0 |         1 
+                    . |         0      1,083 |     1,083 
+----------------------+----------------------+----------
+                Total |       602      1,596 |     2,198 
+
+				
+1083 missings qui correspondent à 1083 preload
+Maintenant il faut vérifier l'age?
+
+				
+*/
+
+ta data datafromearlier if decisiondropping==.
+/*
+
+           | datafromea
+           |   rlier
+      data |         1 |     Total
+-----------+-----------+----------
+         0 |     1,074 |     1,074 
+         1 |         9 |         9 
+-----------+-----------+----------
+     Total |     1,083 |     1,083 
+
+Sur les 1083 qui devraient être là, on en a 1074 sont des vrais preload et 9 qui devraient être là, mais je ne sais pas pourquoi ils n'y sont pas, je vais choper les noms et vérifier l'age
+*/
+
+
+ta age if decisiondropping==. & datafromearlier==1 & data==1
+/*
+comme par hasard, des 15 19
+Ca vient surement d'un décalage de 4 ans entre 2016 et 2020
+où le calcul a été mal fait
+*/
+
+
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
 * Education module
 ****************************************
 use"raw/$household", clear
