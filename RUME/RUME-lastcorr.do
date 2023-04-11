@@ -27,6 +27,10 @@ grstyle set plain, box nogrid
 
 
 
+
+
+
+
 ****************************************
 * RUME-HH.dta
 ****************************************
@@ -98,6 +102,13 @@ recode recommendgivenlendercaste1 recommendgivenlendercaste2 (11=77)
 
 
 ********** Recommendation received
+gen dummyrecommendreceived=.
+replace dummyrecommendreceived=0 if repaycreditpersorecoamount==0
+replace dummyrecommendreceived=1 if repaycreditpersorecoamount!=0
+replace dummyrecommendreceived=1 if dummyrecommendrefuse==1
+order dummyrecommendreceived, before(dummyrecommendrefuse)
+label values dummyrecommendreceived yesno
+
 replace reasonrefuserecommendcat="" if reasonrefuserecommendcat=="66"
 recode repaycreditpersorecoamount (0=.)
 recode repaycreditpersorecorelation (66=.) // irrelevant to .
@@ -173,6 +184,19 @@ label var jatis "Jatis"
 label var caste "caste"
 label define caste 1"Dalits" 2"Middle castes" 3"Upper castes", replace
 label values caste caste
+
+
+
+
+********** Pubserv
+ta pubservfield1
+gen dummypubserv=.
+replace dummypubserv=0 if pubservfield1==""
+replace dummypubserv=1 if pubservfield1!=""
+label values dummypubserv yesno
+order dummypubserv, before(pubservfield1)
+
+
 
 
 save"Last/RUME-HH", replace

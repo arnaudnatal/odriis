@@ -10,15 +10,10 @@ cls
 clear all
 macro drop _all
 ********** Path to do
-global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Materials\SurveyReport\RUME"
+global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\RUME"
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox (IRD)\RUME II\9. En cours\RUME_report\analysis"
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\2010-RUME\Materials\SurveyReport\analysis"
 cd"$directory"
-********** Database names
-global household = "RUME-HH"
-global loans = "RUME-loans_mainloans"
-global occupations = "RUME-occupations"
-global lenders = "RUME-lenders"
 ********** Scheme
 set scheme plotplain_v2
 grstyle init
@@ -141,7 +136,7 @@ log close
 
 
 
-log using "21_Selfemployment.log", nomsg replace
+log using "2-1_Selfemployment.log", nomsg replace
 ****************************************
 * 2.1. Self-employment
 ****************************************
@@ -266,7 +261,7 @@ log close
 
 
 
-log using "22_Salaried.log", nomsg replace
+log using "2-2_Salaried.log", nomsg replace
 ****************************************
 * 2.2. Salaried
 ****************************************
@@ -310,7 +305,7 @@ log close
 
 
 
-log using "23_Crisis.log", nomsg replace
+log using "2-3_Crisis.log", nomsg replace
 ****************************************
 * 2.3. Problems in your work since 2008
 ****************************************
@@ -390,7 +385,7 @@ log close
 
 
 
-log using "41_Remittancesreceived.log", nomsg replace
+log using "4-1_Remittancesreceived.log", nomsg replace
 ****************************************
 * 4.1. Remittances received
 ****************************************
@@ -429,7 +424,7 @@ log close
 
 
 
-log using "42_Remittancessent.log", nomsg replace
+log using "4-2_Remittancessent.log", nomsg replace
 ****************************************
 * 4.2. Remittances sent
 ****************************************
@@ -466,7 +461,7 @@ log close
 
 
 
-log using "512_Loans.log", nomsg replace
+log using "5-1_Loans.log", nomsg replace
 ****************************************
 * 5.1. Loans and mains loans (5.2)
 ****************************************
@@ -563,7 +558,7 @@ log close
 
 
 
-log using "53_Lenders.log", nomsg replace
+log using "5-3_Lenders.log", nomsg replace
 ****************************************
 * 5.3. Lenders
 ****************************************
@@ -603,7 +598,7 @@ log close
 
 
 
-log using "54_Creditonproduct.log", nomsg replace
+log using "5-4_Creditonproduct.log", nomsg replace
 ****************************************
 * 5.4. Credit on product
 ****************************************
@@ -638,7 +633,7 @@ log close
 
 
 
-log using "55_Lending.log", nomsg replace
+log using "5-5_Lending.log", nomsg replace
 ****************************************
 * 5.5. Lending money
 ****************************************
@@ -680,7 +675,7 @@ log close
 
 
 
-log using "56_Lending.log", nomsg replace
+log using "5-6_Lending.log", nomsg replace
 ****************************************
 * 5.6. Given recommendation
 ****************************************
@@ -717,14 +712,14 @@ log close
 
 
 
-log using "57_Recommendation.log", nomsg replace
+log using "5-7_Recommendation.log", nomsg replace
 ****************************************
 * 5.7. Recommendation received
 ****************************************
 use"RUME-HH", clear
 
 * Selection
-keep HHID2010 dummyrecommendrefuse reasonrefuserecommendcat reasonrefuserecommend repaycreditpersoreco repaycreditpersorecoamount repaycreditpersorecorelation repaycreditpersorecocaste repaycreditpersorecoborrower repaycreditpersorecomanage receivereco
+keep HHID2010 dummyrecommendreceived dummyrecommendrefuse reasonrefuserecommendcat reasonrefuserecommend repaycreditpersoreco repaycreditpersorecoamount repaycreditpersorecorelation repaycreditpersorecocaste repaycreditpersorecoborrower repaycreditpersorecomanage receivereco
 duplicates drop
 
 * Tables
@@ -753,7 +748,7 @@ log close
 
 
 
-log using "58_Chitfund.log", nomsg replace
+log using "5-8_Chitfund.log", nomsg replace
 ****************************************
 * 5.8. Chit fund
 ****************************************
@@ -793,7 +788,7 @@ log close
 
 
 
-log using "59_Savings.log", nomsg replace
+log using "5-9_Savings.log", nomsg replace
 ****************************************
 * 5.9. Savings
 ****************************************
@@ -835,7 +830,7 @@ log close
 
 
 
-log using "510_Gold.log", nomsg replace
+log using "5-10_Gold.log", nomsg replace
 ****************************************
 * 5.10. Gold
 ****************************************
@@ -864,7 +859,7 @@ log close
 
 
 
-log using "511_Insurance.log", nomsg replace
+log using "5-11_Insurance.log", nomsg replace
 ****************************************
 * 5.11. Insurance
 ****************************************
@@ -904,7 +899,7 @@ log close
 
 
 
-log using "61_Land.log", nomsg replace
+log using "6-1_Land.log", nomsg replace
 ****************************************
 * 6.1. Land group
 ****************************************
@@ -948,7 +943,7 @@ log close
 
 
 
-log using "62_Crops.log", nomsg replace
+log using "6-2_1Crops.log", nomsg replace
 ****************************************
 * 6.2. Crops
 ****************************************
@@ -982,7 +977,7 @@ log close
 
 
 
-log using "62_Cropsstoppedinterested.log", nomsg replace
+log using "6-2_2Cropsstoppedinterested.log", nomsg replace
 ****************************************
 * 6.2. Crops stopped or interested
 ****************************************
@@ -1014,7 +1009,7 @@ log close
 
 
 
-log using "62_Othersproducts.log", nomsg replace
+log using "6-2_3Othersproducts.log", nomsg replace
 ****************************************
 * 6.2. Other products
 ****************************************
@@ -1042,7 +1037,7 @@ log close
 
 
 
-log using "62_Labourers.log", nomsg replace
+log using "6-2_4Labourers.log", nomsg replace
 ****************************************
 * 6.2. Labourers
 ****************************************
@@ -1076,7 +1071,7 @@ log close
 
 
 
-log using "63_Livestock.log", nomsg replace
+log using "6-3_Livestock.log", nomsg replace
 ****************************************
 * 6.3. Livestock
 ****************************************
@@ -1127,7 +1122,7 @@ log close
 
 
 
-log using "64_Equipment.log", nomsg replace
+log using "6-4_Equipment.log", nomsg replace
 ****************************************
 * 6.4. Equipment
 ****************************************
@@ -1161,7 +1156,7 @@ log close
 
 
 
-log using "71_Expenses.log", nomsg replace
+log using "7-1_Expenses.log", nomsg replace
 ****************************************
 * 7.1. Expenses
 ****************************************
@@ -1191,7 +1186,7 @@ log close
 
 
 
-log using "72_Consumer.log", nomsg replace
+log using "7-2_Consumer.log", nomsg replace
 ****************************************
 * 7.2. Consumer goods
 ****************************************
@@ -1345,27 +1340,5 @@ summarize membershipsdurationasso
 ****************************************
 * END
 log close
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
