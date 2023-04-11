@@ -151,6 +151,67 @@ rename businessskill_4 businessskill_expe
 drop businessskill1 businessskill2
 order businessskill_fami businessskill_frie businessskill_scho businessskill_expe, after(businessskill)
 
+
+********** businesssourceinvest
+ta businesssourceinvest
+replace businesssourceinvest="" if businesssourceinvest=="."
+split businesssourceinvest
+destring businesssourceinvest1 businesssourceinvest2 businesssourceinvest3, replace
+recode businesssourceinvest1 businesssourceinvest2 businesssourceinvest3 (77=9)
+forvalues i=1/9 {
+gen businesssourceinvest_`i'=0 if businesssourceinvest!=""
+} 
+forvalues i=1/9 {
+replace businesssourceinvest_`i'=1 if businesssourceinvest1==`i'
+replace businesssourceinvest_`i'=1 if businesssourceinvest2==`i'
+replace businesssourceinvest_`i'=1 if businesssourceinvest3==`i'
+label values businesssourceinvest_`i' dummybusinesslabourers
+label var businesssourceinvest_`i' "businesssourceinvest=`i'"
+}
+rename businesssourceinvest_1 businesssourceinvest_rela
+rename businesssourceinvest_2 businesssourceinvest_bank
+rename businesssourceinvest_3 businesssourceinvest_info
+rename businesssourceinvest_4 businesssourceinvest_savi
+rename businesssourceinvest_5 businesssourceinvest_inhe
+rename businesssourceinvest_6 businesssourceinvest_prof
+rename businesssourceinvest_7 businesssourceinvest_inbu
+rename businesssourceinvest_8 businesssourceinvest_none
+rename businesssourceinvest_9 businesssourceinvest_othe
+drop businesssourceinvest1 businesssourceinvest2 businesssourceinvest3
+order businesssourceinvest_rela businesssourceinvest_bank businesssourceinvest_info businesssourceinvest_savi businesssourceinvest_inhe businesssourceinvest_prof businesssourceinvest_inbu businesssourceinvest_none businesssourceinvest_othe, after(businesssourceinvest)
+fre businesssourceinvest*
+
+
+********** otherbusinesssourceinvestment
+replace otherbusinesssourceinvestment="" if otherbusinesssourceinvestment=="."
+
+
+********** business lender
+drop numberbusinessloan_rel namebusinesslender1_rel addressbusinesslender1_rel businesslender1_rel castebusinesslender1_rel occupbusinesslender1_rel numberbusinessloan_bank namebusinesslender1_bank addressbusinesslender1_bank businesslender1_bank castebusinesslender1_bank occupbusinesslender1_bank namebusinesslender2_bank addressbusinesslender2_bank businesslender2_bank castebusinesslender2_bank occupbusinesslender2_bank numberbusinessloan_inf namebusinesslender1_inf addressbusinesslender1_inf businesslender1_inf castebusinesslender1_inf occupbusinesslender1_inf namebusinesslender2_inf addressbusinesslender2_inf businesslender2_inf castebusinesslender2_inf occupbusinesslender2_inf namebusinesslender3_inf addressbusinesslender3_inf businesslender3_inf castebusinesslender3_inf occupbusinesslender3_inf
+
+preserve
+use"C:\Users\Arnaud\Documents\Dropbox (Personal)\2016-NEEMSIS1\Data\_raw\NEEMSIS1 Original data by module\NEEMSIS-businessinvestment", clear
+sort parent_key namenumber occupationid businessloanid
+reshape long namebusinesslender addressbusinesslender businesslender castebusinesslender occupbusinesslender, i(parent_key namenumber occupationid businessloanid) j(n)
+drop if namebusinesslender==""
+drop businessloanname parent_key_all _merge businessloanid n numberbusinessloan 
+bysort parent_key namenumber occupationid: gen n=_n
+reshape wide namebusinesslender addressbusinesslender businesslender castebusinesslender occupbusinesslender, i(parent_key namenumber occupationid) j(n)
+rename parent_key HHID2016
+rename namenumber INDID2016
+save"_temp/Businessinvest", replace
+restore
+
+merge m:1 HHID2016 INDID2016 occupationid using "_temp/Businessinvest"
+drop if occupationid==.
+sort _merge
+ta _merge
+order HHID2016 INDID2016 occupationid _merge
+sort HHID2016 INDID2016 occupationid
+drop if _merge==2
+drop _merge
+
+
 save"Last/NEEMSIS1-occupations", replace
 ****************************************
 * END

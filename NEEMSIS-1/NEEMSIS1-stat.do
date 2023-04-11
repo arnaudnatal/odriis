@@ -197,15 +197,32 @@ summarize annualincome
 tabulate datestartoccup
 tabulate demooccup
 
+****************************************
+* END
+log close
 
-********** Self-employment
+
+
+
+
+
+
+
+
+
+
+log using "2-1_Selfemployment.log", nomsg replace
+****************************************
+* 2.1. Self-employment
+****************************************
 use"NEEMSIS1-occupations", clear
 
 * Selection
 drop if occupationid==.
+keep if kindofwork==2
 
 * Tables
-tabulate yearestablishment
+summarize yearestablishment
 tabulate businesscastebased
 tabulate businessskill_fami
 tabulate businessskill_frie
@@ -214,10 +231,51 @@ tabulate businessskill_expe
 summarize businessamountinvest
 tabulate businesslossinvest
 summarize businesslossinvestamount demobusinessloss
-tabulate businesssourceinvest
+tabulate businesssourceinvest_rela
+tabulate businesssourceinvest_bank
+tabulate businesssourceinvest_info
+tabulate businesssourceinvest_savi
+tabulate businesssourceinvest_inhe
+tabulate businesssourceinvest_prof
+tabulate businesssourceinvest_inbu
+tabulate businesssourceinvest_none
+tabulate businesssourceinvest_othe
 tabulate otherbusinesssourceinvestment
+
+
+* Selection
+keep HHID2016 INDID2016 occupationid namebusinesslender* addressbusinesslender* businesslender* castebusinesslender* occupbusinesslender*
+reshape long namebusinesslender addressbusinesslender businesslender castebusinesslender occupbusinesslender, i(HHID2016 INDID2016 occupationid) j(n)
+
+* Tables
+
+
 
 ****************************************
 * END
 log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
