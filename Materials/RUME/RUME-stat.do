@@ -34,58 +34,6 @@ grstyle set plain, box nogrid
 
 
 
-****************************************
-* Merge key + caste corr
-****************************************
-use"raw/$household", clear
-
-* HHID_panel and INDID_panel
-merge 1:m HHID2010 INDID2010 using "raw/keypanel-indiv_wide", keepusing(HHID_panel INDID_panel)
-keep if _merge==3
-drop _merge
-order HHID_panel INDID_panel HHID2010 INDID2010
-
-* Caste
-merge m:1 HHID_panel using "raw/Panel-Caste_HH", keepusing(jatis2010 jatiscorr2010 caste2010)
-keep if _merge==3
-drop _merge
-
-save "RUME-HH", replace
-****************************************
-* END
-
-
-
-
-
-
-
-
-
-
-****************************************
-* Caste module
-****************************************
-use"RUME-HH", clear
-
-keep HHID2010 caste jatis caste2010 jatis2010 jatiscorr2010
-duplicates drop
-ta jatis jatis2010
-
-
-* Check jatis to caste
-ta jatis caste
-ta jatiscorr2010 caste2010
-
-
-****************************************
-* END
-
-
-
-
-
-
 
 
 
@@ -96,11 +44,11 @@ log using "0_Introduction.log", nomsg replace
 use"RUME-HH", clear
 
 * Selection
-keep HHID2010 village villagearea jatis caste religion comefrom outsider 
+keep HHID2010 villagename villagearea jatis caste religion comefrom outsider 
 duplicates drop
 
 * Tables
-tabulate village
+tabulate villagename
 tabulate villagearea
 tabulate jatis
 tabulate caste
@@ -493,12 +441,13 @@ tabulate dummyremsent
 
 * Selection
 use"RUME-HH", clear
-keep HHID2010 INDID2010 remsentname1* remsentlocation* remsentname1* remsenttotalamount* remsentfrequency*
-reshape long remsentname1 remsentlocation remsentname1 remsenttotalamount remsentfrequency, i(HHID2010 INDID2010) j(n)
-drop if remsentname1==.
+keep HHID2010 INDID2010 remsentname* remsentlocation* remsentrelation1* remsenttotalamount* remsentfrequency*
+reshape long remsentname remsentlocation remsentrelation remsenttotalamount remsentfrequency, i(HHID2010 INDID2010) j(n)
+drop if remsentname==.
+label values remsentrelation relation
 
 * Tables
-tabulate remsentname1
+tabulate remsentname
 tabulate remsentrelation
 summarize remsenttotalamount
 tabulate remsentfrequency
