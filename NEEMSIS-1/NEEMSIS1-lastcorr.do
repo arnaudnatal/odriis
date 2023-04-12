@@ -686,6 +686,157 @@ order savingsaccounttype1 banktype1 savingsbankname1 savingsbankplace1 savingsam
 
 
 
+********** Gold
+recode dummygold (.=0)
+ta goldownerlist
+split goldownerlist, destring
+gen goldownerlistdummy=0 if dummygold==1
+replace goldownerlistdummy=1 if goldownerlist1==INDID2016
+replace goldownerlistdummy=1 if goldownerlist2==INDID2016
+replace goldownerlistdummy=1 if goldownerlist3==INDID2016
+replace goldownerlistdummy=1 if goldownerlist4==INDID2016
+replace goldownerlistdummy=1 if goldownerlist5==INDID2016
+replace goldownerlistdummy=1 if goldownerlist6==INDID2016
+label values goldownerlistdummy dummyinsurance
+drop goldownerlist1 goldownerlist2 goldownerlist3 goldownerlist4 goldownerlist5 goldownerlist6
+order goldownerlistdummy, after(goldownerlist)
+
+
+*
+replace demogoldreasonbuy="" if demogoldreasonbuy=="."
+split demogoldreasonbuy, destring
+recode demogoldreasonbuy1 demogoldreasonbuy2 (77=6)
+forvalues i=1/6 {
+gen demogoldreasonbuy_`i'=0 if demogoldreasonbuy!=""
+}
+forvalues i=1/6 {
+replace demogoldreasonbuy_`i'=1 if demogoldreasonbuy1==`i'
+replace demogoldreasonbuy_`i'=1 if demogoldreasonbuy2==`i'
+label var demogoldreasonbuy_`i' "demogoldreasonbuy=`i'"
+label values demogoldreasonbuy_`i' dummyinsurance
+}
+rename demogoldreasonbuy_1 demogoldreasonbuy_savi
+rename demogoldreasonbuy_2 demogoldreasonbuy_rido
+rename demogoldreasonbuy_3 demogoldreasonbuy_gift
+rename demogoldreasonbuy_4 demogoldreasonbuy_sell
+rename demogoldreasonbuy_5 demogoldreasonbuy_spec
+rename demogoldreasonbuy_6 demogoldreasonbuy_othe
+drop demogoldreasonbuy1 demogoldreasonbuy2
+order demogoldreasonbuy_savi demogoldreasonbuy_rido demogoldreasonbuy_gift demogoldreasonbuy_sell demogoldreasonbuy_spec demogoldreasonbuy_othe, after(demogoldreasonbuy)
+
+
+*** goldreasonpledge
+ta goldreasonpledge
+replace goldreasonpledge="" if goldreasonpledge=="."
+split goldreasonpledge, destring
+forvalues i=1/12 {
+gen goldreasonpledge_`i'=0 if goldreasonpledge!=""
+}
+forvalues i=1/12 {
+replace goldreasonpledge_`i'=1 if goldreasonpledge1==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge2==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge3==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge4==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge5==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge6==`i'
+label var goldreasonpledge_`i' "goldreasonpledge=`i'"
+label values goldreasonpledge_`i' dummyinsurance
+}
+rename goldreasonpledge_1 goldreasonpledge_agri
+rename goldreasonpledge_2 goldreasonpledge_fami
+rename goldreasonpledge_3 goldreasonpledge_heal
+rename goldreasonpledge_4 goldreasonpledge_repa
+rename goldreasonpledge_5 goldreasonpledge_hous
+rename goldreasonpledge_6 goldreasonpledge_inve
+rename goldreasonpledge_7 goldreasonpledge_cere
+rename goldreasonpledge_8 goldreasonpledge_marr
+rename goldreasonpledge_9 goldreasonpledge_educ
+rename goldreasonpledge_10 goldreasonpledge_rela
+rename goldreasonpledge_11 goldreasonpledge_deat
+rename goldreasonpledge_12 goldreasonpledge_nore
+drop goldreasonpledge1 goldreasonpledge2 goldreasonpledge3 goldreasonpledge4 goldreasonpledge5 goldreasonpledge6
+order goldreasonpledge_agri goldreasonpledge_fami goldreasonpledge_heal goldreasonpledge_repa goldreasonpledge_hous goldreasonpledge_inve goldreasonpledge_cere goldreasonpledge_marr goldreasonpledge_educ goldreasonpledge_rela goldreasonpledge_deat goldreasonpledge_nore, after(goldreasonpledge)
+
+
+
+**
+ta demogoldreasonpledge
+replace demogoldreasonpledge="" if demogoldreasonpledge=="."
+split demogoldreasonpledge, destring
+forvalues i=1/11 {
+gen demogoldreasonpledge_`i'=0 if demogoldreasonpledge!=""
+}
+forvalues i=1/11 {
+replace demogoldreasonpledge_`i'=1 if demogoldreasonpledge1==`i'
+replace demogoldreasonpledge_`i'=1 if demogoldreasonpledge2==`i'
+label var demogoldreasonpledge_`i' "demogoldreasonpledge=`i'"
+label values demogoldreasonpledge_`i' dummyinsurance
+}
+rename demogoldreasonpledge_1 demogoldreasonpledge_agri
+rename demogoldreasonpledge_2 demogoldreasonpledge_fami
+rename demogoldreasonpledge_3 demogoldreasonpledge_heal
+rename demogoldreasonpledge_4 demogoldreasonpledge_repa
+rename demogoldreasonpledge_5 demogoldreasonpledge_hous
+rename demogoldreasonpledge_6 demogoldreasonpledge_inve
+rename demogoldreasonpledge_7 demogoldreasonpledge_cere
+rename demogoldreasonpledge_8 demogoldreasonpledge_marr
+rename demogoldreasonpledge_9 demogoldreasonpledge_educ
+rename demogoldreasonpledge_10 demogoldreasonpledge_rela
+rename demogoldreasonpledge_11 demogoldreasonpledge_deat
+drop demogoldreasonpledge1 demogoldreasonpledge2
+order demogoldreasonpledge_agri demogoldreasonpledge_fami demogoldreasonpledge_heal demogoldreasonpledge_repa demogoldreasonpledge_hous demogoldreasonpledge_inve demogoldreasonpledge_cere demogoldreasonpledge_marr demogoldreasonpledge_educ demogoldreasonpledge_rela demogoldreasonpledge_deat, after(demogoldreasonpledge)
+
+
+
+
+********** Insurance
+recode dummyinsurance (.=0)
+
+tab reasonnoinsurance
+replace reasonnoinsurance="" if reasonnoinsurance=="."
+split reasonnoinsurance, destring
+recode reasonnoinsurance1 reasonnoinsurance2 reasonnoinsurance3 (77=4)
+forvalues i=1/4 {
+gen reasonnoinsurance_`i'=0 if reasonnoinsurance!=""
+}
+forvalues i=1/4 {
+replace reasonnoinsurance_`i'=1 if reasonnoinsurance1==`i'
+replace reasonnoinsurance_`i'=1 if reasonnoinsurance2==`i'
+replace reasonnoinsurance_`i'=1 if reasonnoinsurance3==`i'
+label var reasonnoinsurance_`i' "reasonnoinsurance=`i'"
+label values reasonnoinsurance_`i' dummyinsurance
+}
+rename reasonnoinsurance_1 reasonnoinsurance_noin
+rename reasonnoinsurance_2 reasonnoinsurance_mone
+rename reasonnoinsurance_3 reasonnoinsurance_dkno
+rename reasonnoinsurance_4 reasonnoinsurance_othe
+drop reasonnoinsurance1 reasonnoinsurance2 reasonnoinsurance3
+order reasonnoinsurance_noin reasonnoinsurance_mone reasonnoinsurance_dkno reasonnoinsurance_othe, after(reasonnoinsurance)
+
+
+ta insuranceownerlist
+replace insuranceownerlist="" if insuranceownerlist=="."
+split insuranceownerlist, destring
+gen insuranceownerlistdummy=0 if dummyinsurance==1
+replace insuranceownerlistdummy=1 if insuranceownerlist1==INDID2016
+replace insuranceownerlistdummy=1 if insuranceownerlist2==INDID2016
+replace insuranceownerlistdummy=1 if insuranceownerlist3==INDID2016
+label values insuranceownerlistdummy dummyinsurance
+drop insuranceownerlist1 insuranceownerlist2 insuranceownerlist3
+order insuranceownerlistdummy, after(insuranceownerlist)
+
+
+replace reasonnoinsuranceother="" if reasonnoinsuranceother=="."
+
+sort insurancebenefitamount insurancebenefitamount1 insurancebenefitamount2
+replace insurancebenefitamount1=insurancebenefitamount if insurancebenefitamount!=. & insurancebenefitamount1==.
+drop insurancebenefitamount
+
+label define insurancetype 1"Life insurance" 2"Health insurance" 3"Crop insurance" 4"Animal insurance" 5"Accident insurance (vehicles/person)" 6"Bike insurance", replace
+label values insurancetype1 insurancetype
+label values insurancetype2 insurancetype
+
+
 save"Last/NEEMSIS1-HH", replace
 ****************************************
 * END

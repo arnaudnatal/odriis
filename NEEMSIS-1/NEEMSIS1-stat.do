@@ -1246,3 +1246,160 @@ log close
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "6-7_Gold.log", nomsg replace
+****************************************
+* 6.7. Gold
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummygold
+duplicates drop
+
+* Tables
+tabulate dummygold
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate goldownerlistdummy
+summarize goldquantity demogoldquanti
+tabulate demogoldreasonbuy_savi
+tabulate demogoldreasonbuy_rido
+tabulate demogoldreasonbuy_gift
+tabulate demogoldreasonbuy_sell
+tabulate demogoldreasonbuy_spec
+tabulate demogoldreasonbuy_othe
+tabulate demogoldreasonbuyother
+tabulate dummygoldpledged
+summarize goldquantitypledge goldamountpledge
+tabulate goldreasonpledge_agri
+tabulate goldreasonpledge_fami
+tabulate goldreasonpledge_heal
+tabulate goldreasonpledge_repa
+tabulate goldreasonpledge_hous
+tabulate goldreasonpledge_inve
+tabulate goldreasonpledge_cere
+tabulate goldreasonpledge_marr
+tabulate goldreasonpledge_educ
+tabulate goldreasonpledge_rela
+tabulate goldreasonpledge_deat
+tabulate goldreasonpledge_nore
+summarize demogoldpledged
+tabulate demogoldreasonpledge_agri
+tabulate demogoldreasonpledge_fami
+tabulate demogoldreasonpledge_heal
+tabulate demogoldreasonpledge_repa
+tabulate demogoldreasonpledge_hous
+tabulate demogoldreasonpledge_inve
+tabulate demogoldreasonpledge_cere
+tabulate demogoldreasonpledge_marr
+tabulate demogoldreasonpledge_educ
+tabulate demogoldreasonpledge_rela
+tabulate demogoldreasonpledge_deat
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "6-8_Insurance.log", nomsg replace
+****************************************
+* 6.8. Insurance
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummyinsurance reasonnoinsurance_* reasonnoinsuranceother
+duplicates drop
+
+* Tables
+tabulate dummyinsurance
+tabulate reasonnoinsurance_noin
+tabulate reasonnoinsurance_mone
+tabulate reasonnoinsurance_dkno
+tabulate reasonnoinsurance_othe
+tabulate reasonnoinsuranceother
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+
+* Tables
+tabulate insuranceownerlistdummy
+summarize nbinsurance
+
+
+
+********** Insurance level
+* Selection
+keep HHID2016 INDID2016 insurancepublic1 insurancepublic2 insurancename1 insurancename2 insurancejoineddate1 insurancejoineddate2 insurancetype1 insurancetype2 insurancepaymentfrequency1 insurancepaymentfrequency2 insuranceamount1 insuranceamount2 insurancebenefit1 insurancebenefitamount1 insurancebenefit2 insurancebenefitamount2
+reshape long insurancepublic insurancename insurancejoineddate insurancetype insurancepaymentfrequency insuranceamount insurancebenefitamount insurancebenefit, i(HHID2016 INDID2016) j(n)
+drop if insurancename==""
+
+* Tables
+tabulate insurancepublic
+tabulate insurancename
+tabulate insurancetype
+tabulate insurancepaymentfrequency
+summarize insuranceamount
+tabulate insurancebenefit
+summarize insurancebenefitamount
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
