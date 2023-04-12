@@ -955,11 +955,77 @@ tabulate guarantee_other
 tabulate guaranteeother
 tabulate guaranteetype
 
+****************************************
+* END
+log close
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+log using "6-3_Lending.log", nomsg replace
+****************************************
+* 6.3. Lending
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummylendingmoney
+duplicates drop
+
+* Tables
+tabulate dummylendingmoney
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate hhlenderlistdummy
+tabulate borrowerscaste
+tabulate borrowerssex
+tabulate relationwithborrower_mais
+tabulate relationwithborrower_chil
+tabulate relationwithborrower_sibl
+tabulate relationwithborrower_pare
+tabulate relationwithborrower_niec
+tabulate relationwithborrower_othe
+tabulate relationwithborrower_neig
+tabulate relationwithborrower_frie
+tabulate relationwithborrower_cust
+tabulate relationwithborrower_mone
+tabulate relationwithborrower_shg
+tabulate relationwithborrower_empl
+tabulate relationwithborrower_wkp
+tabulate relationwithborrower_own
+tabulate relationwithborrower_spou
+summarize amountlent
+tabulate demolendingkind
+tabulate demotermslending
+tabulate demodummyrepaylending
+tabulate demorepaytermslending_payless
+tabulate demorepaytermslending_freqext
+tabulate demorepaytermslending_stopped
+tabulate demorepaytermslending_partial
+tabulate demorepaytermslending_totally
+summarize interestlending
+tabulate demointerestlending
+tabulate purposeloanborrower
+tabulate problemrepayment
+tabulate dummyloanfromborrower
+tabulate dummyrecommendgiven
 
 ****************************************
 * END
@@ -967,6 +1033,187 @@ log close
 
 
 
+
+
+
+
+
+
+
+
+
+
+log using "6-4_Guarantee.log", nomsg replace
+****************************************
+* 6.4. Guarantee and recommendation
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummyrecommendgiven dummyrecommendrefuse reasonrefuserecommend
+duplicates drop
+
+* Tables
+tabulate dummyrecommendgiven
+tabulate dummyrecommendrefuse
+tabulate reasonrefuserecommend
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate recommendgivenlistdummy
+tabulate recommendgivenrelation
+tabulate recommendgivencaste
+tabulate dummyrecommendback
+tabulate recommendgivenlender
+tabulate recommendgivenlendercaste
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "6-5_Chitfund.log", nomsg replace
+****************************************
+* 6.5. Chitfund
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummychitfund
+duplicates drop
+
+* Tables
+tabulate dummychitfund
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate chitfundbelongerlistdummy
+summarize nbchitfunds
+
+
+
+********** Chit fund level
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 INDID2016 chitfundtype* durationchit* nbermemberchit* chitfundpayment* chitfundpaymentamount* chitfundamount*
+reshape long chitfundtype durationchit nbermemberchit chitfundpayment chitfundpaymentamount chitfundamount, i(HHID2016 INDID2016) j(n)
+drop if chitfundtype==.
+
+* Tables
+tabulate chitfundtype
+summarize durationchit nbermemberchit
+tabulate chitfundpayment
+summarize chitfundpaymentamount chitfundamount
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "6-6_Saving.log", nomsg replace
+****************************************
+* 6.6. Savings
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummysavingaccount
+duplicates drop
+
+* Tables
+tabulate dummysavingaccount
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate savingsownerlistdummy
+summarize nbsavingaccounts
+
+
+
+********** Saving account level
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 INDID2016 savingsaccounttype* savingsjointaccount* savingsaccountdate* banktype* savingsbankname* savingsbankplace* savingsamount* savingspurpose* dummydebitcard* dummycreditcard* datedebitcard* usedebitcard* reasonnotusedebitcard* demousedebitcard* demousecreditcard* datecreditcard* usecreditcard*
+reshape long savingsaccounttype savingsjointaccount savingsaccountdate banktype savingsbankname savingsbankplace savingsamount savingspurpose dummydebitcard dummycreditcard datedebitcard usedebitcard reasonnotusedebitcard demousedebitcard demousecreditcard datecreditcard usecreditcard, i(HHID2016 INDID2016) j(n)
+drop if savingsaccounttype==.
+
+* Tables
+tabulate savingsaccounttype
+tabulate savingsjointaccount
+tabulate savingsaccountdate
+tabulate banktype
+summarize savingsamount
+tabulate savingspurpose
+
+
+tabulate dummydebitcard
+tabulate dummycreditcard
+tabulate datedebitcard
+tabulate usedebitcard
+
+tabulate reasonnotusedebitcard
+tabulate demousedebitcard
+tabulate demousecreditcard
+tabulate datecreditcard
+tabulate usecreditcard
+
+****************************************
+* END
+log close
 
 
 

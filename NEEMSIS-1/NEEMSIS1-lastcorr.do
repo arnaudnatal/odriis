@@ -380,9 +380,199 @@ drop borrowerlist1 borrowerlist2 borrowerlist3 borrowerlist4
 order borrowerlistdummy, after(borrowerlist)
 
 
+
+********** Lender list
+ta hhlenderlist
+destring hhlenderlist, replace
+gen hhlenderlistdummy=0 if dummylendingmoney==1
+replace hhlenderlistdummy=1 if hhlenderlist==INDID2016
+label values hhlenderlistdummy dummyinsurance
+order hhlenderlistdummy, after(hhlenderlist)
+
+ta relationwithborrower
+split relationwithborrower, destring
+forvalues i=1/15 {
+gen relationwithborrower_`i'=0 if relationwithborrower!=""
+}
+forvalues i=1/15 {
+replace relationwithborrower_`i'=1 if relationwithborrower1==`i'
+replace relationwithborrower_`i'=1 if relationwithborrower2==`i'
+replace relationwithborrower_`i'=1 if relationwithborrower3==`i'
+replace relationwithborrower_`i'=1 if relationwithborrower4==`i'
+label values relationwithborrower_`i' dummyinsurance
+label var relationwithborrower_`i' "relationwithborrower=`i'"
+}
+rename relationwithborrower_1 relationwithborrower_mais
+rename relationwithborrower_2 relationwithborrower_chil
+rename relationwithborrower_3 relationwithborrower_sibl
+rename relationwithborrower_4 relationwithborrower_pare
+rename relationwithborrower_5 relationwithborrower_niec
+rename relationwithborrower_6 relationwithborrower_othe
+rename relationwithborrower_7 relationwithborrower_neig
+rename relationwithborrower_8 relationwithborrower_frie
+rename relationwithborrower_9 relationwithborrower_cust
+rename relationwithborrower_10 relationwithborrower_mone
+rename relationwithborrower_11 relationwithborrower_shg
+rename relationwithborrower_12 relationwithborrower_empl
+rename relationwithborrower_13 relationwithborrower_wkp
+rename relationwithborrower_14 relationwithborrower_own
+rename relationwithborrower_15 relationwithborrower_spou
+drop relationwithborrower1 relationwithborrower2 relationwithborrower3 relationwithborrower4
+order relationwithborrower_mais relationwithborrower_chil relationwithborrower_sibl relationwithborrower_pare relationwithborrower_niec relationwithborrower_othe relationwithborrower_neig relationwithborrower_frie relationwithborrower_cust relationwithborrower_mone relationwithborrower_shg relationwithborrower_empl relationwithborrower_wkp relationwithborrower_own relationwithborrower_spou, after(relationwithborrower)
+
+format datelendingmoney %td
+ta datelendingmoney
+
+label define demolendingkind 1"Old notes" 2"New notes" 3"Both" 4"Transfer"
+label values demolendingkind demolendingkind
+
+label define demotermslending 1"Weekly" 2"Monthly" 3"Yearly" 4"Once in 6 months" 5"Whenever I ask" 6"When the borrower has money"
+label values demotermslending demotermslending
+
+label values demodummyrepaylending dummyinsurance
+
+replace demorepaytermslending="" if demorepaytermslending=="."
+split demorepaytermslending, destring
+forvalues i=1/5{
+gen demorepaytermslending_`i'=0 if demorepaytermslending!=""
+}
+forvalues i=1/5{
+replace demorepaytermslending_`i'=1 if demorepaytermslending1==`i'
+replace demorepaytermslending_`i'=1 if demorepaytermslending2==`i'
+label var demorepaytermslending_`i' "demorepaytermslending=`i'"
+label values demorepaytermslending_`i' dummyinsurance
+}
+rename demorepaytermslending_1 demorepaytermslending_payless
+rename demorepaytermslending_2 demorepaytermslending_freqext
+rename demorepaytermslending_3 demorepaytermslending_stopped
+rename demorepaytermslending_4 demorepaytermslending_partial
+rename demorepaytermslending_5 demorepaytermslending_totally
+drop demorepaytermslending1 demorepaytermslending2
+order demorepaytermslending_payless demorepaytermslending_freqext demorepaytermslending_stopped demorepaytermslending_partial demorepaytermslending_totally, after(demorepaytermslending)
+
+label define demointerestlending 1"Lower interest rate than before" 2"Same interest rate than before" 3"Higher interest rate than before" 4"Along with commission"
+label values demointerestlending demointerestlending
+
+
+
+
+********** Recommend given
+gen recommendgivenlistdummy=0 if dummyrecommendgiven==1
+replace recommendgivenlistdummy=1 if recommendgivenlist==INDID2016
+label values recommendgivenlistdummy dummyinsurance
+order recommendgivenlistdummy, after(recommendgivenlist)
+ta recommendgivenlistdummy
+
+label define recommendgivenrelation 5"Niece/Nephew not living in the house" 13"WKP"
+label values recommendgivenrelation recommendgivenrelation
+
+label define recommendgivenlender 1"WKP" 2"Relatives" 8"Finance"
+label values recommendgivenlender recommendgivenlender
+
+
+
+********** Chitfund
+ta chitfundbelongerlist
+replace chitfundbelongerlist="" if chitfundbelongerlist=="."
+split chitfundbelongerlist, destring
+gen chitfundbelongerlistdummy=0 if dummychitfund==1
+replace chitfundbelongerlistdummy=1 if chitfundbelongerlist1==INDID2016
+replace chitfundbelongerlistdummy=1 if chitfundbelongerlist2==INDID2016
+drop chitfundbelongerlist1 chitfundbelongerlist2
+label values chitfundbelongerlistdummy dummyinsurance
+ta chitfundbelongerlistdummy
+
+
+
+********** Savings
+recode dummysavingaccount (.=0)
+
+ta savingsownerlist
+replace savingsownerlist="" if savingsownerlist=="."
+split savingsownerlist, destring 
+gen savingsownerlistdummy=0 if dummysavingaccount==1
+replace savingsownerlistdummy=1 if savingsownerlist1==INDID2016
+replace savingsownerlistdummy=1 if savingsownerlist2==INDID2016
+replace savingsownerlistdummy=1 if savingsownerlist3==INDID2016
+replace savingsownerlistdummy=1 if savingsownerlist4==INDID2016
+replace savingsownerlistdummy=1 if savingsownerlist5==INDID2016
+replace savingsownerlistdummy=1 if savingsownerlist6==INDID2016
+replace savingsownerlistdummy=1 if savingsownerlist7==INDID2016
+replace savingsownerlistdummy=1 if savingsownerlist8==INDID2016
+label values savingsownerlistdummy dummyinsurance
+drop savingsownerlist1 savingsownerlist2 savingsownerlist3 savingsownerlist4 savingsownerlist5 savingsownerlist6 savingsownerlist7 savingsownerlist8
+order savingsownerlistdummy, after(savingsownerlist)
+
+foreach x in savingspurpose4 usedebitcard3 usedebitcard4 demousecreditcard2 {
+tostring `x', replace
+replace `x'="" if `x'=="."
+}
+
+
+
+***** Correction
+preserve
+use"NEEMSIS1-HH", clear
+keep HHID2016 INDID2016 savingsaccounttype* savingsjointaccount* savingsaccountdate* banktype* savingsbankname* savingsbankplace* savingsamount* savingspurpose* dummydebitcard* dummycreditcard* datedebitcard* usedebitcard* reasonnotusedebitcard* demousedebitcard* demousecreditcard* datecreditcard* usecreditcard*
+reshape long savingsaccounttype savingsjointaccount savingsaccountdate banktype savingsbankname savingsbankplace savingsamount savingspurpose dummydebitcard dummycreditcard datedebitcard usedebitcard reasonnotusedebitcard demousedebitcard demousecreditcard datecreditcard usecreditcard, i(HHID2016 INDID2016) j(n)
+drop if savingsaccounttype==.
+
+
+format savingsaccountdate %td
+format datedebitcard %td
+format datecreditcard %td
+
+
+*** purpose
+ta savingspurpose
+split savingspurpose
+
+
+*** usedebitcard
+replace usedebitcard="" if usedebitcard=="."
+
+
+*** reasonnotusedebitcard
+replace reasonnotusedebitcard="" if reasonnotusedebitcard=="."
+
+
+*** demousedebitcard
+replace demousedebitcard="" if demousedebitcard=="."
+
+
+
+*** demousecreditcard
+replace demousecreditcard="" if demousecreditcard=="."
+
+
+
+** label usecreditcard
+
+
 save"Last/NEEMSIS1-HH", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1034,8 +1224,6 @@ rename guarantee_6 guarantee_none
 rename guarantee_7 guarantee_other
 drop guarantee1 guarantee2 guarantee3
 order guarantee_docu guarantee_chit guarantee_shg guarantee_pers guarantee_jewe guarantee_none guarantee_other, after(guarantee)
-
-
 
 
 
