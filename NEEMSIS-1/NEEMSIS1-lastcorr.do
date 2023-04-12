@@ -78,6 +78,7 @@ rename reasonneverattendedschool_11 reasonneverattendedschool_noal
 rename reasonneverattendedschool_12 reasonneverattendedschool_pube
 rename reasonneverattendedschool_13 reasonneverattendedschool_baby
 drop reasonneverattendedschool1 reasonneverattendedschool2
+order reasonneverattendedschool_fail reasonneverattendedschool_inac reasonneverattendedschool_qual reasonneverattendedschool_fina reasonneverattendedschool_heal reasonneverattendedschool_noin reasonneverattendedschool_care reasonneverattendedschool_work reasonneverattendedschool_girl reasonneverattendedschool_marr reasonneverattendedschool_noal reasonneverattendedschool_pube reasonneverattendedschool_baby, after(reasonneverattendedschool)
 
 ta reasondropping
 replace reasondropping="" if reasondropping=="."
@@ -106,6 +107,7 @@ rename reasondropping_12 reasondropping_noal
 rename reasondropping_13 reasondropping_pube
 rename reasondropping_14 reasondropping_baby
 drop reasondropping1 reasondropping2
+order reasondropping_stop reasondropping_fail reasondropping_inac reasondropping_qual reasondropping_fina reasondropping_heal reasondropping_noin reasondropping_care reasondropping_work reasondropping_girl reasondropping_marr reasondropping_noal reasondropping_pube reasondropping_baby, after(reasondropping)
 
 
 
@@ -130,10 +132,253 @@ replace migrantlistdummy=1 if INDID2016==migrantlist11
 replace migrantlistdummy=1 if INDID2016==migrantlist12
 replace migrantlistdummy=1 if INDID2016==migrantlist13
 label values migrantlistdummy dummyinsurance
-
-keep if dummymigration==1
 ta migrantlistdummy
 order migrantlistdummy, after(dummymigration)
+drop migrantlist1 migrantlist2 migrantlist3 migrantlist4 migrantlist5 migrantlist6 migrantlist7 migrantlist8 migrantlist9 migrantlist10 migrantlist11 migrantlist12 migrantlist13
+
+
+********** Why migration?
+preserve
+use"NEEMSIS1-migrations", clear
+keep HHID2016 INDID2016 migrationjobid
+bysort HHID2016 INDID2016: gen n=_n
+reshape wide migrationjobid, i(HHID2016 INDID2016) j(n)
+rename migrationjobid1 migrationjoblist1
+rename migrationjobid2 migrationjoblist2
+save"_temp/_tempmig", replace
+restore
+merge 1:1 HHID2016 INDID2016 using "_temp/_tempmig"
+drop _merge
+order migrationjoblist1 migrationjoblist2, after(migrantlistdummy)
+
+
+
+
+********** Remittances sent
+tabulate remsenderlist
+replace remsenderlist="" if remsenderlist=="."
+split remsenderlist
+destring remsenderlist*, replace
+gen remsenderlistdummy=0 if dummyremsent==1
+replace remsenderlistdummy=1 if INDID2016== remsenderlist1
+replace remsenderlistdummy=1 if INDID2016== remsenderlist2
+label values remsenderlistdummy dummyinsurance
+ta remsenderlistdummy
+order remsenderlistdummy, after(remsenderlist)
+drop remsenderlist1 remsenderlist2
+
+tostring remsentoccupother2, replace
+replace remsentoccupother2="" if remsentoccupother2=="."
+
+ta remsentservices1
+split remsentservices1
+destring remsentservices11 remsentservices12 remsentservices13, replace
+recode remsentservices11 remsentservices12 remsentservices13 (77=6)
+forvalues i=1/6 {
+gen remsentservices_`i'1=0 if remsentservices1!=""
+}
+forvalues i=1/6 {
+replace remsentservices_`i'1=1 if remsentservices11==`i'
+replace remsentservices_`i'1=1 if remsentservices12==`i'
+replace remsentservices_`i'1=1 if remsentservices13==`i'
+label values remsentservices_`i'1 dummymigration
+label var remsentservices_`i'1 "remsentservices=`i'"
+}
+rename remsentservices_11 remsentservices_poli1
+rename remsentservices_21 remsentservices_fina1
+rename remsentservices_31 remsentservices_guar1
+rename remsentservices_41 remsentservices_gene1
+rename remsentservices_51 remsentservices_none1
+rename remsentservices_61 remsentservices_othe1
+drop remsentservices11 remsentservices12 remsentservices13
+order remsentservices_poli1 remsentservices_fina1 remsentservices_guar1 remsentservices_gene1 remsentservices_none1 remsentservices_othe1, after(remsentservices1)
+
+ta remsentservices2
+split remsentservices2
+destring remsentservices21 remsentservices22, replace
+recode remsentservices21 remsentservices22 (77=6)
+forvalues i=1/6 {
+gen remsentservices_`i'2=0 if remsentservices2!=""
+}
+forvalues i=1/6 {
+replace remsentservices_`i'2=1 if remsentservices21==`i'
+replace remsentservices_`i'2=1 if remsentservices22==`i'
+label values remsentservices_`i'2 dummymigration
+label var remsentservices_`i'2 "remsentservices=`i'"
+}
+rename remsentservices_12 remsentservices_poli2
+rename remsentservices_22 remsentservices_fina2
+rename remsentservices_32 remsentservices_guar2
+rename remsentservices_42 remsentservices_gene2
+rename remsentservices_52 remsentservices_none2
+rename remsentservices_62 remsentservices_othe2
+drop remsentservices21 remsentservices22
+order remsentservices_poli2 remsentservices_fina2 remsentservices_guar2 remsentservices_gene2 remsentservices_none2 remsentservices_othe2, after(remsentservices2)
+
+
+
+
+
+********** Remittances received
+tabulate remreceivedlist
+replace remreceivedlist="" if remreceivedlist=="."
+split remreceivedlist
+destring remreceivedlist*, replace
+gen remreceivedlistdummy=0 if dummyremreceived==1
+replace remreceivedlistdummy=1 if INDID2016==remreceivedlist1
+replace remreceivedlistdummy=1 if INDID2016==remreceivedlist2
+label values remreceivedlistdummy dummyinsurance
+ta remreceivedlistdummy
+order remreceivedlistdummy, after(dummyremreceived)
+drop remreceivedlist1 remreceivedlist2
+
+label define demoremreceived 1"More" 2"Less" 3"Same"
+label values demoremreceived1 demoremreceived
+label values demoremreceived2 demoremreceived
+
+ta remreceivedservices1
+split remreceivedservices1
+destring remreceivedservices1*, replace
+recode remreceivedservices11 remreceivedservices12 remreceivedservices13 (77=6)
+forvalues i=1/6 {
+gen remreceivedservices_`i'1=0 if remreceivedservices1!=""
+}
+forvalues i=1/6 {
+replace remreceivedservices_`i'1=1 if remreceivedservices11==`i'
+replace remreceivedservices_`i'1=1 if remreceivedservices12==`i'
+replace remreceivedservices_`i'1=1 if remreceivedservices13==`i'
+label values remreceivedservices_`i'1 dummymigration
+label var remreceivedservices_`i'1 "remreceivedservices=`i'"
+}
+rename remreceivedservices_11 remreceivedservices_poli1
+rename remreceivedservices_21 remreceivedservices_fina1
+rename remreceivedservices_31 remreceivedservices_guar1
+rename remreceivedservices_41 remreceivedservices_gene1
+rename remreceivedservices_51 remreceivedservices_none1
+rename remreceivedservices_61 remreceivedservices_othe1
+drop remreceivedservices11 remreceivedservices12 remreceivedservices13
+order remreceivedservices_poli1 remreceivedservices_fina1 remreceivedservices_guar1 remreceivedservices_gene1 remreceivedservices_none1 remreceivedservices_othe1, after(remreceivedservices1)
+
+ta remreceivedservices2
+split remreceivedservices2
+destring remreceivedservices21 remreceivedservices22 remreceivedservices23, replace
+recode remreceivedservices21 remreceivedservices22 remreceivedservices23 (77=6)
+forvalues i=1/6 {
+gen remreceivedservices_`i'2=0 if remreceivedservices2!=""
+}
+forvalues i=1/6 {
+replace remreceivedservices_`i'2=1 if remreceivedservices21==`i'
+replace remreceivedservices_`i'2=1 if remreceivedservices22==`i'
+replace remreceivedservices_`i'2=1 if remreceivedservices23==`i'
+label values remreceivedservices_`i'2 dummymigration
+label var remreceivedservices_`i'2 "remreceivedservices=`i'"
+}
+rename remreceivedservices_12 remreceivedservices_poli2
+rename remreceivedservices_22 remreceivedservices_fina2
+rename remreceivedservices_32 remreceivedservices_guar2
+rename remreceivedservices_42 remreceivedservices_gene2
+rename remreceivedservices_52 remreceivedservices_none2
+rename remreceivedservices_62 remreceivedservices_othe2
+drop remreceivedservices21 remreceivedservices22 remreceivedservices23
+order remreceivedservices_poli2 remreceivedservices_fina2 remreceivedservices_guar2 remreceivedservices_gene2 remreceivedservices_none2 remreceivedservices_othe2, after(remreceivedservices2)
+
+
+
+
+********** Gifts received
+tabulate giftsrecipientlist
+destring giftsrecipientlist, replace
+gen giftsrecipientlistdummy=0 if dummygiftsreceived==1
+replace giftsrecipientlistdummy=1 if INDID2016==giftsrecipientlist
+label values giftsrecipientlistdummy dummyinsurance
+label values dummygiftsreceived dummyinsurance
+ta giftsrecipientlistdummy
+order giftsrecipientlistdummy, after(dummygiftsreceived)
+
+ta giftoccasion_WKP
+ta giftoccasion_rel
+ta giftoccasion_emp
+ta giftoccasion_friends
+
+label define giftoccasion 1"Pongal" 2"Birthday function" 3"New house" 4"Puberty" 5"Just like that" 77"Oth"
+destring giftoccasion_WKP giftoccasion_rel giftoccasion_emp giftoccasion_friends, replace
+label values giftoccasion_WKP giftoccasion
+label values giftoccasion_rel giftoccasion
+label values giftoccasion_friends giftoccasion
+
+foreach y in WKP rel friends {
+gen giftoccasion_pongal_`y'=0 if giftoccasion_`y'!=.
+replace giftoccasion_pongal_`y'=1 if giftoccasion_`y'==1
+gen giftoccasion_birth_`y'=0 if giftoccasion_`y'!=.
+replace giftoccasion_birth_`y'=1 if giftoccasion_`y'==2
+gen giftoccasion_house_`y'=0 if giftoccasion_`y'!=.
+replace giftoccasion_house_`y'=1 if giftoccasion_`y'==3
+gen giftoccasion_pube_`y'=0 if giftoccasion_`y'!=.
+replace giftoccasion_pube_`y'=1 if giftoccasion_`y'==4
+gen giftoccasion_just_`y'=0 if giftoccasion_`y'!=.
+replace giftoccasion_just_`y'=1 if giftoccasion_`y'==5
+gen giftoccasion_other_`y'=0 if giftoccasion_`y'!=.
+replace giftoccasion_other_`y'=1 if giftoccasion_`y'==77
+}
+
+
+foreach x in WKP rel friends {
+label values giftoccasion_pongal_`x' dummymigration
+label var giftoccasion_pongal_`x' "giftoccasion_`x'=1"
+label values giftoccasion_birth_`x' dummymigration
+label var giftoccasion_birth_`x' "giftoccasion_`x'=2"
+label values giftoccasion_house_`x' dummymigration
+label var giftoccasion_house_`x' "giftoccasion_`x'=3"
+label values giftoccasion_pube_`x' dummymigration
+label var giftoccasion_pube_`x' "giftoccasion_`x'=4"
+label values giftoccasion_just_`x' dummymigration
+label var giftoccasion_just_`x' "giftoccasion_`x'=5"
+label values giftoccasion_other_`x' dummymigration
+label var giftoccasion_other_`x' "giftoccasion_`x'=77"
+}
+
+
+
+* emp
+ta giftoccasion_emp
+split giftoccasion_emp
+destring giftoccasion_emp1 giftoccasion_emp2 giftoccasion_emp3, replace
+recode giftoccasion_emp1 giftoccasion_emp2 giftoccasion_emp3 (77=6)
+forvalues i=1/6 {
+gen giftoccasion_`i'_emp=0 if giftoccasion_emp!=""
+}
+forvalues i=1/6 {
+replace giftoccasion_`i'_emp=1 if giftoccasion_emp1==`i'
+replace giftoccasion_`i'_emp=1 if giftoccasion_emp2==`i'
+replace giftoccasion_`i'_emp=1 if giftoccasion_emp3==`i'
+label values giftoccasion_`i'_emp dummymigration
+label var giftoccasion_`i'_emp "giftoccasion_emp=`i'"
+}
+rename giftoccasion_1_emp giftoccasion_pongal_emp
+rename giftoccasion_2_emp giftoccasion_birth_emp
+rename giftoccasion_3_emp giftoccasion_house_emp
+rename giftoccasion_4_emp giftoccasion_pube_emp
+rename giftoccasion_5_emp giftoccasion_just_emp
+rename giftoccasion_6_emp giftoccasion_other_emp
+drop giftoccasion_emp1 giftoccasion_emp2 giftoccasion_emp3
+
+order giftoccasion_pongal_WKP giftoccasion_birth_WKP giftoccasion_house_WKP giftoccasion_pube_WKP giftoccasion_just_WKP giftoccasion_other_WKP giftoccasion_pongal_rel giftoccasion_birth_rel giftoccasion_house_rel giftoccasion_pube_rel giftoccasion_just_rel giftoccasion_other_rel giftoccasion_pongal_friends giftoccasion_birth_friends giftoccasion_house_friends giftoccasion_pube_friends giftoccasion_just_friends giftoccasion_other_friends giftoccasion_pongal_emp giftoccasion_birth_emp giftoccasion_house_emp giftoccasion_pube_emp giftoccasion_just_emp giftoccasion_other_emp, after(giftoccasion_friends)
+
+
+
+********** Loans list
+ta borrowerlist
+split borrowerlist
+destring borrowerlist1 borrowerlist2 borrowerlist3 borrowerlist4, replace
+gen borrowerlistdummy=0 if dummyloans==1
+replace borrowerlistdummy=1 if borrowerlist1==INDID2016
+replace borrowerlistdummy=1 if borrowerlist2==INDID2016
+replace borrowerlistdummy=1 if borrowerlist3==INDID2016
+replace borrowerlistdummy=1 if borrowerlist4==INDID2016
+label values borrowerlistdummy dummyinsurance
+drop borrowerlist1 borrowerlist2 borrowerlist3 borrowerlist4
+order borrowerlistdummy, after(borrowerlist)
+
 
 save"Last/NEEMSIS1-HH", replace
 ****************************************
@@ -245,7 +490,7 @@ label values demobusiness demobusiness
 
 
 
-forvalues i=1/42 {
+forvalues i=1/14 {
 format businesslabourerdate`i' %td
 }
 
@@ -255,7 +500,7 @@ format businesslabourerdate`i' %td
 ********** Demo
 replace demobusinessactivity="" if demobusinessactivity=="."
 split demobusinessactivity
-destring demobusinessactivity1 demobusinessactivity2 demobusinessactivity3 demobusinessactivity4 demobusinessactivity5 demobusinessactivity6, replace
+destring demobusinessactivity1 demobusinessactivity2 demobusinessactivity3 demobusinessactivity4 demobusinessactivity5 demobusinessactivity6 demobusinessactivity7, replace
 recode demobusinessactivity1 demobusinessactivity2 demobusinessactivity3 demobusinessactivity4 demobusinessactivity5 demobusinessactivity6 (77=9)
 forvalues i=1/9 {
 gen demobusinessactivity_`i'=0 if demobusinessactivity!=""

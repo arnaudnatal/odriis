@@ -434,19 +434,70 @@ log using "4_Migration.log", nomsg replace
 ****************************************
 * 4. Migration
 ****************************************
-* Household
+
+********** Household
+* Selection
 use"NEEMSIS1-HH", clear
 keep HHID2016 dummymigration
 duplicates drop
+
+* Tables
 tabulate dummymigration
 
-* Individual
+
+
+********** Individual
 use"NEEMSIS1-HH", clear
+
+* Tables
 tabulate migrantlistdummy
+tabulate migrationjoblist1
+tabulate migrationjoblist2
+
+
 
 ********** Details
 use"NEEMSIS1-migrations", clear
 
+* Tables
+tabulate migrationjobid
+tabulate migrationarea
+tabulate migrationplace
+summarize migrationdistance
+tabulate migrationtype
+tabulate migrationdurationfrequency
+summarize migrationdurationinmonth
+tabulate dummybacktovillage
+summarize migrationtravelcost
+tabulate migrationtravelpayment
+summarize migrationtenure
+tabulate migrationfindjob
+tabulate dummyadvance
+tabulate demodeclineadvance
+tabulate demoadvancereasonrefused
+tabulate migrationadvanceprovider
+summarize demopreviousadvance migrationadvanceamount
+tabulate demoadvancetransfer
+tabulate demoadvancevar
+tabulate demorefusedadvanceinc
+tabulate demoacceptadvanceinc
+tabulate demoperceptionadvancedec
+tabulate dummyadvancebalance
+summarize advanceamountbalance
+tabulate advancebalanceproblem
+tabulate advancebalanceperception
+tabulate migrationjobtype
+tabulate migrationjobtime
+tabulate migrationwagetype
+summarize migrationsalary
+tabulate migrationpension
+tabulate migrationbonus
+tabulate migrationinsurance
+tabulate migrationchild
+tabulate migrationmainoccup
+tabulate migrationskill
+tabulate migrationreason
+tabulate migrationotherreason
 
 ****************************************
 * END
@@ -468,6 +519,258 @@ log close
 
 
 
+
+
+
+log using "5-1_Remrec.log", nomsg replace
+****************************************
+* 5.1. Remittances received
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummyremreceived
+duplicates drop
+
+* Tables
+tabulate dummyremreceived
+
+
+********** Individual 
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate remreceivedlistdummy
+
+* Selection
+keep HHID2016 INDID2016 remreceivedhhsource* remreceivedothersource* remreceivedsourcename* remreceivedsourcerelation* remreceivedsourceoccup* remreceivedsourceplace* remreceivedfrequency* remreceivedamount* remreceivedtotamount* remreceivedservices* demoremreceived* demoremreceivedamo* demoremreceivedform* remreceivedservices_poli* remreceivedservices_fina* remreceivedservices_guar* remreceivedservices_gene* remreceivedservices_none* remreceivedservices_othe*
+reshape long remreceivedhhsource remreceivedothersource remreceivedsourcename remreceivedsourcerelation remreceivedsourceoccup remreceivedsourceplace remreceivedfrequency remreceivedamount remreceivedtotamount remreceivedservices demoremreceived demoremreceivedamo demoremreceivedform remreceivedservices_poli remreceivedservices_fina remreceivedservices_guar remreceivedservices_gene remreceivedservices_none remreceivedservices_othe, i(HHID2016 INDID2016) j(n)
+drop if remreceivedhhsource==.
+
+* Tables
+tabulate remreceivedhhsource
+tabulate remreceivedsourcerelation
+tabulate remreceivedsourceoccup
+tabulate remreceivedsourceplace
+tabulate remreceivedfrequency
+summarize remreceivedamount remreceivedtotamount
+tabulate demoremreceived
+summarize demoremreceivedamo
+tabulate demoremreceivedform
+tabulate remreceivedservices_poli
+tabulate remreceivedservices_fina
+tabulate remreceivedservices_guar
+tabulate remreceivedservices_gene
+tabulate remreceivedservices_none
+tabulate remreceivedservices_othe
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "5-2_Giftreceived.log", nomsg replace
+****************************************
+* 5.2. Gift received
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummygiftsreceived 
+duplicates drop
+
+* Tables
+tabulate dummygiftsreceived
+
+
+********** Individual 
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate giftsrecipientlistdummy
+summarize giftsourcenb_WKP
+tabulate giftoccasion_pongal_WKP
+tabulate giftoccasion_birth_WKP
+tabulate giftoccasion_house_WKP
+tabulate giftoccasion_pube_WKP
+tabulate giftoccasion_just_WKP
+tabulate giftoccasion_other_WKP
+tabulate giftoccasionother_WKP
+tabulate gifttype_WKP
+summarize giftamount_WKP
+
+summarize giftsourcenb_rel
+tabulate giftoccasion_pongal_rel
+tabulate giftoccasion_birth_rel
+tabulate giftoccasion_house_rel
+tabulate giftoccasion_pube_rel
+tabulate giftoccasion_just_rel
+tabulate giftoccasion_other_rel
+tabulate giftoccasionother_rel
+tabulate gifttype_rel
+summarize giftamount_rel goldquantityasgift_rel
+
+summarize giftsourcenb_emp
+tabulate giftoccasion_pongal_emp
+tabulate giftoccasion_birth_emp
+tabulate giftoccasion_house_emp
+tabulate giftoccasion_pube_emp
+tabulate giftoccasion_just_emp
+tabulate giftoccasion_other_emp
+tabulate gifttype_emp
+summarize giftamount_emp
+
+summarize giftsourcenb_friends
+tabulate giftoccasion_pongal_friends
+tabulate giftoccasion_birth_friends
+tabulate giftoccasion_house_friends
+tabulate giftoccasion_pube_friends
+tabulate giftoccasion_just_friends
+tabulate giftoccasion_other_friends
+tabulate giftoccasionother_friends
+tabulate gifttype_friends
+summarize giftamount_friends
+   
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "5-3_Remittancessent.log", nomsg replace
+****************************************
+* 5.3. Remittances sent
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummyremsent 
+duplicates drop
+
+* Tables
+tabulate dummyremsent
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate remsenderlistdummy
+
+* Selection
+keep HHID2016 INDID2016 remsenthhrecipient1 remsentotherrecipient1 remsentrecipientname1 remsentrelation1 remsentoccup1 remsentplace1 remsentfrequency1 remsentamount1 remsenttotalamount1 remsentservices1 remsentoccupother1 remsentservicesother1 remsenthhrecipient2 remsentotherrecipient2 remsentrecipientname2 remsentrelation2 remsentoccup2 remsentplace2 remsentfrequency2 remsentamount2 remsenttotalamount2 remsentservices2 remsentoccupother2 remsentservicesother2 demoremsentamount1 demoremsentform1 demoremsentamount2 demoremsentform2 remsentservices_poli* remsentservices_fina* remsentservices_guar* remsentservices_gene* remsentservices_none* remsentservices_othe*
+reshape long remsenthhrecipient remsentotherrecipient remsentrecipientname remsentrelation remsentoccup remsentplace remsentfrequency remsentamount remsenttotalamount remsentservices remsentoccupother remsentservicesother demoremsentamount demoremsentform remsentservices_poli remsentservices_fina remsentservices_guar remsentservices_gene remsentservices_none remsentservices_othe, i(HHID2016 INDID2016) j(n)
+drop if remsenthhrecipient==.
+
+* Tables
+tabulate remsenthhrecipient
+tabulate remsentrelation
+tabulate remsentoccup
+tabulate remsentplace
+tabulate remsentfrequency
+summarize remsentamount remsenttotalamount
+tabulate remsentservices_poli
+tabulate remsentservices_fina
+tabulate remsentservices_guar
+tabulate remsentservices_gene
+tabulate remsentservices_none
+tabulate remsentservices_othe
+tabulate remsentservicesother
+tabulate remsentoccupother
+tabulate remsentservicesother
+summarize demoremsentamount
+tabulate demoremsentform
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "6-1_Loans.log", nomsg replace
+****************************************
+* 6.1. Loans
+* 6.2. Main loans
+****************************************
+
+********** Household
+* Selection
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummyloans 
+duplicates drop
+
+* Tables
+tabulate dummyloans
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate borrowerlistdummy
+summarize nbloansbyborrower
+
+
+****************************************
+* END
+log close
 
 
 
