@@ -646,6 +646,398 @@ save"Last/NEEMSIS1-occupations", replace
 ****************************************
 use"NEEMSIS1-loans_mainloans", clear
 
+ta demokindloan
+label define demokindloan 1"Old notes" 2"New notes" 3"Both" 4"Transfer"
+label values demokindloan demokindloan
+
+recode lenderscaste (.=66)
+
+
+********** Effective
+ta loaneffectivereason
+split loaneffectivereason
+destring loaneffect~1  loaneffect~2  loaneffect~3  loaneffect~4  loaneffect~5  loaneffect~6, replace
+recode loaneffect~1  loaneffect~2  loaneffect~3  loaneffect~4  loaneffect~5  loaneffect~6 (77=13)
+forvalues i=1/13 {
+gen loaneffectivereason_`i'=0 if loaneffectivereason!=""
+}
+forvalues i=1/13 {
+replace loaneffectivereason_`i'=1 if loaneffectivereason1==`i'
+replace loaneffectivereason_`i'=1 if loaneffectivereason2==`i'
+replace loaneffectivereason_`i'=1 if loaneffectivereason3==`i'
+replace loaneffectivereason_`i'=1 if loaneffectivereason4==`i'
+replace loaneffectivereason_`i'=1 if loaneffectivereason5==`i'
+replace loaneffectivereason_`i'=1 if loaneffectivereason6==`i'
+label values loaneffectivereason_`i' dummyinterest
+label var loaneffectivereason_`i' "loaneffectivereason=`i'"
+}
+rename loaneffectivereason_1 loaneffectivereason_agri
+rename loaneffectivereason_2 loaneffectivereason_fami
+rename loaneffectivereason_3 loaneffectivereason_heal
+rename loaneffectivereason_4 loaneffectivereason_repa
+rename loaneffectivereason_5 loaneffectivereason_hous
+rename loaneffectivereason_6 loaneffectivereason_inve
+rename loaneffectivereason_7 loaneffectivereason_cere
+rename loaneffectivereason_8 loaneffectivereason_marr
+rename loaneffectivereason_9 loaneffectivereason_educ
+rename loaneffectivereason_10 loaneffectivereason_rela
+rename loaneffectivereason_11 loaneffectivereason_deat
+rename loaneffectivereason_12 loaneffectivereason_nore
+rename loaneffectivereason_13 loaneffectivereason_othe
+drop loaneffectivereason1 loaneffectivereason2 loaneffectivereason3 loaneffectivereason4 loaneffectivereason5 loaneffectivereason6
+order loaneffectivereason_agri loaneffectivereason_fami loaneffectivereason_heal loaneffectivereason_repa loaneffectivereason_hous loaneffectivereason_inve loaneffectivereason_cere loaneffectivereason_marr loaneffectivereason_educ loaneffectivereason_rela loaneffectivereason_deat loaneffectivereason_nore loaneffectivereason_othe, after(loaneffectivereason)
+
+
+replace demoloanreason="" if demoloanreason=="."
+split demoloanreason
+destring demoloanreason1 demoloanreason2 demoloanreason3, replace
+recode demoloanreason1 demoloanreason2 demoloanreason3 (77=6)
+forvalues i=1/6 {
+gen demoloanreason_`i'=0 if demoloanreason!=""
+}
+forvalues i=1/6 {
+replace demoloanreason_`i'=1 if demoloanreason1==`i'
+replace demoloanreason_`i'=1 if demoloanreason2==`i'
+replace demoloanreason_`i'=1 if demoloanreason3==`i'
+label values demoloanreason_`i' dummyinterest
+label var demoloanreason_`i' "demoloanreason=`i'"
+}
+rename demoloanreason_1 demoloanreason_cash
+rename demoloanreason_2 demoloanreason_acce
+rename demoloanreason_3 demoloanreason_lowe
+rename demoloanreason_4 demoloanreason_comm
+rename demoloanreason_5 demoloanreason_node
+rename demoloanreason_6 demoloanreason_othe
+drop demoloanreason1 demoloanreason2 demoloanreason3
+order demoloanreason_cash demoloanreason_acce demoloanreason_lowe demoloanreason_comm demoloanreason_node demoloanreason_othe, after(demoloanreason)
+
+replace loanotherreasongiven="" if loanotherreasongiven=="."
+
+label define loanlender 1"WKP" 2"Relatives" 3"Employer" 4"Maistry" 5"Colleague" 6"Pawn broker" 7"Shop keeper" 8"Finance" 9"Friends" 10"SHG" 11"Banks" 12"Coop bank" 13"Sugar mill loan" 14"Group finance"
+label values loanlender loanlender
+
+split lenderrelation
+destring lenderrelation1 lenderrelation2 lenderrelation3, replace
+recode lenderrelation1 lenderrelation2 lenderrelation3 (66=12) (99=13)
+forvalues i=1/13 {
+gen lenderrelation_`i'=0 if lenderrelation!=""
+}
+forvalues i=1/13 {
+replace lenderrelation_`i'=1 if lenderrelation1==`i'
+replace lenderrelation_`i'=1 if lenderrelation2==`i'
+replace lenderrelation_`i'=1 if lenderrelation3==`i'
+label values lenderrelation_`i' dummyinterest
+label var lenderrelation_`i' "lenderrelation=`i'"
+}
+rename lenderrelation_1 lenderrelation_labo
+rename lenderrelation_2 lenderrelation_rela
+rename lenderrelation_3 lenderrelation_poli
+rename lenderrelation_4 lenderrelation_reli
+rename lenderrelation_5 lenderrelation_neig
+rename lenderrelation_6 lenderrelation_shg
+rename lenderrelation_7 lenderrelation_busi
+rename lenderrelation_8 lenderrelation_wkp
+rename lenderrelation_9 lenderrelation_tradi
+rename lenderrelation_10 lenderrelation_frie
+rename lenderrelation_11 lenderrelation_gpfi
+rename lenderrelation_12 lenderrelation_na
+rename lenderrelation_13 lenderrelation_nr
+drop lenderrelation1 lenderrelation2 lenderrelation3
+order lenderrelation_labo lenderrelation_rela lenderrelation_poli lenderrelation_reli lenderrelation_neig lenderrelation_shg lenderrelation_busi lenderrelation_wkp lenderrelation_tradi lenderrelation_frie lenderrelation_gpfi lenderrelation_na lenderrelation_nr, after(lenderrelation)
+
+split otherlenderservices
+destring otherlenderservices1 otherlenderservices2 otherlenderservices3, replace
+recode otherlenderservices1 otherlenderservices2 otherlenderservices3 (77=6)
+forvalues i=1/6 {
+gen otherlenderservices_`i'=0 if otherlenderservices!=""
+}
+forvalues i=1/6 {
+replace otherlenderservices_`i'=1 if otherlenderservices1==`i'
+replace otherlenderservices_`i'=1 if otherlenderservices2==`i'
+replace otherlenderservices_`i'=1 if otherlenderservices3==`i'
+label values otherlenderservices_`i' dummyinterest
+label var otherlenderservices_`i' "otherlenderservices=`i'"
+}
+rename otherlenderservices_1 otherlenderservices_poli
+rename otherlenderservices_2 otherlenderservices_fina
+rename otherlenderservices_3 otherlenderservices_guar
+rename otherlenderservices_4 otherlenderservices_gene
+rename otherlenderservices_5 otherlenderservices_none
+rename otherlenderservices_6 otherlenderservices_othe
+drop otherlenderservices1 otherlenderservices2 otherlenderservices3
+order otherlenderservices_poli otherlenderservices_fina otherlenderservices_guar otherlenderservices_gene otherlenderservices_none otherlenderservices_othe, after(otherlenderservices)
+
+replace demoshg="" if demoshg=="."
+split demoshg
+destring demoshg1 demoshg2, replace
+forvalues i=1/5 {
+gen demoshg_`i'=0 if demoshg!=""
+}
+forvalues i=1/5 {
+replace demoshg_`i'=1 if demoshg1==`i'
+replace demoshg_`i'=1 if demoshg2==`i'
+label values demoshg_`i' dummyinterest
+label var demoshg_`i' "demoshg=`i'"
+}
+rename demoshg_1 demoshg_mback
+rename demoshg_2 demoshg_shgac
+rename demoshg_3 demoshg_newsh
+rename demoshg_4 demoshg_nopro
+rename demoshg_5 demoshg_other
+drop demoshg1 demoshg2
+order demoshg_mback demoshg_shgac demoshg_newsh demoshg_nopro demoshg_other, after(demoshg)
+
+gen dummymainloan=0
+replace dummymainloan=1 if lendersex!=.
+label values dummymainloan dummyinterest
+ta dummymainloan
+order dummymainloan, after(lendername)
+
+tab borrowerservices
+split borrowerservices, destring
+recode borrowerservices1 borrowerservices2 borrowerservices3 (77=5)
+forvalues i=1/5{
+gen borrowerservices_`i'=0 if borrowerservices!=""
+}
+forvalues i=1/5{
+replace borrowerservices_`i'=1 if borrowerservices1==`i'
+replace borrowerservices_`i'=1 if borrowerservices2==`i'
+replace borrowerservices_`i'=1 if borrowerservices3==`i'
+label var borrowerservices_`i' "borrowerservices=`i'"
+label values borrowerservices_`i' dummyinterest
+}
+rename borrowerservices_1 borrowerservices_free
+rename borrowerservices_2 borrowerservices_work
+rename borrowerservices_3 borrowerservices_supp
+rename borrowerservices_4 borrowerservices_none
+rename borrowerservices_5 borrowerservices_othe
+drop borrowerservices1 borrowerservices2 borrowerservices3
+order borrowerservices_free borrowerservices_work borrowerservices_supp borrowerservices_none borrowerservices_othe, after(borrowerservices)
+
+***
+ta plantorepay
+split plantorepay, destring
+recode plantorepay1 plantorepay2 plantorepay3 plantorepay4 (77=7)
+forvalues i=1/7{
+gen plantorepay_`i'=0 if plantorepay!=""
+}
+forvalues i=1/7{
+replace plantorepay_`i'=1 if plantorepay1==`i'
+replace plantorepay_`i'=1 if plantorepay2==`i'
+replace plantorepay_`i'=1 if plantorepay3==`i'
+replace plantorepay_`i'=1 if plantorepay4==`i'
+label values plantorepay_`i' dummyinterest
+label var plantorepay_`i' "plantorepay=`i'
+}
+rename plantorepay_1 plantorepay_chit
+rename plantorepay_2 plantorepay_work
+rename plantorepay_3 plantorepay_migr
+rename plantorepay_4 plantorepay_asse
+rename plantorepay_5 plantorepay_inco
+rename plantorepay_6 plantorepay_borr
+rename plantorepay_7 plantorepay_othe
+drop plantorepay1 plantorepay2 plantorepay3 plantorepay4
+order plantorepay_chit plantorepay_work plantorepay_migr plantorepay_asse plantorepay_inco plantorepay_borr plantorepay_othe, after(plantorepay)
+
+ta settleloanstrategy
+split settleloanstrategy, destring
+recode settleloanstrategy1 settleloanstrategy2 settleloanstrategy3 settleloanstrategy4 settleloanstrategy5 settleloanstrategy6 settleloanstrategy7 (77=11)
+forvalues i=1/11 {
+gen settleloanstrategy_`i'=0 if settleloanstrategy!=""
+}
+forvalues i=1/11 {
+replace settleloanstrategy_`i'=1 if settleloanstrategy1==`i'
+replace settleloanstrategy_`i'=1 if settleloanstrategy2==`i'
+replace settleloanstrategy_`i'=1 if settleloanstrategy3==`i'
+replace settleloanstrategy_`i'=1 if settleloanstrategy4==`i'
+replace settleloanstrategy_`i'=1 if settleloanstrategy5==`i'
+replace settleloanstrategy_`i'=1 if settleloanstrategy6==`i'
+replace settleloanstrategy_`i'=1 if settleloanstrategy7==`i'
+label values settleloanstrategy_`i' dummyinterest
+label var settleloanstrategy_`i' "settleloanstrategy=`i'"
+}
+rename settleloanstrategy_1 settleloanstrategy_labo
+rename settleloanstrategy_2 settleloanstrategy_sche
+rename settleloanstrategy_3 settleloanstrategy_borr
+rename settleloanstrategy_4 settleloanstrategy_sell
+rename settleloanstrategy_5 settleloanstrategy_land
+rename settleloanstrategy_6 settleloanstrategy_cons
+rename settleloanstrategy_7 settleloanstrategy_adjo
+rename settleloanstrategy_8 settleloanstrategy_work
+rename settleloanstrategy_9 settleloanstrategy_supp
+rename settleloanstrategy_10 settleloanstrategy_harv
+rename settleloanstrategy_11 settleloanstrategy_othe
+drop settleloanstrategy1 settleloanstrategy2 settleloanstrategy3 settleloanstrategy4 settleloanstrategy5 settleloanstrategy6 settleloanstrategy7
+order settleloanstrategy_labo settleloanstrategy_sche settleloanstrategy_borr settleloanstrategy_sell settleloanstrategy_land settleloanstrategy_cons settleloanstrategy_adjo settleloanstrategy_work settleloanstrategy_supp settleloanstrategy_harv settleloanstrategy_othe, after(settleloanstrategy)
+
+
+***
+ta loanproductpledge
+split loanproductpledge, destring
+forvalues i=1/15 {
+gen loanproductpledge_`i'=0 if loanproductpledge!=""
+}
+forvalues i=1/15 {
+replace loanproductpledge_`i'=1 if loanproductpledge1==`i'
+replace loanproductpledge_`i'=1 if loanproductpledge2==`i'
+label values loanproductpledge_`i' dummyinterest
+label var loanproductpledge_`i' "loanproductpledge=`i'"
+}
+rename loanproductpledge_1 loanproductpledge_gold
+rename loanproductpledge_2 loanproductpledge_land
+rename loanproductpledge_3 loanproductpledge_car
+rename loanproductpledge_4 loanproductpledge_bike
+rename loanproductpledge_5 loanproductpledge_frid
+rename loanproductpledge_6 loanproductpledge_furn
+rename loanproductpledge_7 loanproductpledge_tail
+rename loanproductpledge_8 loanproductpledge_cell
+rename loanproductpledge_9 loanproductpledge_line
+rename loanproductpledge_10 loanproductpledge_dvd
+rename loanproductpledge_11 loanproductpledge_came
+rename loanproductpledge_12 loanproductpledge_gas
+rename loanproductpledge_13 loanproductpledge_comp
+rename loanproductpledge_14 loanproductpledge_dish
+rename loanproductpledge_15 loanproductpledge_none
+drop loanproductpledge1 loanproductpledge2
+order loanproductpledge_gold loanproductpledge_land loanproductpledge_car loanproductpledge_bike loanproductpledge_frid loanproductpledge_furn loanproductpledge_tail loanproductpledge_cell loanproductpledge_line loanproductpledge_dvd loanproductpledge_came loanproductpledge_gas loanproductpledge_comp loanproductpledge_dish loanproductpledge_none, after(loanproductpledge)
+
+rename loanproductpledgeaamount loanproductpledgeamount
+
+ta helptosettleloan
+replace helptosettleloan="" if helptosettleloan=="."
+split helptosettleloan, destring
+forvalues i=1/15 {
+gen helptosettleloan_`i'=0 if helptosettleloan!=""
+}
+forvalues i=1/15 {
+replace helptosettleloan_`i'=1 if helptosettleloan1==`i'
+replace helptosettleloan_`i'=1 if helptosettleloan2==`i'
+replace helptosettleloan_`i'=1 if helptosettleloan3==`i'
+label values helptosettleloan_`i' dummyinterest
+label var helptosettleloan_`i' "helptosettleloan=`i'"
+}
+rename helptosettleloan_1 helptosettleloan_mais
+rename helptosettleloan_2 helptosettleloan_chil
+rename helptosettleloan_3 helptosettleloan_sibl
+rename helptosettleloan_4 helptosettleloan_pare
+rename helptosettleloan_5 helptosettleloan_niec
+rename helptosettleloan_6 helptosettleloan_othe
+rename helptosettleloan_7 helptosettleloan_neig
+rename helptosettleloan_8 helptosettleloan_frie
+rename helptosettleloan_9 helptosettleloan_cust
+rename helptosettleloan_10 helptosettleloan_mone
+rename helptosettleloan_11 helptosettleloan_shg
+rename helptosettleloan_12 helptosettleloan_empl
+rename helptosettleloan_13 helptosettleloan_wkp
+rename helptosettleloan_14 helptosettleloan_own
+rename helptosettleloan_15 helptosettleloan_spou
+drop helptosettleloan1 helptosettleloan2 helptosettleloan3
+order helptosettleloan_mais helptosettleloan_chil helptosettleloan_sibl helptosettleloan_pare helptosettleloan_niec helptosettleloan_othe helptosettleloan_neig helptosettleloan_frie helptosettleloan_cust helptosettleloan_mone helptosettleloan_shg helptosettleloan_empl helptosettleloan_wkp helptosettleloan_own helptosettleloan_spou, after(helptosettleloan)
+
+replace problemdelayrepayment="" if problemdelayrepayment=="."
+split problemdelayrepayment, destring
+recode problemdelayrepayment1 problemdelayrepayment2 problemdelayrepayment3 (77=6)
+forvalues i=1/6 {
+gen problemdelayrepayment_`i'=0 if problemdelayrepayment!=""
+}
+forvalues i=1/6 {
+replace problemdelayrepayment_`i'=1 if problemdelayrepayment1==`i'
+replace problemdelayrepayment_`i'=1 if problemdelayrepayment2==`i'
+replace problemdelayrepayment_`i'=1 if problemdelayrepayment3==`i'
+label values problemdelayrepayment_`i' dummyinterest
+label var problemdelayrepayment_`i' "problemdelayrepayment=`i'"
+}
+rename problemdelayrepayment_1 problemdelayrepayment_noth
+rename problemdelayrepayment_2 problemdelayrepayment_shou
+rename problemdelayrepayment_3 problemdelayrepayment_pres
+rename problemdelayrepayment_4 problemdelayrepayment_comp
+rename problemdelayrepayment_5 problemdelayrepayment_info
+rename problemdelayrepayment_6 problemdelayrepayment_othe
+drop problemdelayrepayment1 problemdelayrepayment2 problemdelayrepayment3
+order problemdelayrepayment_noth problemdelayrepayment_shou problemdelayrepayment_pres problemdelayrepayment_comp problemdelayrepayment_info problemdelayrepayment_othe, after(problemdelayrepayment)
+
+
+***
+replace recommendloanrelation="" if recommendloanrelation=="."
+split recommendloanrelation, destring
+forvalues i=1/11 {
+gen recommendloanrelation_`i'=0 if recommendloanrelation!=""
+}
+forvalues i=1/11 {
+replace recommendloanrelation_`i'=1 if recommendloanrelation1==`i'
+replace recommendloanrelation_`i'=1 if recommendloanrelation2==`i'
+label var recommendloanrelation_`i' "recommendloanrelation=`i'"
+label values recommendloanrelation_`i' dummyinterest
+}
+rename recommendloanrelation_1 recommendloanrelation_labo
+rename recommendloanrelation_2 recommendloanrelation_rela
+rename recommendloanrelation_3 recommendloanrelation_poli
+rename recommendloanrelation_4 recommendloanrelation_reli
+rename recommendloanrelation_5 recommendloanrelation_neig
+rename recommendloanrelation_6 recommendloanrelation_shg
+rename recommendloanrelation_7 recommendloanrelation_busi
+rename recommendloanrelation_8 recommendloanrelation_wkp
+rename recommendloanrelation_9 recommendloanrelation_trad
+rename recommendloanrelation_10 recommendloanrelation_frie
+rename recommendloanrelation_11 recommendloanrelation_gpfin
+drop recommendloanrelation1 recommendloanrelation2
+order recommendloanrelation_labo recommendloanrelation_rela recommendloanrelation_poli recommendloanrelation_reli recommendloanrelation_neig recommendloanrelation_shg recommendloanrelation_busi recommendloanrelation_wkp recommendloanrelation_trad recommendloanrelation_frie recommendloanrelation_gpfin, after(recommendloanrelation)
+
+**
+ta guarantorloanrelation
+split guarantorloanrelation, destring
+recode guarantorloanrelation1 guarantorloanrelation2 (99=12)
+forvalues i=1/12 {
+gen guarantorloanrelation_`i'=0 if guarantorloanrelation!=""
+}
+forvalues i=1/12 {
+replace guarantorloanrelation_`i'=1 if guarantorloanrelation1==`i'
+replace guarantorloanrelation_`i'=1 if guarantorloanrelation2==`i'
+label values guarantorloanrelation_`i' dummyinterest
+label var guarantorloanrelation_`i' "guarantorloanrelation=`i'"
+}
+rename guarantorloanrelation_1 guarantorloanrelation_labo
+rename guarantorloanrelation_2 guarantorloanrelation_rela
+rename guarantorloanrelation_3 guarantorloanrelation_poli
+rename guarantorloanrelation_4 guarantorloanrelation_reli
+rename guarantorloanrelation_5 guarantorloanrelation_neig
+rename guarantorloanrelation_6 guarantorloanrelation_shg
+rename guarantorloanrelation_7 guarantorloanrelation_busi
+rename guarantorloanrelation_8 guarantorloanrelation_wkp
+rename guarantorloanrelation_9 guarantorloanrelation_trad
+rename guarantorloanrelation_10 guarantorloanrelation_frie
+rename guarantorloanrelation_11 guarantorloanrelation_gpfin
+rename guarantorloanrelation_12 guarantorloanrelation_nr
+drop guarantorloanrelation1 guarantorloanrelation2
+order guarantorloanrelation_labo guarantorloanrelation_rela guarantorloanrelation_poli guarantorloanrelation_reli guarantorloanrelation_neig guarantorloanrelation_shg guarantorloanrelation_busi guarantorloanrelation_wkp guarantorloanrelation_trad guarantorloanrelation_frie guarantorloanrelation_gpfin guarantorloanrelation_nr, after(guarantorloanrelation)
+
+** 
+ta guarantee
+split guarantee, destring
+recode guarantee1 guarantee2 guarantee3 (77=7)
+forvalues i=1/7 {
+gen guarantee_`i'=0 if guarantee!=""
+}
+forvalues i=1/7 {
+replace guarantee_`i'=1 if guarantee1==`i'
+replace guarantee_`i'=1 if guarantee1==`i'
+replace guarantee_`i'=1 if guarantee3==`i'
+label values guarantee_`i' dummyinterest
+label var guarantee_`i' "guarantee=`i'"
+}
+rename guarantee_1 guarantee_docu
+rename guarantee_2 guarantee_chit
+rename guarantee_3 guarantee_shg
+rename guarantee_4 guarantee_pers
+rename guarantee_5 guarantee_jewe
+rename guarantee_6 guarantee_none
+rename guarantee_7 guarantee_other
+drop guarantee1 guarantee2 guarantee3
+order guarantee_docu guarantee_chit guarantee_shg guarantee_pers guarantee_jewe guarantee_none guarantee_other, after(guarantee)
+
+
+
+
 
 
 

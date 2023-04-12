@@ -752,11 +752,15 @@ log using "6-1_Loans.log", nomsg replace
 ********** Household
 * Selection
 use"NEEMSIS1-HH", clear
-keep HHID2016 dummyloans 
+keep HHID2016 dummyloans demootherinc demootherincamount demoexchangeasked demoexchangeaccepted democommissionamount dummyincomeassets incomeassets
 duplicates drop
 
 * Tables
 tabulate dummyloans
+tabulate demootherinc
+summarize demootherincamount demoexchangeasked demoexchangeaccepted democommissionamount
+tabulate dummyincomeassets
+summarize incomeassets
 
 
 
@@ -766,6 +770,195 @@ use"NEEMSIS1-HH", clear
 * Tables
 tabulate borrowerlistdummy
 summarize nbloansbyborrower
+
+
+
+********** Loans database
+use"NEEMSIS1-loans_mainloans", clear
+
+* Tables
+summarize loanamount
+tabulate demokindloan
+tabulate loanreasongiven
+tabulate loanotherreasongiven
+tabulate loaneffectivereason_agri
+tabulate loaneffectivereason_fami
+tabulate loaneffectivereason_heal
+tabulate loaneffectivereason_repa
+tabulate loaneffectivereason_hous
+tabulate loaneffectivereason_inve
+tabulate loaneffectivereason_cere
+tabulate loaneffectivereason_marr
+tabulate loaneffectivereason_educ
+tabulate loaneffectivereason_rela
+tabulate loaneffectivereason_deat
+tabulate loaneffectivereason_nore
+tabulate loaneffectivereason_othe
+tabulate loanothereffectivereason
+tabulate demoloanreason_cash
+tabulate demoloanreason_acce
+tabulate demoloanreason_lowe
+tabulate demoloanreason_comm
+tabulate demoloanreason_node
+tabulate demoloanreason_othe
+tabulate demoloanotherreason
+tabulate loanlender
+tabulate lenderrelation_labo
+tabulate lenderrelation_rela
+tabulate lenderrelation_poli
+tabulate lenderrelation_reli
+tabulate lenderrelation_neig
+tabulate lenderrelation_shg
+tabulate lenderrelation_busi
+tabulate lenderrelation_wkp
+tabulate lenderrelation_tradi
+tabulate lenderrelation_frie
+tabulate lenderrelation_gpfi
+tabulate lenderrelation_na
+tabulate lenderrelation_nr
+tabulate lenderscaste
+tabulate lenderfrom
+tabulate otherlenderservices_poli
+tabulate otherlenderservices_fina
+tabulate otherlenderservices_guar
+tabulate otherlenderservices_gene
+tabulate otherlenderservices_none
+tabulate otherlenderservices_othe
+tabulate otherlenderservicesother
+tabulate loansettled
+summarize loanbalance 
+tabulate demoshg_mback
+tabulate demoshg_shgac
+tabulate demoshg_newsh
+tabulate demoshg_nopro
+tabulate demoshg_other
+
+
+
+********** Main loans
+* Tables
+tabulate dummymainloan
+
+* Selection
+keep if dummymainloan==1
+
+* Tables
+tabulate lendersex
+tabulate lenderoccup 
+tabulate borrowerservices_free
+tabulate borrowerservices_work
+tabulate borrowerservices_supp
+tabulate borrowerservices_none
+tabulate borrowerservices_othe
+tabulate borrowerservicesother
+tabulate plantorepay_chit
+tabulate plantorepay_work
+tabulate plantorepay_migr
+tabulate plantorepay_asse
+tabulate plantorepay_inco
+tabulate plantorepay_borr
+tabulate plantorepay_othe
+tabulate plantorepayother
+tabulate termsofrepayment
+tabulate repayduration1
+summarize repayduration2
+tabulate dummyinterest
+tabulate interestfrequency
+summarize interestloan interestpaid principalpaid totalrepaid
+tabulate dummyproblemtorepay
+tabulate settleloanstrategy_labo
+tabulate settleloanstrategy_sche
+tabulate settleloanstrategy_borr
+tabulate settleloanstrategy_sell
+tabulate settleloanstrategy_land
+tabulate settleloanstrategy_cons
+tabulate settleloanstrategy_adjo
+tabulate settleloanstrategy_work
+tabulate settleloanstrategy_supp
+tabulate settleloanstrategy_harv
+tabulate settleloanstrategy_othe
+tabulate settleloanstrategyother
+tabulate loanproductpledge_gold
+tabulate loanproductpledge_land
+tabulate loanproductpledge_car
+tabulate loanproductpledge_bike
+tabulate loanproductpledge_frid
+tabulate loanproductpledge_furn
+tabulate loanproductpledge_tail
+tabulate loanproductpledge_cell
+tabulate loanproductpledge_line
+tabulate loanproductpledge_dvd
+tabulate loanproductpledge_came
+tabulate loanproductpledge_gas
+tabulate loanproductpledge_comp
+tabulate loanproductpledge_dish
+tabulate loanproductpledge_none
+summarize loanproductpledgeamount
+tabulate dummyhelptosettleloan
+tabulate helptosettleloan_mais
+tabulate helptosettleloan_chil
+tabulate helptosettleloan_sibl
+tabulate helptosettleloan_pare
+tabulate helptosettleloan_niec
+tabulate helptosettleloan_othe
+tabulate helptosettleloan_neig
+tabulate helptosettleloan_frie
+tabulate helptosettleloan_cust
+tabulate helptosettleloan_mone
+tabulate helptosettleloan_shg
+tabulate helptosettleloan_empl
+tabulate helptosettleloan_wkp
+tabulate helptosettleloan_own
+tabulate helptosettleloan_spou
+tabulate problemdelayrepayment_noth
+tabulate problemdelayrepayment_shou
+tabulate problemdelayrepayment_pres
+tabulate problemdelayrepayment_comp
+tabulate problemdelayrepayment_info
+tabulate problemdelayrepayment_othe
+tabulate problemdelayrepaymentother
+tabulate dummyrecommendation
+tabulate dummyguarantor
+tabulate recommenddetailscaste
+tabulate recommendloanrelation
+tabulate recommendloanrelation_labo
+tabulate recommendloanrelation_rela
+tabulate recommendloanrelation_poli
+tabulate recommendloanrelation_reli
+tabulate recommendloanrelation_neig
+tabulate recommendloanrelation_shg
+tabulate recommendloanrelation_busi
+tabulate recommendloanrelation_wkp
+tabulate recommendloanrelation_trad
+tabulate recommendloanrelation_frie
+tabulate recommendloanrelation_gpfin
+tabulate guarantordetailscaste
+tabulate guarantorloanrelation_labo
+tabulate guarantorloanrelation_rela
+tabulate guarantorloanrelation_poli
+tabulate guarantorloanrelation_reli
+tabulate guarantorloanrelation_neig
+tabulate guarantorloanrelation_shg
+tabulate guarantorloanrelation_busi
+tabulate guarantorloanrelation_wkp
+tabulate guarantorloanrelation_trad
+tabulate guarantorloanrelation_frie
+tabulate guarantorloanrelation_gpfin
+tabulate guarantorloanrelation_nr
+tabulate guarantee_docu
+tabulate guarantee_chit
+tabulate guarantee_shg
+tabulate guarantee_pers
+tabulate guarantee_jewe
+tabulate guarantee_none
+tabulate guarantee_other
+tabulate guaranteeother
+tabulate guaranteetype
+
+
+
+
+
 
 
 ****************************************
