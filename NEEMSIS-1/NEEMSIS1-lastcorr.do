@@ -513,6 +513,14 @@ replace `x'="" if `x'=="."
 ***** Correction
 preserve
 use"NEEMSIS1-HH", clear
+
+foreach x in savingspurpose4 usedebitcard3 usedebitcard4 demousecreditcard2 {
+tostring `x', replace
+replace `x'="" if `x'=="."
+}
+
+
+
 keep HHID2016 INDID2016 savingsaccounttype* savingsjointaccount* savingsaccountdate* banktype* savingsbankname* savingsbankplace* savingsamount* savingspurpose* dummydebitcard* dummycreditcard* datedebitcard* usedebitcard* reasonnotusedebitcard* demousedebitcard* demousecreditcard* datecreditcard* usecreditcard*
 reshape long savingsaccounttype savingsjointaccount savingsaccountdate banktype savingsbankname savingsbankplace savingsamount savingspurpose dummydebitcard dummycreditcard datedebitcard usedebitcard reasonnotusedebitcard demousedebitcard demousecreditcard datecreditcard usecreditcard, i(HHID2016 INDID2016) j(n)
 drop if savingsaccounttype==.
@@ -525,28 +533,157 @@ format datecreditcard %td
 
 *** purpose
 ta savingspurpose
-split savingspurpose
+split savingspurpose, destring
+forvalues i=1/6 {
+gen savingspurpose_`i'=0 if savingspurpose!=""
+}
+forvalues i=1/6 {
+replace savingspurpose_`i'=1 if savingspurpose1==`i'
+replace savingspurpose_`i'=1 if savingspurpose2==`i'
+replace savingspurpose_`i'=1 if savingspurpose3==`i'
+replace savingspurpose_`i'=1 if savingspurpose4==`i'
+replace savingspurpose_`i'=1 if savingspurpose5==`i'
+replace savingspurpose_`i'=1 if savingspurpose6==`i'
+label var savingspurpose_`i' "savingspurpose=`i'"
+label values savingspurpose_`i' dummyinsurance
+}
+rename savingspurpose_1 savingspurpose_sav
+rename savingspurpose_2 savingspurpose_jew
+rename savingspurpose_3 savingspurpose_rec
+rename savingspurpose_4 savingspurpose_cro
+rename savingspurpose_5 savingspurpose_sug
+rename savingspurpose_6 savingspurpose_sch
+drop savingspurpose1 savingspurpose2 savingspurpose3 savingspurpose4 savingspurpose5 savingspurpose6
+order savingspurpose_sav savingspurpose_jew savingspurpose_rec savingspurpose_cro savingspurpose_sug savingspurpose_sch, after(savingspurpose)
 
 
 *** usedebitcard
+ta usedebitcard
 replace usedebitcard="" if usedebitcard=="."
+split usedebitcard, destring
+recode usedebitcard1 usedebitcard2 usedebitcard3 usedebitcard4 usedebitcard5 (77=7)
+forvalues i=1/7 {
+gen usedebitcard_`i'=0 if usedebitcard!=""
+}
+forvalues i=1/7 {
+replace usedebitcard_`i'=1 if usedebitcard1==`i'
+replace usedebitcard_`i'=1 if usedebitcard2==`i'
+replace usedebitcard_`i'=1 if usedebitcard3==`i'
+replace usedebitcard_`i'=1 if usedebitcard4==`i'
+replace usedebitcard_`i'=1 if usedebitcard5==`i'
+label var usedebitcard_`i' "usedebitcard=`i'"
+label values usedebitcard_`i' dummyinsurance
+}
+rename usedebitcard_1 usedebitcard_neve
+rename usedebitcard_2 usedebitcard_atm
+rename usedebitcard_3 usedebitcard_shop
+rename usedebitcard_4 usedebitcard_tran
+rename usedebitcard_5 usedebitcard_onli
+rename usedebitcard_6 usedebitcard_mobi
+rename usedebitcard_7 usedebitcard_othe
+drop usedebitcard1 usedebitcard2 usedebitcard3 usedebitcard4 usedebitcard5
+order usedebitcard_neve usedebitcard_atm usedebitcard_shop usedebitcard_tran usedebitcard_onli usedebitcard_mobi usedebitcard_othe, after(usedebitcard)
+
 
 
 *** reasonnotusedebitcard
+ta reasonnotusedebitcard
 replace reasonnotusedebitcard="" if reasonnotusedebitcard=="."
+split reasonnotusedebitcard, destring
+forvalues i=1/6 {
+gen reasonnotusedebitcard_`i'=0 if reasonnotusedebitcard!=""
+}
+forvalues i=1/6 {
+replace reasonnotusedebitcard_`i'=1 if reasonnotusedebitcard1==`i'
+replace reasonnotusedebitcard_`i'=1 if reasonnotusedebitcard2==`i'
+label var reasonnotusedebitcard_`i' "reasonnotusedebitcard=`i'"
+label values reasonnotusedebitcard_`i' dummyinsurance
+}
+rename reasonnotusedebitcard_1 reasonnotusedebitcard_none
+rename reasonnotusedebitcard_2 reasonnotusedebitcard_dist
+rename reasonnotusedebitcard_3 reasonnotusedebitcard_cash
+rename reasonnotusedebitcard_4 reasonnotusedebitcard_flex
+rename reasonnotusedebitcard_5 reasonnotusedebitcard_diff
+rename reasonnotusedebitcard_6 reasonnotusedebitcard_afra
+drop reasonnotusedebitcard1 reasonnotusedebitcard2
+order reasonnotusedebitcard_none reasonnotusedebitcard_dist reasonnotusedebitcard_cash reasonnotusedebitcard_flex reasonnotusedebitcard_diff reasonnotusedebitcard_afra, after(reasonnotusedebitcard)
 
 
 *** demousedebitcard
+ta demousedebitcard
 replace demousedebitcard="" if demousedebitcard=="."
-
+split demousedebitcard, destring
+recode demousedebitcard1 demousedebitcard2 demousedebitcard3 demousedebitcard4 demousedebitcard5 (77=9)
+forvalues i=1/9 {
+gen demousedebitcard_`i'=0 if demousedebitcard!=""
+}
+forvalues i=1/9 {
+replace demousedebitcard_`i'=1 if demousedebitcard1==`i'
+replace demousedebitcard_`i'=1 if demousedebitcard2==`i'
+replace demousedebitcard_`i'=1 if demousedebitcard3==`i'
+replace demousedebitcard_`i'=1 if demousedebitcard4==`i'
+replace demousedebitcard_`i'=1 if demousedebitcard5==`i'
+label var demousedebitcard_`i' "demousedebitcard=`i'"
+label values demousedebitcard_`i' dummyinsurance
+}
+rename demousedebitcard_1 demousedebitcard_same
+rename demousedebitcard_2 demousedebitcard_nonov
+rename demousedebitcard_3 demousedebitcard_neve
+rename demousedebitcard_4 demousedebitcard_atm
+rename demousedebitcard_5 demousedebitcard_shop
+rename demousedebitcard_6 demousedebitcard_tran
+rename demousedebitcard_7 demousedebitcard_onli
+rename demousedebitcard_8 demousedebitcard_mobi
+rename demousedebitcard_9 demousedebitcard_other
+drop demousedebitcard1 demousedebitcard2 demousedebitcard3 demousedebitcard4 demousedebitcard5
+order demousedebitcard_same demousedebitcard_nonov demousedebitcard_neve demousedebitcard_atm demousedebitcard_shop demousedebitcard_tran demousedebitcard_onli demousedebitcard_mobi demousedebitcard_other, after(demousedebitcard)
 
 
 *** demousecreditcard
+ta demousecreditcard
 replace demousecreditcard="" if demousecreditcard=="."
-
+split demousecreditcard, destring
+forvalues i=1/8 {
+gen demousecreditcard_`i'=0 if demousecreditcard!=""
+}
+forvalues i=1/8 {
+replace demousecreditcard_`i'=1 if demousecreditcard1==`i'
+replace demousecreditcard_`i'=1 if demousecreditcard2==`i'
+label var demousecreditcard_`i' "demousecreditcard=`i'"
+label values demousecreditcard_`i' dummyinsurance
+}
+rename demousecreditcard_1 demousecreditcard_same
+rename demousecreditcard_2 demousecreditcard_nonov
+rename demousecreditcard_3 demousecreditcard_neve
+rename demousecreditcard_4 demousecreditcard_atm
+rename demousecreditcard_5 demousecreditcard_shop
+rename demousecreditcard_6 demousecreditcard_tran
+rename demousecreditcard_7 demousecreditcard_onli
+rename demousecreditcard_8 demousecreditcard_mobi
+drop demousecreditcard1 demousecreditcard2
+order demousecreditcard_same demousecreditcard_nonov demousecreditcard_neve demousecreditcard_atm demousecreditcard_shop demousecreditcard_tran demousecreditcard_onli demousecreditcard_mobi, after(demousecreditcard)
 
 
 ** label usecreditcard
+ta usecreditcard
+label define usecreditcard 2"To get cash in ATM"
+label values usecreditcard usecreditcard
+
+
+*** Reshape
+reshape wide savingsaccounttype banktype savingsbankname savingsbankplace savingsamount savingspurpose savingspurpose_sav savingspurpose_jew savingspurpose_rec savingspurpose_cro savingspurpose_sug savingspurpose_sch dummydebitcard dummycreditcard datedebitcard usedebitcard usedebitcard_neve usedebitcard_atm usedebitcard_shop usedebitcard_tran usedebitcard_onli usedebitcard_mobi usedebitcard_othe savingsjointaccount savingsaccountdate reasonnotusedebitcard reasonnotusedebitcard_none reasonnotusedebitcard_dist reasonnotusedebitcard_cash reasonnotusedebitcard_flex reasonnotusedebitcard_diff reasonnotusedebitcard_afra demousedebitcard demousedebitcard_same demousedebitcard_nonov demousedebitcard_neve demousedebitcard_atm demousedebitcard_shop demousedebitcard_tran demousedebitcard_onli demousedebitcard_mobi demousedebitcard_other demousecreditcard demousecreditcard_same demousecreditcard_nonov demousecreditcard_neve demousecreditcard_atm demousecreditcard_shop demousecreditcard_tran demousecreditcard_onli demousecreditcard_mobi datecreditcard usecreditcard, i(HHID2016 INDID2016) j(n)
+
+save"_temp/_tempsaving", replace
+restore
+
+
+*** Drop
+drop savingsaccounttype1 savingsaccounttype2 savingsaccounttype3 savingsaccounttype4 savingsjointaccount1 savingsjointaccount2 savingsaccountdate1 savingsaccountdate2 savingsaccountdate3 banktype1 banktype2 banktype3 banktype4 savingsbankname1 savingsbankname2 savingsbankname3 savingsbankname4 savingsbankplace1 savingsbankplace2 savingsbankplace3 savingsbankplace4 savingsamount1 savingsamount2 savingsamount3 savingsamount4 savingspurpose1 savingspurpose2 savingspurpose3 savingspurpose4 dummydebitcard1 dummydebitcard2 dummydebitcard3 dummydebitcard4 dummycreditcard1 dummycreditcard2 dummycreditcard3 dummycreditcard4 datedebitcard1 datedebitcard2 datedebitcard3 datedebitcard4 usedebitcard1 usedebitcard2 usedebitcard3 usedebitcard4 reasonnotusedebitcard1 demousedebitcard1 demousedebitcard2 datecreditcard1 usecreditcard1 demousecreditcard1 demousecreditcard2
+
+merge 1:1 HHID2016 INDID2016 using "_temp/_tempsaving"
+drop _merge
+order savingsaccounttype1 banktype1 savingsbankname1 savingsbankplace1 savingsamount1 savingspurpose1 savingspurpose_sav1 savingspurpose_jew1 savingspurpose_rec1 savingspurpose_cro1 savingspurpose_sug1 savingspurpose_sch1 dummydebitcard1 dummycreditcard1 datedebitcard1 usedebitcard1 usedebitcard_neve1 usedebitcard_atm1 usedebitcard_shop1 usedebitcard_tran1 usedebitcard_onli1 usedebitcard_mobi1 usedebitcard_othe1 savingsjointaccount1 savingsaccountdate1 reasonnotusedebitcard1 reasonnotusedebitcard_none1 reasonnotusedebitcard_dist1 reasonnotusedebitcard_cash1 reasonnotusedebitcard_flex1 reasonnotusedebitcard_diff1 reasonnotusedebitcard_afra1 demousedebitcard1 demousedebitcard_same1 demousedebitcard_nonov1 demousedebitcard_neve1 demousedebitcard_atm1 demousedebitcard_shop1 demousedebitcard_tran1 demousedebitcard_onli1 demousedebitcard_mobi1 demousedebitcard_other1 demousecreditcard1 demousecreditcard_same1 demousecreditcard_nonov1 demousecreditcard_neve1 demousecreditcard_atm1 demousecreditcard_shop1 demousecreditcard_tran1 demousecreditcard_onli1 demousecreditcard_mobi1 datecreditcard1 usecreditcard1 savingsaccounttype2 banktype2 savingsbankname2 savingsbankplace2 savingsamount2 savingspurpose2 savingspurpose_sav2 savingspurpose_jew2 savingspurpose_rec2 savingspurpose_cro2 savingspurpose_sug2 savingspurpose_sch2 dummydebitcard2 dummycreditcard2 datedebitcard2 usedebitcard2 usedebitcard_neve2 usedebitcard_atm2 usedebitcard_shop2 usedebitcard_tran2 usedebitcard_onli2 usedebitcard_mobi2 usedebitcard_othe2 savingsjointaccount2 savingsaccountdate2 reasonnotusedebitcard2 reasonnotusedebitcard_none2 reasonnotusedebitcard_dist2 reasonnotusedebitcard_cash2 reasonnotusedebitcard_flex2 reasonnotusedebitcard_diff2 reasonnotusedebitcard_afra2 demousedebitcard2 demousedebitcard_same2 demousedebitcard_nonov2 demousedebitcard_neve2 demousedebitcard_atm2 demousedebitcard_shop2 demousedebitcard_tran2 demousedebitcard_onli2 demousedebitcard_mobi2 demousedebitcard_other2 demousecreditcard2 demousecreditcard_same2 demousecreditcard_nonov2 demousecreditcard_neve2 demousecreditcard_atm2 demousecreditcard_shop2 demousecreditcard_tran2 demousecreditcard_onli2 demousecreditcard_mobi2 datecreditcard2 usecreditcard2 savingsaccounttype3 banktype3 savingsbankname3 savingsbankplace3 savingsamount3 savingspurpose3 savingspurpose_sav3 savingspurpose_jew3 savingspurpose_rec3 savingspurpose_cro3 savingspurpose_sug3 savingspurpose_sch3 dummydebitcard3 dummycreditcard3 datedebitcard3 usedebitcard3 usedebitcard_neve3 usedebitcard_atm3 usedebitcard_shop3 usedebitcard_tran3 usedebitcard_onli3 usedebitcard_mobi3 usedebitcard_othe3 savingsjointaccount3 savingsaccountdate3 reasonnotusedebitcard3 reasonnotusedebitcard_none3 reasonnotusedebitcard_dist3 reasonnotusedebitcard_cash3 reasonnotusedebitcard_flex3 reasonnotusedebitcard_diff3 reasonnotusedebitcard_afra3 demousedebitcard3 demousedebitcard_same3 demousedebitcard_nonov3 demousedebitcard_neve3 demousedebitcard_atm3 demousedebitcard_shop3 demousedebitcard_tran3 demousedebitcard_onli3 demousedebitcard_mobi3 demousedebitcard_other3 demousecreditcard3 demousecreditcard_same3 demousecreditcard_nonov3 demousecreditcard_neve3 demousecreditcard_atm3 demousecreditcard_shop3 demousecreditcard_tran3 demousecreditcard_onli3 demousecreditcard_mobi3 datecreditcard3 usecreditcard3 savingsaccounttype4 banktype4 savingsbankname4 savingsbankplace4 savingsamount4 savingspurpose4 savingspurpose_sav4 savingspurpose_jew4 savingspurpose_rec4 savingspurpose_cro4 savingspurpose_sug4 savingspurpose_sch4 dummydebitcard4 dummycreditcard4 datedebitcard4 usedebitcard4 usedebitcard_neve4 usedebitcard_atm4 usedebitcard_shop4 usedebitcard_tran4 usedebitcard_onli4 usedebitcard_mobi4 usedebitcard_othe4 savingsjointaccount4 savingsaccountdate4 reasonnotusedebitcard4 reasonnotusedebitcard_none4 reasonnotusedebitcard_dist4 reasonnotusedebitcard_cash4 reasonnotusedebitcard_flex4 reasonnotusedebitcard_diff4 reasonnotusedebitcard_afra4 demousedebitcard4 demousedebitcard_same4 demousedebitcard_nonov4 demousedebitcard_neve4 demousedebitcard_atm4 demousedebitcard_shop4 demousedebitcard_tran4 demousedebitcard_onli4 demousedebitcard_mobi4 demousedebitcard_other4 demousecreditcard4 demousecreditcard_same4 demousecreditcard_nonov4 demousecreditcard_neve4 demousecreditcard_atm4 demousecreditcard_shop4 demousecreditcard_tran4 demousecreditcard_onli4 demousecreditcard_mobi4 datecreditcard4 usecreditcard4, after(nbsavingaccounts)
+
 
 
 save"Last/NEEMSIS1-HH", replace

@@ -1187,8 +1187,8 @@ summarize nbsavingaccounts
 ********** Saving account level
 * Selection
 use"NEEMSIS1-HH", clear
-keep HHID2016 INDID2016 savingsaccounttype* savingsjointaccount* savingsaccountdate* banktype* savingsbankname* savingsbankplace* savingsamount* savingspurpose* dummydebitcard* dummycreditcard* datedebitcard* usedebitcard* reasonnotusedebitcard* demousedebitcard* demousecreditcard* datecreditcard* usecreditcard*
-reshape long savingsaccounttype savingsjointaccount savingsaccountdate banktype savingsbankname savingsbankplace savingsamount savingspurpose dummydebitcard dummycreditcard datedebitcard usedebitcard reasonnotusedebitcard demousedebitcard demousecreditcard datecreditcard usecreditcard, i(HHID2016 INDID2016) j(n)
+keep HHID2016 INDID2016 savingsaccounttype* banktype* savingsbankname* savingsbankplace* savingsamount* savingspurpose* savingspurpose_sav* savingspurpose_jew* savingspurpose_rec* savingspurpose_cro* savingspurpose_sug* savingspurpose_sch* dummydebitcard* dummycreditcard* datedebitcard* usedebitcard* usedebitcard_neve* usedebitcard_atm* usedebitcard_shop* usedebitcard_tran* usedebitcard_onli* usedebitcard_mobi* usedebitcard_othe* savingsjointaccount* savingsaccountdate* reasonnotusedebitcard* reasonnotusedebitcard_none* reasonnotusedebitcard_dist* reasonnotusedebitcard_cash* reasonnotusedebitcard_flex* reasonnotusedebitcard_diff* reasonnotusedebitcard_afra* demousedebitcard* demousedebitcard_same* demousedebitcard_nonov* demousedebitcard_neve* demousedebitcard_atm* demousedebitcard_shop* demousedebitcard_tran* demousedebitcard_onli* demousedebitcard_mobi* demousedebitcard_other* demousecreditcard* demousecreditcard_same* demousecreditcard_nonov* demousecreditcard_neve* demousecreditcard_atm* demousecreditcard_shop* demousecreditcard_tran* demousecreditcard_onli* demousecreditcard_mobi* datecreditcard* usecreditcard*
+reshape long savingsaccounttype banktype savingsbankname  savingsbankplace  savingsamount  savingspurpose  savingspurpose_sav  savingspurpose_jew  savingspurpose_rec  savingspurpose_cro  savingspurpose_sug  savingspurpose_sch  dummydebitcard  dummycreditcard  datedebitcard  usedebitcard  usedebitcard_neve  usedebitcard_atm  usedebitcard_shop  usedebitcard_tran  usedebitcard_onli  usedebitcard_mobi  usedebitcard_othe  savingsjointaccount  savingsaccountdate  reasonnotusedebitcard  reasonnotusedebitcard_none  reasonnotusedebitcard_dist  reasonnotusedebitcard_cash  reasonnotusedebitcard_flex  reasonnotusedebitcard_diff  reasonnotusedebitcard_afra  demousedebitcard  demousedebitcard_same  demousedebitcard_nonov  demousedebitcard_neve  demousedebitcard_atm  demousedebitcard_shop  demousedebitcard_tran  demousedebitcard_onli  demousedebitcard_mobi  demousedebitcard_other  demousecreditcard  demousecreditcard_same  demousecreditcard_nonov  demousecreditcard_neve  demousecreditcard_atm  demousecreditcard_shop  demousecreditcard_tran  demousecreditcard_onli  demousecreditcard_mobi  datecreditcard  usecreditcard , i(HHID2016 INDID2016) j(n)
 drop if savingsaccounttype==.
 
 * Tables
@@ -1197,17 +1197,45 @@ tabulate savingsjointaccount
 tabulate savingsaccountdate
 tabulate banktype
 summarize savingsamount
-tabulate savingspurpose
-
-
+tabulate savingspurpose_sav
+tabulate savingspurpose_jew
+tabulate savingspurpose_rec
+tabulate savingspurpose_cro
+tabulate savingspurpose_sug
+tabulate savingspurpose_sch
 tabulate dummydebitcard
 tabulate dummycreditcard
 tabulate datedebitcard
-tabulate usedebitcard
-
-tabulate reasonnotusedebitcard
-tabulate demousedebitcard
-tabulate demousecreditcard
+tabulate usedebitcard_neve
+tabulate usedebitcard_atm
+tabulate usedebitcard_shop
+tabulate usedebitcard_tran
+tabulate usedebitcard_onli
+tabulate usedebitcard_mobi
+tabulate usedebitcard_othe
+tabulate reasonnotusedebitcard_none
+tabulate reasonnotusedebitcard_dist
+tabulate reasonnotusedebitcard_cash
+tabulate reasonnotusedebitcard_flex
+tabulate reasonnotusedebitcard_diff
+tabulate reasonnotusedebitcard_afra
+tabulate demousedebitcard_same
+tabulate demousedebitcard_nonov
+tabulate demousedebitcard_neve
+tabulate demousedebitcard_atm
+tabulate demousedebitcard_shop
+tabulate demousedebitcard_tran
+tabulate demousedebitcard_onli
+tabulate demousedebitcard_mobi
+tabulate demousedebitcard_other
+tabulate demousecreditcard_same
+tabulate demousecreditcard_nonov
+tabulate demousecreditcard_neve
+tabulate demousecreditcard_atm
+tabulate demousecreditcard_shop
+tabulate demousecreditcard_tran
+tabulate demousecreditcard_onli
+tabulate demousecreditcard_mobi
 tabulate datecreditcard
 tabulate usecreditcard
 
