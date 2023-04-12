@@ -1403,3 +1403,89 @@ log close
 
 
 
+
+
+log using "7-1_Land.log", nomsg replace
+****************************************
+* 7.1. Land
+****************************************
+use"NEEMSIS1-HH", clear
+
+* Selection
+keep HHID2016 dummyeverhadland ownland sizeownland drywetownland waterfromownland_* leaseland sizeleaseland drywetleaseland waterfromleaseland_* landpurchased landpurchasedacres landpurchasedamount landpurchasedhowbuy_here landpurchasedhowbuy_savi landpurchasedhowbuy_bank landpurchasedhowbuy_cred landpurchasedhowbuy_fina landpurchasedhowbuy_help landpurchasedhowbuy_sche landlost landlostreason dummyleasedland landleasername landleaserrelation landleasercaste landleaserothercaste dummyleasingland landleasingname landleasingrelation landleasingcaste landleasingrothercaste
+duplicates drop
+
+* Tables
+tabulate dummyeverhadland
+tabulate ownland
+summarize sizeownland
+tabulate drywetownland
+tabulate waterfromownland_tank
+tabulate waterfromownland_rive
+tabulate waterfromownland_bore
+tabulate waterfromownland_open
+tabulate waterfromownland_rain
+
+tabulate leaseland
+summarize sizeleaseland
+tabulate drywetleaseland
+tabulate waterfromleaseland_tank
+tabulate waterfromleaseland_rive
+tabulate waterfromleaseland_bore
+tabulate waterfromleaseland_open
+tabulate waterfromleaseland_rain
+
+tabulate landpurchased
+summarize landpurchasedacres landpurchasedamount
+tabulate landpurchasedhowbuy_here
+tabulate landpurchasedhowbuy_savi
+tabulate landpurchasedhowbuy_bank
+tabulate landpurchasedhowbuy_cred
+tabulate landpurchasedhowbuy_fina
+tabulate landpurchasedhowbuy_help
+tabulate landpurchasedhowbuy_sche
+tabulate landlost
+tabulate landlostreason
+tabulate dummyleasedland
+tabulate landleasername
+tabulate landleaserrelation
+tabulate landleasercaste
+tabulate landleaserothercaste
+tabulate dummyleasingland
+tabulate landleasingname
+tabulate landleasingrelation_labo
+tabulate landleasingrelation_rela
+tabulate landleasingrelation_poli
+tabulate landleasingrelation_reli
+tabulate landleasingrelation_neig
+tabulate landleasingrelation_shg
+tabulate landleasingrelation_busi
+tabulate landleasingrelation_wkp
+tabulate landleasingrelation_trad
+tabulate landleasingrelation_frie
+tabulate landleasingrelation_gpfi
+tabulate landleasingcaste
+tabulate landleasingrothercaste
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

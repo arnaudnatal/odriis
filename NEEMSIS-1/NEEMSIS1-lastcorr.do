@@ -837,6 +837,116 @@ label values insurancetype1 insurancetype
 label values insurancetype2 insurancetype
 
 
+
+
+
+********** Land
+ta drywetownland
+label define drywetownland 1"Dry" 2"Wet" 3"Both"
+label values drywetownland drywetownland
+
+replace waterfromownland="" if waterfromownland=="."
+split waterfromownland, destring
+forvalues i=1/5 {
+gen waterfromownland_`i'=0 if waterfromownland!=""
+}
+forvalues i=1/5 {
+replace waterfromownland_`i'=1 if waterfromownland1==`i'
+replace waterfromownland_`i'=1 if waterfromownland2==`i'
+replace waterfromownland_`i'=1 if waterfromownland3==`i'
+replace waterfromownland_`i'=1 if waterfromownland4==`i'
+label var waterfromownland_`i' "waterfromownland=`i'"
+label values waterfromownland_`i' dummyinsurance
+}
+rename waterfromownland_1 waterfromownland_tank
+rename waterfromownland_2 waterfromownland_rive
+rename waterfromownland_3 waterfromownland_bore
+rename waterfromownland_4 waterfromownland_open
+rename waterfromownland_5 waterfromownland_rain
+drop waterfromownland1 waterfromownland2 waterfromownland3 waterfromownland4
+order waterfromownland_tank waterfromownland_rive waterfromownland_bore waterfromownland_open waterfromownland_rain, after(waterfromownland)
+
+
+replace drywetleaseland="3" if drywetleaseland=="1 2"
+destring drywetleaseland, replace
+label define drywetleaseland 1"Dry" 2"Wet" 3"Both"
+label values drywetleaseland drywetleaseland
+
+replace  waterfromleaseland="" if  waterfromleaseland=="."
+split  waterfromleaseland, destring
+forvalues i=1/5 {
+gen  waterfromleaseland_`i'=0 if  waterfromleaseland!=""
+}
+forvalues i=1/5 {
+replace  waterfromleaseland_`i'=1 if  waterfromleaseland1==`i'
+replace  waterfromleaseland_`i'=1 if  waterfromleaseland2==`i'
+replace  waterfromleaseland_`i'=1 if  waterfromleaseland3==`i'
+label var  waterfromleaseland_`i' " waterfromleaseland=`i'"
+label values  waterfromleaseland_`i' dummyinsurance
+}
+rename waterfromleaseland_1 waterfromleaseland_tank
+rename waterfromleaseland_2 waterfromleaseland_rive
+rename waterfromleaseland_3 waterfromleaseland_bore
+rename waterfromleaseland_4 waterfromleaseland_open
+rename waterfromleaseland_5 waterfromleaseland_rain
+drop waterfromleaseland1  waterfromleaseland2  waterfromleaseland3
+order waterfromleaseland_tank  waterfromleaseland_rive  waterfromleaseland_bore  waterfromleaseland_open  waterfromleaseland_rain, after(waterfromleaseland)
+
+
+split landpurchasedhowbuy, destring
+forvalues i=1/7 {
+gen landpurchasedhowbuy_`i'=0 if landpurchasedhowbuy!=""
+}
+forvalues i=1/7 {
+replace landpurchasedhowbuy_`i'=1 if landpurchasedhowbuy1==`i'
+replace landpurchasedhowbuy_`i'=1 if landpurchasedhowbuy2==`i'
+label var landpurchasedhowbuy_`i' "landpurchasedhowbuy=`i'"
+label values landpurchasedhowbuy_`i' dummyinsurance
+}
+rename landpurchasedhowbuy_1 landpurchasedhowbuy_here
+rename landpurchasedhowbuy_2 landpurchasedhowbuy_savi
+rename landpurchasedhowbuy_3 landpurchasedhowbuy_bank
+rename landpurchasedhowbuy_4 landpurchasedhowbuy_cred
+rename landpurchasedhowbuy_5 landpurchasedhowbuy_fina
+rename landpurchasedhowbuy_6 landpurchasedhowbuy_help
+rename landpurchasedhowbuy_7 landpurchasedhowbuy_sche
+drop landpurchasedhowbuy1 landpurchasedhowbuy2
+order landpurchasedhowbuy_here landpurchasedhowbuy_savi landpurchasedhowbuy_bank landpurchasedhowbuy_cred landpurchasedhowbuy_fina landpurchasedhowbuy_help landpurchasedhowbuy_sche, after(landpurchasedhowbuy)
+
+replace landleasername="" if landleasername=="."
+
+label define landleaserrelation 1"Labour relation" 2"Relative" 5"Neighbor" 8"WKP"
+label values landleaserrelation landleaserrelation
+
+replace landleasingname="" if landleasingname=="."
+
+
+
+split landleasingrelation, destring
+forvalues i=1/11 {
+gen landleasingrelation_`i'=0 if landleasingrelation!=""
+}
+forvalues i=1/11 {
+replace landleasingrelation_`i'=1 if landleasingrelation1==`i'
+replace landleasingrelation_`i'=1 if landleasingrelation2==`i'
+label var landleasingrelation_`i' "landleasingrelation=`i'"
+label values landleasingrelation_`i' dummyinsurance
+}
+rename landleasingrelation_1 landleasingrelation_labo
+rename landleasingrelation_2 landleasingrelation_rela
+rename landleasingrelation_3 landleasingrelation_poli
+rename landleasingrelation_4 landleasingrelation_reli
+rename landleasingrelation_5 landleasingrelation_neig
+rename landleasingrelation_6 landleasingrelation_shg
+rename landleasingrelation_7 landleasingrelation_busi
+rename landleasingrelation_8 landleasingrelation_wkp
+rename landleasingrelation_9 landleasingrelation_trad
+rename landleasingrelation_10 landleasingrelation_frie
+rename landleasingrelation_11 landleasingrelation_gpfi
+drop landleasingrelation1 landleasingrelation2
+order landleasingrelation_labo landleasingrelation_rela landleasingrelation_poli landleasingrelation_reli landleasingrelation_neig landleasingrelation_shg landleasingrelation_busi landleasingrelation_wkp landleasingrelation_trad landleasingrelation_frie landleasingrelation_gpfi, after(landleasingrelation)
+
+
 save"Last/NEEMSIS1-HH", replace
 ****************************************
 * END
