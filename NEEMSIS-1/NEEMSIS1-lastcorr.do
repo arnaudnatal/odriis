@@ -109,6 +109,32 @@ drop reasondropping1 reasondropping2
 
 
 
+********** Migration
+recode dummymigration (.=0)
+tabulate migrantlist
+replace migrantlist="" if migrantlist=="."
+split migrantlist
+destring migrantlist*, replace
+gen migrantlistdummy=0 if dummymigration==1
+replace migrantlistdummy=1 if INDID2016==migrantlist1
+replace migrantlistdummy=1 if INDID2016==migrantlist2
+replace migrantlistdummy=1 if INDID2016==migrantlist3
+replace migrantlistdummy=1 if INDID2016==migrantlist4
+replace migrantlistdummy=1 if INDID2016==migrantlist5
+replace migrantlistdummy=1 if INDID2016==migrantlist6
+replace migrantlistdummy=1 if INDID2016==migrantlist7
+replace migrantlistdummy=1 if INDID2016==migrantlist8
+replace migrantlistdummy=1 if INDID2016==migrantlist9
+replace migrantlistdummy=1 if INDID2016==migrantlist10
+replace migrantlistdummy=1 if INDID2016==migrantlist11
+replace migrantlistdummy=1 if INDID2016==migrantlist12
+replace migrantlistdummy=1 if INDID2016==migrantlist13
+label values migrantlistdummy dummyinsurance
+
+keep if dummymigration==1
+ta migrantlistdummy
+order migrantlistdummy, after(dummymigration)
+
 save"Last/NEEMSIS1-HH", replace
 ****************************************
 * END
@@ -210,6 +236,139 @@ order HHID2016 INDID2016 occupationid _merge
 sort HHID2016 INDID2016 occupationid
 drop if _merge==2
 drop _merge
+
+
+
+********** SE labourers
+label define demobusiness 1"More labourers" 2"Less labourers" 3"Same number of labourers"
+label values demobusiness demobusiness
+
+
+
+forvalues i=1/42 {
+format businesslabourerdate`i' %td
+}
+
+
+
+
+********** Demo
+replace demobusinessactivity="" if demobusinessactivity=="."
+split demobusinessactivity
+destring demobusinessactivity1 demobusinessactivity2 demobusinessactivity3 demobusinessactivity4 demobusinessactivity5 demobusinessactivity6, replace
+recode demobusinessactivity1 demobusinessactivity2 demobusinessactivity3 demobusinessactivity4 demobusinessactivity5 demobusinessactivity6 (77=9)
+forvalues i=1/9 {
+gen demobusinessactivity_`i'=0 if demobusinessactivity!=""
+} 
+forvalues i=1/9 {
+replace demobusinessactivity_`i'=1 if demobusinessactivity1==`i'
+replace demobusinessactivity_`i'=1 if demobusinessactivity2==`i'
+replace demobusinessactivity_`i'=1 if demobusinessactivity3==`i'
+replace demobusinessactivity_`i'=1 if demobusinessactivity4==`i'
+replace demobusinessactivity_`i'=1 if demobusinessactivity5==`i'
+replace demobusinessactivity_`i'=1 if demobusinessactivity6==`i'
+replace demobusinessactivity_`i'=1 if demobusinessactivity7==`i'
+label values demobusinessactivity_`i' dummybusinesslabourers
+label var demobusinessactivity_`i' "demobusinessactivity=`i'"
+}
+rename demobusinessactivity_1 demobusinessactivity_lesin
+rename demobusinessactivity_2 demobusinessactivity_cainp
+rename demobusinessactivity_3 demobusinessactivity_difse
+rename demobusinessactivity_4 demobusinessactivity_caspa
+rename demobusinessactivity_5 demobusinessactivity_paymo
+rename demobusinessactivity_6 demobusinessactivity_frequ
+rename demobusinessactivity_7 demobusinessactivity_press
+rename demobusinessactivity_8 demobusinessactivity_contr
+rename demobusinessactivity_9 demobusinessactivity_other
+drop demobusinessactivity1 demobusinessactivity2 demobusinessactivity3 demobusinessactivity4 demobusinessactivity5 demobusinessactivity6 demobusinessactivity7
+order demobusinessactivity_lesin demobusinessactivity_cainp demobusinessactivity_difse demobusinessactivity_caspa demobusinessactivity_paymo demobusinessactivity_frequ demobusinessactivity_press demobusinessactivity_contr demobusinessactivity_other, after(demobusinessactivity)
+
+replace demobusinessactivityother="" if demobusinessactivityother=="."
+replace demobusinesskindofjob="" if demobusinesskindofjob=="."
+
+
+
+********** Salaried job
+replace joblocation="" if (kindofwork==1 | kindofwork==2) & joblocation!=""
+replace jobdistance=. if (kindofwork==1 | kindofwork==2)
+replace relationemployer="" if relationemployer=="."
+replace casteemployer="" if casteemployer=="."
+
+split relationemployer
+destring relationemployer1 relationemployer2 relationemployer3 relationemployer4 relationemployer5 relationemployer6, replace
+recode relationemployer1 relationemployer2 relationemployer3 relationemployer4 relationemployer5 relationemployer6 (66=12) (99=13)
+forvalues i=1/13 {
+gen relationemployer_`i'=0 if relationemployer!=""
+} 
+forvalues i=1/13 {
+replace relationemployer_`i'=1 if relationemployer1==`i'
+replace relationemployer_`i'=1 if relationemployer2==`i'
+replace relationemployer_`i'=1 if relationemployer3==`i'
+replace relationemployer_`i'=1 if relationemployer4==`i'
+replace relationemployer_`i'=1 if relationemployer5==`i'
+replace relationemployer_`i'=1 if relationemployer6==`i'
+label values relationemployer_`i' dummybusinesslabourers
+label var relationemployer_`i' "relationemployer=`i'"
+}
+rename relationemployer_1 relationemployer_labo
+rename relationemployer_2 relationemployer_rela
+rename relationemployer_3 relationemployer_poli
+rename relationemployer_4 relationemployer_reli
+rename relationemployer_5 relationemployer_neig
+rename relationemployer_6 relationemployer_shg
+rename relationemployer_7 relationemployer_busi
+rename relationemployer_8 relationemployer_wkp
+rename relationemployer_9 relationemployer_trad
+rename relationemployer_10 relationemployer_frie
+rename relationemployer_11 relationemployer_gfin
+rename relationemployer_12 relationemployer_na
+rename relationemployer_13 relationemployer_nr
+drop relationemployer1 relationemployer2 relationemployer3 relationemployer4 relationemployer5 relationemployer6
+order relationemployer_labo relationemployer_rela relationemployer_poli relationemployer_reli relationemployer_neig relationemployer_shg relationemployer_busi relationemployer_wkp relationemployer_trad relationemployer_frie relationemployer_gfin relationemployer_na relationemployer_nr, after(relationemployer)
+
+split casteemployer
+destring casteemployer*, replace
+recode casteemployer1 casteemployer2 casteemployer3 casteemployer4 casteemployer5 casteemployer6 casteemployer7 casteemployer8 casteemployer9 casteemployer10 casteemployer11 (66=17) (77=18)
+forvalues i=1/18 {
+gen casteemployer_`i'=0 if casteemployer!=""
+} 
+forvalues i=1/13 {
+replace casteemployer_`i'=1 if casteemployer1==`i'
+replace casteemployer_`i'=1 if casteemployer2==`i'
+replace casteemployer_`i'=1 if casteemployer3==`i'
+replace casteemployer_`i'=1 if casteemployer4==`i'
+replace casteemployer_`i'=1 if casteemployer5==`i'
+replace casteemployer_`i'=1 if casteemployer6==`i'
+replace casteemployer_`i'=1 if casteemployer7==`i'
+replace casteemployer_`i'=1 if casteemployer8==`i'
+replace casteemployer_`i'=1 if casteemployer9==`i'
+replace casteemployer_`i'=1 if casteemployer10==`i'
+replace casteemployer_`i'=1 if casteemployer11==`i'
+label values casteemployer_`i' dummybusinesslabourers
+label var casteemployer_`i' "casteemployer=`i'"
+}
+rename casteemployer_1 casteemployer_vanni
+rename casteemployer_2 casteemployer_sc
+rename casteemployer_3 casteemployer_arunt
+rename casteemployer_4 casteemployer_rediy
+rename casteemployer_5 casteemployer_grama
+rename casteemployer_6 casteemployer_naidu
+rename casteemployer_7 casteemployer_navit
+rename casteemployer_8 casteemployer_asara
+rename casteemployer_9 casteemployer_settu
+rename casteemployer_10 casteemployer_natta
+rename casteemployer_11 casteemployer_mudal
+rename casteemployer_12 casteemployer_kulal
+rename casteemployer_13 casteemployer_chett
+rename casteemployer_14 casteemployer_marwa
+rename casteemployer_15 casteemployer_musli
+rename casteemployer_16 casteemployer_paday
+rename casteemployer_17 casteemployer_na
+rename casteemployer_18 casteemployer_other
+drop casteemployer1 casteemployer2 casteemployer3 casteemployer4 casteemployer5 casteemployer6 casteemployer7 casteemployer8 casteemployer9 casteemployer10 casteemployer11
+order casteemployer_vanni casteemployer_sc casteemployer_arunt casteemployer_rediy casteemployer_grama casteemployer_naidu casteemployer_navit casteemployer_asara casteemployer_settu casteemployer_natta casteemployer_mudal casteemployer_kulal casteemployer_chett casteemployer_marwa casteemployer_musli casteemployer_paday casteemployer_na casteemployer_other, after(casteemployer)
+
+
 
 
 save"Last/NEEMSIS1-occupations", replace

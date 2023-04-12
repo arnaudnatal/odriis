@@ -163,9 +163,9 @@ log close
 
 
 
-log using "2_Employment.log", nomsg replace
+log using "3_Employment.log", nomsg replace
 ****************************************
-* 2. Employment
+* 3. Employment
 ****************************************
 
 ********** Workers
@@ -178,6 +178,20 @@ drop if age<=10
 
 * Tables
 tabulate dummyworkedpastyear
+
+
+
+********** Non-workers
+use"NEEMSIS1-HH", clear
+
+* Selection
+drop if livinghome==3
+drop if livinghome==4
+drop if age<=10
+
+* Tables
+tabulate reasonnotworkpastyear
+tabulate stoppedworking
 
 
 
@@ -211,12 +225,14 @@ log close
 
 
 
-log using "2-1_Selfemployment.log", nomsg replace
+log using "3-1-1_Selfemployment.log", nomsg replace
 ****************************************
-* 2.1. Self-employment
+* 3.1.1. Self-employment details
+* 3.1.2. Self-employment investment details
 ****************************************
 use"NEEMSIS1-occupations", clear
 
+********** Details
 * Selection
 drop if occupationid==.
 keep if kindofwork==2
@@ -241,20 +257,200 @@ tabulate businesssourceinvest_inbu
 tabulate businesssourceinvest_none
 tabulate businesssourceinvest_othe
 tabulate otherbusinesssourceinvestment
+tabulate demobusinessactivity_lesin
+tabulate demobusinessactivity_cainp
+tabulate demobusinessactivity_difse
+tabulate demobusinessactivity_caspa
+tabulate demobusinessactivity_paymo
+tabulate demobusinessactivity_frequ
+tabulate demobusinessactivity_press
+tabulate demobusinessactivity_contr
+tabulate demobusinessactivity_other
+tabulate demobusinessactivityother
+tabulate demobusinesskindofjob
 
 
+
+********** Investment
 * Selection
 keep HHID2016 INDID2016 occupationid namebusinesslender* addressbusinesslender* businesslender* castebusinesslender* occupbusinesslender*
 reshape long namebusinesslender addressbusinesslender businesslender castebusinesslender occupbusinesslender, i(HHID2016 INDID2016 occupationid) j(n)
 
 * Tables
-
-
+tabulate namebusinesslender
+tabulate businesslender
+tabulate castebusinesslender
+tabulate occupbusinesslender
 
 ****************************************
 * END
 log close
 
+
+
+
+
+
+
+
+
+
+
+log using "3-1-3_Businesslabourer.log", nomsg replace
+****************************************
+* 3.1.3. Self-employment business labourers
+****************************************
+use"NEEMSIS1-occupations", clear
+
+* Selection
+drop if occupationid==.
+keep if kindofwork==2
+
+* Tables
+tabulate dummybusinesslabourers
+summarize nbbusinesslabourers
+tabulate demobusiness
+
+********** Details
+* Selection
+keep HHID2016 INDID2016 occupationid namebusinesslabourer* dummyhhmember* addressbusinesslabourer* relationshipbusinesslabourer* castebusinesslabourer* businesslabourerdate* businesslabourertypejob* businesslabourerwagetype* businesslabourerbonus* businesslabourerinsurance* businesslabourerpension*
+
+reshape long namebusinesslabourer dummyhhmember addressbusinesslabourer relationshipbusinesslabourer castebusinesslabourer businesslabourerdate businesslabourertypejob businesslabourerwagetype businesslabourerbonus businesslabourerinsurance businesslabourerpension, i(HHID2016 INDID2016 occupationid) j(n)
+drop if namebusinesslabourer==""
+
+
+* Tables
+tabulate dummyhhmember
+tabulate relationshipbusinesslabourer
+tabulate castebusinesslabourer
+tabulate businesslabourertypejob
+tabulate businesslabourerwagetype
+tabulate businesslabourerbonus
+tabulate businesslabourerinsurance
+tabulate businesslabourerpension
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "3-2_Salariedjob.log", nomsg replace
+****************************************
+* 3.1.3. Self-employment business labourers
+****************************************
+use"NEEMSIS1-occupations", clear
+
+* Selection
+drop if occupationid==.
+drop if kindofwork==1
+drop if kindofwork==2
+
+* Tables
+tabulate joblocation
+summarize jobdistance
+tabulate relationemployer_labo
+tabulate relationemployer_rela
+tabulate relationemployer_poli
+tabulate relationemployer_reli
+tabulate relationemployer_neig
+tabulate relationemployer_shg
+tabulate relationemployer_busi
+tabulate relationemployer_wkp
+tabulate relationemployer_trad
+tabulate relationemployer_frie
+tabulate relationemployer_gfin
+tabulate relationemployer_na
+tabulate relationemployer_nr
+tabulate casteemployer_vanni
+tabulate casteemployer_sc
+tabulate casteemployer_arunt
+tabulate casteemployer_rediy
+tabulate casteemployer_grama
+tabulate casteemployer_naidu
+tabulate casteemployer_navit
+tabulate casteemployer_asara
+tabulate casteemployer_settu
+tabulate casteemployer_natta
+tabulate casteemployer_mudal
+tabulate casteemployer_kulal
+tabulate casteemployer_chett
+tabulate casteemployer_marwa
+tabulate casteemployer_musli
+tabulate casteemployer_paday
+tabulate casteemployer_na
+tabulate casteemployer_other
+tabulate othercasteemployer
+tabulate salariedjobtype
+tabulate demojobtype
+tabulate salariedjobtype2
+tabulate effetdemowage
+tabulate salariedwagetype
+tabulate demowagetype
+tabulate salariedjobbonus
+tabulate salariedjobinsurance
+tabulate salariedjobpension
+summarize salariedjobtenure
+tabulate salariedjobkindbonus
+summarize salariedjobbonusamount
+tabulate demosalariedjob
+tabulate demosalariedjobother
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "4_Migration.log", nomsg replace
+****************************************
+* 4. Migration
+****************************************
+* Household
+use"NEEMSIS1-HH", clear
+keep HHID2016 dummymigration
+duplicates drop
+tabulate dummymigration
+
+* Individual
+use"NEEMSIS1-HH", clear
+tabulate migrantlistdummy
+
+********** Details
+use"NEEMSIS1-migrations", clear
+
+
+****************************************
+* END
+log close
 
 
 
