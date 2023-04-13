@@ -947,6 +947,513 @@ drop landleasingrelation1 landleasingrelation2
 order landleasingrelation_labo landleasingrelation_rela landleasingrelation_poli landleasingrelation_reli landleasingrelation_neig landleasingrelation_shg landleasingrelation_busi landleasingrelation_wkp landleasingrelation_trad landleasingrelation_frie landleasingrelation_gpfi, after(landleasingrelation)
 
 
+
+
+
+
+********** crops
+replace productypeland_guava="3" if productypeland_guava=="1 2"
+label define landtype 1"Own land" 2"Leased land" 3"Both", replace
+foreach x in paddy ragi millets tapioca cotton sugarca savukku guava groundnut {
+destring productypeland_`x', replace
+label values productypeland_`x' landtype
+}
+
+foreach x in productacre productypeland productunit productnbbags productselfconsumption productnbbagssold productpricesold productexpenses productpaidworkers productnbpaidworkers productlabourcost productunpaidworkers productnbunpaidworkers productnbhhmembers productoriginlabourers productcastelabourers {
+rename `x'_paddy `x'_pad
+rename `x'_ragi `x'_rag
+rename `x'_millets `x'_mil
+rename `x'_tapioca `x'_tap
+rename `x'_cotton `x'_cot
+rename `x'_sugarca `x'_sug
+rename `x'_savukku `x'_sav
+rename `x'_guava `x'_gua
+rename `x'_groundnut `x'_gro
+}
+
+
+**
+foreach x in pad rag mil tap cot sug sav gua gro {
+split productoriginlabourers_`x', destring
+forvalues i=1/2 {
+gen productoriginlabourers_`i'_`x'=0 if productoriginlabourers_`x'!=""
+}
+forvalues i=1/2 {
+replace productoriginlabourers_`i'_`x'=1 if productoriginlabourers_`x'1==`i'
+replace productoriginlabourers_`i'_`x'=1 if productoriginlabourers_`x'2==`i'
+label var productoriginlabourers_`i'_`x' "productoriginlabourers_`x'=`i'"
+label values productoriginlabourers_`i'_`x' dummyinsurance
+}
+rename productoriginlabourers_1_`x' productoriginlabourers_in_`x'
+rename productoriginlabourers_2_`x' productoriginlabourers_ou_`x'
+drop productoriginlabourers_`x'1 productoriginlabourers_`x'2
+order productoriginlabourers_in_`x' productoriginlabourers_ou_`x', after(productoriginlabourers_`x')
+}
+
+**
+foreach x in pad rag mil tap cot sug sav gua gro {
+split productcastelabourers_`x', destring
+}
+
+
+** 4
+foreach x in pad {
+recode productcastelabourers_`x'1 productcastelabourers_`x'2 productcastelabourers_`x'3 productcastelabourers_`x'4 (88=17)
+forvalues i=1/17 {
+gen productcastelabourers_`i'_`x'=0 if productcastelabourers_`x'!=""
+}
+forvalues i=1/17 {
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'1==`i'
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'2==`i'
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'3==`i'
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'4==`i'
+label var productcastelabourers_`i'_`x' "productcastelabourers_`x'=`i'"
+label values productcastelabourers_`i'_`x' dummyinsurance
+}
+rename productcastelabourers_1_`x' productcastelabourers_van_`x'
+rename productcastelabourers_2_`x' productcastelabourers_sc_`x'
+rename productcastelabourers_3_`x' productcastelabourers_aru_`x'
+rename productcastelabourers_4_`x' productcastelabourers_red_`x'
+rename productcastelabourers_5_`x' productcastelabourers_gra_`x'
+rename productcastelabourers_6_`x' productcastelabourers_nai_`x'
+rename productcastelabourers_7_`x' productcastelabourers_nav_`x'
+rename productcastelabourers_8_`x' productcastelabourers_asa_`x'
+rename productcastelabourers_9_`x' productcastelabourers_set_`x'
+rename productcastelabourers_10_`x' productcastelabourers_nat_`x'
+rename productcastelabourers_11_`x' productcastelabourers_mud_`x'
+rename productcastelabourers_12_`x' productcastelabourers_kul_`x'
+rename productcastelabourers_13_`x' productcastelabourers_che_`x'
+rename productcastelabourers_14_`x' productcastelabourers_mar_`x'
+rename productcastelabourers_15_`x' productcastelabourers_mus_`x'
+rename productcastelabourers_16_`x' productcastelabourers_pad_`x'
+rename productcastelabourers_17_`x' productcastelabourers_dk_`x'
+drop productcastelabourers_`x'1 productcastelabourers_`x'2 productcastelabourers_`x'3 productcastelabourers_`x'4
+order productcastelabourers_van_`x' productcastelabourers_sc_`x' productcastelabourers_aru_`x' productcastelabourers_red_`x' productcastelabourers_gra_`x' productcastelabourers_nai_`x' productcastelabourers_nav_`x' productcastelabourers_asa_`x' productcastelabourers_set_`x' productcastelabourers_nat_`x' productcastelabourers_mud_`x' productcastelabourers_kul_`x' productcastelabourers_che_`x' productcastelabourers_mar_`x' productcastelabourers_mus_`x' productcastelabourers_pad_`x' productcastelabourers_dk_`x', after(productcastelabourers_`x')
+}
+
+
+** 3
+foreach x in mil tap cot sug sav gua {
+recode productcastelabourers_`x'1 productcastelabourers_`x'2 productcastelabourers_`x'3 (88=17)
+forvalues i=1/17 {
+gen productcastelabourers_`i'_`x'=0 if productcastelabourers_`x'!=""
+}
+forvalues i=1/17 {
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'1==`i'
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'2==`i'
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'3==`i'
+label var productcastelabourers_`i'_`x' "productcastelabourers_`x'=`i'"
+label values productcastelabourers_`i'_`x' dummyinsurance
+}
+rename productcastelabourers_1_`x' productcastelabourers_van_`x'
+rename productcastelabourers_2_`x' productcastelabourers_sc_`x'
+rename productcastelabourers_3_`x' productcastelabourers_aru_`x'
+rename productcastelabourers_4_`x' productcastelabourers_red_`x'
+rename productcastelabourers_5_`x' productcastelabourers_gra_`x'
+rename productcastelabourers_6_`x' productcastelabourers_nai_`x'
+rename productcastelabourers_7_`x' productcastelabourers_nav_`x'
+rename productcastelabourers_8_`x' productcastelabourers_asa_`x'
+rename productcastelabourers_9_`x' productcastelabourers_set_`x'
+rename productcastelabourers_10_`x' productcastelabourers_nat_`x'
+rename productcastelabourers_11_`x' productcastelabourers_mud_`x'
+rename productcastelabourers_12_`x' productcastelabourers_kul_`x'
+rename productcastelabourers_13_`x' productcastelabourers_che_`x'
+rename productcastelabourers_14_`x' productcastelabourers_mar_`x'
+rename productcastelabourers_15_`x' productcastelabourers_mus_`x'
+rename productcastelabourers_16_`x' productcastelabourers_pad_`x'
+rename productcastelabourers_17_`x' productcastelabourers_dk_`x'
+drop productcastelabourers_`x'1 productcastelabourers_`x'2 productcastelabourers_`x'3
+order productcastelabourers_van_`x' productcastelabourers_sc_`x' productcastelabourers_aru_`x' productcastelabourers_red_`x' productcastelabourers_gra_`x' productcastelabourers_nai_`x' productcastelabourers_nav_`x' productcastelabourers_asa_`x' productcastelabourers_set_`x' productcastelabourers_nat_`x' productcastelabourers_mud_`x' productcastelabourers_kul_`x' productcastelabourers_che_`x' productcastelabourers_mar_`x' productcastelabourers_mus_`x' productcastelabourers_pad_`x' productcastelabourers_dk_`x', after(productcastelabourers_`x')
+}
+
+
+** 2
+foreach x in rag gro {
+recode productcastelabourers_`x'1 productcastelabourers_`x'2 (88=17)
+forvalues i=1/17 {
+gen productcastelabourers_`i'_`x'=0 if productcastelabourers_`x'!=""
+}
+forvalues i=1/17 {
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'1==`i'
+replace productcastelabourers_`i'_`x'=1 if productcastelabourers_`x'2==`i'
+label var productcastelabourers_`i'_`x' "productcastelabourers_`x'=`i'"
+label values productcastelabourers_`i'_`x' dummyinsurance
+}
+rename productcastelabourers_1_`x' productcastelabourers_van_`x'
+rename productcastelabourers_2_`x' productcastelabourers_sc_`x'
+rename productcastelabourers_3_`x' productcastelabourers_aru_`x'
+rename productcastelabourers_4_`x' productcastelabourers_red_`x'
+rename productcastelabourers_5_`x' productcastelabourers_gra_`x'
+rename productcastelabourers_6_`x' productcastelabourers_nai_`x'
+rename productcastelabourers_7_`x' productcastelabourers_nav_`x'
+rename productcastelabourers_8_`x' productcastelabourers_asa_`x'
+rename productcastelabourers_9_`x' productcastelabourers_set_`x'
+rename productcastelabourers_10_`x' productcastelabourers_nat_`x'
+rename productcastelabourers_11_`x' productcastelabourers_mud_`x'
+rename productcastelabourers_12_`x' productcastelabourers_kul_`x'
+rename productcastelabourers_13_`x' productcastelabourers_che_`x'
+rename productcastelabourers_14_`x' productcastelabourers_mar_`x'
+rename productcastelabourers_15_`x' productcastelabourers_mus_`x'
+rename productcastelabourers_16_`x' productcastelabourers_pad_`x'
+rename productcastelabourers_17_`x' productcastelabourers_dk_`x'
+drop productcastelabourers_`x'1 productcastelabourers_`x'2
+order productcastelabourers_van_`x' productcastelabourers_sc_`x' productcastelabourers_aru_`x' productcastelabourers_red_`x' productcastelabourers_gra_`x' productcastelabourers_nai_`x' productcastelabourers_nav_`x' productcastelabourers_asa_`x' productcastelabourers_set_`x' productcastelabourers_nat_`x' productcastelabourers_mud_`x' productcastelabourers_kul_`x' productcastelabourers_che_`x' productcastelabourers_mar_`x' productcastelabourers_mus_`x' productcastelabourers_pad_`x' productcastelabourers_dk_`x', after(productcastelabourers_`x')
+}
+
+
+
+*** demo
+ta demonbagriworkers
+replace demonbagriworkers="" if demonbagriworkers=="."
+split demonbagriworkers, destring
+forvalues i=1/5 {
+gen demonbagriworkers_`i'=0 if demonbagriworkers!=""
+}
+forvalues i=1/5 {
+replace demonbagriworkers_`i'=1 if demonbagriworkers1==`i'
+replace demonbagriworkers_`i'=1 if demonbagriworkers2==`i'
+label var demonbagriworkers_`i' "demonbagriworkers=`i'"
+label values demonbagriworkers_`i' dummyinsurance
+}
+rename demonbagriworkers_1 demonbagriworkers_hpaid
+rename demonbagriworkers_2 demonbagriworkers_dpaid
+rename demonbagriworkers_3 demonbagriworkers_hunpa
+rename demonbagriworkers_4 demonbagriworkers_dunpa
+rename demonbagriworkers_5 demonbagriworkers_same
+drop demonbagriworkers1 demonbagriworkers2
+order demonbagriworkers_hpaid demonbagriworkers_dpaid demonbagriworkers_hunpa demonbagriworkers_dunpa demonbagriworkers_same,after(demonbagriworkers)
+
+
+*
+ta demoagriactivity
+replace demoagriactivity="" if demoagriactivity=="."
+split demoagriactivity, destring
+recode demoagriactivity1 demoagriactivity2 demoagriactivity3 demoagriactivity4 demoagriactivity5 (77=9)
+forvalues i=1/9 {
+gen demoagriactivity_`i'=0 if demoagriactivity!=""
+}
+forvalues i=1/9 {
+replace demoagriactivity_`i'=1 if demoagriactivity1==`i'
+replace demoagriactivity_`i'=1 if demoagriactivity2==`i'
+replace demoagriactivity_`i'=1 if demoagriactivity3==`i'
+replace demoagriactivity_`i'=1 if demoagriactivity4==`i'
+replace demoagriactivity_`i'=1 if demoagriactivity5==`i'
+label values demoagriactivity_`i' dummyinsurance
+label var demoagriactivity_`i' "demoagriactivity=`i'"
+}
+rename demoagriactivity_1 demoagriactivity_lein
+rename demoagriactivity_2 demoagriactivity_ncin
+rename demoagriactivity_3 demoagriactivity_diff
+rename demoagriactivity_4 demoagriactivity_ncpa
+rename demoagriactivity_5 demoagriactivity_pmor
+rename demoagriactivity_6 demoagriactivity_freq
+rename demoagriactivity_7 demoagriactivity_pres
+rename demoagriactivity_8 demoagriactivity_cont
+rename demoagriactivity_9 demoagriactivity_othe
+drop demoagriactivity1 demoagriactivity2 demoagriactivity3 demoagriactivity4 demoagriactivity5
+order demoagriactivity_lein demoagriactivity_ncin demoagriactivity_diff demoagriactivity_ncpa demoagriactivity_pmor demoagriactivity_freq demoagriactivity_pres demoagriactivity_cont demoagriactivity_othe, after(demoagriactivity)
+
+
+
+
+
+
+
+********** Cattle
+replace cattlesoldreason="" if cattlesoldreason=="."
+
+fre livestockuse_cow livestockuse_goat livestockuse_chicken livestockuse_bullock
+foreach x in cow goat chicken {
+split livestockuse_`x', destring
+}
+
+
+*** Cow
+forvalues i=1/6 {
+gen livestockuse_`i'_cow=0 if livestockuse_cow!=""
+}
+forvalues i=1/6 {
+replace livestockuse_`i'_cow=1 if livestockuse_cow1==`i'
+replace livestockuse_`i'_cow=1 if livestockuse_cow2==`i'
+replace livestockuse_`i'_cow=1 if livestockuse_cow3==`i'
+replace livestockuse_`i'_cow=1 if livestockuse_cow4==`i'
+label values livestockuse_`i'_cow dummyinsurance
+label var livestockuse_`i'_cow "livestockuse_cow=`i'"
+}
+rename livestockuse_1_cow livestockuse_sold_cow
+rename livestockuse_2_cow livestockuse_milk_cow
+rename livestockuse_3_cow livestockuse_savi_cow
+rename livestockuse_4_cow livestockuse_stat_cow
+rename livestockuse_5_cow livestockuse_reli_cow
+rename livestockuse_6_cow livestockuse_self_cow
+drop livestockuse_cow1 livestockuse_cow2 livestockuse_cow3 livestockuse_cow4
+order livestockuse_sold_cow livestockuse_milk_cow livestockuse_savi_cow livestockuse_stat_cow livestockuse_reli_cow livestockuse_self_cow,after(livestockuse_cow)
+
+** Goat
+forvalues i=1/6 {
+gen livestockuse_`i'_goat=0 if livestockuse_goat!=""
+}
+forvalues i=1/6 {
+replace livestockuse_`i'_goat=1 if livestockuse_goat1==`i'
+replace livestockuse_`i'_goat=1 if livestockuse_goat2==`i'
+replace livestockuse_`i'_goat=1 if livestockuse_goat3==`i'
+label values livestockuse_`i'_goat dummyinsurance
+label var livestockuse_`i'_goat "livestockuse_goat=`i'"
+}
+rename livestockuse_1_goat livestockuse_sold_goat
+rename livestockuse_2_goat livestockuse_milk_goat
+rename livestockuse_3_goat livestockuse_savi_goat
+rename livestockuse_4_goat livestockuse_stat_goat
+rename livestockuse_5_goat livestockuse_reli_goat
+rename livestockuse_6_goat livestockuse_self_goat
+drop livestockuse_goat1 livestockuse_goat2 livestockuse_goat3
+order livestockuse_sold_goat livestockuse_milk_goat livestockuse_savi_goat livestockuse_stat_goat livestockuse_reli_goat livestockuse_self_goat,after(livestockuse_goat)
+
+** Chicken
+forvalues i=1/6 {
+gen livestockuse_`i'_chicken=0 if livestockuse_chicken!=""
+}
+forvalues i=1/6 {
+replace livestockuse_`i'_chicken=1 if livestockuse_chicken1==`i'
+replace livestockuse_`i'_chicken=1 if livestockuse_chicken2==`i'
+label values livestockuse_`i'_chicken dummyinsurance
+label var livestockuse_`i'_chicken "livestockuse_chicken=`i'"
+}
+rename livestockuse_1_chicken livestockuse_sold_chicken
+rename livestockuse_2_chicken livestockuse_milk_chicken
+rename livestockuse_3_chicken livestockuse_savi_chicken
+rename livestockuse_4_chicken livestockuse_stat_chicken
+rename livestockuse_5_chicken livestockuse_reli_chicken
+rename livestockuse_6_chicken livestockuse_self_chicken
+drop livestockuse_chicken1 livestockuse_chicken2
+order livestockuse_sold_chicken livestockuse_milk_chicken livestockuse_savi_chicken livestockuse_stat_chicken livestockuse_reli_chicken livestockuse_self_chicken,after(livestockuse_chicken)
+
+** Bullock
+forvalues i=1/6 {
+gen livestockuse_`i'_bullock=0 if livestockuse_bullock!=.
+}
+forvalues i=1/6 {
+replace livestockuse_`i'_bullock=1 if livestockuse_bullock==`i'
+label values livestockuse_`i'_bullock dummyinsurance
+label var livestockuse_`i'_bullock "livestockuse_bullock=`i'"
+}
+rename livestockuse_1_bullock livestockuse_sold_bullock
+rename livestockuse_2_bullock livestockuse_milk_bullock
+rename livestockuse_3_bullock livestockuse_savi_bullock
+rename livestockuse_4_bullock livestockuse_stat_bullock
+rename livestockuse_5_bullock livestockuse_reli_bullock
+rename livestockuse_6_bullock livestockuse_self_bullock
+order livestockuse_sold_bullock livestockuse_milk_bullock livestockuse_savi_bullock livestockuse_stat_bullock livestockuse_reli_bullock livestockuse_self_bullock,after(livestockuse_bullock)
+
+
+
+
+
+
+********** Equipment
+split equiownpay_tractor, destring
+split equilentlender_tractor, destring
+
+split equilentlender_bullockcart, destring
+
+split equiownpay_ploughmach, destring
+split equilentlender_ploughmach, destring
+
+
+***
+foreach x in tractor ploughmach {
+forvalues i=1/8 {
+gen equiownpay_`i'_`x'=0 if equiownpay_`x'!=""
+}
+}
+forvalues i=1/8 {
+gen equiownpay_`i'_bullockcart=0 if equiownpay_bullockcart!=.
+}
+forvalues i=1/8 {
+replace equiownpay_`i'_tractor=1 if equiownpay_tractor1==`i'
+replace equiownpay_`i'_tractor=1 if equiownpay_tractor2==`i'
+replace equiownpay_`i'_ploughmach=1 if equiownpay_ploughmach1==`i'
+replace equiownpay_`i'_ploughmach=1 if equiownpay_ploughmach2==`i'
+replace equiownpay_`i'_bullockcart=1 if equiownpay_bullockcart==`i'
+label var equiownpay_`i'_tractor "equiownpay_tractor=`i'"
+label values equiownpay_`i'_tractor dummyinsurance
+label var equiownpay_`i'_bullockcart "equiownpay_bullockcart=`i'"
+label values equiownpay_`i'_bullockcart dummyinsurance
+label var equiownpay_`i'_ploughmach "equiownpay_ploughmach=`i'"
+label values equiownpay_`i'_ploughmach dummyinsurance
+}
+foreach x in tractor bullockcart ploughmach {
+rename equiownpay_1_`x' equiownpay_inc_`x'
+rename equiownpay_2_`x' equiownpay_sav_`x'
+rename equiownpay_3_`x' equiownpay_ass_`x'
+rename equiownpay_4_`x' equiownpay_hel_`x'
+rename equiownpay_5_`x' equiownpay_sch_`x'
+rename equiownpay_6_`x' equiownpay_ngo_`x'
+rename equiownpay_7_`x' equiownpay_cre_`x'
+rename equiownpay_8_`x' equiownpay_wor_`x'
+}
+drop equiownpay_tractor1 equiownpay_tractor2 equiownpay_ploughmach1 equiownpay_ploughmach2
+order equiownpay_inc_tractor equiownpay_sav_tractor equiownpay_ass_tractor equiownpay_hel_tractor equiownpay_sch_tractor equiownpay_ngo_tractor equiownpay_cre_tractor equiownpay_wor_tractor, after(equiownpay_tractor)
+order equiownpay_inc_ploughmach equiownpay_sav_ploughmach equiownpay_ass_ploughmach equiownpay_hel_ploughmach equiownpay_sch_ploughmach equiownpay_ngo_ploughmach equiownpay_cre_ploughmach equiownpay_wor_ploughmach, after(equiownpay_ploughmach)
+order equiownpay_inc_bullockcart equiownpay_sav_bullockcart equiownpay_ass_bullockcart equiownpay_hel_bullockcart equiownpay_sch_bullockcart equiownpay_ngo_bullockcart equiownpay_cre_bullockcart equiownpay_wor_bullockcart, after(equiownpay_bullockcart)
+
+
+*** lender
+ta equilentlender_tractor
+ta equilentlender_bullockcart
+ta equilentlender_ploughmach
+foreach x in tractor bullockcart ploughmach {
+forvalues i=1/15 {
+gen equilentlender_`i'_`x'=0 if equilentlender_`x'!=""
+}
+}
+forvalues i=1/15 {
+replace equilentlender_`i'_tractor=1 if equilentlender_tractor1==`i'
+replace equilentlender_`i'_tractor=1 if equilentlender_tractor2==`i'
+replace equilentlender_`i'_tractor=1 if equilentlender_tractor3==`i'
+replace equilentlender_`i'_tractor=1 if equilentlender_tractor4==`i'
+replace equilentlender_`i'_ploughmach=1 if equilentlender_ploughmach1==`i'
+replace equilentlender_`i'_ploughmach=1 if equilentlender_ploughmach2==`i'
+replace equilentlender_`i'_ploughmach=1 if equilentlender_ploughmach3==`i'
+replace equilentlender_`i'_bullockcart=1 if equilentlender_bullockcart1==`i'
+replace equilentlender_`i'_bullockcart=1 if equilentlender_bullockcart2==`i'
+label var equilentlender_`i'_tractor "equilentlender_tractor=`i'"
+label values equilentlender_`i'_tractor dummyinsurance
+label var equilentlender_`i'_bullockcart "equilentlender_bullockcart=`i'"
+label values equilentlender_`i'_bullockcart dummyinsurance
+label var equilentlender_`i'_ploughmach "equilentlender_ploughmach=`i'"
+label values equilentlender_`i'_ploughmach dummyinsurance
+}
+foreach x in tractor bullockcart ploughmach {
+rename equilentlender_1_`x' equilentlender_mai_`x'
+rename equilentlender_2_`x' equilentlender_chi_`x'
+rename equilentlender_3_`x' equilentlender_sib_`x'
+rename equilentlender_4_`x' equilentlender_par_`x'
+rename equilentlender_5_`x' equilentlender_nie_`x'
+rename equilentlender_6_`x' equilentlender_oth_`x'
+rename equilentlender_7_`x' equilentlender_nei_`x'
+rename equilentlender_8_`x' equilentlender_fri_`x'
+rename equilentlender_9_`x' equilentlender_cus_`x'
+rename equilentlender_10_`x' equilentlender_mon_`x'
+rename equilentlender_11_`x' equilentlender_shg_`x'
+rename equilentlender_12_`x' equilentlender_emp_`x'
+rename equilentlender_13_`x' equilentlender_wkp_`x'
+rename equilentlender_14_`x' equilentlender_own_`x'
+rename equilentlender_15_`x' equilentlender_spo_`x'
+}
+drop equilentlender_tractor1 equilentlender_tractor2 equilentlender_tractor3 equilentlender_tractor4 equilentlender_bullockcart1 equilentlender_bullockcart2 equilentlender_ploughmach1 equilentlender_ploughmach2 equilentlender_ploughmach3
+order equilentlender_mai_tractor equilentlender_chi_tractor equilentlender_sib_tractor equilentlender_par_tractor equilentlender_nie_tractor equilentlender_oth_tractor equilentlender_nei_tractor equilentlender_fri_tractor equilentlender_cus_tractor equilentlender_mon_tractor equilentlender_shg_tractor equilentlender_emp_tractor equilentlender_wkp_tractor equilentlender_own_tractor equilentlender_spo_tractor, after(equilentlender_tractor)
+order equilentlender_mai_bullockcart equilentlender_chi_bullockcart equilentlender_sib_bullockcart equilentlender_par_bullockcart equilentlender_nie_bullockcart equilentlender_oth_bullockcart equilentlender_nei_bullockcart equilentlender_fri_bullockcart equilentlender_cus_bullockcart equilentlender_mon_bullockcart equilentlender_shg_bullockcart equilentlender_emp_bullockcart equilentlender_wkp_bullockcart equilentlender_own_bullockcart equilentlender_spo_bullockcart, after(equilentlender_ploughmach)
+order equilentlender_mai_ploughmach equilentlender_chi_ploughmach equilentlender_sib_ploughmach equilentlender_par_ploughmach equilentlender_nie_ploughmach equilentlender_oth_ploughmach equilentlender_nei_ploughmach equilentlender_fri_ploughmach equilentlender_cus_ploughmach equilentlender_mon_ploughmach equilentlender_shg_ploughmach equilentlender_emp_ploughmach equilentlender_wkp_ploughmach equilentlender_own_ploughmach equilentlender_spo_ploughmach, after(equilentlender_bullockcart)
+
+
+
+
+
+********** Expenses
+label define demoexpenses 1"More" 2"Less" 3"Same"
+label values demoexpenses demoexpenses
+
+
+foreach x in less more same {
+ta democonso`x'
+replace democonso`x'="" if democonso`x'=="."
+split democonso`x', destring
+forvalues i=1/9 {
+gen democonso`x'_`i'=0 if democonso`x'!=""
+}
+}
+
+forvalues i=1/9{
+replace democonsoless_`i'=1 if democonsoless1==`i'
+replace democonsoless_`i'=1 if democonsoless2==`i'
+replace democonsoless_`i'=1 if democonsoless3==`i'
+replace democonsoless_`i'=1 if democonsoless4==`i'
+replace democonsoless_`i'=1 if democonsoless5==`i'
+replace democonsomore_`i'=1 if democonsomore1==`i'
+replace democonsomore_`i'=1 if democonsomore2==`i'
+replace democonsomore_`i'=1 if democonsomore3==`i'
+replace democonsosame_`i'=1 if democonsosame1==`i'
+replace democonsosame_`i'=1 if democonsosame2==`i'
+replace democonsosame_`i'=1 if democonsosame3==`i'
+replace democonsosame_`i'=1 if democonsosame4==`i'
+replace democonsosame_`i'=1 if democonsosame5==`i'
+replace democonsosame_`i'=1 if democonsosame6==`i'
+replace democonsosame_`i'=1 if democonsosame7==`i'
+replace democonsosame_`i'=1 if democonsosame8==`i'
+label var democonsoless_`i' "democonsoless=`i'"
+label values democonsoless_`i' dummyinsurance
+label var democonsomore_`i' "democonsomore=`i'"
+label values democonsomore_`i' dummyinsurance
+label var democonsosame_`i' "democonsosame=`i'"
+label values democonsosame_`i' dummyinsurance
+}
+foreach x in less more same {
+rename democonso`x'_1 democonso`x'_food
+rename democonso`x'_2 democonso`x'_tran
+rename democonso`x'_3 democonso`x'_clot
+rename democonso`x'_4 democonso`x'_heal
+rename democonso`x'_5 democonso`x'_educ
+rename democonso`x'_6 democonso`x'_gift
+rename democonso`x'_7 democonso`x'_func
+rename democonso`x'_8 democonso`x'_good
+rename democonso`x'_9 democonso`x'_none
+}
+drop democonsoless1 democonsoless2 democonsoless3 democonsoless4 democonsoless5 democonsomore1 democonsomore2 democonsomore3 democonsosame1 democonsosame2 democonsosame3 democonsosame4 democonsosame5 democonsosame6 democonsosame7 democonsosame8
+foreach x in less more same {
+order democonso`x'_food democonso`x'_tran democonso`x'_clot democonso`x'_heal democonso`x'_educ democonso`x'_gift democonso`x'_func democonso`x'_good democonso`x'_none, after(democonso`x')
+}
+
+
+**
+ta democonsopractices
+replace democonsopractices="" if democonsopractices=="."
+split democonsopractices, destring
+forvalues i=1/7 {
+gen democonsopractices_`i'=0 if democonsopractices!=""
+}
+forvalues i=1/7 {
+replace democonsopractices_`i'=1 if democonsopractices1==`i'
+replace democonsopractices_`i'=1 if democonsopractices2==`i'
+replace democonsopractices_`i'=1 if democonsopractices3==`i'
+replace democonsopractices_`i'=1 if democonsopractices4==`i'
+label var democonsopractices_`i' "democonsopractices=`i'"
+label values democonsopractices_`i' dummyinsurance
+}
+rename democonsopractices_1 democonsopractices_lessless
+rename democonsopractices_2 democonsopractices_lessbigg
+rename democonsopractices_3 democonsopractices_card
+rename democonsopractices_4 democonsopractices_morecred
+rename democonsopractices_5 democonsopractices_lesscred
+rename democonsopractices_6 democonsopractices_advance
+rename democonsopractices_7 democonsopractices_nochange
+drop democonsopractices1 democonsopractices2 democonsopractices3 democonsopractices4
+order democonsopractices_lessless democonsopractices_lessbigg democonsopractices_card democonsopractices_morecred democonsopractices_lesscred democonsopractices_advance democonsopractices_nochange, after(democonsopractices)
+
+
+***
+ta democonsoplace
+replace democonsoplace="" if democonsoplace=="."
+split democonsoplace, destring
+forvalues i=1/6 {
+gen democonsoplace_`i'=0 if democonsoplace!=""
+}
+forvalues i=1/6 {
+replace democonsoplace_`i'=1 if democonsoplace1==`i'
+replace democonsoplace_`i'=1 if democonsoplace2==`i'
+replace democonsoplace_`i'=1 if democonsoplace3==`i'
+label var democonsoplace_`i' "democonsoplace=`i'"
+label values democonsoplace_`i' dummyinsurance
+}
+rename democonsoplace_1 democonsoplace_moreins
+rename democonsoplace_2 democonsoplace_lessins
+rename democonsoplace_3 democonsoplace_moresur
+rename democonsoplace_4 democonsoplace_lesssur
+rename democonsoplace_5 democonsoplace_moreclo
+rename democonsoplace_6 democonsoplace_nochang
+drop democonsoplace1 democonsoplace2 democonsoplace3
+order democonsoplace_moreins democonsoplace_lessins democonsoplace_moresur democonsoplace_lesssur democonsoplace_moreclo democonsoplace_nochang, after(democonsoplace)
+
 save"Last/NEEMSIS1-HH", replace
 ****************************************
 * END
