@@ -64,7 +64,7 @@ drop _merge
 
 
 * Remaining?
-keep if done==.
+drop if done==1
 drop HHID2020 done
 
 sort village_new HHID_panel

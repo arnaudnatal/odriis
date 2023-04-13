@@ -33,7 +33,7 @@ grstyle set plain, box nogrid
 ****************************************
 * GPS
 ***************************************
-import excel "NEEMSIS2_GPS_2023mar29.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
+import excel "NEEMSIS2_GPS_2023apr13.xlsx", sheet("NEEMSIS2 GPS") firstrow clear
 
 * Clean
 drop username1 username2 username3 username4 username5 username6 username7 username8 username9 username10 username77
@@ -41,7 +41,7 @@ drop _validation_status _notes _status _submitted_by _tags _index _id
 
 
 * Label define
-do "C:\Users\Arnaud\Documents\GitHub\odriis\Data_cleaning\NEEMSIS2_GPS\2020_NEEMSIS2-GPS_label.do"
+do "C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2\NEEMSIS2_GPS-main_construction\2020_NEEMSIS2-GPS_label.do"
 
 
 * Label values
@@ -153,7 +153,7 @@ drop date
 format submissiondate %td
 
 * Label define
-do "C:\Users\Arnaud\Documents\GitHub\odriis\Data_cleaning\NEEMSIS2_GPS\2020_NEEMSIS2-GPS_label.do"
+do "C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2\NEEMSIS2_GPS-main_construction\2020_NEEMSIS2-GPS_label.do"
 
 
 * Label values
@@ -242,8 +242,13 @@ Arnaud will ask to Vivek
 */
 
 * Gen HHID2023
-gen HHID2023=_n
-tostring HHID2023, replace
+gen n=_n
+tostring n, replace
+gen n2="vivekoffline_"
+egen HHID2023=concat(n2 n)
+order HHID2023
+drop n n2
+
 
 
 
@@ -382,7 +387,7 @@ save"NEEMSIS2-GPS_temp.dta", replace
 
 
 ****************************************
-* Duplicates
+* Duplicates v1
 ****************************************
 use"NEEMSIS2-GPS_temp.dta", clear
 
@@ -424,13 +429,60 @@ ta tokeep
 drop if tokeep==0
 order HHID2023 HHID_panel tokeep tag
 drop tokeep tag
-bysort HHID_panel: gen n=_N
-ta n
-drop n
 
-save"NEEMSIS2-GPS.dta", replace
+save"NEEMSIS2-GPS_v0.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* Duplicates v2
+****************************************
+use"NEEMSIS2-GPS_v0.dta", clear
+
+
+********** Duplicates
+bysort HHID_panel: gen n=_N
+ta n
+preserve
+keep if n==2
+export excel using "NEEMSIS2-GPS_duplicates_v2.xlsx", firstrow(variables) replace
+restore
+
+
+********** To do
+preserve
+keep HHID_panel
+duplicates drop
+gen done=1
+save"NEEMSIS2-GPS_done", replace
+restore
+
+
+*save"NEEMSIS2-GPS_v2.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
 
 
 
