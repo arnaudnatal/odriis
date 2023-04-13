@@ -1454,6 +1454,296 @@ rename democonsoplace_6 democonsoplace_nochang
 drop democonsoplace1 democonsoplace2 democonsoplace3
 order democonsoplace_moreins democonsoplace_lessins democonsoplace_moresur democonsoplace_lesssur democonsoplace_moreclo democonsoplace_nochang, after(democonsoplace)
 
+
+
+
+
+
+
+********** Marriage
+ta marriedlist
+replace marriedlist="" if marriedlist=="."
+split marriedlist, destring
+gen marriedlistdummy=0 if dummymarriage==1
+replace marriedlistdummy=1 if marriedlist1==INDID2016
+replace marriedlistdummy=1 if marriedlist2==INDID2016
+replace marriedlistdummy=1 if marriedlist3==INDID2016
+replace marriedlistdummy=1 if marriedlist4==INDID2016
+label values marriedlistdummy dummyinsurance
+ta marriedlistdummy
+drop marriedlist1 marriedlist2 marriedlist3 marriedlist4
+order marriedlistdummy, after(marriedlist)
+
+replace marriageloansource="" if marriageloansource=="."
+split marriageloansource, destring
+forvalues i=1/14 {
+gen marriageloansource_`i'=0 if marriageloansource!=""
+}
+forvalues i=1/14 {
+replace marriageloansource_`i'=1 if marriageloansource1==`i'
+replace marriageloansource_`i'=1 if marriageloansource2==`i'
+replace marriageloansource_`i'=1 if marriageloansource3==`i'
+replace marriageloansource_`i'=1 if marriageloansource4==`i'
+label var marriageloansource_`i' "marriageloansource=`i'"
+label values marriageloansource_`i' dummyinsurance
+}
+rename marriageloansource_1 marriageloansource_wkp
+rename marriageloansource_2 marriageloansource_rela
+rename marriageloansource_3 marriageloansource_empl
+rename marriageloansource_4 marriageloansource_mais
+rename marriageloansource_5 marriageloansource_coll
+rename marriageloansource_6 marriageloansource_pawn
+rename marriageloansource_7 marriageloansource_shop
+rename marriageloansource_8 marriageloansource_fina
+rename marriageloansource_9 marriageloansource_frie
+rename marriageloansource_10 marriageloansource_shg
+rename marriageloansource_11 marriageloansource_bank
+rename marriageloansource_12 marriageloansource_coop
+rename marriageloansource_13 marriageloansource_sug
+rename marriageloansource_14 marriageloansource_gpfi
+drop marriageloansource1 marriageloansource2 marriageloansource3 marriageloansource4
+order marriageloansource_wkp marriageloansource_rela marriageloansource_empl marriageloansource_mais marriageloansource_coll marriageloansource_pawn marriageloansource_shop marriageloansource_fina marriageloansource_frie marriageloansource_shg marriageloansource_bank marriageloansource_coop marriageloansource_sug marriageloansource_gpfi, after(marriageloansource)
+
+
+***
+ta marriagegiftsource
+replace marriagegiftsource="" if marriagegiftsource=="."
+split marriagegiftsource, destring
+forvalues i=1/14 {
+gen marriagegiftsource_`i'=0 if marriagegiftsource!=""
+}
+forvalues i=1/14 {
+replace marriagegiftsource_`i'=1 if marriagegiftsource1==`i'
+replace marriagegiftsource_`i'=1 if marriagegiftsource2==`i'
+replace marriagegiftsource_`i'=1 if marriagegiftsource3==`i'
+replace marriagegiftsource_`i'=1 if marriagegiftsource4==`i'
+replace marriagegiftsource_`i'=1 if marriagegiftsource5==`i'
+replace marriagegiftsource_`i'=1 if marriagegiftsource6==`i'
+replace marriagegiftsource_`i'=1 if marriagegiftsource7==`i'
+label var marriagegiftsource_`i' "marriagegiftsource=`i'"
+label values marriagegiftsource_`i' dummyinsurance
+}
+rename marriagegiftsource_1 marriagegiftsource_wkp
+rename marriagegiftsource_2 marriagegiftsource_rela
+rename marriagegiftsource_3 marriagegiftsource_empl
+rename marriagegiftsource_4 marriagegiftsource_mais
+rename marriagegiftsource_5 marriagegiftsource_coll
+rename marriagegiftsource_6 marriagegiftsource_pawn
+rename marriagegiftsource_7 marriagegiftsource_shop
+rename marriagegiftsource_8 marriagegiftsource_fina
+rename marriagegiftsource_9 marriagegiftsource_frie
+rename marriagegiftsource_10 marriagegiftsource_shg
+rename marriagegiftsource_11 marriagegiftsource_bank
+rename marriagegiftsource_12 marriagegiftsource_coop
+rename marriagegiftsource_13 marriagegiftsource_sug
+rename marriagegiftsource_14 marriagegiftsource_gpfi
+drop marriagegiftsource1 marriagegiftsource2 marriagegiftsource3 marriagegiftsource4 marriagegiftsource5 marriagegiftsource6 marriagegiftsource7
+order marriagegiftsource_wkp marriagegiftsource_rela marriagegiftsource_empl marriagegiftsource_mais marriagegiftsource_coll marriagegiftsource_pawn marriagegiftsource_shop marriagegiftsource_fina marriagegiftsource_frie marriagegiftsource_shg marriagegiftsource_bank marriagegiftsource_coop marriagegiftsource_sug marriagegiftsource_gpfi, after(marriagegiftsource)
+
+
+
+
+
+
+********** House
+replace howbuyhouse="" if howbuyhouse=="."
+split howbuyhouse, destring
+forvalues i=1/7 {
+gen howbuyhouse_`i'=0 if howbuyhouse!=""
+}
+forvalues i=1/7 {
+replace howbuyhouse_`i'=1 if howbuyhouse1==`i'
+replace howbuyhouse_`i'=1 if howbuyhouse2==`i'
+replace howbuyhouse_`i'=1 if howbuyhouse3==`i'
+label var howbuyhouse_`i' "howbuyhouse=`i'"
+label values howbuyhouse_`i' dummyinsurance
+}
+rename howbuyhouse_1 howbuyhouse_here
+rename howbuyhouse_2 howbuyhouse_savi
+rename howbuyhouse_3 howbuyhouse_bank
+rename howbuyhouse_4 howbuyhouse_cred
+rename howbuyhouse_5 howbuyhouse_fina
+rename howbuyhouse_6 howbuyhouse_help
+rename howbuyhouse_7 howbuyhouse_sche
+drop howbuyhouse1 howbuyhouse2 howbuyhouse3
+order howbuyhouse_here howbuyhouse_savi howbuyhouse_bank howbuyhouse_cred howbuyhouse_fina howbuyhouse_help howbuyhouse_sche, after(howbuyhouse)
+
+
+
+
+
+
+
+
+********** Schemes
+ta schemeslist
+split schemeslist, destring
+forvalues i=1/18 {
+gen schemeslist_`i'=0 if schemeslist!=""
+}
+forvalues i=1/18 {
+replace schemeslist_`i'=1 if schemeslist1==`i'
+replace schemeslist_`i'=1 if schemeslist2==`i'
+replace schemeslist_`i'=1 if schemeslist3==`i'
+replace schemeslist_`i'=1 if schemeslist4==`i'
+replace schemeslist_`i'=1 if schemeslist5==`i'
+replace schemeslist_`i'=1 if schemeslist6==`i'
+label var schemeslist_`i' "schemestlist=`i'"
+label values schemeslist_`i' dummyinsurance
+}
+rename schemeslist_1 schemeslist_nrega
+rename schemeslist_2 schemeslist_ratio
+rename schemeslist_3 schemeslist_house
+rename schemeslist_4 schemeslist_funer
+rename schemeslist_5 schemeslist_anima
+rename schemeslist_6 schemeslist_lpgga
+rename schemeslist_7 schemeslist_educa
+rename schemeslist_8 schemeslist_farme
+rename schemeslist_9 schemeslist_land
+rename schemeslist_10 schemeslist_sewin
+rename schemeslist_11 schemeslist_camar
+rename schemeslist_12 schemeslist_gomar
+rename schemeslist_13 schemeslist_oldpe
+rename schemeslist_14 schemeslist_widpe
+rename schemeslist_15 schemeslist_mater
+rename schemeslist_16 schemeslist_disab
+rename schemeslist_17 schemeslist_retir
+rename schemeslist_18 schemeslist_none
+drop schemeslist1 schemeslist2 schemeslist3 schemeslist4 schemeslist5 schemeslist6
+order schemeslist_nrega schemeslist_ratio schemeslist_house schemeslist_funer schemeslist_anima schemeslist_lpgga schemeslist_educa schemeslist_farme schemeslist_land schemeslist_sewin schemeslist_camar schemeslist_gomar schemeslist_oldpe schemeslist_widpe schemeslist_mater schemeslist_disab schemeslist_retir schemeslist_none, after(schemeslist)
+
+rename schemerecipient_freemachine schemerecipient_sewin
+rename schemerecipient_cashmarriage schemerecipient_camar
+rename schemerecipient_goldmarriage schemerecipient_gomar
+rename schemeyear_goldmarriage schemeyear_gomar
+rename schemeyear_cashmarriage schemeyear_camar
+rename schemeyear_freemachine schemeyear_sewin
+rename schemeyear_cashfunerals schemeyear_funer
+rename schemeyear_animals schemeyear_anima
+rename schemeyear_freegas schemeyear_lpgga
+rename schemeyear_educ schemeyear_educa
+rename schemeyear_farmequi schemeyear_farme
+rename schemeamount_goldmarriage schemeamount_gomar
+rename schemeamount_cashmarriage schemeamount_camar
+rename schemeamount_freemachine schemeamount_sewin
+rename schemeamount_cashfunerals schemeamount_funer
+rename schemeamount_animals schemeamount_anima
+rename schemeamount_freegas schemeamount_lpgga
+rename schemeamount_educ schemeamount_educa
+rename schemeamount_farmequi schemeamount_farme
+rename pensionrecipient_oldage pensionrecipient_old
+rename pensionrecipient_widows pensionrecipient_wid
+rename pensionrecipient_maternity pensionrecipient_mat
+rename pensionrecipient_disability pensionrecipient_dis
+rename pensionrecipient_retirement pensionrecipient_ret
+rename pensionamount_retirement pensionamount_ret
+rename pensionamount_disability pensionamount_dis
+rename pensionamount_maternity pensionamount_mat
+rename pensionamount_widows pensionamount_wid
+rename pensionamount_oldage pensionamount_old
+
+
+
+********** NREGA
+ta nregarecipientlist
+replace nregarecipientlist="" if nregarecipientlist=="."
+split nregarecipientlist, destring
+gen nregarecipientlistdummy=0 if schemeslist_nrega==1
+replace nregarecipientlistdummy=1 if nregarecipientlist1==INDID2016
+replace nregarecipientlistdummy=1 if nregarecipientlist2==INDID2016
+replace nregarecipientlistdummy=1 if nregarecipientlist3==INDID2016
+replace nregarecipientlistdummy=1 if nregarecipientlist4==INDID2016
+drop nregarecipientlist1 nregarecipientlist2 nregarecipientlist3 nregarecipientlist4
+label values nregarecipientlistdummy dummyinsurance
+order nregarecipientlistdummy, after(nregarecipientlist)
+
+
+********** Others schemes
+ta schemerecipient_sewin
+gen schemerecipientdummy_sewin=0 if schemeslist_sewin==1
+replace schemerecipientdummy_sewin=1 if schemerecipient_sewin==INDID2016
+label values schemerecipientdummy_sewin dummyinsurance
+order schemerecipientdummy_sewin, after(schemerecipient_sewin)
+
+ta schemerecipient_camar
+gen schemerecipientdummy_camar=0 if schemeslist_sewin==1
+replace schemerecipientdummy_camar=1 if schemerecipient_camar==INDID2016
+label values schemerecipientdummy_camar dummyinsurance
+order schemerecipientdummy_camar, after(schemerecipient_camar)
+
+ta schemerecipient_gomar
+split schemerecipient_gomar, destring
+gen schemerecipientdummy_gomar=0 if schemeslist_sewin==1
+replace schemerecipientdummy_gomar=1 if schemerecipient_gomar1==INDID2016
+replace schemerecipientdummy_gomar=1 if schemerecipient_gomar2==INDID2016
+label values schemerecipientdummy_gomar dummyinsurance
+drop schemerecipient_gomar1 schemerecipient_gomar2
+order schemerecipientdummy_gomar, after(schemerecipient_gomar)
+
+
+**
+foreach x in old wid mat dis ret {
+ta pensionrecipient_`x'
+}
+
+foreach x in old mat dis {
+split pensionrecipient_`x', destring
+gen pensionrecipientdummy_`x'=0 if schemeslist_`x'==1
+}
+foreach x in old mat dis {
+replace pensionrecipientdummy_`x'=1 if pensionrecipient_`x'1==INDID2016
+replace pensionrecipientdummy_`x'=1 if pensionrecipient_`x'2==INDID2016
+label values pensionrecipientdummy_`x' dummyinsurance
+drop pensionrecipient_`x'1 pensionrecipient_`x'2
+order pensionrecipientdummy_`x', after(pensionrecipient_`x')
+}
+
+
+foreach x in wid ret {
+gen pensionrecipientdummy_`x'=0 if schemeslist_`x'==1
+}
+foreach x in wid ret {
+replace pensionrecipientdummy_`x'=1 if pensionrecipient_`x'==INDID2016
+label values pensionrecipientdummy_`x' dummyinsurance
+order pensionrecipientdummy_`x', after(pensionrecipient_`x')
+}
+
+
+*** Demo
+ta demoscheme
+replace demoscheme="" if demoscheme=="."
+split demoscheme, destring
+forvalues i=1/18 {
+gen demoscheme_`i'=0 if demoscheme!=""
+}
+forvalues i=1/18 {
+replace demoscheme_`i'=1 if demoscheme1==`i'
+replace demoscheme_`i'=1 if demoscheme2==`i'
+label var demoscheme_`i' "demoscheme=`i'"
+label values demoscheme_`i' dummyinsurance
+}
+rename demoscheme_1 demoscheme_nrega
+rename demoscheme_2 demoscheme_ratio
+rename demoscheme_3 demoscheme_house
+rename demoscheme_4 demoscheme_funer
+rename demoscheme_5 demoscheme_anima
+rename demoscheme_6 demoscheme_lpgga
+rename demoscheme_7 demoscheme_educa
+rename demoscheme_8 demoscheme_farme
+rename demoscheme_9 demoscheme_land
+rename demoscheme_10 demoscheme_sewin
+rename demoscheme_11 demoscheme_camar
+rename demoscheme_12 demoscheme_gomar
+rename demoscheme_13 demoscheme_oldpe
+rename demoscheme_14 demoscheme_widpe
+rename demoscheme_15 demoscheme_mater
+rename demoscheme_16 demoscheme_disab
+rename demoscheme_17 demoscheme_retir
+rename demoscheme_18 demoscheme_none
+drop demoscheme1 demoscheme2
+order demoscheme_nrega demoscheme_ratio demoscheme_house demoscheme_funer demoscheme_anima demoscheme_lpgga demoscheme_educa demoscheme_farme demoscheme_land demoscheme_sewin demoscheme_camar demoscheme_gomar demoscheme_oldpe demoscheme_widpe demoscheme_mater demoscheme_disab demoscheme_retir demoscheme_none,after(demoscheme)
+
+
 save"Last/NEEMSIS1-HH", replace
 ****************************************
 * END

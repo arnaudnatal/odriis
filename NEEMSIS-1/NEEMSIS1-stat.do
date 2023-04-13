@@ -2088,6 +2088,226 @@ tabulate goodbuying_DVD
 summarize numbergoods_camera goodyearpurchased_camera goodtotalamount_camera
 tabulate goodbuying_camera
 
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "9_Marriage.log", nomsg replace
+****************************************
+* 9. Marriage
+****************************************
+
+********** Household
+use"NEEMSIS1-HH", clear
+
+* Selection
+keep HHID2016 dummymarriage
+duplicates drop
+
+* Tables
+tabulate dummymarriage
+
+
+
+********** Individual
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate marriedlistdummy
+tabulate husbandwifecaste
+summarize marriagedowry marriagetotalcost
+tabulate howpaymarriage
+tabulate marriageloansource_wkp
+tabulate marriageloansource_rela
+tabulate marriageloansource_empl
+tabulate marriageloansource_mais
+tabulate marriageloansource_coll
+tabulate marriageloansource_pawn
+tabulate marriageloansource_shop
+tabulate marriageloansource_fina
+tabulate marriageloansource_frie
+tabulate marriageloansource_shg
+tabulate marriageloansource_bank
+tabulate marriageloansource_coop
+tabulate marriageloansource_sug
+tabulate marriageloansource_gpfi
+summarize marriageloannb_wellknown marriageloannb_banks marriageloannb_coopbanks marriageloannb_relatives marriageloannb_employer marriageloannb_maistry marriageloannb_colleagues marriageloannb_pawnbroker marriageloannb_monlender marriageloannb_friends marriageloanamount_wellknown marriageloanamount_banks marriageloanamount_coopbanks marriageloanamount_relatives marriageloanamount_employer marriageloanamount_maistry marriageloanamount_colleagues marriageloanamount_pawnbroker marriageloanamount_monlender marriageloanamount_friends
+summarize marriageexpenses
+tabulate dummymarriagegift
+tabulate marriagegiftsource_wkp
+tabulate marriagegiftsource_rela
+tabulate marriagegiftsource_empl
+tabulate marriagegiftsource_mais
+tabulate marriagegiftsource_coll
+tabulate marriagegiftsource_pawn
+tabulate marriagegiftsource_shop
+tabulate marriagegiftsource_fina
+tabulate marriagegiftsource_frie
+tabulate marriagegiftsource_shg
+tabulate marriagegiftsource_bank
+tabulate marriagegiftsource_coop
+tabulate marriagegiftsource_sug
+tabulate marriagegiftsource_gpfi
+summarize marriagegiftnb_wellknown marriagegiftnb_shg marriagegiftnb_relatives marriagegiftnb_employer marriagegiftnb_maistry marriagegiftnb_colleagues marriagegiftnb_shopkeeper marriagegiftnb_friends 
+tabulate marriagegifttype_wellknown
+tabulate marriagegifttype_shg
+tabulate marriagegifttype_relatives
+tabulate marriagegifttype_employer
+tabulate marriagegifttype_maistry
+tabulate marriagegifttype_colleagues
+tabulate marriagegifttype_shopkeeper
+tabulate marriagegifttype_friends
+summarize marriagegiftamount_wellknown marriagegiftamount_shg marriagegiftamount_relatives marriagegiftamount_employer marriagegiftamount_maistry marriagegiftamount_colleagues marriagegiftamount_shopkeeper marriagegiftamount_friends marriagegoldamount_wellknown marriagegoldamount_relatives marriagegoldamount_employer marriagegoldamount_friends
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "10_Housing.log", nomsg replace
+****************************************
+* 10. Housing and facilities
+****************************************
+use"NEEMSIS1-HH", clear
+
+* Selection
+keep HHID2016 house howbuyhouse_* rentalhouse housevalue housetype housesize houseroom housetitle ownotherhouse otherhouserent otherhousevalue dummysaleproperty incomesaleproperty useincomesaleproperty electricity water toiletfacility noowntoilet
+duplicates drop 
+
+* Tables
+tabulate house
+tabulate howbuyhouse_here
+tabulate howbuyhouse_savi
+tabulate howbuyhouse_bank
+tabulate howbuyhouse_cred
+tabulate howbuyhouse_fina
+tabulate howbuyhouse_help
+tabulate howbuyhouse_sche
+summarize rentalhouse housevalue
+tabulate housetype
+summarize housesize houseroom
+tabulate housetitle
+tabulate ownotherhouse
+summarize otherhouserent otherhousevalue
+tabulate dummysaleproperty
+summarize incomesaleproperty
+tabulate useincomesaleproperty
+tabulate electricity
+tabulate water
+tabulate toiletfacility
+tabulate noowntoilet
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+log using "11_Schemes.log", nomsg replace
+****************************************
+* 11. Schemes
+****************************************
+********** Household
+use"NEEMSIS1-HH", clear
+
+* Selection
+keep HHID2016 schemeslist_nrega schemeslist_ratio schemeslist_house schemeslist_funer schemeslist_anima schemeslist_lpgga schemeslist_educa schemeslist_farme schemeslist_land schemeslist_sewin schemeslist_camar schemeslist_gomar schemeslist_oldpe schemeslist_widpe schemeslist_mater schemeslist_disab schemeslist_retir schemeslist_none rationcardnber rationcardmembers rationcarduse rationcardreasonnouse housingscheme housingschemetype housingschemeamount housingschemedate landschemesize landschemeyearbenefited schemeyear_funer schemeamount_funer schemeyear_anima schemeamount_anima schemeyear_lpgga schemeamount_lpgga schemeyear_educa schemeamount_educa schemeyear_farme schemeamount_farme demoscheme_*
+duplicates drop
+
+
+* Tables
+tabulate schemeslist_nrega
+tabulate schemeslist_ratio
+tabulate schemeslist_house
+tabulate schemeslist_funer
+tabulate schemeslist_anima
+tabulate schemeslist_lpgga
+tabulate schemeslist_educa
+tabulate schemeslist_farme
+tabulate schemeslist_land
+tabulate schemeslist_sewin
+tabulate schemeslist_camar
+tabulate schemeslist_gomar
+tabulate schemeslist_oldpe
+tabulate schemeslist_widpe
+tabulate schemeslist_mater
+tabulate schemeslist_disab
+tabulate schemeslist_retir
+tabulate schemeslist_none
+
+summarize rationcardnber rationcardmembers
+tabulate rationcarduse
+tabulate rationcardreasonnouse
+tabulate housingscheme
+tabulate housingschemetype
+summarize housingschemeamount
+tabulate housingschemedate
+summarize landschemesize
+tabulate landschemeyearbenefited
+tabulate schemeyear_funer
+summarize schemeamount_funer
+tabulate schemeyear_anima
+summarize schemeamount_anima
+tabulate schemeyear_lpgga
+summarize schemeamount_lpgga
+tabulate schemeyear_educa
+summarize schemeamount_educa
+tabulate schemeyear_farme
+summarize schemeamount_farme
+
+tabulate demoscheme_nrega
+tabulate demoscheme_ratio
+tabulate demoscheme_house
+tabulate demoscheme_funer
+tabulate demoscheme_anima
+tabulate demoscheme_lpgga
+tabulate demoscheme_educa
+tabulate demoscheme_farme
+tabulate demoscheme_land
+tabulate demoscheme_sewin
+tabulate demoscheme_camar
+tabulate demoscheme_gomar
+tabulate demoscheme_oldpe
+tabulate demoscheme_widpe
+tabulate demoscheme_mater
+tabulate demoscheme_disab
+tabulate demoscheme_retir
+tabulate demoscheme_none
 
 
 
@@ -2103,6 +2323,79 @@ log close
 
 
 
+
+
+log using "12_Schemesind.log", nomsg replace
+****************************************
+* 11. Schemes individual level
+****************************************
+use"NEEMSIS1-HH", clear
+
+* Selection
+keep HHID2016 INDID2016 ///
+schemerecipientdummy_sewin schemeyear_sewin schemeamount_sewin ///
+schemerecipientdummy_camar schemeyear_camar schemeamount_camar ///
+schemerecipientdummy_gomar schemeyear_gomar schemeamount_gomar ///
+pensionrecipientdummy_old pensionamount_old ///
+pensionrecipientdummy_wid pensionamount_wid ///
+pensionrecipientdummy_mat pensionamount_mat ///
+pensionrecipientdummy_dis pensionamount_dis ///
+pensionrecipientdummy_ret pensionamount_ret
+
+* Tables
+tabulate schemerecipientdummy_sewin
+tabulate schemeyear_sewin
+summarize schemeamount_sewin
+tabulate schemerecipientdummy_camar
+tabulate schemeyear_camar
+summarize schemeamount_camar
+tabulate schemerecipientdummy_gomar
+tabulate schemeyear_gomar
+summarize schemeamount_gomar
+
+tabulate pensionrecipientdummy_old
+summarize pensionamount_old
+tabulate pensionrecipientdummy_wid
+summarize pensionamount_wid
+tabulate pensionrecipientdummy_mat
+summarize pensionamount_mat
+tabulate pensionrecipientdummy_dis
+summarize pensionamount_dis
+tabulate pensionrecipientdummy_ret
+summarize pensionamount_ret
+
+****************************************
+* END
+log close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+log using "13_Nrega.log", nomsg replace
+****************************************
+* 11. NREGA
+****************************************
+use"NEEMSIS1-HH", clear
+
+* Tables
+tabulate nregarecipientlistdummy
+summarize nreganberdaysworked nregaincome
+
+
+****************************************
+* END
+log close
 
 
 
