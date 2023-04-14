@@ -77,8 +77,7 @@ summarize age
 tabulate relationshiptohead
 tabulate maritalstatus
 tabulate livinghome
-tabulate lefthomedurationlessoneyear
-tabulate lefthomedurationmoreoneyear
+summarize lefthomedurationlessoneyear lefthomedurationmoreoneyear
 tabulate lefthomedestination
 tabulate lefthomereason
 tabulate dummypermanentmigrantwork

@@ -2206,7 +2206,7 @@ recode plantorepay1 plantorepay2 plantorepay3 plantorepay4 (77=7)
 forvalues i=1/7{
 gen plantorepay_`i'=0 if plantorepay!=""
 }
-forvalues i=1/7 {
+forvalues i=1/7{
 replace plantorepay_`i'=1 if plantorepay1==`i'
 replace plantorepay_`i'=1 if plantorepay2==`i'
 replace plantorepay_`i'=1 if plantorepay3==`i'
