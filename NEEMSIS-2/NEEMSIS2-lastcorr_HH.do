@@ -428,6 +428,11 @@ order relationwithborrower_mais relationwithborrower_chil relationwithborrower_s
 
 
 
+********** Guarantee and recommendation
+label values dummyrecommendgivenlist yesno
+
+
+
 
 
 save"Last/NEEMSIS2-HH", replace

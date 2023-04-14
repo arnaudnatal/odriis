@@ -994,11 +994,13 @@ log using "6-4_Guarantee.log", nomsg replace
 ********** Household
 * Selection
 use"NEEMSIS2-HH", clear
-keep HHID2020 dummyrecommendgiven  
+keep HHID2020 dummyrecommendgiven dummyrecommendrefuse reasonrefuserecommend
 duplicates drop
 
 * Tables
 tabulate dummyrecommendgiven
+tabulate dummyrecommendrefuse
+tabulate reasonrefuserecommend
 
 
 
@@ -1006,16 +1008,8 @@ tabulate dummyrecommendgiven
 ********** Individual
 use"NEEMSIS2-HH", clear
 
-dummyrecommendrefuse
-reasonrefuserecommend
-
 * Tables
-tabulate recommendgivenlistdummy
-tabulate recommendgivenrelation
-tabulate recommendgivencaste
-tabulate dummyrecommendback
-tabulate recommendgivenlender
-tabulate recommendgivenlendercaste
+tabulate dummyrecommendgivenlist
 
 ****************************************
 * END
@@ -1060,7 +1054,7 @@ tabulate dummychitfund
 use"NEEMSIS2-HH", clear
 
 * Tables
-tabulate chitfundbelongerlistdummy
+tabulate dummychitfundbelongerlist
 summarize nbchitfunds
 
 
