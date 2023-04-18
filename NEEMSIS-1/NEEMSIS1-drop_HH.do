@@ -1,0 +1,1503 @@
+*-------------------------
+cls
+*Arnaud NATAL
+*arnaud.natal@u-bordeaux.fr
+*April 11, 2023
+*-----
+*NEEMSIS-1 survey report
+*-----
+********** Clear
+clear all
+macro drop _all
+********** Path to do
+global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-1"
+********** Path to working directory directory
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\2016-NEEMSIS1\Materials\SurveyReport2\analysis"
+cd"$directory"
+********** Scheme
+set scheme plotplain_v2
+grstyle init
+grstyle set plain, box nogrid
+********** Deflate
+*https://data.worldbank.org/indicator/FP.CPI.TOTL?locations=IN
+*(100/158) if year==2016
+*(100/184) if year==2020
+*-------------------------
+
+
+
+
+
+
+
+
+
+****************************************
+* 0. Introduction
+****************************************
+use"NEEMSIS1-HH", clear
+
+* Tables
+drop villageid
+drop villagearea
+drop jatis
+drop religion
+drop comefrom
+drop otherorigin
+
+
+
+
+
+* Tables
+drop sex
+drop age
+drop relationshiptohead
+drop maritalstatus
+drop livinghome
+drop lefthomedurationlessoneyear lefthomedurationmoreoneyear
+drop lefthomedestination
+drop lefthomereason
+drop dummypermanentmigrantwork
+
+
+
+* Tables
+drop canread
+drop everattendedschool
+drop classcompleted
+drop after10thstandard
+drop durationafter10th
+drop typeofhigheredu
+drop subjectsafter10th
+drop othersubjectsafter10th
+drop currentlyatschool
+drop educationexpenses amountschoolfees bookscost transportcost
+drop reasonneverattendedschool_fail
+drop reasonneverattendedschool_inac
+drop reasonneverattendedschool_qual 
+drop reasonneverattendedschool_fina
+drop reasonneverattendedschool_heal
+drop reasonneverattendedschool_noin
+drop reasonneverattendedschool_care
+drop reasonneverattendedschool_work
+drop reasonneverattendedschool_girl
+drop reasonneverattendedschool_marr
+drop reasonneverattendedschool_noal
+drop reasonneverattendedschool_pube
+drop reasonneverattendedschool_baby
+drop reasondropping_stop
+drop reasondropping_fail
+drop reasondropping_inac
+drop reasondropping_qual
+drop reasondropping_fina
+drop reasondropping_heal
+drop reasondropping_noin
+drop reasondropping_care
+drop reasondropping_work
+drop reasondropping_girl
+drop reasondropping_marr
+drop reasondropping_noal
+drop reasondropping_pube
+drop reasondropping_baby
+drop otherreasondroppingschool
+drop dummyscholarship
+drop scholarshipamount scholarshipduration
+drop converseinenglish
+
+
+
+* Tables
+drop dummyworkedpastyear
+
+
+
+* Tables
+drop reasonnotworkpastyear
+drop stoppedworking
+
+
+
+
+
+* Tables
+drop kindofwork
+drop monthsayear if monthsayear!=66
+drop daysamonth if daysamonth!=66
+drop hoursaday if hoursaday!=66
+drop hoursayear if hoursayear!=66
+drop annualincome
+drop datestartoccup
+drop demooccup
+
+
+
+* Tables
+drop yearestablishment
+drop businesscastebased
+drop businessskill_fami
+drop businessskill_frie
+drop businessskill_scho
+drop businessskill_expe
+drop businessamountinvest
+drop businesslossinvest
+drop businesslossinvestamount demobusinessloss
+drop businesssourceinvest_rela
+drop businesssourceinvest_bank
+drop businesssourceinvest_info
+drop businesssourceinvest_savi
+drop businesssourceinvest_inhe
+drop businesssourceinvest_prof
+drop businesssourceinvest_inbu
+drop businesssourceinvest_none
+drop businesssourceinvest_othe
+drop otherbusinesssourceinvestment
+drop demobusinessactivity_lesin
+drop demobusinessactivity_cainp
+drop demobusinessactivity_difse
+drop demobusinessactivity_caspa
+drop demobusinessactivity_paymo
+drop demobusinessactivity_frequ
+drop demobusinessactivity_press
+drop demobusinessactivity_contr
+drop demobusinessactivity_other
+drop demobusinessactivityother
+drop demobusinesskindofjob
+
+
+
+
+
+* Tables
+drop namebusinesslender
+drop businesslender
+drop castebusinesslender
+drop occupbusinesslender
+
+
+
+* Tables
+drop dummybusinesslabourers
+drop nbbusinesslabourers
+drop demobusiness
+
+
+
+* Tables
+drop dummyhhmember
+drop relationshipbusinesslabourer
+drop castebusinesslabourer
+drop businesslabourertypejob
+drop businesslabourerwagetype
+drop businesslabourerbonus
+drop businesslabourerinsurance
+drop businesslabourerpension
+
+
+
+* Tables
+drop joblocation
+drop jobdistance
+drop relationemployer_labo
+drop relationemployer_rela
+drop relationemployer_poli
+drop relationemployer_reli
+drop relationemployer_neig
+drop relationemployer_shg
+drop relationemployer_busi
+drop relationemployer_wkp
+drop relationemployer_trad
+drop relationemployer_frie
+drop relationemployer_gfin
+drop relationemployer_na
+drop relationemployer_nr
+drop casteemployer_vanni
+drop casteemployer_sc
+drop casteemployer_arunt
+drop casteemployer_rediy
+drop casteemployer_grama
+drop casteemployer_naidu
+drop casteemployer_navit
+drop casteemployer_asara
+drop casteemployer_settu
+drop casteemployer_natta
+drop casteemployer_mudal
+drop casteemployer_kulal
+drop casteemployer_chett
+drop casteemployer_marwa
+drop casteemployer_musli
+drop casteemployer_paday
+drop casteemployer_na
+drop casteemployer_other
+drop othercasteemployer
+drop salariedjobtype
+drop demojobtype
+drop salariedjobtype2
+drop effetdemowage
+drop salariedwagetype
+drop demowagetype
+drop salariedjobbonus
+drop salariedjobinsurance
+drop salariedjobpension
+drop salariedjobtenure
+drop salariedjobkindbonus
+drop salariedjobbonusamount
+drop demosalariedjob
+drop demosalariedjobother
+
+
+
+* Tables
+drop dummymigration
+
+
+
+
+
+* Tables
+drop migrantlistdummy
+drop migrationjoblist1
+drop migrationjoblist2
+
+
+
+
+* Tables
+drop migrationjobid
+drop migrationarea
+drop migrationplace
+drop migrationdistance
+drop migrationtype
+drop migrationdurationfrequency
+drop migrationdurationinmonth
+drop dummybacktovillage
+drop migrationtravelcost
+drop migrationtravelpayment
+drop migrationtenure
+drop migrationfindjob
+drop dummyadvance
+drop demodeclineadvance
+drop demoadvancereasonrefused
+drop migrationadvanceprovider
+drop demopreviousadvance migrationadvanceamount
+drop demoadvancetransfer
+drop demoadvancevar
+drop demorefusedadvanceinc
+drop demoacceptadvanceinc
+drop demoperceptionadvancedec
+drop dummyadvancebalance
+drop advanceamountbalance
+drop advancebalanceproblem
+drop advancebalanceperception
+drop migrationjobtype
+drop migrationjobtime
+drop migrationwagetype
+drop migrationsalary
+drop migrationpension
+drop migrationbonus
+drop migrationinsurance
+drop migrationchild
+drop migrationmainoccup
+drop migrationskill
+drop migrationreason
+drop migrationotherreason
+
+
+
+* Tables
+drop dummyremreceived
+
+
+* Tables
+drop remreceivedlistdummy
+
+
+* Tables
+drop remreceivedhhsource
+drop remreceivedsourcerelation
+drop remreceivedsourceoccup
+drop remreceivedsourceplace
+drop remreceivedfrequency
+drop remreceivedamount remreceivedtotamount
+drop demoremreceived
+drop demoremreceivedamo
+drop demoremreceivedform
+drop remreceivedservices_poli
+drop remreceivedservices_fina
+drop remreceivedservices_guar
+drop remreceivedservices_gene
+drop remreceivedservices_none
+drop remreceivedservices_othe
+
+
+
+* Tables
+drop dummygiftsreceived
+
+
+
+* Tables
+drop giftsrecipientlistdummy
+drop giftsourcenb_WKP
+drop giftoccasion_pongal_WKP
+drop giftoccasion_birth_WKP
+drop giftoccasion_house_WKP
+drop giftoccasion_pube_WKP
+drop giftoccasion_just_WKP
+drop giftoccasion_other_WKP
+drop giftoccasionother_WKP
+drop gifttype_WKP
+drop giftamount_WKP
+
+drop giftsourcenb_rel
+drop giftoccasion_pongal_rel
+drop giftoccasion_birth_rel
+drop giftoccasion_house_rel
+drop giftoccasion_pube_rel
+drop giftoccasion_just_rel
+drop giftoccasion_other_rel
+drop giftoccasionother_rel
+drop gifttype_rel
+drop giftamount_rel goldquantityasgift_rel
+
+drop giftsourcenb_emp
+drop giftoccasion_pongal_emp
+drop giftoccasion_birth_emp
+drop giftoccasion_house_emp
+drop giftoccasion_pube_emp
+drop giftoccasion_just_emp
+drop giftoccasion_other_emp
+drop gifttype_emp
+drop giftamount_emp
+
+drop giftsourcenb_friends
+drop giftoccasion_pongal_friends
+drop giftoccasion_birth_friends
+drop giftoccasion_house_friends
+drop giftoccasion_pube_friends
+drop giftoccasion_just_friends
+drop giftoccasion_other_friends
+drop giftoccasionother_friends
+drop gifttype_friends
+drop giftamount_friends
+   
+
+* Tables
+drop dummyremsent
+
+
+* Tables
+drop remsenderlistdummy
+
+
+* Tables
+drop remsenthhrecipient
+drop remsentrelation
+drop remsentoccup
+drop remsentplace
+drop remsentfrequency
+drop remsentamount remsenttotalamount
+drop remsentservices_poli
+drop remsentservices_fina
+drop remsentservices_guar
+drop remsentservices_gene
+drop remsentservices_none
+drop remsentservices_othe
+drop remsentservicesother
+drop remsentoccupother
+drop remsentservicesother
+drop demoremsentamount
+drop demoremsentform
+
+
+* Tables
+drop dummyloans
+drop demootherinc
+drop demootherincamount demoexchangeasked demoexchangeaccepted democommissionamount
+drop dummyincomeassets
+drop incomeassets
+
+
+* Tables
+drop borrowerlistdummy
+drop nbloansbyborrower
+
+
+
+* Tables
+drop loanamount
+drop demokindloan
+drop loanreasongiven
+drop loanotherreasongiven
+drop loaneffectivereason_agri
+drop loaneffectivereason_fami
+drop loaneffectivereason_heal
+drop loaneffectivereason_repa
+drop loaneffectivereason_hous
+drop loaneffectivereason_inve
+drop loaneffectivereason_cere
+drop loaneffectivereason_marr
+drop loaneffectivereason_educ
+drop loaneffectivereason_rela
+drop loaneffectivereason_deat
+drop loaneffectivereason_nore
+drop loaneffectivereason_othe
+drop loanothereffectivereason
+drop demoloanreason_cash
+drop demoloanreason_acce
+drop demoloanreason_lowe
+drop demoloanreason_comm
+drop demoloanreason_node
+drop demoloanreason_othe
+drop demoloanotherreason
+drop loanlender
+drop lenderrelation_labo
+drop lenderrelation_rela
+drop lenderrelation_poli
+drop lenderrelation_reli
+drop lenderrelation_neig
+drop lenderrelation_shg
+drop lenderrelation_busi
+drop lenderrelation_wkp
+drop lenderrelation_tradi
+drop lenderrelation_frie
+drop lenderrelation_gpfi
+drop lenderrelation_na
+drop lenderrelation_nr
+drop lenderscaste
+drop lenderfrom
+drop otherlenderservices_poli
+drop otherlenderservices_fina
+drop otherlenderservices_guar
+drop otherlenderservices_gene
+drop otherlenderservices_none
+drop otherlenderservices_othe
+drop otherlenderservicesother
+drop loansettled
+drop loanbalance 
+drop demoshg_mback
+drop demoshg_shgac
+drop demoshg_newsh
+drop demoshg_nopro
+drop demoshg_other
+
+
+
+* Tables
+drop dummymainloan
+
+* Tables
+drop lendersex
+drop lenderoccup 
+drop borrowerservices_free
+drop borrowerservices_work
+drop borrowerservices_supp
+drop borrowerservices_none
+drop borrowerservices_othe
+drop borrowerservicesother
+drop plantorepay_chit
+drop plantorepay_work
+drop plantorepay_migr
+drop plantorepay_asse
+drop plantorepay_inco
+drop plantorepay_borr
+drop plantorepay_othe
+drop plantorepayother
+drop termsofrepayment
+drop repayduration1
+drop repayduration2
+drop dummyinterest
+drop interestfrequency
+drop interestloan interestpaid principalpaid totalrepaid
+drop dummyproblemtorepay
+drop settleloanstrategy_labo
+drop settleloanstrategy_sche
+drop settleloanstrategy_borr
+drop settleloanstrategy_sell
+drop settleloanstrategy_land
+drop settleloanstrategy_cons
+drop settleloanstrategy_adjo
+drop settleloanstrategy_work
+drop settleloanstrategy_supp
+drop settleloanstrategy_harv
+drop settleloanstrategy_othe
+drop settleloanstrategyother
+drop loanproductpledge_gold
+drop loanproductpledge_land
+drop loanproductpledge_car
+drop loanproductpledge_bike
+drop loanproductpledge_frid
+drop loanproductpledge_furn
+drop loanproductpledge_tail
+drop loanproductpledge_cell
+drop loanproductpledge_line
+drop loanproductpledge_dvd
+drop loanproductpledge_came
+drop loanproductpledge_gas
+drop loanproductpledge_comp
+drop loanproductpledge_dish
+drop loanproductpledge_none
+drop loanproductpledgeamount
+drop dummyhelptosettleloan
+drop helptosettleloan_mais
+drop helptosettleloan_chil
+drop helptosettleloan_sibl
+drop helptosettleloan_pare
+drop helptosettleloan_niec
+drop helptosettleloan_othe
+drop helptosettleloan_neig
+drop helptosettleloan_frie
+drop helptosettleloan_cust
+drop helptosettleloan_mone
+drop helptosettleloan_shg
+drop helptosettleloan_empl
+drop helptosettleloan_wkp
+drop helptosettleloan_own
+drop helptosettleloan_spou
+drop problemdelayrepayment_noth
+drop problemdelayrepayment_shou
+drop problemdelayrepayment_pres
+drop problemdelayrepayment_comp
+drop problemdelayrepayment_info
+drop problemdelayrepayment_othe
+drop problemdelayrepaymentother
+drop dummyrecommendation
+drop dummyguarantor
+drop recommenddetailscaste
+drop recommendloanrelation
+drop recommendloanrelation_labo
+drop recommendloanrelation_rela
+drop recommendloanrelation_poli
+drop recommendloanrelation_reli
+drop recommendloanrelation_neig
+drop recommendloanrelation_shg
+drop recommendloanrelation_busi
+drop recommendloanrelation_wkp
+drop recommendloanrelation_trad
+drop recommendloanrelation_frie
+drop recommendloanrelation_gpfin
+drop guarantordetailscaste
+drop guarantorloanrelation_labo
+drop guarantorloanrelation_rela
+drop guarantorloanrelation_poli
+drop guarantorloanrelation_reli
+drop guarantorloanrelation_neig
+drop guarantorloanrelation_shg
+drop guarantorloanrelation_busi
+drop guarantorloanrelation_wkp
+drop guarantorloanrelation_trad
+drop guarantorloanrelation_frie
+drop guarantorloanrelation_gpfin
+drop guarantorloanrelation_nr
+drop guarantee_docu
+drop guarantee_chit
+drop guarantee_shg
+drop guarantee_pers
+drop guarantee_jewe
+drop guarantee_none
+drop guarantee_other
+drop guaranteeother
+drop guaranteetype
+
+* Tables
+drop dummylendingmoney
+
+
+
+* Tables
+drop hhlenderlistdummy
+drop borrowerscaste
+drop borrowerssex
+drop relationwithborrower_mais
+drop relationwithborrower_chil
+drop relationwithborrower_sibl
+drop relationwithborrower_pare
+drop relationwithborrower_niec
+drop relationwithborrower_othe
+drop relationwithborrower_neig
+drop relationwithborrower_frie
+drop relationwithborrower_cust
+drop relationwithborrower_mone
+drop relationwithborrower_shg
+drop relationwithborrower_empl
+drop relationwithborrower_wkp
+drop relationwithborrower_own
+drop relationwithborrower_spou
+drop amountlent
+drop demolendingkind
+drop demotermslending
+drop demodummyrepaylending
+drop demorepaytermslending_payless
+drop demorepaytermslending_freqext
+drop demorepaytermslending_stopped
+drop demorepaytermslending_partial
+drop demorepaytermslending_totally
+drop interestlending
+drop demointerestlending
+drop purposeloanborrower
+drop problemrepayment
+drop dummyloanfromborrower
+drop dummyrecommendgiven
+
+
+* Tables
+drop dummyrecommendgiven
+drop dummyrecommendrefuse
+drop reasonrefuserecommend
+
+
+
+* Tables
+drop recommendgivenlistdummy
+drop recommendgivenrelation
+drop recommendgivencaste
+drop dummyrecommendback
+drop recommendgivenlender
+drop recommendgivenlendercaste
+
+* Tables
+drop dummychitfund
+
+
+* Tables
+drop chitfundbelongerlistdummy
+drop nbchitfunds
+
+
+
+* Tables
+drop chitfundtype
+drop durationchit nbermemberchit
+drop chitfundpayment
+drop chitfundpaymentamount chitfundamount
+
+* Tables
+drop dummysavingaccount
+
+
+* Tables
+drop savingsownerlistdummy
+drop nbsavingaccounts
+
+
+
+
+* Tables
+drop savingsaccounttype
+drop savingsjointaccount
+drop savingsaccountdate
+drop banktype
+drop savingsamount
+drop savingspurpose_sav
+drop savingspurpose_jew
+drop savingspurpose_rec
+drop savingspurpose_cro
+drop savingspurpose_sug
+drop savingspurpose_sch
+drop dummydebitcard
+drop dummycreditcard
+drop datedebitcard
+drop usedebitcard_neve
+drop usedebitcard_atm
+drop usedebitcard_shop
+drop usedebitcard_tran
+drop usedebitcard_onli
+drop usedebitcard_mobi
+drop usedebitcard_othe
+drop reasonnotusedebitcard_none
+drop reasonnotusedebitcard_dist
+drop reasonnotusedebitcard_cash
+drop reasonnotusedebitcard_flex
+drop reasonnotusedebitcard_diff
+drop reasonnotusedebitcard_afra
+drop demousedebitcard_same
+drop demousedebitcard_nonov
+drop demousedebitcard_neve
+drop demousedebitcard_atm
+drop demousedebitcard_shop
+drop demousedebitcard_tran
+drop demousedebitcard_onli
+drop demousedebitcard_mobi
+drop demousedebitcard_other
+drop demousecreditcard_same
+drop demousecreditcard_nonov
+drop demousecreditcard_neve
+drop demousecreditcard_atm
+drop demousecreditcard_shop
+drop demousecreditcard_tran
+drop demousecreditcard_onli
+drop demousecreditcard_mobi
+drop datecreditcard
+drop usecreditcard
+
+* Tables
+drop dummygold
+
+
+
+* Tables
+drop goldownerlistdummy
+drop goldquantity demogoldquanti
+drop demogoldreasonbuy_savi
+drop demogoldreasonbuy_rido
+drop demogoldreasonbuy_gift
+drop demogoldreasonbuy_sell
+drop demogoldreasonbuy_spec
+drop demogoldreasonbuy_othe
+drop demogoldreasonbuyother
+drop dummygoldpledged
+drop goldquantitypledge goldamountpledge
+drop goldreasonpledge_agri
+drop goldreasonpledge_fami
+drop goldreasonpledge_heal
+drop goldreasonpledge_repa
+drop goldreasonpledge_hous
+drop goldreasonpledge_inve
+drop goldreasonpledge_cere
+drop goldreasonpledge_marr
+drop goldreasonpledge_educ
+drop goldreasonpledge_rela
+drop goldreasonpledge_deat
+drop goldreasonpledge_nore
+drop demogoldpledged
+drop demogoldreasonpledge_agri
+drop demogoldreasonpledge_fami
+drop demogoldreasonpledge_heal
+drop demogoldreasonpledge_repa
+drop demogoldreasonpledge_hous
+drop demogoldreasonpledge_inve
+drop demogoldreasonpledge_cere
+drop demogoldreasonpledge_marr
+drop demogoldreasonpledge_educ
+drop demogoldreasonpledge_rela
+drop demogoldreasonpledge_deat
+
+* Tables
+drop dummyinsurance
+drop reasonnoinsurance_noin
+drop reasonnoinsurance_mone
+drop reasonnoinsurance_dkno
+drop reasonnoinsurance_othe
+drop reasonnoinsuranceother
+
+
+
+* Tables
+drop insuranceownerlistdummy
+drop nbinsurance
+
+
+* Tables
+drop insurancepublic
+drop insurancename
+drop insurancetype
+drop insurancepaymentfrequency
+drop insuranceamount
+drop insurancebenefit
+drop insurancebenefitamount
+
+
+* Tables
+drop dummyeverhadland
+drop ownland
+drop sizeownland
+drop drywetownland
+drop waterfromownland_tank
+drop waterfromownland_rive
+drop waterfromownland_bore
+drop waterfromownland_open
+drop waterfromownland_rain
+
+drop leaseland
+drop sizeleaseland
+drop drywetleaseland
+drop waterfromleaseland_tank
+drop waterfromleaseland_rive
+drop waterfromleaseland_bore
+drop waterfromleaseland_open
+drop waterfromleaseland_rain
+
+drop landpurchased
+drop landpurchasedacres landpurchasedamount
+drop landpurchasedhowbuy_here
+drop landpurchasedhowbuy_savi
+drop landpurchasedhowbuy_bank
+drop landpurchasedhowbuy_cred
+drop landpurchasedhowbuy_fina
+drop landpurchasedhowbuy_help
+drop landpurchasedhowbuy_sche
+drop landlost
+drop landlostreason
+drop dummyleasedland
+drop landleasername
+drop landleaserrelation
+drop landleasercaste
+drop landleaserothercaste
+drop dummyleasingland
+drop landleasingname
+drop landleasingrelation_labo
+drop landleasingrelation_rela
+drop landleasingrelation_poli
+drop landleasingrelation_reli
+drop landleasingrelation_neig
+drop landleasingrelation_shg
+drop landleasingrelation_busi
+drop landleasingrelation_wkp
+drop landleasingrelation_trad
+drop landleasingrelation_frie
+drop landleasingrelation_gpfi
+drop landleasingcaste
+drop landleasingrothercaste
+
+
+
+* Tables
+drop productacre_pad
+drop productypeland_pad
+drop productunit_pad
+drop productnbbags_pad productselfconsumption_pad productnbbagssold_pad productpricesold_pad productexpenses_pad
+drop productpaidworkers_pad
+drop productnbpaidworkers_pad productlabourcost_pad
+drop productunpaidworkers_pad
+drop productnbunpaidworkers_pad productnbhhmembers_pad
+drop productoriginlabourers_in_pad
+drop productoriginlabourers_ou_pad
+drop productcastelabourers_van_pad
+drop productcastelabourers_sc_pad
+drop productcastelabourers_aru_pad
+drop productcastelabourers_red_pad
+drop productcastelabourers_gra_pad
+drop productcastelabourers_nai_pad
+drop productcastelabourers_nav_pad
+drop productcastelabourers_asa_pad
+drop productcastelabourers_set_pad
+drop productcastelabourers_nat_pad
+drop productcastelabourers_mud_pad
+drop productcastelabourers_kul_pad
+drop productcastelabourers_che_pad
+drop productcastelabourers_mar_pad
+drop productcastelabourers_mus_pad
+drop productcastelabourers_pad_pad
+drop productcastelabourers_dk_pad
+
+drop productacre_rag
+drop productypeland_rag
+drop productunit_rag
+drop productnbbags_rag productselfconsumption_rag productnbbagssold_rag productpricesold_rag productexpenses_rag
+drop productpaidworkers_rag
+drop productnbpaidworkers_rag productlabourcost_rag
+drop productunpaidworkers_rag
+drop productnbunpaidworkers_rag productnbhhmembers_rag
+drop productoriginlabourers_in_rag
+drop productoriginlabourers_ou_rag
+drop productcastelabourers_van_rag
+drop productcastelabourers_sc_rag
+drop productcastelabourers_aru_rag
+drop productcastelabourers_red_rag
+drop productcastelabourers_gra_rag
+drop productcastelabourers_nai_rag
+drop productcastelabourers_nav_rag
+drop productcastelabourers_asa_rag
+drop productcastelabourers_set_rag
+drop productcastelabourers_nat_rag
+drop productcastelabourers_mud_rag
+drop productcastelabourers_kul_rag
+drop productcastelabourers_che_rag
+drop productcastelabourers_mar_rag
+drop productcastelabourers_mus_rag
+drop productcastelabourers_pad_rag
+drop productcastelabourers_dk_rag
+
+drop productacre_mil
+drop productypeland_mil
+drop productunit_mil
+drop productnbbags_mil productselfconsumption_mil productnbbagssold_mil productpricesold_mil productexpenses_mil
+drop productpaidworkers_mil
+drop productnbpaidworkers_mil productlabourcost_mil
+drop productunpaidworkers_mil
+drop productnbunpaidworkers_mil productnbhhmembers_mil
+drop productoriginlabourers_in_mil
+drop productoriginlabourers_ou_mil
+drop productcastelabourers_van_pad
+drop productcastelabourers_sc_mil
+drop productcastelabourers_aru_mil
+drop productcastelabourers_red_mil
+drop productcastelabourers_gra_mil
+drop productcastelabourers_nai_mil
+drop productcastelabourers_nav_mil
+drop productcastelabourers_asa_mil
+drop productcastelabourers_set_mil
+drop productcastelabourers_nat_mil
+drop productcastelabourers_mud_mil
+drop productcastelabourers_kul_mil
+drop productcastelabourers_che_mil
+drop productcastelabourers_mar_mil
+drop productcastelabourers_mus_mil
+drop productcastelabourers_pad_mil
+drop productcastelabourers_dk_mil
+
+drop productacre_tap
+drop productypeland_tap
+drop productunit_tap
+drop productnbbags_tap productselfconsumption_tap productnbbagssold_tap productpricesold_tap productexpenses_tap
+drop productpaidworkers_tap
+drop productnbpaidworkers_tap productlabourcost_tap
+drop productunpaidworkers_tap
+drop productnbunpaidworkers_tap productnbhhmembers_tap
+drop productoriginlabourers_in_tap
+drop productoriginlabourers_ou_tap
+drop productcastelabourers_van_tap
+drop productcastelabourers_sc_tap
+drop productcastelabourers_aru_tap
+drop productcastelabourers_red_tap
+drop productcastelabourers_gra_tap
+drop productcastelabourers_nai_tap
+drop productcastelabourers_nav_tap
+drop productcastelabourers_asa_tap
+drop productcastelabourers_set_tap
+drop productcastelabourers_nat_tap
+drop productcastelabourers_mud_tap
+drop productcastelabourers_kul_tap
+drop productcastelabourers_che_tap
+drop productcastelabourers_mar_tap
+drop productcastelabourers_mus_tap
+drop productcastelabourers_pad_tap
+drop productcastelabourers_dk_tap
+
+drop productacre_pad
+drop productypeland_pad
+drop productunit_pad
+drop productnbbags_pad productselfconsumption_pad productnbbagssold_pad productpricesold_pad productexpenses_pad
+drop productpaidworkers_pad
+drop productnbpaidworkers_pad productlabourcost_pad
+drop productunpaidworkers_pad
+drop productnbunpaidworkers_pad productnbhhmembers_pad
+drop productoriginlabourers_in_pad
+drop productoriginlabourers_ou_cot
+drop productcastelabourers_van_cot
+drop productcastelabourers_sc_cot
+drop productcastelabourers_aru_cot
+drop productcastelabourers_red_cot
+drop productcastelabourers_gra_cot
+drop productcastelabourers_nai_cot
+drop productcastelabourers_nav_cot
+drop productcastelabourers_asa_cot
+drop productcastelabourers_set_cot
+drop productcastelabourers_nat_cot
+drop productcastelabourers_mud_cot
+drop productcastelabourers_kul_cot
+drop productcastelabourers_che_cot
+drop productcastelabourers_mar_cot
+drop productcastelabourers_mus_cot
+drop productcastelabourers_pad_cot
+drop productcastelabourers_dk_cot
+
+drop productacre_sug
+drop productypeland_sug
+drop productunit_sug
+drop productnbbags_sug productselfconsumption_sug productnbbagssold_sug productpricesold_sug productexpenses_sug
+drop productpaidworkers_sug
+drop productnbpaidworkers_sug productlabourcost_sug
+drop productunpaidworkers_sug
+drop productnbunpaidworkers_sug productnbhhmembers_sug
+drop productoriginlabourers_in_sug
+drop productoriginlabourers_ou_sug
+drop productcastelabourers_van_sug
+drop productcastelabourers_sc_sug
+drop productcastelabourers_aru_sug
+drop productcastelabourers_red_sug
+drop productcastelabourers_gra_sug
+drop productcastelabourers_nai_sug
+drop productcastelabourers_nav_sug
+drop productcastelabourers_asa_sug
+drop productcastelabourers_set_sug
+drop productcastelabourers_nat_sug
+drop productcastelabourers_mud_sug
+drop productcastelabourers_kul_sug
+drop productcastelabourers_che_sug
+drop productcastelabourers_mar_sug
+drop productcastelabourers_mus_sug
+drop productcastelabourers_pad_sug
+drop productcastelabourers_dk_sug
+
+drop productacre_sav
+drop productypeland_sav
+drop productunit_sav
+drop productnbbags_sav productselfconsumption_sav productnbbagssold_sav productpricesold_sav productexpenses_sav
+drop productpaidworkers_sav
+drop productnbpaidworkers_sav productlabourcost_sav
+drop productunpaidworkers_sav
+drop productnbunpaidworkers_sav productnbhhmembers_sav
+drop productoriginlabourers_in_sav
+drop productoriginlabourers_ou_sav
+drop productcastelabourers_van_sav
+drop productcastelabourers_sc_sav
+drop productcastelabourers_aru_sav
+drop productcastelabourers_red_sav
+drop productcastelabourers_gra_sav
+drop productcastelabourers_nai_sav
+drop productcastelabourers_nav_sav
+drop productcastelabourers_asa_sav
+drop productcastelabourers_set_sav
+drop productcastelabourers_nat_sav
+drop productcastelabourers_mud_sav
+drop productcastelabourers_kul_sav
+drop productcastelabourers_che_sav
+drop productcastelabourers_mar_sav
+drop productcastelabourers_mus_sav
+drop productcastelabourers_pad_sav
+drop productcastelabourers_dk_sav
+
+drop productacre_gua
+drop productypeland_gua
+drop productunit_gua
+drop productnbbags_gua productselfconsumption_gua productnbbagssold_gua productpricesold_gua productexpenses_gua
+drop productpaidworkers_gua
+drop productnbpaidworkers_gua productlabourcost_gua
+drop productunpaidworkers_gua
+drop productnbunpaidworkers_gua productnbhhmembers_gua
+drop productoriginlabourers_in_gua
+drop productoriginlabourers_ou_gua
+drop productcastelabourers_van_gua
+drop productcastelabourers_sc_gua
+drop productcastelabourers_aru_gua
+drop productcastelabourers_red_gua
+drop productcastelabourers_gra_gua
+drop productcastelabourers_nai_gua
+drop productcastelabourers_nav_gua
+drop productcastelabourers_asa_gua
+drop productcastelabourers_set_gua
+drop productcastelabourers_nat_gua
+drop productcastelabourers_mud_gua
+drop productcastelabourers_kul_gua
+drop productcastelabourers_che_gua
+drop productcastelabourers_mar_gua
+drop productcastelabourers_mus_gua
+drop productcastelabourers_pad_gua
+drop productcastelabourers_dk_gua
+
+drop productacre_gro
+drop productypeland_gro
+drop productunit_gro
+drop productnbbags_gro productselfconsumption_gro productnbbagssold_gro productpricesold_gro productexpenses_gro
+drop productpaidworkers_gro
+drop productnbpaidworkers_gro productlabourcost_gro
+drop productunpaidworkers_gro
+drop productnbunpaidworkers_gro productnbhhmembers_gro
+drop productoriginlabourers_in_gro
+drop productoriginlabourers_ou_gro
+drop productcastelabourers_van_gro
+drop productcastelabourers_sc_gro
+drop productcastelabourers_aru_gro
+drop productcastelabourers_red_gro
+drop productcastelabourers_gra_gro
+drop productcastelabourers_nai_gro
+drop productcastelabourers_nav_gro
+drop productcastelabourers_asa_gro
+drop productcastelabourers_set_gro
+drop productcastelabourers_nat_gro
+drop productcastelabourers_mud_gro
+drop productcastelabourers_kul_gro
+drop productcastelabourers_che_gro
+drop productcastelabourers_mar_gro
+drop productcastelabourers_mus_gro
+drop productcastelabourers_pad_gro
+drop productcastelabourers_dk_gro
+
+drop demonbagriworkers_hpaid
+drop demonbagriworkers_dpaid
+drop demonbagriworkers_hunpa
+drop demonbagriworkers_dunpa
+drop demonbagriworkers_same
+
+drop demoagriactivity_lein
+drop demoagriactivity_ncin
+drop demoagriactivity_diff
+drop demoagriactivity_ncpa
+drop demoagriactivity_pmor
+drop demoagriactivity_freq
+drop demoagriactivity_pres
+drop demoagriactivity_cont
+drop demoagriactivity_othe
+
+
+
+* Tables
+drop livestocknb_cow livestockprice_cow
+drop livestockuse_sold_cow
+drop livestockuse_milk_cow
+drop livestockuse_savi_cow
+drop livestockuse_stat_cow
+drop livestockuse_reli_cow
+drop livestockuse_self_cow
+drop livestockprofit_cow livestockspent_cow livestockbuy_cow
+
+drop livestocknb_goat livestockprice_goat
+drop livestockuse_sold_goat
+drop livestockuse_milk_goat
+drop livestockuse_savi_goat
+drop livestockuse_stat_goat
+drop livestockuse_reli_goat
+drop livestockuse_self_goat
+drop livestockprofit_goat livestockspent_goat livestockbuy_goat
+
+drop livestocknb_chicken livestockprice_chicken
+drop livestockuse_sold_chicken
+drop livestockuse_milk_chicken
+drop livestockuse_savi_chicken
+drop livestockuse_stat_chicken
+drop livestockuse_reli_chicken
+drop livestockuse_self_chicken
+drop livestockprofit_chicken livestockspent_chicken livestockbuy_chicken
+
+drop livestocknb_bullock livestockprice_bullock
+drop livestockuse_sold_bullock
+drop livestockuse_milk_bullock
+drop livestockuse_savi_bullock
+drop livestockuse_stat_bullock
+drop livestockuse_reli_bullock
+drop livestockuse_self_bullock
+drop livestockprofit_bullock livestockspent_bullock livestockbuy_bullock
+
+drop dummycattleloss
+drop cattlelossnb cattlelossamount
+drop cattleinsurance
+drop cattleinsuranceamount
+drop dummycattlesold
+drop cattlesoldnb cattlesoldamount
+drop cattlesoldreason
+
+
+* Tables
+drop equiownnb_tractor 
+drop equiownyear_tractor 
+drop equiownpay_inc_tractor
+drop equiownpay_sav_tractor
+drop equiownpay_ass_tractor
+drop equiownpay_hel_tractor
+drop equiownpay_sch_tractor
+drop equiownpay_ngo_tractor
+drop equiownpay_cre_tractor
+drop equiownpay_wor_tractor 
+drop equiowncost_tractor equiownpledged_tractor equilentnb_tractor 
+drop equilentlender_mai_tractor
+drop equilentlender_chi_tractor
+drop equilentlender_sib_tractor
+drop equilentlender_par_tractor
+drop equilentlender_nie_tractor
+drop equilentlender_oth_tractor
+drop equilentlender_nei_tractor
+drop equilentlender_fri_tractor
+drop equilentlender_cus_tractor
+drop equilentlender_mon_tractor
+drop equilentlender_shg_tractor
+drop equilentlender_emp_tractor
+drop equilentlender_wkp_tractor
+drop equilentlender_own_tractor
+drop equilentlender_spo_tractor 
+
+drop equiownnb_ploughmach 
+drop equiownyear_ploughmach 
+drop equiownpay_inc_ploughmach
+drop equiownpay_sav_ploughmach
+drop equiownpay_ass_ploughmach
+drop equiownpay_hel_ploughmach
+drop equiownpay_sch_ploughmach
+drop equiownpay_ngo_ploughmach
+drop equiownpay_cre_ploughmach
+drop equiownpay_wor_ploughmach 
+drop equiowncost_ploughmach equiownpledged_ploughmach equilentnb_ploughmach 
+drop equilentlender_mai_ploughmach
+drop equilentlender_chi_ploughmach
+drop equilentlender_sib_ploughmach
+drop equilentlender_par_ploughmach
+drop equilentlender_nie_ploughmach
+drop equilentlender_oth_ploughmach
+drop equilentlender_nei_ploughmach
+drop equilentlender_fri_ploughmach
+drop equilentlender_cus_ploughmach
+drop equilentlender_mon_ploughmach
+drop equilentlender_shg_ploughmach
+drop equilentlender_emp_ploughmach
+drop equilentlender_wkp_ploughmach
+drop equilentlender_own_ploughmach
+drop equilentlender_spo_ploughmach 
+
+drop equiownnb_bullockcart 
+drop equiownyear_bullockcart 
+drop equiownpay_inc_bullockcart
+drop equiownpay_sav_bullockcart
+drop equiownpay_ass_bullockcart
+drop equiownpay_hel_bullockcart
+drop equiownpay_sch_bullockcart
+drop equiownpay_ngo_bullockcart
+drop equiownpay_cre_bullockcart
+drop equiownpay_wor_bullockcart 
+drop equiowncost_bullockcart equiownpledged_bullockcart equilentnb_bullockcart 
+drop equilentlender_mai_bullockcart
+drop equilentlender_chi_bullockcart
+drop equilentlender_sib_bullockcart
+drop equilentlender_par_bullockcart
+drop equilentlender_nie_bullockcart
+drop equilentlender_oth_bullockcart
+drop equilentlender_nei_bullockcart
+drop equilentlender_fri_bullockcart
+drop equilentlender_cus_bullockcart
+drop equilentlender_mon_bullockcart
+drop equilentlender_shg_bullockcart
+drop equilentlender_emp_bullockcart
+drop equilentlender_wkp_bullockcart
+drop equilentlender_own_bullockcart
+drop equilentlender_spo_bullockcart 
+
+
+
+* Tables
+drop foodexpenses healthexpenses ceremoniesexpenses ceremoniesrelativesexpenses deathexpenses
+drop demoexpenses
+drop democonsoless_food
+drop democonsoless_tran
+drop democonsoless_clot
+drop democonsoless_heal
+drop democonsoless_educ
+drop democonsoless_gift
+drop democonsoless_func
+drop democonsoless_good
+drop democonsoless_none
+drop democonsomore_food
+drop democonsomore_tran
+drop democonsomore_clot
+drop democonsomore_heal
+drop democonsomore_educ
+drop democonsomore_gift
+drop democonsomore_func
+drop democonsomore_good
+drop democonsomore_none
+drop democonsosame_food
+drop democonsosame_tran
+drop democonsosame_clot
+drop democonsosame_heal
+drop democonsosame_educ
+drop democonsosame_gift
+drop democonsosame_func
+drop democonsosame_good
+drop democonsosame_none
+drop democonsopractices_lessless
+drop democonsopractices_lessbigg
+drop democonsopractices_card
+drop democonsopractices_morecred
+drop democonsopractices_lesscred
+drop democonsopractices_advance
+drop democonsopractices_nochange
+drop democonsoplace_moreins
+drop democonsoplace_lessins
+drop democonsoplace_moresur
+drop democonsoplace_lesssur
+drop democonsoplace_moreclo
+drop democonsoplace_nochang
+
+
+
+* Tables
+drop numbergoods_car goodyearpurchased_car goodtotalamount_car
+drop goodbuying_car
+
+drop numbergoods_cookgas goodyearpurchased_cookgas goodtotalamount_cookgas
+drop goodbuying_cookgas
+
+drop numbergoods_computer goodyearpurchased_computer goodtotalamount_computer
+drop goodbuying_computer
+
+drop numbergoods_antenna goodyearpurchased_antenna goodtotalamount_antenna
+drop goodbuying_antenna
+
+drop numbergoods_bike goodyearpurchased_bike goodtotalamount_bike
+drop goodbuying_bike
+drop goodsourcecredit_bike
+drop goodcreditsettled_bike
+
+drop numbergoods_fridge goodyearpurchased_fridge goodtotalamount_fridge
+drop goodbuying_fridge
+
+drop numbergoods_furniture goodyearpurchased_furniture goodtotalamount_furniture
+drop goodbuying_furniture
+
+drop numbergoods_tailormach goodyearpurchased_tailormach goodtotalamount_tailormach
+drop goodbuying_tailormach
+drop goodsourcecredit_tailormach
+drop goodcreditsettled_tailormach
+
+drop numbergoods_phone goodyearpurchased_phone goodtotalamount_phone
+drop goodbuying_phone
+
+drop numbergoods_landline goodyearpurchased_landline goodtotalamount_landline
+drop goodbuying_landline
+
+drop numbergoods_DVD goodyearpurchased_DVD goodtotalamount_DVD
+drop goodbuying_DVD
+
+drop numbergoods_camera goodyearpurchased_camera goodtotalamount_camera
+drop goodbuying_camera
+
+
+* Tables
+drop dummymarriage
+
+
+* Tables
+drop marriedlistdummy
+drop husbandwifecaste
+drop marriagedowry marriagetotalcost
+drop howpaymarriage
+drop marriageloansource_wkp
+drop marriageloansource_rela
+drop marriageloansource_empl
+drop marriageloansource_mais
+drop marriageloansource_coll
+drop marriageloansource_pawn
+drop marriageloansource_shop
+drop marriageloansource_fina
+drop marriageloansource_frie
+drop marriageloansource_shg
+drop marriageloansource_bank
+drop marriageloansource_coop
+drop marriageloansource_sug
+drop marriageloansource_gpfi
+drop marriageloannb_wellknown marriageloannb_banks marriageloannb_coopbanks marriageloannb_relatives marriageloannb_employer marriageloannb_maistry marriageloannb_colleagues marriageloannb_pawnbroker marriageloannb_monlender marriageloannb_friends marriageloanamount_wellknown marriageloanamount_banks marriageloanamount_coopbanks marriageloanamount_relatives marriageloanamount_employer marriageloanamount_maistry marriageloanamount_colleagues marriageloanamount_pawnbroker marriageloanamount_monlender marriageloanamount_friends
+drop marriageexpenses
+drop dummymarriagegift
+drop marriagegiftsource_wkp
+drop marriagegiftsource_rela
+drop marriagegiftsource_empl
+drop marriagegiftsource_mais
+drop marriagegiftsource_coll
+drop marriagegiftsource_pawn
+drop marriagegiftsource_shop
+drop marriagegiftsource_fina
+drop marriagegiftsource_frie
+drop marriagegiftsource_shg
+drop marriagegiftsource_bank
+drop marriagegiftsource_coop
+drop marriagegiftsource_sug
+drop marriagegiftsource_gpfi
+drop marriagegiftnb_wellknown marriagegiftnb_shg marriagegiftnb_relatives marriagegiftnb_employer marriagegiftnb_maistry marriagegiftnb_colleagues marriagegiftnb_shopkeeper marriagegiftnb_friends 
+drop marriagegifttype_wellknown
+drop marriagegifttype_shg
+drop marriagegifttype_relatives
+drop marriagegifttype_employer
+drop marriagegifttype_maistry
+drop marriagegifttype_colleagues
+drop marriagegifttype_shopkeeper
+drop marriagegifttype_friends
+drop marriagegiftamount_wellknown marriagegiftamount_shg marriagegiftamount_relatives marriagegiftamount_employer marriagegiftamount_maistry marriagegiftamount_colleagues marriagegiftamount_shopkeeper marriagegiftamount_friends marriagegoldamount_wellknown marriagegoldamount_relatives marriagegoldamount_employer marriagegoldamount_friends
+
+
+* Tables
+drop house
+drop howbuyhouse_here
+drop howbuyhouse_savi
+drop howbuyhouse_bank
+drop howbuyhouse_cred
+drop howbuyhouse_fina
+drop howbuyhouse_help
+drop howbuyhouse_sche
+drop rentalhouse housevalue
+drop housetype
+drop housesize houseroom
+drop housetitle
+drop ownotherhouse
+drop otherhouserent otherhousevalue
+drop dummysaleproperty
+drop incomesaleproperty
+drop useincomesaleproperty
+drop electricity
+drop water
+drop toiletfacility
+drop noowntoilet
+
+* Tables
+drop schemeslist_nrega
+drop schemeslist_ratio
+drop schemeslist_house
+drop schemeslist_funer
+drop schemeslist_anima
+drop schemeslist_lpgga
+drop schemeslist_educa
+drop schemeslist_farme
+drop schemeslist_land
+drop schemeslist_sewin
+drop schemeslist_camar
+drop schemeslist_gomar
+drop schemeslist_oldpe
+drop schemeslist_widpe
+drop schemeslist_mater
+drop schemeslist_disab
+drop schemeslist_retir
+drop schemeslist_none
+
+drop rationcardnber rationcardmembers
+drop rationcarduse
+drop rationcardreasonnouse
+drop housingscheme
+drop housingschemetype
+drop housingschemeamount
+drop housingschemedate
+drop landschemesize
+drop landschemeyearbenefited
+drop schemeyear_funer
+drop schemeamount_funer
+drop schemeyear_anima
+drop schemeamount_anima
+drop schemeyear_lpgga
+drop schemeamount_lpgga
+drop schemeyear_educa
+drop schemeamount_educa
+drop schemeyear_farme
+drop schemeamount_farme
+
+drop demoscheme_nrega
+drop demoscheme_ratio
+drop demoscheme_house
+drop demoscheme_funer
+drop demoscheme_anima
+drop demoscheme_lpgga
+drop demoscheme_educa
+drop demoscheme_farme
+drop demoscheme_land
+drop demoscheme_sewin
+drop demoscheme_camar
+drop demoscheme_gomar
+drop demoscheme_oldpe
+drop demoscheme_widpe
+drop demoscheme_mater
+drop demoscheme_disab
+drop demoscheme_retir
+drop demoscheme_none
+
+
+* Tables
+drop schemerecipientdummy_sewin
+drop schemeyear_sewin
+drop schemeamount_sewin
+drop schemerecipientdummy_camar
+drop schemeyear_camar
+drop schemeamount_camar
+drop schemerecipientdummy_gomar
+drop schemeyear_gomar
+drop schemeamount_gomar
+
+drop pensionrecipientdummy_old
+drop pensionamount_old
+drop pensionrecipientdummy_wid
+drop pensionamount_wid
+drop pensionrecipientdummy_mat
+drop pensionamount_mat
+drop pensionrecipientdummy_dis
+drop pensionamount_dis
+drop pensionrecipientdummy_ret
+drop pensionamount_ret
+
+
+* Tables
+drop nregarecipientlistdummy
+drop nreganberdaysworked nregaincome
