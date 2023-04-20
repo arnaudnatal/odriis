@@ -98,7 +98,7 @@ NEEMSIS tracking 2022 new.dta
 
 
 ********** Append
-cd"C:\Users\Arnaud\Documents\MEGA\Data\Data_Tracking2022\raw\combine"
+cd"C:\Users\Arnaud\Documents\MEGA\Data\Data_NEEMSIS2_Tracking\raw\combine_new"
 
 ***** Base 1
 use"NEEMSIS tracking 2022-hhquestionnairemig-detailsgoods.dta", clear
