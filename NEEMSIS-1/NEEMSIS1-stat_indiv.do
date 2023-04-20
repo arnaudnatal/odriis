@@ -32,7 +32,7 @@ grstyle set plain, box nogrid
 
 
 
-log using "1e_Employment.log", nomsg replace
+log using "NEEMSIS1-indiv.log", nomsg replace
 ****************************************
 * 1. Employment
 ****************************************
@@ -181,26 +181,11 @@ summarize aspirationminimumwage2
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "2-1e_FormalSN.log", nomsg replace
 ****************************************
 * 2.1. Formal social networks
 ****************************************
@@ -236,19 +221,11 @@ tabulate dummyassohelpjob
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "2-3e_SizeSN.log", nomsg replace
 ****************************************
 * 2.3. Size of network
 ****************************************
@@ -259,21 +236,12 @@ summarize nberpersonfamilyevent
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-log using "2-4e_RessourcesSN.log", nomsg replace
 ****************************************
 * 2.4. Ressources network
 ****************************************
@@ -294,30 +262,12 @@ tabulate contactleaders
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "2-5e_PerceptionSN.log", nomsg replace
 ****************************************
 * 2.5. Perception of the network
 ****************************************
@@ -335,17 +285,12 @@ tabulate demotrustbank
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-log using "3e_Personality.log", nomsg replace
 ****************************************
 * 3. Personality and behaviour
 ****************************************
@@ -395,24 +340,12 @@ tabulate helpfulwithothers
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "4e_Skills.log", nomsg replace
 ****************************************
 * 4. Literacy and numeracy
 ****************************************
@@ -435,25 +368,12 @@ tabulate numeracy4
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-log using "5e_Raven.log", nomsg replace
 ****************************************
 * 5. Raven tests
 ****************************************
@@ -508,23 +428,11 @@ tabulate b12
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "6e_Demo.log", nomsg replace
 ****************************************
 * 6. General effects of demonetisation
 ****************************************
@@ -565,21 +473,12 @@ tabulate demobadexpectations_nr
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-log using "7e_Alters.log", nomsg replace
 ****************************************
 * 7. Alters
 ****************************************

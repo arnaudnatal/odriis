@@ -32,7 +32,7 @@ grstyle set plain, box nogrid
 
 
 
-log using "0_Introduction.log", nomsg replace
+log using "NEEMSIS1-HH.log", nomsg replace
 ****************************************
 * 0. Introduction
 ****************************************
@@ -52,20 +52,11 @@ tabulate otherorigin
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "1-1_Householdmember.log", nomsg replace
 ****************************************
 * 1.1. Household member module
 ****************************************
@@ -84,17 +75,11 @@ tabulate dummypermanentmigrantwork
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-log using "2_Education.log", nomsg replace
 ****************************************
 * 2. Education
 ****************************************
@@ -149,20 +134,11 @@ tabulate converseinenglish
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "3_Employment.log", nomsg replace
 ****************************************
 * 3. Employment
 ****************************************
@@ -212,22 +188,13 @@ tabulate demooccup
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "3-1-1_Selfemployment.log", nomsg replace
 ****************************************
 * 3.1.1. Self-employment details
-* 3.1.2. Self-employment investment details
 ****************************************
 use"NEEMSIS1-occupations", clear
 
@@ -268,9 +235,17 @@ tabulate demobusinessactivity_other
 tabulate demobusinessactivityother
 tabulate demobusinesskindofjob
 
+****************************************
+* END
 
 
-********** Investment
+
+
+
+****************************************
+* 3.1.2. Self-employment investment details
+****************************************
+
 * Selection
 keep HHID2016 INDID2016 occupationid namebusinesslender* addressbusinesslender* businesslender* castebusinesslender* occupbusinesslender*
 reshape long namebusinesslender addressbusinesslender businesslender castebusinesslender occupbusinesslender, i(HHID2016 INDID2016 occupationid) j(n)
@@ -283,19 +258,11 @@ tabulate occupbusinesslender
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "3-1-3_Businesslabourer.log", nomsg replace
 ****************************************
 * 3.1.3. Self-employment business labourers
 ****************************************
@@ -330,25 +297,11 @@ tabulate businesslabourerpension
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-log using "3-2_Salariedjob.log", nomsg replace
 ****************************************
 * 3.1.3. Self-employment business labourers
 ****************************************
@@ -411,25 +364,12 @@ tabulate demosalariedjobother
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-log using "4_Migration.log", nomsg replace
 ****************************************
 * 4. Migration
 ****************************************
@@ -500,28 +440,12 @@ tabulate migrationotherreason
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "5-1_Remrec.log", nomsg replace
 ****************************************
 * 5.1. Remittances received
 ****************************************
@@ -566,29 +490,11 @@ tabulate remreceivedservices_othe
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "5-2_Giftreceived.log", nomsg replace
 ****************************************
 * 5.2. Gift received
 ****************************************
@@ -653,24 +559,12 @@ summarize giftamount_friends
    
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "5-3_Remittancessent.log", nomsg replace
 ****************************************
 * 5.3. Remittances sent
 ****************************************
@@ -718,34 +612,14 @@ tabulate demoremsentform
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "6-1_Loans.log", nomsg replace
 ****************************************
 * 6.1. Loans
-* 6.2. Main loans
 ****************************************
 
 ********** Household
@@ -832,9 +706,17 @@ tabulate demoshg_newsh
 tabulate demoshg_nopro
 tabulate demoshg_other
 
+****************************************
+* END
 
 
-********** Main loans
+
+
+
+****************************************
+* 6.2. Main loans
+****************************************
+
 * Tables
 tabulate dummymainloan
 
@@ -956,23 +838,12 @@ tabulate guaranteetype
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-log using "6-3_Lending.log", nomsg replace
 ****************************************
 * 6.3. Lending
 ****************************************
@@ -1028,21 +899,12 @@ tabulate dummyrecommendgiven
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-log using "6-4_Guarantee.log", nomsg replace
 ****************************************
 * 6.4. Guarantee and recommendation
 ****************************************
@@ -1073,28 +935,12 @@ tabulate recommendgivenlendercaste
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "6-5_Chitfund.log", nomsg replace
 ****************************************
 * 6.5. Chitfund
 ****************************************
@@ -1134,31 +980,12 @@ summarize chitfundpaymentamount chitfundamount
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "6-6_Saving.log", nomsg replace
 ****************************************
 * 6.6. Savings
 ****************************************
@@ -1240,28 +1067,12 @@ tabulate usecreditcard
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "6-7_Gold.log", nomsg replace
 ****************************************
 * 6.7. Gold
 ****************************************
@@ -1319,30 +1130,12 @@ tabulate demogoldreasonpledge_deat
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "6-8_Insurance.log", nomsg replace
 ****************************************
 * 6.8. Insurance
 ****************************************
@@ -1389,22 +1182,12 @@ summarize insurancebenefitamount
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-log using "7-1_Land.log", nomsg replace
 ****************************************
 * 7.1. Land
 ****************************************
@@ -1468,19 +1251,12 @@ tabulate landleasingrothercaste
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-log using "7-2_Crops.log", nomsg replace
 ****************************************
 * 7.2. Cropping
 ****************************************
@@ -1762,25 +1538,11 @@ tabulate demoagriactivity_othe
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-log using "7-3_Livestock.log", nomsg replace
 ****************************************
 * 7.3. Livestock
 ****************************************
@@ -1837,21 +1599,11 @@ tabulate cattlesoldreason
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-log using "7-4_Equipment.log", nomsg replace
 ****************************************
 * 7.4. Equipment
 ****************************************
@@ -1945,28 +1697,12 @@ tabulate equilentlender_spo_bullockcart
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-log using "8-1_Expenses.log", nomsg replace
 ****************************************
 * 8.1. Expenses
 ****************************************
@@ -2022,21 +1758,12 @@ tabulate democonsoplace_nochang
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-log using "8-2_Goods.log", nomsg replace
 ****************************************
 * 8.2. Goods
 ****************************************
@@ -2089,21 +1816,12 @@ tabulate goodbuying_camera
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-
-log using "9_Marriage.log", nomsg replace
 ****************************************
 * 9. Marriage
 ****************************************
@@ -2172,24 +1890,11 @@ summarize marriagegiftamount_wellknown marriagegiftamount_shg marriagegiftamount
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-log using "10_Housing.log", nomsg replace
 ****************************************
 * 10. Housing and facilities
 ****************************************
@@ -2224,20 +1929,12 @@ tabulate noowntoilet
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-
-log using "11_Schemes.log", nomsg replace
 ****************************************
 * 11. Schemes
 ****************************************
@@ -2308,23 +2005,13 @@ tabulate demoscheme_disab
 tabulate demoscheme_retir
 tabulate demoscheme_none
 
-
-
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "12_Schemesind.log", nomsg replace
 ****************************************
 * 11. Schemes individual level
 ****************************************
@@ -2365,23 +2052,11 @@ summarize pensionamount_ret
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "13_Nrega.log", nomsg replace
 ****************************************
 * 11. NREGA
 ****************************************
@@ -2395,17 +2070,3 @@ summarize nreganberdaysworked nregaincome
 ****************************************
 * END
 log close
-
-
-
-
-
-
-
-
-
-
-
-
-
-

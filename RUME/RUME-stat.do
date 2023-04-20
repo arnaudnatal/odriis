@@ -32,7 +32,7 @@ grstyle set plain, box nogrid
 
 
 
-log using "0_Introduction.log", nomsg replace
+log using "P1.log", nomsg replace
 ****************************************
 * 0. Introduction
 ****************************************
@@ -53,20 +53,11 @@ tabulate outsider
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "1_Family.log", nomsg replace
 ****************************************
 * 1. Family members
 ****************************************
@@ -83,22 +74,11 @@ tabulate typeeducation
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-log using "2_Employment.log", nomsg replace
 ****************************************
 * 2. Employment
 ****************************************
@@ -121,22 +101,11 @@ tabulate stopworking
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-log using "2-1_Selfemployment.log", nomsg replace
 ****************************************
 * 2.1. Self-employment
 ****************************************
@@ -248,20 +217,11 @@ tabulate ownbusinessmanpower
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "2-2_Salaried.log", nomsg replace
 ****************************************
 * 2.2. Salaried
 ****************************************
@@ -291,21 +251,11 @@ tabulate salariedjobhowknow if salariedjobhowknow!=0
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-log using "2-3_Crisis.log", nomsg replace
 ****************************************
 * 2.3. Problems in your work since 2008
 ****************************************
@@ -320,19 +270,11 @@ tabulate crisislocation2
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "3_Migration.log", nomsg replace
 ****************************************
 * 3. Migration
 ****************************************
@@ -374,18 +316,11 @@ tabulate migrationinsurance
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-log using "4-1_Remittancesreceived.log", nomsg replace
 ****************************************
 * 4.1. Remittances received
 ****************************************
@@ -412,19 +347,11 @@ tabulate remrecreduc
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "4-2_Remittancessent.log", nomsg replace
 ****************************************
 * 4.2. Remittances sent
 ****************************************
@@ -449,19 +376,12 @@ tabulate remsentfrequency
 
 ****************************************
 * END
-log close
 
 
 
 
 
 
-
-
-
-
-
-log using "5-1_Loans.log", nomsg replace
 ****************************************
 * 5.1. Loans and mains loans (5.2)
 ****************************************
@@ -489,7 +409,19 @@ tabulate otherlenderservices2
 tabulate loansettled
 summarize loanbalance
 
-* Tables main loans
+****************************************
+* END
+
+
+
+
+
+****************************************
+* 5.2. Mains loans
+****************************************
+use"RUME-loans_mainloans", clear
+
+* Tables
 tabulate dummymainloan
 tabulate borrowerservices
 tabulate effectiveamount
@@ -544,21 +476,11 @@ tabulate loanfromthesameperson
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-log using "5-3_Lenders.log", nomsg replace
 ****************************************
 * 5.3. Lenders
 ****************************************
@@ -584,21 +506,11 @@ tabulate mlweakness3
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-log using "5-4_Creditonproduct.log", nomsg replace
 ****************************************
 * 5.4. Credit on product
 ****************************************
@@ -616,24 +528,11 @@ tabulate productloansettled
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-log using "5-5_Lending.log", nomsg replace
 ****************************************
 * 5.5. Lending money
 ****************************************
@@ -659,23 +558,11 @@ tabulate problemrepayment
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "5-6_Lending.log", nomsg replace
 ****************************************
 * 5.6. Given recommendation
 ****************************************
@@ -701,18 +588,11 @@ tabulate recommendgivenlendercaste
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-log using "5-7_Recommendation.log", nomsg replace
 ****************************************
 * 5.7. Recommendation received
 ****************************************
@@ -737,18 +617,11 @@ tabulate receivereco
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-log using "5-8_Chitfund.log", nomsg replace
 ****************************************
 * 5.8. Chit fund
 ****************************************
@@ -775,20 +648,11 @@ summarize chitfundamount
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "5-9_Savings.log", nomsg replace
 ****************************************
 * 5.9. Savings
 ****************************************
@@ -817,20 +681,11 @@ tabulate dummycreditcard
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "5-10_Gold.log", nomsg replace
 ****************************************
 * 5.10. Gold
 ****************************************
@@ -846,20 +701,11 @@ summarize goldquantity goldquantitypledge goldamountpledge
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "5-11_Insurance.log", nomsg replace
 ****************************************
 * 5.11. Insurance
 ****************************************
@@ -886,20 +732,11 @@ tabulate insurancejoineddate
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "6-1_Land.log", nomsg replace
 ****************************************
 * 6.1. Land group
 ****************************************
@@ -931,19 +768,11 @@ tabulate landleasingrelation
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "6-2_1Crops.log", nomsg replace
 ****************************************
 * 6.2. Crops
 ****************************************
@@ -966,18 +795,11 @@ summarize productlabourcost if productlabourcost!=99
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-log using "6-2_2Cropsstoppedinterested.log", nomsg replace
 ****************************************
 * 6.2. Crops stopped or interested
 ****************************************
@@ -996,20 +818,11 @@ summarize productintstopyear if productintstopyear!=99
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-log using "6-2_3Othersproducts.log", nomsg replace
 ****************************************
 * 6.2. Other products
 ****************************************
@@ -1027,17 +840,11 @@ summarize otherproductsold otherproductown
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-log using "6-2_4Labourers.log", nomsg replace
 ****************************************
 * 6.2. Labourers
 ****************************************
@@ -1057,21 +864,11 @@ tabulate productcastelabourers3
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-log using "6-3_Livestock.log", nomsg replace
 ****************************************
 * 6.3. Livestock
 ****************************************
@@ -1110,19 +907,11 @@ tabulate interestedrearingreason2
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "6-4_Equipment.log", nomsg replace
 ****************************************
 * 6.4. Equipment
 ****************************************
@@ -1144,19 +933,11 @@ tabulate equipmentpledged
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-log using "7-1_Expenses.log", nomsg replace
 ****************************************
 * 7.1. Expenses
 ****************************************
@@ -1171,22 +952,11 @@ summarize foodexpenses educationexpenses healthexpenses ceremoniesexpenses death
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-log using "7-2_Consumer.log", nomsg replace
 ****************************************
 * 7.2. Consumer goods
 ****************************************
@@ -1206,23 +976,11 @@ tabulate goodbuying
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "8_Housing.log", nomsg replace
 ****************************************
 * 8. Housing and facilities
 ****************************************
@@ -1256,23 +1014,11 @@ tabulate water
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "9_Publicservicework.log", nomsg replace
 ****************************************
 * 9. Public service works
 ****************************************
@@ -1297,25 +1043,13 @@ tabulate pubservpayment
 
 ****************************************
 * END
-log close
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-log using "10_Memberships.log", nomsg replace
 ****************************************
-* 10. Memeberships
+* 10. Memberships
 ****************************************
 use"RUME-HH", clear
 
