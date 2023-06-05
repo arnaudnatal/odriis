@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\Construction"
 cd"$directory"
 
 ********** Database names
@@ -414,6 +414,24 @@ fre lender4
 clonevar lender4_rec=lender4
 replace lender4_rec=4 if loan_database=="GOLD"
 ta loanlender_rec lender4_rec
+
+gen lender4_cat=.
+fre lender4
+label define lender4_cat 1"Informal" 2"Semi formal" 3"Formal"
+label values lender4_cat lender4_cat
+replace lender4_cat=1 if lender4==1
+replace lender4_cat=1 if lender4==2
+replace lender4_cat=1 if lender4==3
+replace lender4_cat=2 if lender4==4
+replace lender4_cat=1 if lender4==5
+replace lender4_cat=1 if lender4==6
+replace lender4_cat=1 if lender4==7
+replace lender4_cat=2 if lender4==8
+replace lender4_cat=3 if lender4==9
+replace lender4_cat=1 if lender4==10
+ta lender4 lender4_cat
+fre lender4_cat
+ta loanlender if lender4==8
 
 save "_temp\NEEMSIS2-loans_v8.dta", replace
 ****************************************

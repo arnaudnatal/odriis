@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\Construction"
 cd"$directory"
 
 ********** Database names
@@ -195,6 +195,25 @@ replace lender4=8 if lendername=="Muthu  Finance" |  lendername=="Logu finance" 
 label values lender4 lender3
 label var lender4 "version def (lendername)"
 tab lender4
+
+
+***
+gen lender4_cat=.
+fre lender4
+label define lender4_cat 1"Informal" 2"Semi formal" 3"Formal"
+label values lender4_cat lender4_cat
+replace lender4_cat=1 if lender4==1
+replace lender4_cat=1 if lender4==2
+replace lender4_cat=1 if lender4==3
+replace lender4_cat=2 if lender4==4
+replace lender4_cat=1 if lender4==5
+replace lender4_cat=1 if lender4==6
+replace lender4_cat=1 if lender4==7
+replace lender4_cat=2 if lender4==8
+replace lender4_cat=3 if lender4==9
+replace lender4_cat=1 if lender4==10
+ta lender4 lender4_cat
+ta loanlender if lender4==8
 
 
 
