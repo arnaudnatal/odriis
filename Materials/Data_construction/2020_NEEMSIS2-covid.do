@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\Construction"
 cd"$directory"
 
 ********** Database names
@@ -55,8 +55,8 @@ ta start_HH if start_HH>d(01jun2021)
 
 gen secondlockdownexposure=.
 replace secondlockdownexposure=1 if start_HH<d(05apr2021)
-replace secondlockdownexposure=2 if start_HH>d(15jun2021)
-replace secondlockdownexposure=3 if start_HH>=d(05apr2021) & start_HH<=d(15jun2021)
+replace secondlockdownexposure=2 if start_HH>=d(05apr2021) & start_HH<=d(15jun2021)
+replace secondlockdownexposure=3 if start_HH>d(15jun2021)
 
 label define exposure 1"Before" 2"During" 3"After"
 label values secondlockdownexposure exposure
@@ -66,6 +66,8 @@ gen dummyexposure=secondlockdownexposure
 recode dummyexposure (1=0) (2=.) (3=1)
 label values dummyexposure yesno
 
+ta start_HH secondlockdownexposure
+ta start_HH dummyexposure
 
 
 ********* Exposure
