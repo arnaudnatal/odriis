@@ -266,6 +266,80 @@ save"NEEMSIS2-GPS_2023feb24_offline.dta", replace
 
 
 
+****************************************
+* Offline form part 2
+***************************************
+/*
+Venkat, Antony, and Vivek does not have the good version of the form.
+Thus, it was impossible to send finalized form to the Kobo server.
+Arnaud has manually created a xlsx file with the 15 households surveyed.
+*/
+import excel "Offline_form/NEEMSIS2-GPS_remaining_Venkat", sheet("Sheet1") firstrow clear
+
+replace J="." if J=="NA"
+destring J, replace
+rename J gps_latitude
+rename K gps_longitude
+
+**** Clean
+*
+gen n=_n
+tostring n, replace
+gen text="venkatoffline_"
+egen HHID2023=concat(text n)
+drop n text
+*
+gen otherusername="Venkat"
+gen username=77
+*
+gen _recordingdate="01jun2023"
+generate recordingdate = date(_recordingdate, "DMY")
+format %td recordingdate
+drop _recordingdate
+*
+rename village_new village
+drop villagearea
+*
+rename I jatisdetails
+*
+rename jatiscorr2020 jatis
+*
+label define head_sex 1"Male" 2"Female"
+replace head_sex="1" if head_sex=="Male"
+replace head_sex="2" if head_sex=="Female"
+destring head_sex, replace
+label values head_sex head_sex
+* jatis
+replace jatis="1" if jatis=="Vanniyar"
+replace jatis="2" if jatis=="SC"
+replace jatis="6" if jatis=="Naidu"
+replace jatis="8" if jatis=="Asarai"
+replace jatis="11" if jatis=="Mudaliar"
+replace jatis="13" if jatis=="Chettiyar"
+replace jatis="15" if jatis=="Muslims"
+replace jatis="16" if jatis=="Padayachi"
+destring jatis, replace
+
+* Order
+order HHID2023 HHID_panel username otherusername recordingdate village address head_name head_sex head_age jatisdetails jatis gps_latitude gps_longitude
+
+
+save"NEEMSIS2-GPS_2023jun19_offline.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ****************************************
 * Clean Jatis
@@ -274,6 +348,7 @@ use"NEEMSIS2-GPS_2023.dta", clear
 
 
 append using "NEEMSIS2-GPS_2023feb24_offline.dta"
+append using "NEEMSIS2-GPS_2023jun19_offline.dta"
 
 
 
@@ -497,7 +572,7 @@ restore
 ****************************************
 * Loc
 ****************************************
-use"NEEMSIS2-GPS.dta", clear
+use"NEEMSIS2-GPS_v0.dta", clear
 
 keep HHID_panel gps_latitude_Y gps_longitude_X
 
