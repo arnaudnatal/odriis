@@ -373,6 +373,7 @@ restore
 
 
 ********** Replace
+/*
 * Gounder
 replace jatisdetails="Gounder" if jatisdetails=="Gounder"
 replace jatisdetails="Gounder" if strpos(jatisdetails,"Gounder")
@@ -389,11 +390,18 @@ replace jatisdetails="Padayachi" if jatisdetails=="Padayachi"
 replace jatisdetails="Padayachi" if jatisdetails=="Padayachi"
 replace jatisdetails="Padayachi" if jatisdetails=="Padayatchi"
 replace jatisdetails="Padayachi" if strpos(jatisdetails,"Padayachi")
+replace jatisdetails="Padayachi" if jatisdetails=="Padayarltchi"
+replace jatisdetails="Padayachi" if jatisdetails=="Padayatch"
+replace jatisdetails="Padayachi" if jatisdetails=="Padayatch"
+replace jatisdetails="Padayachi" if jatisdetails=="Padayatchi "
 
 * Paraiyar
 replace jatisdetails="Paraiyar" if jatisdetails=="Para"
 replace jatisdetails="Paraiyar" if jatisdetails=="Parayar"
 replace jatisdetails="Paraiyar" if jatisdetails=="Parayar "
+replace jatisdetails="Paraiyar" if jatisdetails=="Paarayar"
+
+
 
 * Rediyar
 replace jatisdetails="Rediyar" if jatisdetails=="Reddi"
@@ -424,6 +432,17 @@ replace jatisdetails="Vanniyar" if jatisdetails=="Vanniyar"
 replace jatisdetails="Vanniyar" if jatisdetails=="Vanniyar "
 replace jatisdetails="Vanniyar" if strpos(jatisdetails,"Vanniar")
 
+* Gavunter
+replace jatisdetails="Gavunter" if jatisdetails=="Gavunder"
+replace jatisdetails="Gavunter" if jatisdetails=="Gavunnter"
+replace jatisdetails="Gavunter" if jatisdetails=="Gavuntet"
+replace jatisdetails="Gavunter" if jatisdetails=="Kavunter"
+
+
+* Chettiyar
+replace jatisdetails="Chettiyar" if jatisdetails=="Chetti"
+replace jatisdetails="Chettiyar" if jatisdetails=="Chettiyar "
+*/
 
 ********** Desc
 fre jatisdetails
@@ -443,6 +462,12 @@ replace jatisdetails="Paraiyar" if HHID_panel=="ORA29"
 replace jatisdetails="Paraiyar" if HHID_panel=="ORA3"
 replace jatisdetails="Paraiyar" if jatisdetails=="SC" & village=="Oraiyure"
 fre jatisdetails
+
+
+********** 
+decode jatis, gen(_jatis)
+replace jatisdetails=_jatis if jatisdetails=="" & _jatis!=""
+drop _jatis
 
 
 save"NEEMSIS2-GPS_temp.dta", replace
@@ -505,6 +530,11 @@ drop if tokeep==0
 order HHID2023 HHID_panel tokeep tag
 drop tokeep tag
 
+
+*** Last dupli
+drop if HHID2023=="2c8ab9f7-5109-4c32-9549-f93ccdaa5c9c"
+drop if HHID2023=="213a2d61-eb5d-41df-9ecd-f9b127603ffd"
+
 save"NEEMSIS2-GPS_v0.dta", replace
 ****************************************
 * END
@@ -535,7 +565,7 @@ bysort HHID_panel: gen n=_N
 ta n
 preserve
 keep if n==2
-export excel using "NEEMSIS2-GPS_duplicates_v2.xlsx", firstrow(variables) replace
+*export excel using "NEEMSIS2-GPS_duplicates_v2.xlsx", firstrow(variables) replace
 restore
 
 
@@ -548,7 +578,7 @@ save"NEEMSIS2-GPS_done", replace
 restore
 
 
-*save"NEEMSIS2-GPS_v2.dta", replace
+save"NEEMSIS2-GPS.dta", replace
 ****************************************
 * END
 
@@ -572,7 +602,7 @@ restore
 ****************************************
 * Loc
 ****************************************
-use"NEEMSIS2-GPS_v0.dta", clear
+use"NEEMSIS2-GPS.dta", clear
 
 keep HHID_panel gps_latitude_Y gps_longitude_X
 

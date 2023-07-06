@@ -472,6 +472,15 @@ drop demobadexpectations1 demobadexpectations2 demobadexpectations3 demobadexpec
 order demobadexpectations_noch demobadexpectations_taxc demobadexpectations_blac demobadexpectations_loan demobadexpectations_cost demobadexpectations_jobo demobadexpectations_inco demobadexpectations_sche demobadexpectations_othe demobadexpectations_dk demobadexpectations_nr, after(demobadexpectations)
 
 
+
+
+********** . as ""
+foreach x in moveoutsideforjobreason reasondontworkmore contactleaders  {
+replace `x'="" if `x'=="."
+}
+
+
+
 save"Last/NEEMSIS1-ego", replace
 ****************************************
 * END
@@ -508,7 +517,10 @@ use"NEEMSIS1-alters", clear
 replace howmetother="" if howmetother=="."
 
 
-
+********** . as ""
+foreach x in occupother howmetother  {
+replace `x'="" if `x'=="."
+}
 
 save"Last/NEEMSIS1-alters", replace
 ****************************************

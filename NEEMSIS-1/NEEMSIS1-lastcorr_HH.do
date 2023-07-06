@@ -36,6 +36,11 @@ grstyle set plain, box nogrid
 ****************************************
 use"NEEMSIS1-HH", clear
 
+********** . as ""
+foreach x in otherorigin giftoccasionother_WKP giftoccasionother_rel giftoccasionother_friends demogoldreasonbuyother landlostreason useincomesaleproperty    {
+replace `x'="" if `x'=="."
+}
+
 
 ********** Intro
 replace lefthomedestination="" if lefthomedestination=="."
@@ -1999,6 +2004,11 @@ drop casteemployer1 casteemployer2 casteemployer3 casteemployer4 casteemployer5 
 order casteemployer_vanni casteemployer_sc casteemployer_arunt casteemployer_rediy casteemployer_grama casteemployer_naidu casteemployer_navit casteemployer_asara casteemployer_settu casteemployer_natta casteemployer_mudal casteemployer_kulal casteemployer_chett casteemployer_marwa casteemployer_musli casteemployer_paday casteemployer_na casteemployer_other, after(casteemployer)
 
 
+********** . as ""
+foreach x in othercasteemployer effetdemowage salariedjobkindbonus demosalariedjob demosalariedjobother {
+replace `x'="" if `x'=="."
+}
+
 
 
 save"Last/NEEMSIS1-occupations", replace
@@ -2422,10 +2432,49 @@ order guarantee_docu guarantee_chit guarantee_shg guarantee_pers guarantee_jewe 
 
 
 
+********** . as ""
+foreach x in loanothereffectivereason demoloanotherreason otherlenderservicesother borrowerservicesother plantorepayother settleloanstrategyother problemdelayrepaymentother guaranteeother {
+replace `x'="" if `x'=="."
+}
+
+
 
 
 save"Last/NEEMSIS1-loans_mainloans", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* NEEMSIS1-migrations.dta
+****************************************
+use"NEEMSIS1-migrations", clear
+
+********** . as ""
+foreach x in demoadvancetransfer demorefusedadvanceinc demoacceptadvanceinc demoperceptionadvancedec advancebalanceproblem demoadvancereasonrefused {
+replace `x'="" if `x'=="."
+}
+
+
+save"Last/NEEMSIS1-migrations", replace
+****************************************
+* END
+
+
+
 
 
