@@ -491,7 +491,21 @@ tabulate networkpurpose3
 tabulate networkpurpose4
 tabulate networkpurpose5
 tabulate associationid
-tabulate relationship
+tabulate relationship_maistry
+tabulate relationship_childnot
+tabulate relationship_siblingnot
+tabulate relationship_parentnot
+tabulate relationship_niecenot
+tabulate relationship_othernot
+tabulate relationship_neighbor
+tabulate relationship_friend
+tabulate relationship_customer
+tabulate relationship_moneylender
+tabulate relationship_shgmb
+tabulate relationship_employer
+tabulate relationship_wkp
+tabulate relationship_childin
+tabulate relationship_spouse
 tabulate education
 tabulate occupation
 tabulate occupother
@@ -504,6 +518,17 @@ tabulate meetfrequency
 tabulate egoinvite
 tabulate alterinvite
 tabulate intimacy
+tabulate demohelpasked_lend
+tabulate demohelpasked_find
+tabulate demohelpasked_info
+tabulate demohelpasked_exch
+tabulate demohelpasked_inte
+tabulate demohelpasked_othe
+tabulate democounterpartasked_offe
+tabulate democounterpartasked_comm
+tabulate democounterpartasked_serv
+tabulate democounterpartasked_noco
+tabulate democounterpartasked_othe
 
 ****************************************
 * END
