@@ -2470,6 +2470,171 @@ replace `x'="" if `x'=="."
 }
 
 
+********** Clean
+
+*
+ta migrationarea
+split migrationarea, destring
+label define migrationarea 1"Around village" 2"Rural area in Tamil Nadu" 3"Small town of the area (Panruti, Cuddalore, Viluppuram, etc.)" 4"Big cities of Tamil Nadu (Chennai, Pondicherry, Madurai, etc.)" 5"Rural area outside Tamil Nadu" 6"Cities outside Tamil Nadu"
+label values migrationarea1 migrationarea
+label values migrationarea2 migrationarea
+label values migrationarea3 migrationarea
+order migrationarea1 migrationarea2 migrationarea3, after(migrationarea)
+drop migrationarea
+
+*
+ta migrationfindjob
+split migrationfindjob, destring
+forvalues i=1/6 {
+gen migrationfindjob_`i'=0 if migrationfindjob!=""
+}
+forvalues i=1/6 {
+replace migrationfindjob_`i'=1 if migrationfindjob1==`i'
+replace migrationfindjob_`i'=1 if migrationfindjob1==`i'
+replace migrationfindjob_`i'=1 if migrationfindjob3==`i'
+label define yesno 0"No" 1"Yes", replace
+label values migrationfindjob_`i' yesno
+label var migrationfindjob_`i' "migrationfindjob=`i'"
+}
+rename migrationfindjob_1 migrationfindjob_mais
+rename migrationfindjob_2 migrationfindjob_frie
+rename migrationfindjob_3 migrationfindjob_know
+rename migrationfindjob_4 migrationfindjob_them
+rename migrationfindjob_5 migrationfindjob_adve
+rename migrationfindjob_6 migrationfindjob_regu
+drop migrationfindjob1 migrationfindjob2 migrationfindjob3
+order migrationfindjob_mais migrationfindjob_frie migrationfindjob_know migrationfindjob_them migrationfindjob_adve migrationfindjob_regu, after(migrationfindjob)
+
+*
+label values demodeclineadvance yesno
+ta demodeclineadvance
+
+*
+ta demoadvancereasonrefused
+destring demoadvancereasonrefused, replace
+label define demoadvancereasonrefused 1"Because advance has increased" 2"Don't know how to exchange the cash (if old notes)" 3"Too much advance and don't know how to repay" 4"Afraid of consequences" 5"Support government norms/don't want to receive old notes" 6"Because advance has decreased to much" 7"Because delay payment of advance" 77"Other"
+label values demoadvancereasonrefused demoadvancereasonrefused
+
+
+*
+ta demoadvancetransfer
+split demoadvancetransfer, destring
+forvalues i=1/6 {
+gen demoadvancetransfer_`i'=0 if demoadvancetransfer!=""
+}
+forvalues i=1/6 {
+replace demoadvancetransfer_`i'=1 if demoadvancetransfer1==`i'
+replace demoadvancetransfer_`i'=1 if demoadvancetransfer2==`i'
+replace demoadvancetransfer_`i'=1 if demoadvancetransfer3==`i'
+label values demoadvancetransfer_`i' yesno
+label var demoadvancetransfer_`i' "demoadvancetransfer=`i'"
+}
+rename demoadvancetransfer_1 demoadvancetransfer_part
+rename demoadvancetransfer_2 demoadvancetransfer_oldn
+rename demoadvancetransfer_3 demoadvancetransfer_newn
+rename demoadvancetransfer_4 demoadvancetransfer_wire
+rename demoadvancetransfer_5 demoadvancetransfer_depo
+rename demoadvancetransfer_6 demoadvancetransfer_notr
+drop demoadvancetransfer1 demoadvancetransfer2 demoadvancetransfer3
+order demoadvancetransfer_part demoadvancetransfer_oldn demoadvancetransfer_newn demoadvancetransfer_wire demoadvancetransfer_depo demoadvancetransfer_notr, after(demoadvancetransfer)
+
+
+*
+ta demoadvancevar
+label define demoadvancevar 1"Advance increased and I accepted it" 2"Advance increased but I delined/refused it" 3"Advance is less" 4"Same"
+label values demoadvancevar demoadvancevar
+
+* 
+ta demoperceptionadvancedec
+split demoperceptionadvancedec, destring
+forvalues i=1/4 {
+gen demoperceptionadvancedec_`i'=0 if demoperceptionadvancedec!=""
+}
+forvalues i=1/4 {
+replace demoperceptionadvancedec_`i'=1 if demoperceptionadvancedec1==`i'
+replace demoperceptionadvancedec_`i'=1 if demoperceptionadvancedec2==`i'
+label values demoperceptionadvancedec_`i' yesno
+label var demoperceptionadvancedec_`i' "demoperceptionadvancedec=`i'"
+}
+rename demoperceptionadvancedec_1 demoperceptionadvancedec_lessm
+rename demoperceptionadvancedec_2 demoperceptionadvancedec_jobse
+rename demoperceptionadvancedec_3 demoperceptionadvancedec_repay
+rename demoperceptionadvancedec_4 demoperceptionadvancedec_negoc
+drop demoperceptionadvancedec1 demoperceptionadvancedec2
+order demoperceptionadvancedec_lessm demoperceptionadvancedec_jobse demoperceptionadvancedec_repay demoperceptionadvancedec_negoc, after(demoperceptionadvancedec)
+
+
+*
+ta advancebalanceproblem
+split advancebalanceproblem, destring
+forvalues i=1/6 {
+gen advancebalanceproblem_`i'=0 if advancebalanceproblem!=""
+}
+forvalues i=1/6 {
+replace advancebalanceproblem_`i'=1 if advancebalanceproblem1==`i'
+replace advancebalanceproblem_`i'=1 if advancebalanceproblem2==`i'
+label values advancebalanceproblem_`i' yesno
+label var advancebalanceproblem_`i' "advancebalanceproblem=`i'"
+}
+rename advancebalanceproblem_1 advancebalanceproblem_same
+rename advancebalanceproblem_2 advancebalanceproblem_samele
+rename advancebalanceproblem_3 advancebalanceproblem_scoled
+rename advancebalanceproblem_4 advancebalanceproblem_neverg
+rename advancebalanceproblem_5 advancebalanceproblem_compla
+rename advancebalanceproblem_6 advancebalanceproblem_nothin
+drop advancebalanceproblem1 advancebalanceproblem2
+order advancebalanceproblem_same advancebalanceproblem_samele advancebalanceproblem_scoled advancebalanceproblem_neverg advancebalanceproblem_compla advancebalanceproblem_nothin, after(advancebalanceproblem)
+
+*
+ta migrationskill
+split migrationskill, destring
+forvalues i=1/5 {
+gen migrationskill_`i'=0 if migrationskill!=""
+}
+forvalues i=1/5 {
+replace migrationskill_`i'=1 if migrationskill1==`i'
+replace migrationskill_`i'=1 if migrationskill2==`i'
+replace migrationskill_`i'=1 if migrationskill3==`i'
+replace migrationskill_`i'=1 if migrationskill4==`i'
+label values migrationskill_`i' yesno
+label var migrationskill_`i' "migrationskill=`i'"
+}
+rename migrationskill_1 migrationskill_expe
+rename migrationskill_2 migrationskill_educ
+rename migrationskill_3 migrationskill_skil
+rename migrationskill_4 migrationskill_netw
+rename migrationskill_5 migrationskill_noth
+drop migrationskill1 migrationskill2 migrationskill3 migrationskill4
+order migrationskill_expe migrationskill_educ migrationskill_skil migrationskill_netw migrationskill_noth, after(migrationskill)
+
+
+* 
+ta migrationreason
+split migrationreason, destring
+foreach i in 1 2 3 4 5 6 7 8 9 10 77 {
+gen migrationreason_`i'=0 if migrationreason!=""
+}
+foreach i in 1 2 3 4 5 6 7 8 9 10 77 {
+replace migrationreason_`i'=1 if migrationreason1==`i'
+replace migrationreason_`i'=1 if migrationreason2==`i'
+label values migrationreason_`i' yesno
+label var migrationreason_`i' "migrationreason=`i'"
+}
+rename migrationreason_1 migrationreason_nowo
+rename migrationreason_2 migrationreason_adva
+rename migrationreason_3 migrationreason_assu
+rename migrationreason_4 migrationreason_repa
+rename migrationreason_5 migrationreason_oppo
+rename migrationreason_6 migrationreason_inte
+rename migrationreason_7 migrationreason_earn
+rename migrationreason_8 migrationreason_dive
+rename migrationreason_9 migrationreason_stat
+rename migrationreason_10 migrationreason_know
+rename migrationreason_77 migrationreason_othe
+drop migrationreason1 migrationreason2
+order migrationreason_nowo migrationreason_adva migrationreason_assu migrationreason_repa migrationreason_oppo migrationreason_inte migrationreason_earn migrationreason_dive migrationreason_stat migrationreason_know migrationreason_othe, after(migrationreason)
+
+
 save"Last/NEEMSIS1-migrations", replace
 ****************************************
 * END

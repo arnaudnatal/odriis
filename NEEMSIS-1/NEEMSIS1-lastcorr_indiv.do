@@ -441,7 +441,7 @@ drop demogoodexpectations1 demogoodexpectations2 demogoodexpectations3 demogoode
 order demogoodexpectations_noch demogoodexpectations_less demogoodexpectations_safe demogoodexpectations_bank demogoodexpectations_easi demogoodexpectations_hidd demogoodexpectations_form demogoodexpectations_gift demogoodexpectations_othe demogoodexpectations_dk demogoodexpectations_nr, after(demogoodexpectations)
 
 
-
+*
 ta demobadexpectations
 split demobadexpectations, destring
 recode demobadexpectations1 demobadexpectations2 demobadexpectations3 demobadexpectations4 demobadexpectations5 (77=9) (88=10) (99=11)
@@ -522,19 +522,95 @@ foreach x in occupother howmetother  {
 replace `x'="" if `x'=="."
 }
 
+
+********** Drop
+drop alterid_byNP1 nb_ntwother snTHnamelist snEBnamelist snRWnamelist snFSnamelist snLTnamelist snFJnamelist snRJnamelist snRJSnamelist snDAnamelist snDGnamelist
+
+
+********** List
+*
+ta relationship
+split relationship, destring
+forvalues i=1/15 {
+gen relationship_`i'=0 if relationship!=""
+}
+forvalues i=1/15 {
+replace relationship_`i'=1 if relationship1==`i'
+replace relationship_`i'=1 if relationship2==`i'
+replace relationship_`i'=1 if relationship3==`i'
+label var relationship_`i' "relationship=`i'"
+label define yesno 0"No" 1"Yes", replace
+label values relationship_`i' yesno
+}
+rename relationship_1 relationship_maistry
+rename relationship_2 relationship_childnot
+rename relationship_3 relationship_siblingnot
+rename relationship_4 relationship_parentnot
+rename relationship_5 relationship_niecenot
+rename relationship_6 relationship_othernot
+rename relationship_7 relationship_neighbor
+rename relationship_8 relationship_friend
+rename relationship_9 relationship_customer
+rename relationship_10 relationship_moneylender
+rename relationship_11 relationship_shgmb
+rename relationship_12 relationship_employer
+rename relationship_13 relationship_wkp
+rename relationship_14 relationship_childin
+rename relationship_15 relationship_spouse
+drop relationship1 relationship2 relationship3
+order relationship_maistry relationship_childnot relationship_siblingnot relationship_parentnot relationship_niecenot relationship_othernot relationship_neighbor relationship_friend relationship_customer relationship_moneylender relationship_shgmb relationship_employer relationship_wkp relationship_childin relationship_spouse, after(relationship)
+
+
+*
+ta demohelpasked
+replace demohelpasked="1 77" if demohelpasked=="1 6"
+replace demohelpasked="77" if demohelpasked=="7"
+ta demohelpasked
+split demohelpasked, destring
+foreach i in 1 2 3 4 5 77 {
+gen demohelpasked_`i'=0 if demohelpasked!=""
+}
+foreach i in 1 2 3 4 5 77 {
+replace demohelpasked_`i'=1 if demohelpasked1==`i'
+replace demohelpasked_`i'=1 if demohelpasked2==`i'
+label var demohelpasked_`i' "demohelpasked=`i'"
+label values demohelpasked_`i' yesno
+}
+rename demohelpasked_1 demohelpasked_lend
+rename demohelpasked_2 demohelpasked_find
+rename demohelpasked_3 demohelpasked_info
+rename demohelpasked_4 demohelpasked_exch
+rename demohelpasked_5 demohelpasked_inte
+rename demohelpasked_77 demohelpasked_othe
+drop demohelpasked1 demohelpasked2
+order demohelpasked_lend demohelpasked_find demohelpasked_info demohelpasked_exch demohelpasked_inte demohelpasked_othe, after(demohelpasked)
+
+*
+ta democounterpartasked
+replace democounterpartasked="77" if democounterpartasked=="5"
+split democounterpartasked, destring
+foreach i in 1 2 3 4 77 {
+gen democounterpartasked_`i'=0 if democounterpartasked!=""
+}
+foreach i in 1 2 3 4 77 {
+replace democounterpartasked_`i'=1 if democounterpartasked1==`i'
+replace democounterpartasked_`i'=1 if democounterpartasked2==`i'
+label var democounterpartasked_`i' "democounterpartasked=`i'"
+label values democounterpartasked_`i' yesno
+}
+rename democounterpartasked_1 democounterpartasked_offe
+rename democounterpartasked_2 democounterpartasked_comm
+rename democounterpartasked_3 democounterpartasked_serv
+rename democounterpartasked_4 democounterpartasked_noco
+rename democounterpartasked_77 democounterpartasked_othe
+drop democounterpartasked1 democounterpartasked2
+order democounterpartasked_offe democounterpartasked_comm democounterpartasked_serv democounterpartasked_noco democounterpartasked_othe, after(democounterpartasked)
+
+drop sndemogivennber sndemoaskednber snrecommendforjobnber snfindjobnber snfindsuppliersnber sntechnicalhelpnber snrecommendassonber snrecojobsuccessnber snlendtoolsnber snrecruitworkernber snentrustbusinessnber
+
 save"Last/NEEMSIS1-alters", replace
 ****************************************
 * END
-
-
-
-
-
-
-
-
-
-
 
 
 
