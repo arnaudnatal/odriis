@@ -36,7 +36,7 @@ grstyle set plain, box nogrid
 ****************************************
 use"4team\Last\NEEMSIS1-HH", clear
 
-drop address instancename formdef_version villageid_new_comments name remsentrecipientname1 remsentrecipientname2 landleasername landleasingname
+drop address householdid instancename formdef_version villageid_new_comments name remsentrecipientname1 remsentrecipientname2 landleasername landleasingname
 
 save"2publish\NEEMSIS1-HH", replace
 ****************************************
@@ -128,7 +128,7 @@ save"2publish\NEEMSIS1-ego", replace
 ****************************************
 use"4team\Last\NEEMSIS1-alters", clear
 
-drop altername alterid_byNP1 nb_ntwother snTHnamelist snEBnamelist snRWnamelist snFSnamelist snLTnamelist snFJnamelist snRJnamelist snRJSnamelist snDAnamelist snDGnamelist sndemogivennber sndemoaskednber snrecommendforjobnber snfindjobnber snfindsuppliersnber sntechnicalhelpnber snrecommendassonber snrecojobsuccessnber snlendtoolsnber snrecruitworkernber snentrustbusinessnber
+drop altername 
 
 save"2publish\NEEMSIS1-alters", replace
 ****************************************
