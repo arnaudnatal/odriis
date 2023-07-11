@@ -36,7 +36,13 @@ grstyle set plain, box nogrid
 ****************************************
 use"4team\Last\NEEMSIS1-HH", clear
 
-drop address householdid instancename formdef_version villageid_new_comments name remsentrecipientname1 remsentrecipientname2 landleasername landleasingname
+sort HHID2016 INDID2016 
+drop address householdid instancename formdef_version villageid_new_comments name remsentrecipientname1 remsentrecipientname2 landleasername landleasingname remreceivedsourcename1 remreceivedsourcename2 remreceivedothersource1 remreceivedothersource2 remsentotherrecipient1 remsentotherrecipient2
+drop loandetails*
+
+label define yesno 0"No" 1"Yes"
+label values dummydemonetisation yesno
+fre dummydemonetisation
 
 save"2publish\NEEMSIS1-HH", replace
 ****************************************
@@ -54,7 +60,7 @@ save"2publish\NEEMSIS1-HH", replace
 ****************************************
 use"4team\Last\NEEMSIS1-loans_mainloans", clear
 
-drop name villageid villageareaid householdid lendername jatis sex age
+drop name villageid villageareaid householdid lendername jatis sex age loaninfo
 
 
 save"2publish\NEEMSIS1-loans_mainloans", replace
