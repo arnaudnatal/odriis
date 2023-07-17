@@ -1008,10 +1008,17 @@ use "_temp\NEEMSIS2-loans_v14.dta", clear
 keep if dummyinterest==1
 drop if interestpaid==66
 drop if loansettled==1
+replace loanduration=10 if loanduration<10
+
+* Step 1: All in months
+gen _loanduration_month=loanduration/30.4167
+
+fre repayduration1
+
+
 
 * Test no. 1 for all loans in 2020-21
-replace loanduration=10 if loanduration<10
-gen _loanduration_month=loanduration/30.4167
+
 gen _principalpaid=loanamount-loanbalance
 gen _percprincipal_pm=((_principalpaid/_loanduration_month)/loanamount)*100
 gen _percprincipal_py=_percprincipal_pm*12
