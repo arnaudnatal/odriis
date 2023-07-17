@@ -149,6 +149,10 @@ keep if loanamount!=.
 
 fre loan_database
 
+* Tous les prêts GOLD sont des pawnbroker
+fre loanlender
+replace loanlender=6
+
 
 save "_temp\NEEMSIS2-gold.dta", replace
 ****************************************
@@ -436,6 +440,7 @@ ta loanlender if lender4==8
 save "_temp\NEEMSIS2-loans_v8.dta", replace
 ****************************************
 * END
+
 
 
 
@@ -988,6 +993,41 @@ tabstat monthlyinterestrate, stat(n mean cv p50 min max) by(lender4)
 save "_temp\NEEMSIS2-loans_v14.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+****************************************
+* Test interest plus simple
+****************************************
+use "_temp\NEEMSIS2-loans_v14.dta", clear
+
+* Clean
+keep if dummyinterest==1
+drop if interestpaid==66
+drop if loansettled==1
+
+* Test no. 1 for all loans in 2020-21
+replace loanduration=10 if loanduration<10
+gen _loanduration_month=loanduration/30.4167
+gen _principalpaid=loanamount-loanbalance
+gen _percprincipal_pm=((_principalpaid/_loanduration_month)/loanamount)*100
+gen _percprincipal_py=_percprincipal_pm*12
+gen _percinterest_pm=((interestpaid/_loanduration_month)/loanamount)*100
+gen _percinterest_py=_percinterest_pm*12
+
+tabstat _percprincipal_pm _percinterest_pm, stat(n mean cv p50) by(lender4) long
+tabstat _percprincipal_py _percinterest_py, stat(n mean cv p50) by(lender4) long
+
+* Test no. 2 for main loans in 2020-21
+
+
+****************************************
+* END
+
+
 
 
 

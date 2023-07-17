@@ -149,6 +149,10 @@ keep if loanamount!=.
 
 fre loan_database
 
+* Tous les prêts GOLD sont des pawnbroker
+fre loanlender
+replace loanlender=6
+
 
 save "_temp\NEEMSIS2-gold.dta", replace
 ****************************************

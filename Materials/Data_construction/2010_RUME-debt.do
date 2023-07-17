@@ -94,8 +94,6 @@ replace lender_cat=3 if loanlender==`i'
 }
 fre lender_cat
 
-
-
 *** Purpose of loan
 fre loanreasongiven
 gen reason_cat=.
@@ -214,6 +212,7 @@ replace lender4_cat=3 if lender4==9
 replace lender4_cat=1 if lender4==10
 ta lender4 lender4_cat
 ta loanlender if lender4==8
+
 
 
 
