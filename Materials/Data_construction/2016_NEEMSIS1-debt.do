@@ -987,6 +987,104 @@ save "_temp\NEEMSIS1-loans_v12.dta", replace
 
 
 ****************************************
+* Test interest plus simple
+****************************************
+use "_temp\NEEMSIS1-loans_v12.dta", clear
+
+***** Clean
+keep if dummyinterest==1
+drop if interestpaid==66
+drop if loansettled==1
+replace loanduration=10 if loanduration<10
+
+***** Inspection
+*keep if HHID2020=="uuid:fbd9ed1c-4843-43fb-8ad6-d2ee466a9672" & INDID2020==1 & loanid==5
+*keep if lender4==6 | lender4==9
+global var HHID2016 INDID2016 loanid loanamount loanreasongiven loanlender lender4 loandate loanduration loanduration_month dummyinterest interestpaid loanbalance totalrepaid termsofrepayment repayduration1 repayduration2 interestfrequency interestloan yratepaid
+keep $var
+order $var
+
+
+***** Step 1: All in months
+gen _loanduration_month=loanduration/30.4167
+
+fre repayduration1
+gen _repayduration2=.
+replace _repayduration2=repayduration2*4.345 if repayduration1==1
+replace _repayduration2=repayduration2 if repayduration1==2
+replace _repayduration2=repayduration2/12 if repayduration1==3
+replace _repayduration2=repayduration2/6 if repayduration1==4
+replace _repayduration2=repayduration2 if repayduration1==5
+
+fre interestfrequency
+gen _interestloan=.
+replace _interestloan=interestloan*4.345 if interestfrequency==1
+replace _interestloan=interestloan if interestfrequency==2
+replace _interestloan=interestloan/12 if interestfrequency==3
+replace _interestloan=interestloan/6 if interestfrequency==4
+replace _interestloan=interestloan if interestfrequency==5
+replace _interestloan=interestloan if interestfrequency==6
+
+
+
+***** All loans methods
+gen al_principalpaid=loanamount-loanbalance
+gen al_percprincipal_pm=((al_principalpaid/_loanduration_month)/loanamount)*100
+gen al_percprincipal_py=al_percprincipal_pm*12
+gen al_percinterest_pm=((interestpaid/_loanduration_month)/loanamount)*100
+gen al_percinterest_py=al_percinterest_pm*12
+
+tabstat al_percprincipal_py al_percinterest_py, stat(n mean cv p50) by(lender4) long
+
+
+***** Main loans methods
+gen ml_percinterest_pm=(_interestloan/loanamount)*100
+gen ml_percinterest_py=ml_percinterest_pm*12
+gen ml_principalpaid=loanamount-loanbalance
+gen ml_percprincipal_pm=((ml_principalpaid/_repayduration2)/loanamount)*100
+gen ml_percprincipal_py=ml_percprincipal_pm*12
+
+tabstat ml_percprincipal_py ml_percinterest_py, stat(n mean cv p50) by(lender4) long
+
+
+***** Diff
+keep if ml_percinterest_py!=. & al_percinterest_py!=.
+
+tabstat al_percinterest_py ml_percinterest_py, stat(n mean cv p50) by(lender4) long
+
+gen diff=al_percinterest_py-ml_percinterest_py
+
+drop al_percinterest_pm ml_percinterest_pm al_percprincipal_pm al_percprincipal_py ml_percprincipal_pm ml_percprincipal_py al_principalpaid ml_principalpaid
+
+order yratepaid al_percinterest_py ml_percinterest_py, last
+tabstat yratepaid, stat(n mean p50 min max) by(lender4)
+tabstat al_percinterest_py, stat(n mean p50 min max) by(lender4)
+tabstat ml_percinterest_py, stat(n mean p50 min max) by(lender4)
+
+
+
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
 * Imputations
 ****************************************
 use "_temp\NEEMSIS1-loans_v12.dta", clear
@@ -996,7 +1094,7 @@ use "_temp\NEEMSIS1-loans_v12.dta", clear
 merge m:1 HHID2016 using "outcomes\NEEMSIS1-occup_HH.dta", keepusing(annualincome_HH)
 drop if _merge==2
 drop _merge
-replace annualincome_HH=20000 if annualincome_HH<20000
+replace annualincome_HH=10000 if annualincome_HH<10000
 
 
 
@@ -1017,18 +1115,18 @@ replace interest_service=0 if dummyinterest==0 & interestpaid2==0 | dummyinteres
 
 *** Imputation du principal
 gen imp_principal=.
-replace imp_principal=loanamount2-loanbalance2 if loanduration<=365 & debt_service==.
-replace imp_principal=(loanamount2-loanbalance2)*365/loanduration if loanduration>365 & debt_service==.
+replace imp_principal=loanamount2-loanbalance2 if loanduration<=365 & debt_service==0
+replace imp_principal=(loanamount2-loanbalance2)*365/loanduration if loanduration>365 & debt_service==0
 
 
 
 *** Imputation interest for moneylenders and microcredit
 gen imp1_interest=.
-replace imp1_interest=0.27*loanamount2 if lender4==6 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.27*loanamount2*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
-replace imp1_interest=0.15*loanamount2 if lender4==8 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.15*loanamount2*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
-replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
+replace imp1_interest=0.27*loanamount2 if lender4==6 & loanduration<=365 & interest_service==0
+replace imp1_interest=0.27*loanamount2*365/loanduration if lender4==6 & loanduration>365 & interest_service==0
+replace imp1_interest=0.15*loanamount2 if lender4==8 & loanduration<=365 & interest_service==0
+replace imp1_interest=0.15*loanamount2*365/loanduration if lender4==8 & loanduration>365 & interest_service==0
+replace imp1_interest=0 if lender4!=6 & lender4!=8 & interest_service==0 & loandate!=.
 
 
 
@@ -1041,7 +1139,7 @@ gen imp1_totalrepaid_year=imp_principal+imp1_interest
 
 *** Calcul service de la dette pour tout
 gen imp1_debt_service=debt_service
-replace imp1_debt_service=imp1_totalrepaid_year if debt_service==.
+replace imp1_debt_service=imp1_totalrepaid_year if debt_service==0
 
 replace imp1_debt_service=. if loansettled==1
 replace imp1_debt_service=. if loan_database=="MARRIAGE"
@@ -1050,7 +1148,7 @@ replace imp1_debt_service=. if loan_database=="MARRIAGE"
 
 *** Calcul service des interets pour tout
 gen imp1_interest_service=interest_service
-replace imp1_interest_service=imp1_interest if interest_service==.
+replace imp1_interest_service=imp1_interest if interest_service==0
 
 replace imp1_interest_service=. if loansettled==1
 replace imp1_interest_service=. if loan_database=="MARRIAGE"
@@ -1086,6 +1184,24 @@ restore
      p99 |  300.0237  170.8331
      max |  845.3228  527.8712
 ------------------------------
+
+
+
+   stats |       dsr       isr
+---------+--------------------
+       N |       487       487
+    mean |  45.38456  20.72962
+      cv |  2.107305  2.822463
+     p25 |  7.092198  1.609848
+     p50 |  21.17169   6.53753
+     p75 |  50.14687  18.87138
+     p90 |  110.6495  47.68209
+     p95 |  177.7622  87.45866
+     p99 |  315.7331  191.9846
+     max |  1690.646  1055.742
+------------------------------
+
+
 */
 
 drop imp1_ds_tot_HH imp1_is_tot_HH annualincome_HH dsr isr

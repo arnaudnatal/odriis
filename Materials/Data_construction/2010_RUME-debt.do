@@ -1111,18 +1111,18 @@ replace interest_service=0 if dummyinterest==0 & interestpaid2==0 | dummyinteres
 
 *** Imputation du principal
 gen imp_principal=.
-replace imp_principal=loanamount2-loanbalance2 if loanduration<=365 & debt_service==.
-replace imp_principal=(loanamount2-loanbalance2)*365/loanduration if loanduration>365 & debt_service==.
+replace imp_principal=loanamount2-loanbalance2 if loanduration<=365 & debt_service==0
+replace imp_principal=(loanamount2-loanbalance2)*365/loanduration if loanduration>365 & debt_service==0
 
 
 
 *** Imputation interest for moneylenders and microcredit
 gen imp1_interest=.
-replace imp1_interest=0.33*loanamount2 if lender4==6 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.33*loanamount2*365/loanduration if lender4==6 & loanduration>365 & debt_service==.
-replace imp1_interest=0.23*loanamount2 if lender4==8 & loanduration<=365 & debt_service==.
-replace imp1_interest=0.23*loanamount2*365/loanduration if lender4==8 & loanduration>365 & debt_service==.
-replace imp1_interest=0 if lender4!=6 & lender4!=8 & debt_service==. & loandate!=.
+replace imp1_interest=0.33*loanamount2 if lender4==6 & loanduration<=365 & interest_service==0
+replace imp1_interest=0.33*loanamount2*365/loanduration if lender4==6 & loanduration>365 & interest_service==0
+replace imp1_interest=0.23*loanamount2 if lender4==8 & loanduration<=365 & interest_service==0
+replace imp1_interest=0.23*loanamount2*365/loanduration if lender4==8 & loanduration>365 & interest_service==0
+replace imp1_interest=0 if lender4!=6 & lender4!=8 & interest_service==0 & loandate!=.
 
 
 
@@ -1135,14 +1135,14 @@ gen imp1_totalrepaid_year=imp_principal+imp1_interest
 
 *** Calcul service de la dette pour tout
 gen imp1_debt_service=debt_service
-replace imp1_debt_service=imp1_totalrepaid_year if debt_service==.
+replace imp1_debt_service=imp1_totalrepaid_year if debt_service==0
 
 replace imp1_debt_service=. if loansettled==1
 
 
 *** Calcul service des interets pour tout
 gen imp1_interest_service=interest_service
-replace imp1_interest_service=imp1_interest if interest_service==.
+replace imp1_interest_service=imp1_interest if interest_service==0
 
 replace imp1_interest_service=. if loansettled==1
 
@@ -1175,6 +1175,21 @@ restore
      p95 |  107.1118   37.6863
      p99 |  200.2351    66.875
      max |    482.22  138.5955
+------------------------------
+
+
+   stats |       dsr       isr
+---------+--------------------
+       N |       405       405
+    mean |  44.05683  14.12783
+      sd |  53.00623  19.87642
+     p25 |  12.26735      3.12
+     p50 |  27.67646  9.148653
+     p75 |  60.52026   18.4375
+     p90 |  98.81579  31.95109
+     p95 |  130.6525  43.41615
+     p99 |  242.7329  71.31712
+     max |  487.6291  263.4925
 ------------------------------
 */
 
