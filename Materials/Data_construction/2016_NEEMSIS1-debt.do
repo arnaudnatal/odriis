@@ -1090,6 +1090,12 @@ tabstat ml_percinterest_py, stat(n mean p50 min max) by(lender4)
 use "_temp\NEEMSIS1-loans_v12.dta", clear
 
 
+*keep if HHID2016=="uuid:3502a333-6356-4267-ad32-ad6d32029c51" & INDID2016==1 & loanid==2
+*global var HHID2016 INDID2016 loanid loanamount loanreasongiven loanlender lender4 loanbalance termsofrepayment repayduration1 repayduration2 dummyinterest interestfrequency interestloan interestpaid principalpaid totalrepaid loanamount2 loanbalance2 interestpaid2 totalrepaid2 principalpaid2 interestloan2 loanduration_month repayduration2_month loan_months years loan_years loan_year2 yratepaid monthlyinterestrate
+*keep $var
+*order $var
+
+
 ********** Add income
 merge m:1 HHID2016 using "outcomes\NEEMSIS1-occup_HH.dta", keepusing(annualincome_HH)
 drop if _merge==2
@@ -1203,6 +1209,7 @@ restore
 
 
 */
+
 
 drop imp1_ds_tot_HH imp1_is_tot_HH annualincome_HH dsr isr
 
