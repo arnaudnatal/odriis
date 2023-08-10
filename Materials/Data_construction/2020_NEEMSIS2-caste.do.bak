@@ -57,6 +57,7 @@ replace jatiscorr2020="Vanniyar" if HHID_panel=="KAR30"
 replace jatiscorr2020="Vanniyar" if HHID_panel=="ELA16"
 replace jatiscorr2020="Mudaliar" if HHID_panel=="GOV19"
 replace jatiscorr2020="Mudaliar" if HHID_panel=="GOV2"
+replace jatiscorr2020="Reddiyar" if HHID_panel=="MANAM40"
 
 
 drop jatis2010 jatis2016 jatis2020 jatiscorr2010 jatiscorr2016

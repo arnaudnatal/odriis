@@ -81,6 +81,7 @@ replace jatiscorr2010="Vanniyar" if HHID2010=="VENOR396"
 replace jatiscorr2010="Muslims" if HHID2010=="VENSEM111"
 replace jatiscorr2010="Muslims" if HHID2010=="VENSEM112"
 replace jatiscorr2010="Muslims" if HHID2010=="VENSEM113"
+replace jatiscorr2010="Vanniyar" if HHID2010=="ANDMTP324"
 
 drop jatis2010 jatis2016 jatis2020 jatiscorr2016 jatiscorr2020
 rename jatiscorr2010 jatiscorr
