@@ -12,7 +12,7 @@ macro drop _all
 ********** Path to do
 global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2"
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\2020-NEEMSIS2\Data\4team"
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\2020-NEEMSIS2\Data\4team\Last"
 cd"$directory"
 ********** Scheme
 set scheme plotplain_v2
@@ -37,194 +37,19 @@ grstyle set plain, box nogrid
 use"NEEMSIS2-HH", clear
 
 
-*********** Educ preload
-merge 1:1 HHID2020 INDID2020 using "C:\Users\Arnaud\Documents\Dropbox (IRD)\RUME II\2. Data\Constructed_data\edupreload\NEEMSIS2-edupreload", keepusing(datafromearlier data)
-drop _merge
-ta data
-ta datafromearlier
-rename datafromearlier educpreload
-order educpreload, before(canread)
-label var educpreload "Does the individual have preloaded data for the education module?"
-label values educpreload yesno
-
-
-
-recode subjectsafter10th (7=77) (8=77)
-
-
-
-
-ta reservationgrade
-split reservationgrade, destring
-recode reservationgrade1 reservationgrade2 reservationgrade3 reservationgrade4 reservationgrade5 reservationgrade6 reservationgrade7 reservationgrade8 reservationgrade9 reservationgrade10 reservationgrade11 reservationgrade12 reservationgrade13 reservationgrade14 (15=13) (16=14)
-forvalues i=1/14 {
-gen reservationgrade_`i'=0 if reservationgrade!=""
-}
-forvalues i=1/14{
-replace reservationgrade_`i'=1 if reservationgrade1==`i'
-replace reservationgrade_`i'=1 if reservationgrade2==`i'
-replace reservationgrade_`i'=1 if reservationgrade3==`i'
-replace reservationgrade_`i'=1 if reservationgrade4==`i'
-replace reservationgrade_`i'=1 if reservationgrade5==`i'
-replace reservationgrade_`i'=1 if reservationgrade6==`i'
-replace reservationgrade_`i'=1 if reservationgrade7==`i'
-replace reservationgrade_`i'=1 if reservationgrade8==`i'
-replace reservationgrade_`i'=1 if reservationgrade9==`i'
-replace reservationgrade_`i'=1 if reservationgrade10==`i'
-replace reservationgrade_`i'=1 if reservationgrade11==`i'
-replace reservationgrade_`i'=1 if reservationgrade12==`i'
-replace reservationgrade_`i'=1 if reservationgrade13==`i'
-replace reservationgrade_`i'=1 if reservationgrade14==`i'
-label var reservationgrade_`i' "reservationgrade=`i'"
-label values reservationgrade_`i' yesno
-}
-rename reservationgrade_1 reservationgrade_1st
-rename reservationgrade_2 reservationgrade_2nd
-rename reservationgrade_3 reservationgrade_3rd
-rename reservationgrade_4 reservationgrade_4th
-rename reservationgrade_5 reservationgrade_5th
-rename reservationgrade_6 reservationgrade_6th
-rename reservationgrade_7 reservationgrade_7th
-rename reservationgrade_8 reservationgrade_8th
-rename reservationgrade_9 reservationgrade_9th
-rename reservationgrade_10 reservationgrade_10th
-rename reservationgrade_11 reservationgrade_11th
-rename reservationgrade_12 reservationgrade_12th
-rename reservationgrade_13 reservationgrade_bach
-rename reservationgrade_14 reservationgrade_abov
-drop reservationgrade1 reservationgrade2 reservationgrade3 reservationgrade4 reservationgrade5 reservationgrade6 reservationgrade7 reservationgrade8 reservationgrade9 reservationgrade10 reservationgrade11 reservationgrade12 reservationgrade13 reservationgrade14
-order reservationgrade_1st reservationgrade_2nd reservationgrade_3rd reservationgrade_4th reservationgrade_5th reservationgrade_6th reservationgrade_7th reservationgrade_8th reservationgrade_9th reservationgrade_10th reservationgrade_11th reservationgrade_12th reservationgrade_bach reservationgrade_abov, after(reservationgrade)
-
-
-ta reservationkind
-split reservationkind, destring
-recode reservationkind1 reservationkind2 reservationkind3 reservationkind4 (77=6)
-forvalues i=1/6 {
-gen reservationkind_`i'=0 if reservationkind!=""
-}
-forvalues i=1/6 {
-replace reservationkind_`i'=1 if reservationkind1==`i'
-replace reservationkind_`i'=1 if reservationkind2==`i'
-replace reservationkind_`i'=1 if reservationkind3==`i'
-replace reservationkind_`i'=1 if reservationkind4==`i'
-label var reservationkind_`i' "reservationkind=`i'"
-label values reservationkind_`i' yesno
-}
-rename reservationkind_1 reservationkind_quot
-rename reservationkind_2 reservationkind_free
-rename reservationkind_3 reservationkind_scho
-rename reservationkind_4 reservationkind_spec
-rename reservationkind_5 reservationkind_meal
-rename reservationkind_6 reservationkind_othe
-drop reservationkind1 reservationkind2 reservationkind3 reservationkind4
-order reservationkind_quot reservationkind_free reservationkind_scho reservationkind_spec reservationkind_meal reservationkind_othe, after(reservationkind)
-
-
-
-ta reasonneverattendedschool
-replace reasonneverattendedschool="" if reasonneverattendedschool=="."
-split reasonneverattendedschool, destring
-forvalues i=1/13 {
-gen reasonneverattendedschool_`i'=0 if reasonneverattendedschool!=""
-}
-forvalues i=1/13 {
-replace reasonneverattendedschool_`i'=1 if reasonneverattendedschool1==`i'
-replace reasonneverattendedschool_`i'=1 if reasonneverattendedschool2==`i'
-label values reasonneverattendedschool_`i' yesno
-label var reasonneverattendedschool_`i' "reasonneverattendedschool=`i'"
-}
-rename reasonneverattendedschool_1 reasonneverattendedschool_fail
-rename reasonneverattendedschool_2 reasonneverattendedschool_inac
-rename reasonneverattendedschool_3 reasonneverattendedschool_qual
-rename reasonneverattendedschool_4 reasonneverattendedschool_fina
-rename reasonneverattendedschool_5 reasonneverattendedschool_heal
-rename reasonneverattendedschool_6 reasonneverattendedschool_noin
-rename reasonneverattendedschool_7 reasonneverattendedschool_care
-rename reasonneverattendedschool_8 reasonneverattendedschool_work
-rename reasonneverattendedschool_9 reasonneverattendedschool_girl
-rename reasonneverattendedschool_10 reasonneverattendedschool_marr
-rename reasonneverattendedschool_11 reasonneverattendedschool_noal
-rename reasonneverattendedschool_12 reasonneverattendedschool_pube
-rename reasonneverattendedschool_13 reasonneverattendedschool_baby
-drop reasonneverattendedschool1 reasonneverattendedschool2
-order reasonneverattendedschool_fail reasonneverattendedschool_inac reasonneverattendedschool_qual reasonneverattendedschool_fina reasonneverattendedschool_heal reasonneverattendedschool_noin reasonneverattendedschool_care reasonneverattendedschool_work reasonneverattendedschool_girl reasonneverattendedschool_marr reasonneverattendedschool_noal reasonneverattendedschool_pube reasonneverattendedschool_baby, after(reasonneverattendedschool)
-
-
-
-ta reasondropping
-replace reasondropping="" if reasondropping=="."
-split reasondropping, destring
-recode reasondropping1 reasondropping2 (77=16)
-forvalues i=1/16 {
-gen reasondropping_`i'=0 if reasondropping!=""
-}
-forvalues i=1/16 {
-replace reasondropping_`i'=1 if reasondropping1==`i'
-replace reasondropping_`i'=1 if reasondropping2==`i'
-label values reasondropping_`i' yesno
-label var reasondropping_`i' "reasondropping=`i'"
-}
-rename reasondropping_1 reasondropping_stop
-rename reasondropping_2 reasondropping_fail
-rename reasondropping_3 reasondropping_inac
-rename reasondropping_4 reasondropping_qual
-rename reasondropping_5 reasondropping_fina
-rename reasondropping_6 reasondropping_heal
-rename reasondropping_7 reasondropping_noin
-rename reasondropping_8 reasondropping_care
-rename reasondropping_9 reasondropping_work
-rename reasondropping_10 reasondropping_girl
-rename reasondropping_11 reasondropping_marr
-rename reasondropping_12 reasondropping_noal
-rename reasondropping_13 reasondropping_pube
-rename reasondropping_14 reasondropping_baby
-rename reasondropping_15 reasondropping_covi
-rename reasondropping_16 reasondropping_othe
-drop reasondropping1 reasondropping2
-order reasondropping_stop reasondropping_fail reasondropping_inac reasondropping_qual reasondropping_fina reasondropping_heal reasondropping_noin reasondropping_care reasondropping_work reasondropping_girl reasondropping_marr reasondropping_noal reasondropping_pube reasondropping_baby reasondropping_covi reasondropping_othe, after(reasondropping)
-
-
-destring covgoingbackschool, replace
-label values covgoingbackschool yesno
-
-
-ta kindofworkinactive
-split kindofworkinactive, destring
-forvalues i=1/8 {
-gen kindofworkinactive_`i'=0 if kindofworkinactive!=""
-}
-forvalues i=1/8 {
-replace kindofworkinactive_`i'=1 if kindofworkinactive1==`i'
-replace kindofworkinactive_`i'=1 if kindofworkinactive2==`i'
-label var kindofworkinactive_`i' "kindofworkinactive=`i'"
-label values kindofworkinactive_`i' yesno
-}
-rename kindofworkinactive_1 kindofworkinactive_agri
-rename kindofworkinactive_2 kindofworkinactive_se
-rename kindofworkinactive_3 kindofworkinactive_sjagri
-rename kindofworkinactive_4 kindofworkinactive_sjnonagri
-rename kindofworkinactive_5 kindofworkinactive_uwownnonagri
-rename kindofworkinactive_6 kindofworkinactive_uwothnongri
-rename kindofworkinactive_7 kindofworkinactive_uwownagri
-rename kindofworkinactive_8 kindofworkinactive_uwothagri
-drop kindofworkinactive1 kindofworkinactive2
-order kindofworkinactive_agri kindofworkinactive_se kindofworkinactive_sjagri kindofworkinactive_sjnonagri kindofworkinactive_uwownnonagri kindofworkinactive_uwothnongri kindofworkinactive_uwownagri kindofworkinactive_uwothagri, after(kindofworkinactive)
-
-
-
 
 ********** Migration
-label values dummymigrantlist yesno
-
+drop migrationjoblist_brick migrationjoblist_sugar migrationjoblist_const migrationjoblist_nagco migrationjoblist_agrco migrationjoblist_priva migrationjoblist_publi migrationjoblist_selfe migrationjoblist_follo
 
 ta migrationjoblist
 split migrationjoblist, destring
+
 forvalues i=1/9 {
 gen migrationjoblist_`i'=0 if migrationjoblist!=""
 }
 forvalues i=1/9 {
-replace migrationjoblist_`i'=0 if migrationjoblist1==`i'
-replace migrationjoblist_`i'=0 if migrationjoblist2==`i'
+replace migrationjoblist_`i'=1 if migrationjoblist1==`i'
+replace migrationjoblist_`i'=1 if migrationjoblist2==`i'
 label var migrationjoblist_`i' "migrationjoblist=`i'"
 label values migrationjoblist_`i' yesno
 }
@@ -241,6 +66,333 @@ drop migrationjoblist1 migrationjoblist2
 order migrationjoblist_brick migrationjoblist_sugar migrationjoblist_const migrationjoblist_nagco migrationjoblist_agrco migrationjoblist_priva migrationjoblist_publi migrationjoblist_selfe migrationjoblist_follo, after(migrationjoblist)
 
 
+
+
+********** Remittances received
+
+forvalues i=1/4 {
+replace remreceivedsourceoccup`i'=77 if remreceivedsourceoccupother`i'!=""
+}
+
+
+
+
+
+********** Remittances sent
+
+preserve
+use"NEEMSIS2-HH", clear
+
+keep HHID2020 INDID2020 dummyremsent dummyremsenderlist remsentname1 remsentnametwo1 remsentdummyvillage1 remsentrelation1 remsentoccup1 remsentplace1 remsentmoney1 remsentgift1 remsentservices1 remsentservices_poli1 remsentservices_fina1 remsentservices_guar1 remsentservices_gene1 remsentservices_none1 remsentservices_othe1 remsentsourceoccupother1 remsentservicesother1 remsentfrequency1 remsentamount1 remsenttotalamount1 remsentmean1 remsentmean_cash1 remsentmean_mobi1 remsentmean_bank1 remsentmean_othe1 remsentgiftnb1 remsentgiftamount1 covremsent1 remsentname2 remsentnametwo2 remsentdummyvillage2 remsentrelation2 remsentoccup2 remsentplace2 remsentmoney2 remsentgift2 remsentservices2 remsentservices_poli2 remsentservices_fina2 remsentservices_guar2 remsentservices_gene2 remsentservices_none2 remsentservices_othe2 remsentsourceoccupother2 remsentservicesother2 remsentfrequency2 remsentamount2 remsenttotalamount2 remsentmean2 remsentmean_cash2 remsentmean_mobi2 remsentmean_bank2 remsentmean_othe2 remsentgiftnb2 remsentgiftamount2 covremsent2 remsentname3 remsentnametwo3 remsentdummyvillage3 remsentrelation3 remsentoccup3 remsentplace3 remsentmoney3 remsentgift3 remsentservices3 remsentservices_poli3 remsentservices_fina3 remsentservices_guar3 remsentservices_gene3 remsentservices_none3 remsentservices_othe3 remsentsourceoccupother3 remsentservicesother3 remsentfrequency3 remsentamount3 remsenttotalamount3 remsentmean3 remsentmean_cash3 remsentmean_mobi3 remsentmean_bank3 remsentmean_othe3 remsentgiftnb3 remsentgiftamount3 covremsent3 remsentname4 remsentnametwo4 remsentdummyvillage4 remsentrelation4 remsentoccup4 remsentplace4 remsentmoney4 remsentgift4 remsentservices4 remsentservices_poli4 remsentservices_fina4 remsentservices_guar4 remsentservices_gene4 remsentservices_none4 remsentservices_othe4 remsentsourceoccupother4 remsentservicesother4 remsentfrequency4 remsentamount4 remsenttotalamount4 remsentmean4 remsentmean_cash4 remsentmean_mobi4 remsentmean_bank4 remsentmean_othe4 remsentgiftnb4 remsentgiftamount4 covremsent4 remsentname5 remsentnametwo5 remsentdummyvillage5 remsentrelation5 remsentoccup5 remsentplace5 remsentmoney5 remsentgift5 remsentservices5 remsentservices_poli5 remsentservices_fina5 remsentservices_guar5 remsentservices_gene5 remsentservices_none5 remsentservices_othe5 remsentsourceoccupother5 remsentservicesother5 remsentfrequency5 remsentamount5 remsenttotalamount5 remsentmean5 remsentmean_cash5 remsentmean_mobi5 remsentmean_bank5 remsentmean_othe5 remsentgiftnb5 remsentgiftamount5 covremsent5
+reshape long remsentname remsentnametwo remsentdummyvillage remsentrelation remsentoccup remsentplace remsentmoney remsentgift remsentservices remsentservices_poli remsentservices_fina remsentservices_guar remsentservices_gene remsentservices_none remsentservices_othe remsentsourceoccupother remsentservicesother remsentfrequency remsentamount remsenttotalamount remsentmean remsentmean_cash remsentmean_mobi remsentmean_bank remsentmean_othe remsentgiftnb remsentgiftamount covremsent, i(HHID2020 INDID2020) j(n)
+drop if remsentname==.
+
+ta remsentservices
+drop remsentservices_poli remsentservices_fina remsentservices_guar remsentservices_gene remsentservices_none remsentservices_othe
+split remsentservices, destring
+recode remsentservices1 remsentservices2 remsentservices3 (77=6)
+forvalues i=1/6 {
+gen remsentservices_`i'=0 if remsentservices!=""
+}
+forvalues i=1/6 {
+replace remsentservices_`i'=1 if remsentservices1==`i'
+replace remsentservices_`i'=1 if remsentservices2==`i'
+replace remsentservices_`i'=1 if remsentservices3==`i'
+label var remsentservices_`i' "remsentservices=`i'"
+label values remsentservices_`i' yesno
+}
+rename remsentservices_1 remsentservices_poli
+rename remsentservices_2 remsentservices_fina
+rename remsentservices_3 remsentservices_guar
+rename remsentservices_4 remsentservices_gene
+rename remsentservices_5 remsentservices_none
+rename remsentservices_6 remsentservices_othe
+drop remsentservices1 remsentservices2 remsentservices3
+order remsentservices_poli remsentservices_fina remsentservices_guar remsentservices_gene remsentservices_none remsentservices_othe, after(remsentservices)
+
+reshape wide remsentname remsentnametwo remsentdummyvillage remsentrelation remsentoccup remsentplace remsentmoney remsentgift remsentservices remsentservices_poli remsentservices_fina remsentservices_guar remsentservices_gene remsentservices_none remsentservices_othe remsentsourceoccupother remsentservicesother remsentfrequency remsentamount remsenttotalamount remsentmean remsentmean_cash remsentmean_mobi remsentmean_bank remsentmean_othe remsentgiftnb remsentgiftamount covremsent, i(HHID2020 INDID2020) j(n)
+save "_tempremsent.dta", replace
+restore
+
+drop remsentname1 remsentnametwo1 remsentdummyvillage1 remsentrelation1 remsentoccup1 remsentplace1 remsentmoney1 remsentgift1 remsentservices1 remsentservices_poli1 remsentservices_fina1 remsentservices_guar1 remsentservices_gene1 remsentservices_none1 remsentservices_othe1 remsentsourceoccupother1 remsentservicesother1 remsentfrequency1 remsentamount1 remsenttotalamount1 remsentmean1 remsentmean_cash1 remsentmean_mobi1 remsentmean_bank1 remsentmean_othe1 remsentgiftnb1 remsentgiftamount1 covremsent1 remsentname2 remsentnametwo2 remsentdummyvillage2 remsentrelation2 remsentoccup2 remsentplace2 remsentmoney2 remsentgift2 remsentservices2 remsentservices_poli2 remsentservices_fina2 remsentservices_guar2 remsentservices_gene2 remsentservices_none2 remsentservices_othe2 remsentsourceoccupother2 remsentservicesother2 remsentfrequency2 remsentamount2 remsenttotalamount2 remsentmean2 remsentmean_cash2 remsentmean_mobi2 remsentmean_bank2 remsentmean_othe2 remsentgiftnb2 remsentgiftamount2 covremsent2 remsentname3 remsentnametwo3 remsentdummyvillage3 remsentrelation3 remsentoccup3 remsentplace3 remsentmoney3 remsentgift3 remsentservices3 remsentservices_poli3 remsentservices_fina3 remsentservices_guar3 remsentservices_gene3 remsentservices_none3 remsentservices_othe3 remsentsourceoccupother3 remsentservicesother3 remsentfrequency3 remsentamount3 remsenttotalamount3 remsentmean3 remsentmean_cash3 remsentmean_mobi3 remsentmean_bank3 remsentmean_othe3 remsentgiftnb3 remsentgiftamount3 covremsent3 remsentname4 remsentnametwo4 remsentdummyvillage4 remsentrelation4 remsentoccup4 remsentplace4 remsentmoney4 remsentgift4 remsentservices4 remsentservices_poli4 remsentservices_fina4 remsentservices_guar4 remsentservices_gene4 remsentservices_none4 remsentservices_othe4 remsentsourceoccupother4 remsentservicesother4 remsentfrequency4 remsentamount4 remsenttotalamount4 remsentmean4 remsentmean_cash4 remsentmean_mobi4 remsentmean_bank4 remsentmean_othe4 remsentgiftnb4 remsentgiftamount4 covremsent4 remsentname5 remsentnametwo5 remsentdummyvillage5 remsentrelation5 remsentoccup5 remsentplace5 remsentmoney5 remsentgift5 remsentservices5 remsentservices_poli5 remsentservices_fina5 remsentservices_guar5 remsentservices_gene5 remsentservices_none5 remsentservices_othe5 remsentsourceoccupother5 remsentservicesother5 remsentfrequency5 remsentamount5 remsenttotalamount5 remsentmean5 remsentmean_cash5 remsentmean_mobi5 remsentmean_bank5 remsentmean_othe5 remsentgiftnb5 remsentgiftamount5 covremsent5
+
+merge 1:1 HHID2020 INDID2020 using "_tempremsent"
+drop _merge
+order remsentname1 remsentnametwo1 remsentdummyvillage1 remsentrelation1 remsentoccup1 remsentplace1 remsentmoney1 remsentgift1 remsentservices1 remsentservices_poli1 remsentservices_fina1 remsentservices_guar1 remsentservices_gene1 remsentservices_none1 remsentservices_othe1 remsentsourceoccupother1 remsentservicesother1 remsentfrequency1 remsentamount1 remsenttotalamount1 remsentmean1 remsentmean_cash1 remsentmean_mobi1 remsentmean_bank1 remsentmean_othe1 remsentgiftnb1 remsentgiftamount1 covremsent1 remsentname2 remsentnametwo2 remsentdummyvillage2 remsentrelation2 remsentoccup2 remsentplace2 remsentmoney2 remsentgift2 remsentservices2 remsentservices_poli2 remsentservices_fina2 remsentservices_guar2 remsentservices_gene2 remsentservices_none2 remsentservices_othe2 remsentsourceoccupother2 remsentservicesother2 remsentfrequency2 remsentamount2 remsenttotalamount2 remsentmean2 remsentmean_cash2 remsentmean_mobi2 remsentmean_bank2 remsentmean_othe2 remsentgiftnb2 remsentgiftamount2 covremsent2 remsentname3 remsentnametwo3 remsentdummyvillage3 remsentrelation3 remsentoccup3 remsentplace3 remsentmoney3 remsentgift3 remsentservices3 remsentservices_poli3 remsentservices_fina3 remsentservices_guar3 remsentservices_gene3 remsentservices_none3 remsentservices_othe3 remsentsourceoccupother3 remsentservicesother3 remsentfrequency3 remsentamount3 remsenttotalamount3 remsentmean3 remsentmean_cash3 remsentmean_mobi3 remsentmean_bank3 remsentmean_othe3 remsentgiftnb3 remsentgiftamount3 covremsent3 remsentname4 remsentnametwo4 remsentdummyvillage4 remsentrelation4 remsentoccup4 remsentplace4 remsentmoney4 remsentgift4 remsentservices4 remsentservices_poli4 remsentservices_fina4 remsentservices_guar4 remsentservices_gene4 remsentservices_none4 remsentservices_othe4 remsentsourceoccupother4 remsentservicesother4 remsentfrequency4 remsentamount4 remsenttotalamount4 remsentmean4 remsentmean_cash4 remsentmean_mobi4 remsentmean_bank4 remsentmean_othe4 remsentgiftnb4 remsentgiftamount4 covremsent4 remsentname5 remsentnametwo5 remsentdummyvillage5 remsentrelation5 remsentoccup5 remsentplace5 remsentmoney5 remsentgift5 remsentservices5 remsentservices_poli5 remsentservices_fina5 remsentservices_guar5 remsentservices_gene5 remsentservices_none5 remsentservices_othe5 remsentsourceoccupother5 remsentservicesother5 remsentfrequency5 remsentamount5 remsenttotalamount5 remsentmean5 remsentmean_cash5 remsentmean_mobi5 remsentmean_bank5 remsentmean_othe5 remsentgiftnb5 remsentgiftamount5 covremsent5, after(dummyremsenderlist)
+
+
+********** Lending
+ta relationwithborrower
+
+split relationwithborrower, destring
+forvalues i=1/14 {
+gen relationwithborrower_`i'=0 if relationwithborrower!=""
+}
+forvalues i=1/14 {
+replace relationwithborrower_`i'=1 if relationwithborrower1==`i'
+replace relationwithborrower_`i'=1 if relationwithborrower2==`i'
+replace relationwithborrower_`i'=1 if relationwithborrower3==`i'
+label var relationwithborrower_`i' "relationwithborrower=`i'"
+label values relationwithborrower_`i' yesno
+}
+rename relationwithborrower_1 relationwithborrower_mais
+rename relationwithborrower_2 relationwithborrower_chil
+rename relationwithborrower_3 relationwithborrower_sibl
+rename relationwithborrower_4 relationwithborrower_pare
+rename relationwithborrower_5 relationwithborrower_niec
+rename relationwithborrower_6 relationwithborrower_othe
+rename relationwithborrower_7 relationwithborrower_neig
+rename relationwithborrower_8 relationwithborrower_frie
+rename relationwithborrower_9 relationwithborrower_cust
+rename relationwithborrower_10 relationwithborrower_mone
+rename relationwithborrower_11 relationwithborrower_shg
+rename relationwithborrower_12 relationwithborrower_empl
+rename relationwithborrower_13 relationwithborrower_wkp
+rename relationwithborrower_14 relationwithborrower_spou
+drop relationwithborrower1 relationwithborrower2 relationwithborrower3
+order relationwithborrower_mais relationwithborrower_chil relationwithborrower_sibl relationwithborrower_pare relationwithborrower_niec relationwithborrower_othe relationwithborrower_neig relationwithborrower_frie relationwithborrower_cust relationwithborrower_mone relationwithborrower_shg relationwithborrower_empl relationwithborrower_wkp relationwithborrower_spou, after(relationwithborrower)
+
+rename amoutlent amountlent
+replace interestlending=. if interestlending==66
+replace interestlending=9 if interestlending==900
+
+
+
+********** Chit fund
+fre covchitfundstop1 covchitfundstop2 covchitfundstop3
+destring covchitfundstop1 covchitfundstop2 covchitfundstop3, replace
+label values covchitfundstop1 yesno
+label values covchitfundstop2 yesno
+label values covchitfundstop3 yesno
+
+fre covchitfundreturn1 covchitfundreturn2
+gen covchitfundreturn3=.
+order covchitfundreturn3, after(covchitfundreturn2)
+destring covchitfundreturn1 covchitfundreturn2, replace
+label define covchitfundreturn 1"Yes, temporarly stopped" 2"No, completely stopped" 3"Still uncertain"
+label values covchitfundreturn1 covchitfundreturn
+label values covchitfundreturn2 covchitfundreturn
+label values covchitfundreturn3 covchitfundreturn
+
+
+
+
+********** Savings
+preserve
+keep HHID2020 INDID2020 savingsaccounttype1 savingsjointaccount1 banktype1 savingsbankname1 savingsbankplace1 savingsamount1 savingspurpose1 covsavinguse1 dummydebitcard1 dummycreditcard1 covsavinguseamount1 usedebitcard1 reasonnotusedebitcard1 usecreditcard1 savingsaccountdate1 datedebitcard1 datecreditcard1 savingsaccounttype2 savingsjointaccount2 banktype2 savingsbankname2 savingsbankplace2 savingsamount2 savingspurpose2 covsavinguse2 dummydebitcard2 dummycreditcard2 covsavinguseamount2 usedebitcard2 savingsaccountdate2 datedebitcard2 savingsaccounttype3 banktype3 savingsbankname3 savingsbankplace3 savingsamount3 savingspurpose3 covsavinguse3 dummydebitcard3 dummycreditcard3 covsavinguseamount3 usedebitcard3 savingsaccountdate3 datedebitcard3 savingsaccounttype4 banktype4 savingsbankname4 savingsbankplace4 savingsamount4 savingspurpose4 covsavinguse4 dummydebitcard4 dummycreditcard4 usedebitcard4 savingsaccountdate4 datedebitcard4
+reshape long savingsaccounttype savingsjointaccount banktype savingsbankname savingsbankplace savingsamount savingspurpose covsavinguse dummydebitcard dummycreditcard covsavinguseamount usedebitcard reasonnotusedebitcard usecreditcard savingsaccountdate datedebitcard datecreditcard, i(HHID2020 INDID2020) j(n)
+keep if savingsaccounttype!=.
+
+split savingspurpose, destring
+forvalues i=1/6 {
+gen savingspurpose_`i'=0 if savingspurpose!=""
+}
+forvalues i=1/6 {
+replace savingspurpose_`i'=1 if savingspurpose1==`i'
+replace savingspurpose_`i'=1 if savingspurpose2==`i'
+replace savingspurpose_`i'=1 if savingspurpose3==`i'
+replace savingspurpose_`i'=1 if savingspurpose4==`i'
+replace savingspurpose_`i'=1 if savingspurpose5==`i'
+label var savingspurpose_`i' "savingspurpose=`i'"
+label values savingspurpose_`i' yesno
+}
+rename savingspurpose_1 savingspurpose_savi
+rename savingspurpose_2 savingspurpose_jewe
+rename savingspurpose_3 savingspurpose_cred
+rename savingspurpose_4 savingspurpose_crop
+rename savingspurpose_5 savingspurpose_suga
+rename savingspurpose_6 savingspurpose_sche
+drop savingspurpose1 savingspurpose2 savingspurpose3 savingspurpose4 savingspurpose5
+order savingspurpose_savi savingspurpose_jewe savingspurpose_cred savingspurpose_crop savingspurpose_suga savingspurpose_sche, after(savingspurpose)
+
+split usedebitcard, destring
+foreach i in 1 2 3 4 5 6 77 {
+gen usedebitcard_`i'=0 if usedebitcard!=""
+}
+foreach i in 1 2 3 4 5 6 77 {
+replace usedebitcard_`i'=1 if usedebitcard1==`i'
+replace usedebitcard_`i'=1 if usedebitcard2==`i'
+replace usedebitcard_`i'=1 if usedebitcard3==`i'
+replace usedebitcard_`i'=1 if usedebitcard4==`i'
+replace usedebitcard_`i'=1 if usedebitcard5==`i'
+label var usedebitcard_`i' "usedebitcard=`i'"
+label values usedebitcard_`i' yesno
+}
+rename usedebitcard_1 usedebitcard_neve
+rename usedebitcard_2 usedebitcard_cash
+rename usedebitcard_3 usedebitcard_shop
+rename usedebitcard_4 usedebitcard_tran
+rename usedebitcard_5 usedebitcard_onli
+rename usedebitcard_6 usedebitcard_mobi
+rename usedebitcard_77 usedebitcard_othe
+drop usedebitcard1 usedebitcard2 usedebitcard3 usedebitcard4 usedebitcard5
+order usedebitcard_neve usedebitcard_cash usedebitcard_shop usedebitcard_tran usedebitcard_onli usedebitcard_mobi usedebitcard_othe, after(usedebitcard)
+
+
+split usecreditcard, destring
+foreach i in 1 2 3 4 5 6 77 {
+gen usecreditcard_`i'=0 if usecreditcard!=""
+}
+foreach i in 1 2 3 4 5 6 77 {
+replace usecreditcard_`i'=1 if usecreditcard1==`i'
+replace usecreditcard_`i'=1 if usecreditcard2==`i'
+label var usecreditcard_`i' "usecreditcard=`i'"
+label values usecreditcard_`i' yesno
+}
+rename usecreditcard_1 usecreditcard_neve
+rename usecreditcard_2 usecreditcard_cash
+rename usecreditcard_3 usecreditcard_shop
+rename usecreditcard_4 usecreditcard_tran
+rename usecreditcard_5 usecreditcard_onli
+rename usecreditcard_6 usecreditcard_mobi
+rename usecreditcard_77 usecreditcard_othe
+drop usecreditcard1 usecreditcard2
+order usecreditcard_neve usecreditcard_cash usecreditcard_shop usecreditcard_tran usecreditcard_onli usecreditcard_mobi usecreditcard_othe, after(usecreditcard)
+
+fre reasonnotusedebitcard
+label define reasonnotusedebitcard 1"No need" 2"Distrust money transaction by card" 3"Prefer cash transactions" 4"Less flexibility of transactions" 5"Difficult access to ATM/banking infrastructures" 6"Afraid to use it/Don't know how to use it" 77"Other
+label values reasonnotusedebitcard reasonnotusedebitcard
+
+destring covsavinguse, replace
+label values covsavinguse yesno
+
+
+reshape wide savingsaccounttype banktype savingsbankname savingsbankplace savingsamount savingspurpose savingspurpose_savi savingspurpose_jewe savingspurpose_cred savingspurpose_crop savingspurpose_suga savingspurpose_sche covsavinguse dummydebitcard dummycreditcard usedebitcard usedebitcard_neve usedebitcard_cash usedebitcard_shop usedebitcard_tran usedebitcard_onli usedebitcard_mobi usedebitcard_othe savingsaccountdate datedebitcard savingsjointaccount covsavinguseamount reasonnotusedebitcard usecreditcard usecreditcard_neve usecreditcard_cash usecreditcard_shop usecreditcard_tran usecreditcard_onli usecreditcard_mobi usecreditcard_othe datecreditcard, i(HHID2020 INDID2020) j(n)
+save "_tempsaving.dta", replace
+restore
+
+drop savingsaccounttype1 savingsjointaccount1 banktype1 savingsbankname1 savingsbankplace1 savingsamount1 savingspurpose1 covsavinguse1 dummydebitcard1 dummycreditcard1 covsavinguseamount1 usedebitcard1 reasonnotusedebitcard1 usecreditcard1 savingsaccountdate1 datedebitcard1 datecreditcard1 savingsaccounttype2 savingsjointaccount2 banktype2 savingsbankname2 savingsbankplace2 savingsamount2 savingspurpose2 covsavinguse2 dummydebitcard2 dummycreditcard2 covsavinguseamount2 usedebitcard2 savingsaccountdate2 datedebitcard2 savingsaccounttype3 banktype3 savingsbankname3 savingsbankplace3 savingsamount3 savingspurpose3 covsavinguse3 dummydebitcard3 dummycreditcard3 covsavinguseamount3 usedebitcard3 savingsaccountdate3 datedebitcard3 savingsaccounttype4 banktype4 savingsbankname4 savingsbankplace4 savingsamount4 savingspurpose4 covsavinguse4 dummydebitcard4 dummycreditcard4 usedebitcard4 savingsaccountdate4 datedebitcard4
+
+merge 1:1 HHID2020 INDID2020 using "_tempsaving.dta"
+drop _merge
+order savingsaccounttype1 banktype1 savingsbankname1 savingsbankplace1 savingsamount1 savingspurpose1 savingspurpose_savi1 savingspurpose_jewe1 savingspurpose_cred1 savingspurpose_crop1 savingspurpose_suga1 savingspurpose_sche1 covsavinguse1 dummydebitcard1 dummycreditcard1 usedebitcard1 usedebitcard_neve1 usedebitcard_cash1 usedebitcard_shop1 usedebitcard_tran1 usedebitcard_onli1 usedebitcard_mobi1 usedebitcard_othe1 savingsaccountdate1 datedebitcard1 savingsjointaccount1 covsavinguseamount1 reasonnotusedebitcard1 usecreditcard1 usecreditcard_neve1 usecreditcard_cash1 usecreditcard_shop1 usecreditcard_tran1 usecreditcard_onli1 usecreditcard_mobi1 usecreditcard_othe1 datecreditcard1 savingsaccounttype2 banktype2 savingsbankname2 savingsbankplace2 savingsamount2 savingspurpose2 savingspurpose_savi2 savingspurpose_jewe2 savingspurpose_cred2 savingspurpose_crop2 savingspurpose_suga2 savingspurpose_sche2 covsavinguse2 dummydebitcard2 dummycreditcard2 usedebitcard2 usedebitcard_neve2 usedebitcard_cash2 usedebitcard_shop2 usedebitcard_tran2 usedebitcard_onli2 usedebitcard_mobi2 usedebitcard_othe2 savingsaccountdate2 datedebitcard2 savingsjointaccount2 covsavinguseamount2 reasonnotusedebitcard2 usecreditcard2 usecreditcard_neve2 usecreditcard_cash2 usecreditcard_shop2 usecreditcard_tran2 usecreditcard_onli2 usecreditcard_mobi2 usecreditcard_othe2 datecreditcard2 savingsaccounttype3 banktype3 savingsbankname3 savingsbankplace3 savingsamount3 savingspurpose3 savingspurpose_savi3 savingspurpose_jewe3 savingspurpose_cred3 savingspurpose_crop3 savingspurpose_suga3 savingspurpose_sche3 covsavinguse3 dummydebitcard3 dummycreditcard3 usedebitcard3 usedebitcard_neve3 usedebitcard_cash3 usedebitcard_shop3 usedebitcard_tran3 usedebitcard_onli3 usedebitcard_mobi3 usedebitcard_othe3 savingsaccountdate3 datedebitcard3 savingsjointaccount3 covsavinguseamount3 reasonnotusedebitcard3 usecreditcard3 usecreditcard_neve3 usecreditcard_cash3 usecreditcard_shop3 usecreditcard_tran3 usecreditcard_onli3 usecreditcard_mobi3 usecreditcard_othe3 datecreditcard3 savingsaccounttype4 banktype4 savingsbankname4 savingsbankplace4 savingsamount4 savingspurpose4 savingspurpose_savi4 savingspurpose_jewe4 savingspurpose_cred4 savingspurpose_crop4 savingspurpose_suga4 savingspurpose_sche4 covsavinguse4 dummydebitcard4 dummycreditcard4 usedebitcard4 usedebitcard_neve4 usedebitcard_cash4 usedebitcard_shop4 usedebitcard_tran4 usedebitcard_onli4 usedebitcard_mobi4 usedebitcard_othe4 savingsaccountdate4 datedebitcard4 savingsjointaccount4 covsavinguseamount4 reasonnotusedebitcard4 usecreditcard4 usecreditcard_neve4 usecreditcard_cash4 usecreditcard_shop4 usecreditcard_tran4 usecreditcard_onli4 usecreditcard_mobi4 usecreditcard_othe4 datecreditcard4, after(nbsavingaccounts)
+
+
+
+********** Gold
+fre dummygold
+gen dummygoldindiv=0 if dummygold==1
+replace dummygoldindiv=1 if goldquantity!=.
+ta dummygoldindiv sex
+
+
+split goldreasonpledge, destring
+foreach i in 1 2 3 4 5 6 7 8 9 10 11 12 77 {
+gen goldreasonpledge_`i'=0 if goldreasonpledge!=""
+}
+foreach i in 1 2 3 4 5 6 7 8 9 10 11 12 77 {
+replace goldreasonpledge_`i'=1 if goldreasonpledge1==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge2==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge3==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge4==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge5==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge6==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge7==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge8==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge9==`i'
+replace goldreasonpledge_`i'=1 if goldreasonpledge10==`i'
+label var goldreasonpledge_`i' "goldreasonpledge=`i'"
+label values goldreasonpledge_`i' yesno
+}
+rename goldreasonpledge_1 goldreasonpledge_agri
+rename goldreasonpledge_2 goldreasonpledge_fami
+rename goldreasonpledge_3 goldreasonpledge_heal
+rename goldreasonpledge_4 goldreasonpledge_repa
+rename goldreasonpledge_5 goldreasonpledge_hous
+rename goldreasonpledge_6 goldreasonpledge_inve
+rename goldreasonpledge_7 goldreasonpledge_cere
+rename goldreasonpledge_8 goldreasonpledge_marr
+rename goldreasonpledge_9 goldreasonpledge_educ
+rename goldreasonpledge_10 goldreasonpledge_rela
+rename goldreasonpledge_11 goldreasonpledge_deat
+rename goldreasonpledge_12 goldreasonpledge_nore
+rename goldreasonpledge_77 goldreasonpledge_othe
+drop goldreasonpledge1 goldreasonpledge2 goldreasonpledge3 goldreasonpledge4 goldreasonpledge5 goldreasonpledge6 goldreasonpledge7 goldreasonpledge8 goldreasonpledge9 goldreasonpledge10
+order goldreasonpledge_agri goldreasonpledge_fami goldreasonpledge_heal goldreasonpledge_repa goldreasonpledge_hous goldreasonpledge_inve goldreasonpledge_cere goldreasonpledge_marr goldreasonpledge_educ goldreasonpledge_rela goldreasonpledge_deat goldreasonpledge_nore goldreasonpledge_othe, after(goldreasonpledge)
+
+order goldreasonpledgemain, before(goldreasonpledge)
+
+
+
+********** Insurance
+split reasonnoinsurance, destring 
+foreach i in 1 2 3 77 {
+gen reasonnoinsurance_`i'=0 if reasonnoinsurance!=""
+}
+foreach i in 1 2 3 77 {
+replace reasonnoinsurance_`i'=1 if reasonnoinsurance1==`i'
+replace reasonnoinsurance_`i'=1 if reasonnoinsurance2==`i'
+label var reasonnoinsurance_`i' "reasonnoinsurance=`i'"
+label values reasonnoinsurance_`i' yesno
+}
+rename reasonnoinsurance_1 reasonnoinsurance_noin
+rename reasonnoinsurance_2 reasonnoinsurance_mone
+rename reasonnoinsurance_3 reasonnoinsurance_dkno
+rename reasonnoinsurance_77 reasonnoinsurance_othe
+drop reasonnoinsurance1 reasonnoinsurance2
+order reasonnoinsurance_noin reasonnoinsurance_mone reasonnoinsurance_dkno reasonnoinsurance_othe, after(reasonnoinsurance)
+
+
+********** Mobile finance
+split usemobilefinancetype, destring
+foreach i in 1 2 3 4 77 {
+gen usemobilefinancetype_`i'=0 if usemobilefinancetype!=""
+}
+foreach i in 1 2 3 4 77 {
+replace usemobilefinancetype_`i'=1 if usemobilefinancetype1==`i'
+replace usemobilefinancetype_`i'=1 if usemobilefinancetype2==`i'
+replace usemobilefinancetype_`i'=1 if usemobilefinancetype3==`i'
+replace usemobilefinancetype_`i'=1 if usemobilefinancetype4==`i'
+label var usemobilefinancetype_`i' "usemobilefinancetype=`i'"
+label values usemobilefinancetype_`i' yesno
+}
+rename usemobilefinancetype_1 usemobilefinancetype_bill
+rename usemobilefinancetype_2 usemobilefinancetype_tran
+rename usemobilefinancetype_3 usemobilefinancetype_debt
+rename usemobilefinancetype_4 usemobilefinancetype_save
+rename usemobilefinancetype_77 usemobilefinancetype_othe
+drop usemobilefinancetype1 usemobilefinancetype2 usemobilefinancetype3 usemobilefinancetype4
+order usemobilefinancetype_bill usemobilefinancetype_tran usemobilefinancetype_debt usemobilefinancetype_save usemobilefinancetype_othe, after(usemobilefinancetype)
+
+destring usemobilefinance, replace
+label values usemobilefinance yesno
+
+foreach x in usemobilefinancetype_bill usemobilefinancetype_tran usemobilefinancetype_debt usemobilefinancetype_save usemobilefinancetype_othe {
+replace `x'=. if usemobilefinance==0
+}
+
+
+save"Lastlast/NEEMSIS2-HH.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+****************************************
+* NEEMSIS2-migration.dta
+****************************************
+use"NEEMSIS2-migrations", clear
+
+rename migrationreason_family migrationreason_debt
+
+rename covmigrationagainreason_famil covmigrationagainreason_debt
+
+
+save"Lastlast/NEEMSIS2-migrations.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+/*
 
 
 ********** Remittances received
@@ -327,9 +479,9 @@ forvalues i=1/6 {
 gen remsentservices_`i'=0 if remsentservices!=""
 }
 forvalues i=1/6 {
-replace remsentservices_`i'=1 if remsentservices1==`i'
-replace remsentservices_`i'=1 if remsentservices2==`i'
-replace remsentservices_`i'=1 if remsentservices3==`i'
+replace remsentservices_`i'=0 if remsentservices1==`i'
+replace remsentservices_`i'=0 if remsentservices2==`i'
+replace remsentservices_`i'=0 if remsentservices3==`i'
 label var remsentservices_`i' "remsentservices=`i'"
 label values remsentservices_`i' yesno
 }
