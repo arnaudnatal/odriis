@@ -59,7 +59,7 @@ program define splitvarmcq
 	
 	* Supprimer les 66 77 et 88 si nécessaire
 	foreach x in 66 77 88 {
-	sum `var'_`x'
+	qui sum `var'_`x'
 	if `r(max)'==0 {
 	drop `var'_`x'
 	}

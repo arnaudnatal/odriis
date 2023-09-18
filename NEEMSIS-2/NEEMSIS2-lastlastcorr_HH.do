@@ -555,57 +555,77 @@ label values productoriginlabourers_`x' originlabourers
 foreach x in paddy cotton sugarcane savukku guava groundnut millets cashew other {
 fre productcastelabourers_`x'
 rename productcastelabourers_`x' prodcastelab_`x'
+splitvarmcq prodcastelab_`x' 16
+newn prodcastelab_`x' 1 vann
+newn prodcastelab_`x' 2 sc
+newn prodcastelab_`x' 3 arun
+newn prodcastelab_`x' 4 redi
+newn prodcastelab_`x' 5 gram
+newn prodcastelab_`x' 6 naid
+newn prodcastelab_`x' 7 navi
+newn prodcastelab_`x' 8 asar
+newn prodcastelab_`x' 9 sett
+newn prodcastelab_`x' 10 natt
+newn prodcastelab_`x' 11 muda
+newn prodcastelab_`x' 12 kula
+newn prodcastelab_`x' 13 chet
+newn prodcastelab_`x' 14 marw
+newn prodcastelab_`x' 15 musl
+newn prodcastelab_`x' 16 pada
 }
-splitvarmcq productcastelabourers_`x' 16
-newn productcastelabourers_`x' 1 van
-newn productcastelabourers_`x' 2 sc
-newn productcastelabourers_`x' 3 aru
-newn productcastelabourers_`x' 4 red
-newn productcastelabourers_`x' 5 gra
-newn productcastelabourers_`x' 6 nai
-newn productcastelabourers_`x' 7 nav
-newn productcastelabourers_`x' 8 asa
-newn productcastelabourers_`x' 9 set
-newn productcastelabourers_`x' 10 nat
-newn productcastelabourers_`x' 11 mud
-newn productcastelabourers_`x' 12 kul
-newn productcastelabourers_`x' 13 che
-newn productcastelabourers_`x' 14 mar
-newn productcastelabourers_`x' 15 mus
-newn productcastelabourers_`x' 16 pad
-}
 
 
-
-
-
-
-
-
-
-
-
-
+*
 fre covsubsistence
+destring covsubsistence, replace
+label values covsubsistence yesno
 
-fre covsubsistencesize
-
+*
 fre covsubsistencenext
+destring covsubsistencenext, replace
+label values covsubsistencenext yesno
 
+*
 fre covharvest
+destring covharvest, replace
+label define morelesssame 1"More" 2"Less" 3"Same"
+label values covharvest morelesssame
 
+*
 fre covselfconsumption
+destring covselfconsumption, replace
+label values covselfconsumption morelesssame
 
+*
 fre covharvestquantity
+destring covharvestquantity, replace
+label values covharvestquantity morelesssame
 
+*
 fre covharvestprices
+destring covharvestprices, replace
+label values covharvestprices morelesssame
 
+*
 fre livestocklist
+splitvarmcq livestocklist 6
+newn livestocklist 1 cow
+newn livestocklist 2 goa
+newn livestocklist 3 chi
+newn livestocklist 4 bul
+newn livestocklist 5 plo
+newn livestocklist 6 non
 
-cow goat chicken bullock
 
+*
+foreach x in cow goat chicken bullock {
 fre livestockuse_cow
 
+
+
+}
+
+*
 fre covselllivestock
 
 fre dummycattleloss
