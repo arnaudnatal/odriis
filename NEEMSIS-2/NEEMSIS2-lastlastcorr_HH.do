@@ -18,6 +18,9 @@ cd"$directory"
 set scheme plotplain_v2
 grstyle init
 grstyle set plain, box nogrid
+********** Split var
+do"C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2\splitvarmcq.do"
+do"C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2\newn.do"
 ********** Deflate
 *https://data.worldbank.org/indicator/FP.CPI.TOTL?locations=IN
 *(100/158) if year==2016
@@ -360,6 +363,346 @@ label values usemobilefinance yesno
 foreach x in usemobilefinancetype_bill usemobilefinancetype_tran usemobilefinancetype_debt usemobilefinancetype_save usemobilefinancetype_othe {
 replace `x'=. if usemobilefinance==0
 }
+
+
+********** Land
+*
+fre dummyeverland2010
+destring dummyeverland2010, replace
+label values dummyeverland2010 yesno
+
+*
+fre covsellland
+destring covsellland, replace
+label define covsellland 1"Yes" 2"No" 66"N/A", replace
+label values covsellland covsellland
+
+*
+fre reasonnoland
+split reasonnoland, destring
+foreach i in 1 2 3 4 77 {
+gen reasonnoland_`i'=0 if reasonnoland!=""
+}
+foreach i in 1 2 3 4 77 {
+replace reasonnoland_`i'=1 if reasonnoland1==`i'
+replace reasonnoland_`i'=1 if reasonnoland2==`i'
+label var reasonnoland_`i' "reasonnoland=`i'"
+label values reasonnoland_`i' yesno
+}
+rename reasonnoland_1 reasonnoland_docu
+rename reasonnoland_2 reasonnoland_debt
+rename reasonnoland_3 reasonnoland_sell
+rename reasonnoland_4 reasonnoland_gove
+rename reasonnoland_77 reasonnoland_othe
+drop reasonnoland1 reasonnoland2
+order reasonnoland_docu reasonnoland_debt reasonnoland_sell reasonnoland_gove reasonnoland_othe, after(reasonnoland)
+
+*
+fre ownland
+destring ownland, replace
+label values ownland yesno
+
+*
+fre drywetownland
+split drywetownland, destring
+forvalues i=1/2 {
+gen drywetownland_`i'=0 if drywetownland!=""
+}
+forvalues i=1/2 {
+replace drywetownland_`i'=1 if drywetownland1==`i'
+replace drywetownland_`i'=1 if drywetownland2==`i'
+label var drywetownland_`i' "drywetownland=`i'"
+label values drywetownland_`i' yesno
+}
+rename drywetownland_1 drywetownland_dry
+rename drywetownland_2 drywetownland_wet
+drop drywetownland1 drywetownland2
+order drywetownland_dry drywetownland_wet, after(drywetownland)
+
+*
+fre waterfromownland
+splitvarmcq waterfromownland 5
+newn waterfromownland 1 tank 
+newn waterfromownland 2 rive 
+newn waterfromownland 3 bore 
+newn waterfromownland 4 open 
+newn waterfromownland 5 rain 
+
+*
+fre leaseland
+destring leaseland, replace
+label values leaseland yesno
+
+*
+fre drywetleaseland
+splitvarmcq drywetleaseland 2
+newn drywetleaseland 1 dry
+newn drywetleaseland 2 wet
+
+*
+fre waterfromleaseland
+splitvarmcq waterfromleaseland 5
+newn waterfromleaseland 1 tank
+newn waterfromleaseland 2 rive
+newn waterfromleaseland 3 bore
+newn waterfromleaseland 4 open
+newn waterfromleaseland 5 rain
+
+*
+fre landpurchased
+destring landpurchased, replace
+label values landpurchased yesno
+
+*
+fre landlost
+destring landlost, replace
+label values landlost yesno
+
+*
+fre dummyleasedland
+destring dummyleasedland, replace
+label values dummyleasedland yesno
+
+*
+fre landleaserrelation
+splitvarmcq landleaserrelation 11
+newn landleaserrelation 1 labo
+newn landleaserrelation 2 rela
+newn landleaserrelation 3 poli
+newn landleaserrelation 4 reli
+newn landleaserrelation 5 neig
+newn landleaserrelation 6 shg
+newn landleaserrelation 7 busi
+newn landleaserrelation 8 wkp
+newn landleaserrelation 9 trad
+newn landleaserrelation 10 frie
+newn landleaserrelation 11 grou
+
+*
+fre landleasercaste
+destring landleasercaste, replace
+label define landleasercaste 1"Vanniyar" 2"SC" 3"Arunthathiyar" 4"Rediyar" 5"Gramani" 6"Naidu" 7"Navithar" 8"Asarai" 9"Settu" 10"Nattar" 11"Mudaliar" 12"Kulalar" 13"Chettiyar" 14"Marwari" 15"Muslims" 16"Padayachi"
+label values landleasercaste landleasercaste
+
+*
+fre dummyleasingland
+destring dummyleasingland, replace
+label values dummyleasingland yesno
+
+*
+fre landleasingrelation
+destring landleasingrelation, replace
+label define landleasingrelation 1"Labour" 2"Relative" 3"Political" 4"Religious" 5"Neighbor" 6"SHG" 7"Business man" 8"WKP" 9"Traditional" 10"Friend" 11"Group finance"
+label values landleasingrelation landleasingrelation
+
+*
+fre landleasingcaste
+destring landleasingcaste, replace
+label values landleasingcaste landleasercaste
+
+*
+fre productlist
+splitvarmcq productlist 15
+newn productlist 1 padd
+newn productlist 2 cott
+newn productlist 3 suga
+newn productlist 4 savu
+newn productlist 5 guav
+newn productlist 6 mang
+newn productlist 7 sapo
+newn productlist 8 bana
+newn productlist 9 grou
+newn productlist 10 ragi
+newn productlist 11 mill
+newn productlist 12 cash
+newn productlist 13 coco
+newn productlist 14 othe
+newn productlist 15 none
+
+*
+foreach x in paddy cotton sugarcane savukku guava groundnut millets cashew other {
+fre productypeland_`x'
+replace productypeland_`x'="3" if productypeland_`x'=="1 2"
+destring productypeland_`x', replace
+label define typeland 1"Own land" 2"Leased land" 3"Both", replace
+label values productypeland_`x' typeland
+}
+
+*
+foreach x in paddy cotton sugarcane savukku guava groundnut millets cashew other {
+fre productpaidworkers_`x'
+destring productpaidworkers_`x', replace
+label values productpaidworkers_`x' yesno
+}
+
+*
+foreach x in paddy cotton sugarcane savukku guava groundnut millets cashew other {
+fre productunpaidworkers_`x'
+destring productunpaidworkers_`x', replace
+label values productunpaidworkers_`x' yesno
+}
+
+*
+foreach x in paddy cotton sugarcane savukku guava groundnut millets cashew other {
+fre productoriginlabourers_`x'
+replace productoriginlabourers_`x'="3" if  productoriginlabourers_`x'=="1 2"
+destring productoriginlabourers_`x', replace
+label define originlabourers 1"Inside the village" 2"Outside the village" 3"Both", replace
+label values productoriginlabourers_`x' originlabourers
+}
+
+*
+foreach x in paddy cotton sugarcane savukku guava groundnut millets cashew other {
+fre productcastelabourers_`x'
+rename productcastelabourers_`x' prodcastelab_`x'
+}
+splitvarmcq productcastelabourers_`x' 16
+newn productcastelabourers_`x' 1 van
+newn productcastelabourers_`x' 2 sc
+newn productcastelabourers_`x' 3 aru
+newn productcastelabourers_`x' 4 red
+newn productcastelabourers_`x' 5 gra
+newn productcastelabourers_`x' 6 nai
+newn productcastelabourers_`x' 7 nav
+newn productcastelabourers_`x' 8 asa
+newn productcastelabourers_`x' 9 set
+newn productcastelabourers_`x' 10 nat
+newn productcastelabourers_`x' 11 mud
+newn productcastelabourers_`x' 12 kul
+newn productcastelabourers_`x' 13 che
+newn productcastelabourers_`x' 14 mar
+newn productcastelabourers_`x' 15 mus
+newn productcastelabourers_`x' 16 pad
+}
+
+
+
+
+
+
+
+
+
+
+
+
+fre covsubsistence
+
+fre covsubsistencesize
+
+fre covsubsistencenext
+
+fre covharvest
+
+fre covselfconsumption
+
+fre covharvestquantity
+
+fre covharvestprices
+
+fre livestocklist
+
+cow goat chicken bullock
+
+fre livestockuse_cow
+
+fre covselllivestock
+
+fre dummycattleloss
+
+fre dummycattlesold
+
+fre cattlesoldreason
+
+fre equipmentlist
+
+
+
+tractor bullockcart plowingmach
+
+
+fre equipmentyear_tractor
+
+fre equipmentpledged_tractor
+
+
+
+fre equipmentborrowedlist
+
+fre covsellequipment
+
+fre decisionconsumption
+
+
+fre decisionhealth
+
+
+fre covfoodenough
+
+fre covfoodquality
+
+fre covgenexpenses
+
+fre covexpensesdecrease
+
+fre covexpensesincrease
+
+fre covexpensesstable
+
+fre covplacepurchase
+
+fre listgoods
+
+car bike fridge ...
+
+fre goodyearpurchased_car
+
+fre goodbuying_car
+
+covsellgoods_bike... yesno
+
+
+
+fre howpaymarriage
+
+
+fre marriagegiftsource
+
+fre marriagegifttype_WKP
+
+fre house
+
+fre howbuyhouse
+
+fre covsellhouse
+
+fre housetype
+
+fre housetitle
+
+fre ownotherhouse
+
+fre covsellplot
+
+fre dummysaleproperty
+
+fre electricity
+
+fre water
+
+fre toiletfacility
+
+fre notoiletreason
+
+fre noowntoilet
+
+fre schemeslist
+
+fre covproductavailability
+
+fre covrationcarduse
+
+fre 
 
 
 save"Lastlast/NEEMSIS2-HH.dta", replace

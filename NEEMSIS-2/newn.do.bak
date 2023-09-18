@@ -1,0 +1,10 @@
+/*
+Raccourcir les rename
+*/
+
+program define newn
+	version 15.1
+	args arg1 arg2 arg3
+	rename 
+	
+end
