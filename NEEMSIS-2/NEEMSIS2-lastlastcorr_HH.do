@@ -373,6 +373,11 @@ destring dummyeverland2010, replace
 label values dummyeverland2010 yesno
 
 *
+fre dummyeverhadland
+destring dummyeverhadland, replace
+label values dummyeverhadland yesno
+
+*
 fre covsellland
 destring covsellland, replace
 label define covsellland 1"Yes" 2"No" 66"N/A", replace
@@ -453,6 +458,17 @@ newn waterfromleaseland 5 rain
 fre landpurchased
 destring landpurchased, replace
 label values landpurchased yesno
+
+*
+fre landpurchasedhowbuy
+splitvarmcq landpurchasedhowbuy 7
+newn landpurchasedhowbuy 1 here
+newn landpurchasedhowbuy 2 savi
+newn landpurchasedhowbuy 3 bank
+newn landpurchasedhowbuy 4 cred
+newn landpurchasedhowbuy 5 fina
+newn landpurchasedhowbuy 6 help
+newn landpurchasedhowbuy 7 sche
 
 *
 fre landlost
