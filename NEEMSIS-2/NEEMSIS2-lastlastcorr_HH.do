@@ -21,6 +21,7 @@ grstyle set plain, box nogrid
 ********** Split var
 do"C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2\splitvarmcq.do"
 do"C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2\newn.do"
+do"C:\Users\Arnaud\Documents\GitHub\odriis\NEEMSIS-2\repmi.do"
 ********** Deflate
 *https://data.worldbank.org/indicator/FP.CPI.TOTL?locations=IN
 *(100/158) if year==2016
@@ -619,110 +620,303 @@ newn livestocklist 6 non
 
 *
 foreach x in cow goat chicken bullock {
-fre livestockuse_cow
-
-
-
+fre livestockuse_`x'
+splitvarmcq livestockuse_`x' 6
+newn livestockuse_`x' 1 sold
+newn livestockuse_`x' 2 milk
+newn livestockuse_`x' 3 savi
+newn livestockuse_`x' 4 stat
+newn livestockuse_`x' 5 reli
+newn livestockuse_`x' 6 cons
 }
 
 *
-fre covselllivestock
-
 fre dummycattleloss
+destring dummycattleloss, replace
+label values dummycattleloss yesno
 
+*
 fre dummycattlesold
+destring dummycattlesold, replace
+label values dummycattlesold yesno
 
-fre cattlesoldreason
-
+*
 fre equipmentlist
+splitvarmcq equipmentlist 5
+newn equipmentlist 1 tractor
+newn equipmentlist 2 bullockcart
+newn equipmentlist 3 harvester
+newn equipmentlist 4 plowingmach
+newn equipmentlist 5 none
 
 
 
-tractor bullockcart plowingmach
+*
+foreach x in tractor bullockcart plowingmach { 
+fre equipmentyear_`x'
+destring equipmentyear_`x', replace
+fre equipmentpledged_`x'
+destring equipmentpledged_`x', replace
+}
 
 
-fre equipmentyear_tractor
-
-fre equipmentpledged_tractor
-
-
-
+*
 fre equipmentborrowedlist
+rename equipmentborrowedlist equipborrowedlist
+splitvarmcq equipborrowedlist 5
+newn equipborrowedlist 1 tractor
+newn equipborrowedlist 2 bullockcart
+newn equipborrowedlist 3 harvester
+newn equipborrowedlist 4 plowingmach
+newn equipborrowedlist 5 none
 
-fre covsellequipment
-
+*
 fre decisionconsumption
+destring decisionconsumption, replace
+label define decisionconsumption 1"Yourself (household head)" 2"Spouse (husband/wife)" 3"Yourself and your spouse" 4"Someone else" 5"Yourself and someone else jointly" 77"Other"
+label values decisionconsumption decisionconsumption
 
-
+*
 fre decisionhealth
+destring decisionhealth, replace
+label values decisionhealth decisionconsumption
 
-
+*
 fre covfoodenough
+destring covfoodenough, replace
+label define covfoodenough 1"Yes" 2"Often" 3"Barely" 4"No"
+label values covfoodenough covfoodenough
 
+*
 fre covfoodquality
+destring covfoodquality, replace
+label define covfoodquality 1"Increase" 2"Decrease" 3"Remain stable"
+label values covfoodquality covfoodquality
 
+*
 fre covgenexpenses
+destring covgenexpenses, replace
+label define covgenexpenses 1"More" 2"Less" 3"Same"
+label values covgenexpenses covgenexpenses
 
+*
 fre covexpensesdecrease
+splitvarmcq covexpensesdecrease 9
+newn covexpensesdecrease 1 food
+newn covexpensesdecrease 2 tran
+newn covexpensesdecrease 3 clot
+newn covexpensesdecrease 4 heal
+newn covexpensesdecrease 5 educ
+newn covexpensesdecrease 6 gift
+newn covexpensesdecrease 7 cere
+newn covexpensesdecrease 8 good
+newn covexpensesdecrease 9 none
 
+*
 fre covexpensesincrease
+splitvarmcq covexpensesincrease 9
+newn covexpensesincrease 1 food
+newn covexpensesincrease 2 tran
+newn covexpensesincrease 3 clot
+newn covexpensesincrease 4 heal
+newn covexpensesincrease 5 educ
+newn covexpensesincrease 6 gift
+newn covexpensesincrease 7 cere
+newn covexpensesincrease 8 good
+newn covexpensesincrease 9 none
 
+*
 fre covexpensesstable
+splitvarmcq covexpensesstable 9
+newn covexpensesstable 1 food
+newn covexpensesstable 2 tran
+newn covexpensesstable 3 clot
+newn covexpensesstable 4 heal
+newn covexpensesstable 5 educ
+newn covexpensesstable 6 gift
+newn covexpensesstable 7 cere
+newn covexpensesstable 8 good
+newn covexpensesstable 9 none
 
+*
 fre covplacepurchase
+destring covplacepurchase, replace
+label values covplacepurchase yesno
 
+*
 fre listgoods
+splitvarmcq listgoods 13
+newn listgoods 1 car
+newn listgoods 2 bik
+newn listgoods 3 fri
+newn listgoods 4 fur
+newn listgoods 5 tai
+newn listgoods 6 cel
+newn listgoods 7 lan
+newn listgoods 8 dvd
+newn listgoods 9 cam
+newn listgoods 10 coo
+newn listgoods 11 com
+newn listgoods 12 dis
+newn listgoods 13 non
 
-car bike fridge ...
 
-fre goodyearpurchased_car
+* 
+foreach x in car bike fridge furniture tailormach phone landline camera cookgas computer antenna {
+fre goodyearpurchased_`x'
+*
+destring goodyearpurchased_`x', replace
+*
+destring goodbuying_`x', replace
+label define goodbying 1"Credit" 2"Instalment" 3"Ready cash" 4"Did not pay for this good", replace
+label values goodbuying_`x' goodbuying
+*
+destring covsellgoods_`x', replace
+label values covsellgoods_`x' yesno
+}
 
-fre goodbuying_car
-
-covsellgoods_bike... yesno
-
-
-
+*
 fre howpaymarriage
+splitvarmcq howpaymarriage 4
+newn howpaymarriage 1 loan
+newn howpaymarriage 2 capi
+newn howpaymarriage 3 gift
+newn howpaymarriage 4 both
 
-
+*
 fre marriagegiftsource
 
-fre marriagegifttype_WKP
+*
+foreach x in WKP rela empl mais coll frie SHG {
+fre marriagegifttype_`x'
+splitvarmcq marriagegifttype_`x' 5
+newn marriagegifttype_`x' 1 gold
+newn marriagegifttype_`x' 2 cash
+newn marriagegifttype_`x' 3 clot
+newn marriagegifttype_`x' 4 alme
+newn marriagegifttype_`x' 5 vess
+}
 
+*
 fre house
+destring house, replace
+label define house 1"Own house" 2"Joint property between wife and husband's families" 3"Family property inherited at a parent's death" 4"Rental"
+label values house house
 
+*
 fre howbuyhouse
+splitvarmcq howbuyhouse 7
+newn howbuyhouse 1 here
+newn howbuyhouse 2 savi
+newn howbuyhouse 3 bank
+newn howbuyhouse 4 wkp
+newn howbuyhouse 5 fina
+newn howbuyhouse 6 help
+newn howbuyhouse 7 sche
 
+*
 fre covsellhouse
+destring covsellhouse, replace
+label define covsellhouse 1"Yes" 2"No" 66"N/A"
+label values covsellhouse covsellhouse
 
+*
 fre housetype
+destring housetype, replace
+label define housetype 1"Concrete house" 2"Thatched roof house"
+label values housetype housetype
 
+*
 fre housetitle
+destring housetitle, replace
+label values housetitle yesno
 
+*
 fre ownotherhouse
+destring ownotherhouse, replace
+label values ownotherhouse yesno
 
+*
 fre covsellplot
+destring covsellplot, replace
+label define covsellplot 1"Yes" 2"No" 66"N/A"
+label values covsellplot covsellplot
 
+*
 fre dummysaleproperty
+destring dummysaleproperty, replace
+label values dummysaleproperty yesno
 
+*
 fre electricity
+destring electricity, replace
+label define electricity 1"General electricity" 2"Single line" 3"No electricity"
+label values electricity electricity
 
+*
 fre water
+destring water, replace
+label define water 1"Own tap" 2"Public tap"
+label values water water
 
+*
 fre toiletfacility
+destring toiletfacility, replace
+label define toiletfacility 1"No facilities" 2"Traditional pit latrine" 3"Semi-flush (septic tank) latrine" 4"Flush toilet"
+label values toiletfacility toiletfacility
 
+*
 fre notoiletreason
+destring notoiletreason, replace
+label define notoiletreason 1"Do not want to by habits" 2"Do not want to because of water problems" 3"Do not want to because there is no space" 4"Other"
+label values notoiletreason notoiletreason
 
+*
 fre noowntoilet
+destring noowntoilet, replace
+label define noowntoilet 1"None" 2"Shared toilet in building/chawl" 3"Shared toilet outside building" 4"Public/gov. toilet"
+label values noowntoilet noowntoilet
 
+*
 fre schemeslist
+splitvarmcq schemeslist 23
+newn schemeslist 1 nrega 
+newn schemeslist 2 ratio
+newn schemeslist 3 house
+newn schemeslist 4 funer
+newn schemeslist 5 cowgo
+newn schemeslist 6 lpgga
+newn schemeslist 7 educa
+newn schemeslist 8 farme
+newn schemeslist 9 landg
+newn schemeslist 10 selfe
+newn schemeslist 11 marri
+newn schemeslist 12 goldm
+newn schemeslist 13 oldag
+newn schemeslist 14 widow
+newn schemeslist 15 mater
+newn schemeslist 16 disab
+newn schemeslist 17 retir
+newn schemeslist 18 none
+newn schemeslist 19 shg
+newn schemeslist 20 TODROP
+newn schemeslist 21 patta
+newn schemeslist 22 lapto
+newn schemeslist 23 girlp
+drop schemeslist_TODROP
 
+*
 fre covproductavailability
+destring covproductavailability, replace
+label values covproductavailability yesno
 
+*
 fre covrationcarduse
+splitvarmcq covrationcarduse 3
+newn covrationcarduse 1 majo
+newn covrationcarduse 2 bigp
+newn covrationcarduse 3 smal
 
-fre 
 
 
 save"Lastlast/NEEMSIS2-HH.dta", replace
@@ -747,6 +941,490 @@ rename covmigrationagainreason_famil covmigrationagainreason_debt
 save"Lastlast/NEEMSIS2-migrations.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* NEEMSIS2-ego.dta
+****************************************
+use"NEEMSIS2-ego", clear
+
+*
+fre reasondontsearchjob
+replace reasondontsearchjob="" if reasondontsearchjob=="."
+splitvarmcq reasondontsearchjob  15
+newn reasondontsearchjob 1 school
+newn reasondontsearchjob 2 housew
+newn reasondontsearchjob 3 reitre
+newn reasondontsearchjob 4 oldage
+newn reasondontsearchjob 5 ill
+newn reasondontsearchjob 6 disabi
+newn reasondontsearchjob 7 milita
+newn reasondontsearchjob 8 donotw
+newn reasondontsearchjob 9 foujob
+newn reasondontsearchjob 10 respon
+newn reasondontsearchjob 11 recall
+newn reasondontsearchjob 12 busyse
+newn reasondontsearchjob 13 believ
+newn reasondontsearchjob 14 nojobs
+newn reasondontsearchjob 15 refuse
+
+
+*
+fre businessafter15
+destring businessafter15, replace
+label define businessafter15 1"Yes, I did set a business/farm" 2"Yes I tried but did not succeed in setting up a business/farm" 3"No, I never tried"
+label values businessafter15 businessafter15
+
+*
+fre reasondontsearchjobsince15
+splitvarmcq reasondontsearchjobsince15 15
+newn reasondontsearchjobsince15 1 stud
+newn reasondontsearchjobsince15 2 hous
+newn reasondontsearchjobsince15 3 reti
+newn reasondontsearchjobsince15 4 olda
+newn reasondontsearchjobsince15 5 ill
+newn reasondontsearchjobsince15 6 disa
+newn reasondontsearchjobsince15 7 mili
+newn reasondontsearchjobsince15 8 notw
+newn reasondontsearchjobsince15 9 foun
+newn reasondontsearchjobsince15 10 resp
+newn reasondontsearchjobsince15 11 reca
+newn reasondontsearchjobsince15 12 busy
+newn reasondontsearchjobsince15 13 beli
+newn reasondontsearchjobsince15 14 nojo
+newn reasondontsearchjobsince15 15 refu
+
+*
+fre kindofworkfirstjob
+destring kindofworkfirstjob, replace
+label define kindofworkfirstjob 1"Agri" 2"Self-emp" 3"SJ agri" 4"SJ non-agri" 5"UW non-agi in HH business" 6"UW non-agri in other business" 7"UW own farm" 8"UW another farm"
+label values kindofworkfirstjob kindofworkfirstjob
+
+*
+fre unpaidinbusinessfirstjob
+replace unpaidinbusinessfirstjob="" if unpaidinbusinessfirstjob=="."
+
+*
+fre methodfindfirstjob
+replace methodfindfirstjob="" if methodfindfirstjob=="."
+splitvarmcq methodfindfirstjob 9
+newn methodfindfirstjob 1 snfrien
+newn methodfindfirstjob 2 snrelat
+newn methodfindfirstjob 3 snother
+newn methodfindfirstjob 4 employe
+newn methodfindfirstjob 5 pubagen
+newn methodfindfirstjob 6 priagen
+newn methodfindfirstjob 7 univers
+newn methodfindfirstjob 8 medipap
+newn methodfindfirstjob 9 interne
+
+*
+fre snfindfirstjob
+replace snfindfirstjob="" if snfindfirstjob=="."
+
+*
+fre othermethodfindfirstjob
+replace snfindfirstjob="" if snfindfirstjob=="."
+
+*
+fre maxhoursayear
+destring maxhoursayear, replace
+
+*
+fre nbofoccupations
+destring nbofoccupations, replace
+
+*
+fre selected_months
+replace selected_months="" if selected_months=="."
+splitvarmcq selected_months 12
+newn selected_months 1 chithirai
+newn selected_months 2 vaikasi
+newn selected_months 3 aani
+newn selected_months 4 aadi
+newn selected_months 5 aavani
+newn selected_months 6 purataasi
+newn selected_months 7 iypasi
+newn selected_months 8 karthigal
+newn selected_months 9 maargazhi
+newn selected_months 10 thai
+newn selected_months 11 maasi
+newn selected_months 12 panguni
+
+*
+fre indhoursayear1
+destring indhoursayear1, replace
+
+*
+fre indhoursayear2
+destring indhoursayear2, replace
+
+*
+fre indhoursayear3
+destring indhoursayear3, replace
+
+*
+fre indhoursayear
+destring indhoursayear, replace
+
+*
+fre otherbeforemainoccup
+replace otherbeforemainoccup="" if otherbeforemainoccup=="."
+
+*
+fre reasonstoppedwagejob
+replace reasonstoppedwagejob="" if reasonstoppedwagejob=="."
+splitvarmcq reasonstoppedwagejob 12
+newn reasonstoppedwagejob 1 fired
+newn reasonstoppedwagejob 2 endof
+newn reasonstoppedwagejob 3 busin
+newn reasonstoppedwagejob 4 emplo
+newn reasonstoppedwagejob 5 lowwa
+newn reasonstoppedwagejob 6 retir
+newn reasonstoppedwagejob 7 pregn
+newn reasonstoppedwagejob 8 healt
+newn reasonstoppedwagejob 9 looki
+newn reasonstoppedwagejob 10 moved
+newn reasonstoppedwagejob 11 educa
+newn reasonstoppedwagejob 12 prefe
+
+*
+fre otherreasonstoppedjob
+repmi otherreasonstoppedjob
+
+*
+fre covdifficulties
+repmi covdifficulties
+splitvarmcq covdifficulties 9
+newn covdifficulties 1 inpu
+newn covdifficulties 2 cash
+newn covdifficulties 3 sell
+newn covdifficulties 4 payl
+newn covdifficulties 5 freq
+newn covdifficulties 6 pres
+newn covdifficulties 7 chan
+newn covdifficulties 8 lack
+newn covdifficulties 9 none
+
+*
+fre businesssourceinvest
+repmi businesssourceinvest
+splitvarmcq businesssourceinvest 9
+newn businesssourceinvest 1 rela
+newn businesssourceinvest 2 bank
+newn businesssourceinvest 3 info
+newn businesssourceinvest 4 savi
+newn businesssourceinvest 5 inhe
+newn businesssourceinvest 6 prof
+newn businesssourceinvest 7 need
+newn businesssourceinvest 8 capi
+newn businesssourceinvest 9 sche
+
+*
+fre otherbusinesssourceinvestment
+repmi otherbusinesssourceinvestment
+
+*
+forvalues i=1/6 {
+fre snbusinesslender`i'
+repmi snbusinesslender`i'
+}
+
+*
+fre businessworkersfrequency
+repmi businessworkersfrequency
+destring businessworkersfrequency, replace
+label define businessworkersfrequency 1"Month" 2"Fortnight (2 weeks)" 3"Week" 4"Day"
+label values businessworkersfrequency businessworkersfrequency
+
+*
+fre businesspaymentinkindlist
+repmi businesspaymentinkindlist
+splitvarmcq businesspaymentinkindlist 5
+newn businesspaymentinkindlist 1 clot
+newn businesspaymentinkindlist 2 food
+newn businesspaymentinkindlist 3 tran
+newn businesspaymentinkindlist 4 acco
+newn businesspaymentinkindlist 5 labo
+
+
+*
+fre snrecruitworkernamelist
+repmi snrecruitworkernamelist
+destring snrecruitworkernamelist, replace
+
+*
+forvalues i=1/5 {
+fre snrecruitworkername`i'
+repmi snrecruitworkername`i'
+}
+
+*
+fre wageamountmonth wageamountmonth1 wageamountmonth2 wageamountmonth3 wageamountmonth4
+destring wageamountmonth wageamountmonth1 wageamountmonth2 wageamountmonth3 wageamountmonth4, replace
+
+
+*
+fre wagejobpaymentinkindlist
+repmi wagejobpaymentinkindlist
+splitvarmcq wagejobpaymentinkindlist 5
+newn wagejobpaymentinkindlist 1 clot
+newn wagejobpaymentinkindlist 2 food
+newn wagejobpaymentinkindlist 3 tran
+newn wagejobpaymentinkindlist 4 acco
+newn wagejobpaymentinkindlist 5 labo
+
+*
+fre sumwagejobpaymentinkindvalue
+destring sumwagejobpaymentinkindvalue, replace
+
+
+*
+forvalues i=1/4 {
+fre covworkeffort`i'
+destring covworkeffort`i', replace
+label define covworkeffort 1"More" 2"Less" 3"Same" 4"Constrained to stop due to COVID-19" 5"Never start due to COVID-19" 66"N/A", replace
+label values covworkeffort`i' covworkeffort
+}
+
+*
+fre decisionworkother
+repmi decisionworkother
+
+*
+fre decisionearnworkother
+repmi decisionearnworkother
+
+*
+fre methodfindjob
+repmi methodfindjob
+splitvarmcq methodfindjob 9
+newn methodfindjob 1 snfrie
+newn methodfindjob 2 snrela
+newn methodfindjob 3 snothe
+newn methodfindjob 4 employ
+newn methodfindjob 5 pubage
+newn methodfindjob 6 priage
+newn methodfindjob 7 univer
+newn methodfindjob 8 medpap
+newn methodfindjob 9 intern
+
+*
+fre moveoutsideforjobreason
+repmi moveoutsideforjobreason
+splitvarmcq moveoutsideforjobreason 3
+newn moveoutsideforjobreason 1 fami
+newn moveoutsideforjobreason 2 nojo
+newn moveoutsideforjobreason 3 bett
+
+*
+fre moveoutsideforjobreasonother
+repmi moveoutsideforjobreasonother
+
+
+*
+fre reasondontworkmore
+repmi reasondontworkmore
+splitvarmcq reasondontworkmore 14
+newn reasondontworkmore 1 schoo
+newn reasondontworkmore 2 house
+newn reasondontworkmore 3 retir
+newn reasondontworkmore 4 oldag
+newn reasondontworkmore 5 ill
+newn reasondontworkmore 6 disab
+newn reasondontworkmore 7 milit
+newn reasondontworkmore 8 belie
+newn reasondontworkmore 9 deman
+newn reasondontworkmore 10 flex
+newn reasondontworkmore 11 commu
+newn reasondontworkmore 12 discr
+newn reasondontworkmore 13 alrea
+newn reasondontworkmore 14 covid
+
+*
+fre mostseriousincident
+destring mostseriousincident, replace
+label define mostseriousincident 1"No permanent effect" 2"Permanent effect but able to crry on" 3"Permanent effect but work altough not in the same job" 4"Permanent effect prevent you from working at all"
+label values mostseriousincident mostseriousincident
+
+*
+fre mostseriousinjury
+destring mostseriousinjury, replace
+label define mostseriousinjury 1"Arms, hands, neck or shoulder" 2"Hips, legs or feet" 3"Back" 4"Breathing or lung problems" 5"Skin problem" 6"Hearing problem" 7"Stress, depression or anxiety" 8"Headache or eye strain" 9"Heart disease/attack, other circulatory system" 10"Infectious disease" 66"Irrelevant" 77"Other" 99"No response"
+label values mostseriousinjury mostseriousinjury
+
+*
+fre seriousinjuryother
+repmi seriousinjuryother
+
+*
+fre associationlist
+splitvarmcq associationlist 13
+newn associationlist 1 youth
+newn associationlist 2 shg
+newn associationlist 3 trade
+newn associationlist 4 farme
+newn associationlist 5 panch
+newn associationlist 6 polit
+newn associationlist 7 profe
+newn associationlist 8 marke
+newn associationlist 9 relig
+newn associationlist 10 hobby
+newn associationlist 11 alumn
+newn associationlist 12 other
+newn associationlist 13 none
+
+*
+fre covassociationhelp
+destring covassociationhelp, replace
+label values covassociationhelp yesno
+
+*
+fre covassociationhelplist
+splitvarmcq covassociationhelplist 13
+newn covassociationhelplist 1 youth
+newn covassociationhelplist 2 shg
+newn covassociationhelplist 3 trade
+newn covassociationhelplist 4 farme
+newn covassociationhelplist 5 panch
+newn covassociationhelplist 6 polit
+newn covassociationhelplist 7 profe
+newn covassociationhelplist 8 marke
+newn covassociationhelplist 9 relig
+newn covassociationhelplist 10 hobby
+newn covassociationhelplist 11 alumn
+newn covassociationhelplist 12 other
+newn covassociationhelplist 13 none
+
+
+*
+fre covassociationhelptype
+splitvarmcq covassociationhelptype 7
+newn covassociationhelptype 1 food
+newn covassociationhelptype 2 meal
+newn covassociationhelptype 3 cash
+newn covassociationhelptype 4 loan
+newn covassociationhelptype 5 help
+newn covassociationhelptype 6 recr
+newn covassociationhelptype 7 comm
+
+*
+forvalues i=1/2 {
+fre assohelpjob`i'
+splitvarmcq assohelpjob`i' 5
+newn assohelpjob`i' 1 hired
+newn assohelpjob`i' 2 refer
+newn assohelpjob`i' 3 share
+newn assohelpjob`i' 4 appli
+newn assohelpjob`i' 5 emoti
+}
+
+*
+fre snrecommendassoname1
+* 10 11...
+
+*
+fre snfindcurrentjobnamelist
+
+*
+fre snfindcurrentjobname1
+
+*
+fre snfindjobnamelist
+
+*
+fre snfindjobname1
+
+*
+fre snrecommendforjobnamelist
+
+*
+fre snrecommendforjobname1
+
+*
+fre snrecojobsuccessnamelist
+
+*
+fre snrecojobsuccessname1
+
+*
+fre sntalkthemost
+
+*
+fre snhelpemergency
+
+*
+fre snhelpemergencyname2
+
+*
+fre contactlist
+splitvarmcq contactlist 9
+newn contactlist 1 head 
+newn contactlist 2 poli
+newn contactlist 3 civi
+newn contactlist 4 bank
+newn contactlist 5 panc
+newn contactlist 6 coun
+newn contactlist 7 recr
+newn contactlist 8 trad
+newn contactlist 9 none
+
+*
+fre contactleaders
+repmi contactleaders
+
+
+*
+forvalues i=1/5 {
+fre covinstit`i'
+label define covinstit 1"Full confidence" 2"More like" 3"Not really" 4"Not at all", replace
+label values covinstit`i' covinstit
+}
+
+*
+fre covcontactinstitution
+splitvarmcq covcontactinstitution 6
+newn covcontactinstitution 1 coun
+newn covcontactinstitution 2 tami
+newn covcontactinstitution 3 poli
+newn covcontactinstitution 4 trad
+newn covcontactinstitution 5 reli
+newn covcontactinstitution 6 none
+
+*
+fre covmostefficienthelp
+label define covmostefficienthelp 1"Governmental institutions" 2"Family" 3"Community" 4"Other caste groups" 77"Any other institutions or associations"
+label values covmostefficienthelp covmostefficienthelp
+
+*
+fre covmostefficienthelpother
+repmi covmostefficienthelpother
+
+
+
+save"Lastlast/NEEMSIS2-ego.dta", replace
+****************************************
+* END
+
+
+
+
+
+
 
 
 

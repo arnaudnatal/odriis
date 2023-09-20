@@ -15,8 +15,8 @@ program define splitvarmcq
 	split `var', destring
 	local nnv=`r(nvars)'  // On stock le nb de var créée
 
-	* Vérifier les 66, 77, 88
-	foreach x in 66 77 88 {
+	* Vérifier les 66, 77, 88, 99
+	foreach x in 66 77 88 99 {
 	local count`x'=0
 	forvalues j=1/`nnv' {
 	if `var'`j'==`x' {
@@ -41,11 +41,11 @@ program define splitvarmcq
 	loca gp="`gp'"+" `var'_`i'"
 	}
 	
-	* Gérer les 66, 77 et 88
-	foreach x in 66 77 88 {
+	* Gérer les 66, 77, 88, 99
+	foreach x in 66 77 88 99 {
 	gen `var'_`x'=0 if `var'!=""
 	}
-	foreach x in 66 77 88 {
+	foreach x in 66 77 88 99 {
 	forvalues j=1/`nnv' {
 	replace `var'_`x'=1 if `var'`j'==`x'
 	}
@@ -55,10 +55,10 @@ program define splitvarmcq
 	forvalues j=1/`nnv' {
 	drop `var'`j'	
 	}
-	order `gp' `var'_66 `var'_77 `var'_88, after(`var')
+	order `gp' `var'_66 `var'_77 `var'_88 `var'_99, after(`var')
 	
-	* Supprimer les 66 77 et 88 si nécessaire
-	foreach x in 66 77 88 {
+	* Supprimer les 66, 77, 88, 99 si nécessaire
+	foreach x in 66 77 88 99 {
 	qui sum `var'_`x'
 	if `r(max)'==0 {
 	drop `var'_`x'
