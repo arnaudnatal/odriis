@@ -935,9 +935,116 @@ newn covrationcarduse 3 smal
 
 
 
+********** Agri covid product
+tabulate covsubsistencereason
+splitvarmcq covsubsistencereason 3
+newn covsubsistencereason 1 labour 
+newn covsubsistencereason 2 easier
+newn covsubsistencereason 3 securi
+
+
+
+********** Livestock
+foreach x in cow goa chi bul plo non {
+replace livestocklist_`x'=0 if livestocklist_`x'==.
+}
+
+foreach x in cow goat chicken bullock bullforploughin none {
+replace covselllivestock_`x'=0 if covselllivestock_`x'==.
+}
+
+
+
 save"Lastlast/NEEMSIS2-HH.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* NEEMSIS2-HH.dta
+****************************************
+use"Lastlast/NEEMSIS2-HH", clear
+
+**********
+ta landpurchasedacres
+ta landpurchasedamount if landpurchasedacres==2178
+replace landpurchasedacres=21 if landpurchasedacres==2178
+
+
+**********
+cls
+tab1 productnbchoice_*
+
+*1000
+fre productnbchoice_cotton productselfconsumption_cotton productnbchoicesold_cotton if productnbchoice_cotton==1000
+
+*50000
+fre productnbchoice_sugarcane productselfconsumption_sugarcane productnbchoicesold_sugarcane if productnbchoice_sugarcane==50000
+replace productnbchoice_sugarcane=30 if productnbchoice_sugarcane==50000
+
+*300000
+fre productnbchoice_sugarcane productselfconsumption_sugarcane productnbchoicesold_sugarcane if productnbchoice_sugarcane==300000
+replace productnbchoice_sugarcane=84 if productnbchoice_sugarcane==300000
+
+*400000
+fre productnbchoice_savukku productselfconsumption_savukku productnbchoicesold_savukku if productnbchoice_savukku==400000
+ta productunit_savukku if productnbchoice_savukku==400000
+ta ownland if productnbchoice_savukku==400000
+ta leaseland if productnbchoice_savukku==400000
+ta sizeleaseland if productnbchoice_savukku==400000
+replace productnbchoice_savukku=400 if productnbchoice_savukku==400000
+replace productnbchoicesold_savukku=400 if productnbchoicesold_savukku==400000
+
+*10800 
+fre productnbchoice_guava productselfconsumption_guava productnbchoicesold_guava if productnbchoice_guava==10800
+replace productnbchoice_guava=150 if productnbchoice_guava==10800
+
+*37500
+fre productnbchoice_guava productselfconsumption_guava productnbchoicesold_guava if productnbchoice_guava==37500
+ta productacre_guava if productnbchoice_guava==37500
+ta productunit_guava if productnbchoice_guava==37500
+ta ownland if productnbchoice_guava==37500
+ta sizeownland if productnbchoice_guava==37500
+ta leaseland if productnbchoice_guava==37500
+ta sizeleaseland if productnbchoice_guava==37500
+replace productnbchoice_guava=3750 if productnbchoice_guava==37500
+replace productnbchoicesold_guava=3750 if productnbchoice_guava==37500
+replace productnbchoicesold_guava=3750 if productnbchoicesold_guava==37500
+
+*45000
+fre productnbchoice_millets productselfconsumption_millets productnbchoicesold_millets if productnbchoice_millets==45000
+replace productnbchoice_millets=43 if productnbchoice_millets==45000
+
+
+*6000
+fre productnbchoice_other productselfconsumption_other productnbchoicesold_other if productnbchoice_other==6000
+replace productnbchoice_other=6 if productnbchoice_other==6000
+
+
+
+save"Lastlast/Corrected/NEEMSIS2-HH.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
 
 
 
