@@ -625,6 +625,7 @@ label values covharvestprices morelesssame
 
 *
 fre livestocklist
+replace livestocklist="" if dummyeverhadland==0
 splitvarmcq livestocklist 6
 newn livestocklist 1 cow
 newn livestocklist 2 goa
@@ -632,7 +633,6 @@ newn livestocklist 3 chi
 newn livestocklist 4 bul
 newn livestocklist 5 plo
 newn livestocklist 6 non
-
 
 *
 foreach x in cow goat chicken bullock {
@@ -658,6 +658,7 @@ label values dummycattlesold yesno
 
 *
 fre equipmentlist
+replace equipmentlist="" if dummyeverhadland==0
 splitvarmcq equipmentlist 5
 newn equipmentlist 1 tractor
 newn equipmentlist 2 bullockcart
@@ -945,6 +946,7 @@ newn covsubsistencereason 3 securi
 
 
 ********** Livestock
+/*
 foreach x in cow goa chi bul plo non {
 replace livestocklist_`x'=0 if livestocklist_`x'==.
 }
@@ -952,7 +954,7 @@ replace livestocklist_`x'=0 if livestocklist_`x'==.
 foreach x in cow goat chicken bullock bullforploughin none {
 replace covselllivestock_`x'=0 if covselllivestock_`x'==.
 }
-
+*/
 
 
 save"Lastlast/NEEMSIS2-HH.dta", replace
