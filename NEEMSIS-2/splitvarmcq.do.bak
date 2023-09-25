@@ -48,8 +48,6 @@ program define splitvarmcq
 	foreach x in 66 77 88 99 {
 	forvalues j=1/`nnv' {
 	replace `var'_`x'=1 if `var'`j'==`x'
-	label define pgyesno 0"No" 1"Yes", replace
-	label values `var'_`x' pgyesno
 	}
 	}
 	
