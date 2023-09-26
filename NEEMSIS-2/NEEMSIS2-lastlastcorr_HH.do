@@ -1141,13 +1141,13 @@ use"NEEMSIS2-ego", clear
 preserve
 use"NEEMSIS2-HH", clear
 ta dummyworkedpastyear
-keep HHID2020 INDID2020 dummyworkedpastyear sex
+keep HHID2020 INDID2020 dummyworkedpastyear sex reasonnotworkpastyear
 save"_tempworked", replace
 restore
 
 merge 1:1 HHID2020 INDID2020 using "_tempworked"
 keep if _merge==3
-order HHID2020 INDID2020 sex dummyworkedpastyear
+order HHID2020 INDID2020 sex dummyworkedpastyear reasonnotworkpastyear
 drop _merge
 
 *
@@ -1169,6 +1169,27 @@ newn reasondontsearchjob 12 busy
 newn reasondontsearchjob 13 beli
 newn reasondontsearchjob 14 nojo
 newn reasondontsearchjob 15 refu
+
+*
+destring beforemainoccup, replace
+label define beforemainoccup 1"Agri" 2"Self-employed" 3"SJ (agri)" 4"SJ (non-agri)" 5"UW in HH business" 6"UW in other business" 7"UW in own farm" 8"UW in another farm" 9"Unemployed" 10"Full-time student" 11"Apprenticeship" 12"Not working and not looking for a job" 77"Other"
+label values beforemainoccup beforemainoccup
+fre beforemainoccup
+
+*
+destring mainoccuptype, replace
+label define mainoccuptype 1"Agri" 2"Self-employed" 3"SJ (agri)" 4"SJ (non-agri)" 5"UW in HH business" 6"UW in other business" 7"UW in own farm" 8"UW in another farm"
+label values mainoccuptype mainoccuptype
+fre mainoccuptype
+
+*
+label define afon 1"Always" 2"Frequently" 3"Occasionally" 4"Never"
+label values respect afon
+label values workmate afon
+label values useknowledgeatwork afon
+tabulate respect
+tabulate workmate
+tabulate useknowledgeatwork
 
 
 *
@@ -1602,9 +1623,37 @@ label values covmostefficienthelp covmostefficienthelp
 fre covmostefficienthelpother
 repmi covmostefficienthelpother
 
+*
+ta businessfixedcosts
+repmi businessfixedcosts
+
 
 
 
 save"Lastlast/NEEMSIS2-ego.dta", replace
+****************************************
+* END
+
+
+
+
+
+
+
+
+
+****************************************
+* NEEMSIS2-ego
+****************************************
+use"Lastlast/NEEMSIS2-ego.dta", clear
+
+
+tabulate businesslossinvestamount businesslossinvest, m
+replace businesslossinvest=1 if businesslossinvestamount!=.
+fre businesslossinvest
+
+
+
+save"Lastlast/Corrected/NEEMSIS2-ego.dta", replace
 ****************************************
 * END
