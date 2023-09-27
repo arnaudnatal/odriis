@@ -1141,7 +1141,7 @@ use"NEEMSIS2-ego", clear
 preserve
 use"NEEMSIS2-HH", clear
 ta dummyworkedpastyear
-keep HHID2020 INDID2020 dummyworkedpastyear sex reasonnotworkpastyear
+keep HHID2020 INDID2020 dummyworkedpastyear sex reasonnotworkpastyear version_HH version_agri
 save"_tempworked", replace
 restore
 
@@ -1149,6 +1149,7 @@ merge 1:1 HHID2020 INDID2020 using "_tempworked"
 keep if _merge==3
 order HHID2020 INDID2020 sex dummyworkedpastyear reasonnotworkpastyear
 drop _merge
+order version_HH version_agri, last
 
 *
 fre reasondontsearchjob
@@ -1531,7 +1532,8 @@ newn covassociationhelptype 5 help
 newn covassociationhelptype 6 recr
 newn covassociationhelptype 7 comm
 
-*
+* Reprendre ca mais mettre les numéros à la fin
+/*
 forvalues i=1/2 {
 fre assohelpjob`i'
 splitvarmcq assohelpjob`i' 5
@@ -1541,6 +1543,9 @@ newn assohelpjob`i' 3 share
 newn assohelpjob`i' 4 appli
 newn assohelpjob`i' 5 emoti
 }
+*/
+
+*
 
 *
 fre snrecommendassoname1
@@ -1628,6 +1633,14 @@ ta businessfixedcosts
 repmi businessfixedcosts
 
 
+*
+label define snyesno 1"Yes" 2"No need" 3"Nobody"
+destring covsnhelpreceived, replace
+destring covsnhelpgiven, replace
+label values covsnhelpreceived snyesno
+label values covsnhelpgiven snyesno
+
+fre covsnhelpreceived covsnhelpgiven
 
 
 save"Lastlast/NEEMSIS2-ego.dta", replace
@@ -1657,3 +1670,61 @@ fre businesslossinvest
 save"Lastlast/Corrected/NEEMSIS2-ego.dta", replace
 ****************************************
 * END
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+* NEEMSIS2-alters
+****************************************
+use"NEEMSIS2-alters_networkpurpose.dta", clear
+
+fre networkpurpose1 networkpurpose2 networkpurpose3 networkpurpose4 networkpurpose5 networkpurpose6 networkpurpose7 networkpurpose8 networkpurpose9 networkpurpose10 networkpurpose11
+
+preserve
+use"C:\Users\Arnaud\Documents\MEGA\Research\Data\Data_NEEMSIS2\DATA\APPEND\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-covsntypehelpreceivedgroup_v2.dta", clear
+rename parent_key HHID2020
+rename covsntypehelpreceivedgroupname namealter
+rename covsntypehelpreceivedgroupid id
+keep HHID2020 egoid covsntypehelpreceived namealter id
+splitvarmcq covsntypehelpreceived 7
+newn covsntypehelpreceived 1 food
+newn covsntypehelpreceived 2 free
+newn covsntypehelpreceived 3 cash
+newn covsntypehelpreceived 4 loan
+newn covsntypehelpreceived 5 help
+newn covsntypehelpreceived 6 recr
+newn covsntypehelpreceived 7 nona
+duplicates report HHID2020 egoid namealter
+save"_tempcovreceived", replace
+restore
+
+preserve
+use"C:\Users\Arnaud\Documents\MEGA\Research\Data\Data_NEEMSIS2\DATA\APPEND\CLEAN\NEEMSIS_APPEND-ego123questionnaire-socialnetworks-informalsocialcapital-covsntypehelpgivengroup_v2.dta", clear
+rename parent_key HHID2020
+rename covsntypehelpgivengroupname namealter
+rename covsntypehelpgivengroupid id
+keep HHID2020 egoid covsntypehelpgiven namealter id
+splitvarmcq covsntypehelpgiven 7
+newn covsntypehelpgiven 1 food
+newn covsntypehelpgiven 2 free
+newn covsntypehelpgiven 3 cash
+newn covsntypehelpgiven 4 loan
+newn covsntypehelpgiven 5 help
+newn covsntypehelpgiven 6 recr
+newn covsntypehelpgiven 7 nona
+save"_tempcovgiven", replace
+restore
+
+****************************************
+* END
+
+
+
