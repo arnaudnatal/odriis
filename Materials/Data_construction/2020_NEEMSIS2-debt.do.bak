@@ -465,7 +465,7 @@ use "_temp\NEEMSIS2-loans_v8.dta", clear
 
 ********** Creation
 gen dummyml=0
-replace dummyml=1 if lenderfirsttime!=.
+replace dummyml=1 if lendername!=""
 gen corr=0
 replace interestpaid=0 if interestpaid==. & dummyml==1
 replace totalrepaid=0 if totalrepaid==. & dummyml==1
