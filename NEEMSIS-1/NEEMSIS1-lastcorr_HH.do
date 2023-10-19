@@ -18,6 +18,11 @@ cd"$directory"
 set scheme plotplain_v2
 grstyle init
 grstyle set plain, box nogrid
+********** Program
+global prgm = "C:\Users\Arnaud\Documents\GitHub\odriis\_program"
+do"$prgm\splitvarmcq.do"
+do"$prgm\newn.do"
+do"$prgm\repmi.do"
 ********** Deflate
 *https://data.worldbank.org/indicator/FP.CPI.TOTL?locations=IN
 *(100/158) if year==2016
@@ -1749,6 +1754,106 @@ drop demoscheme1 demoscheme2
 order demoscheme_nrega demoscheme_ratio demoscheme_house demoscheme_funer demoscheme_anima demoscheme_lpgga demoscheme_educa demoscheme_farme demoscheme_land demoscheme_sewin demoscheme_camar demoscheme_gomar demoscheme_oldpe demoscheme_widpe demoscheme_mater demoscheme_disab demoscheme_retir demoscheme_none,after(demoscheme)
 
 
+
+********** Correction suite au rapport stat
+* Format
+splitvarmcq giftsource 14
+newn giftsource 1 wkp
+newn giftsource 2 rel
+newn giftsource 3 emp
+newn giftsource 4 mai
+newn giftsource 5 col
+newn giftsource 6 paw
+newn giftsource 7 sho
+newn giftsource 8 fin
+newn giftsource 9 fri
+newn giftsource 10 shg
+newn giftsource 11 ban
+newn giftsource 12 coo
+newn giftsource 13 sug
+newn giftsource 14 gro
+
+
+* Correction
+tabulate interestlending
+replace interestlending=(interestlending/amountlent)*100 if interestlending>100
+tabulate interestlending
+
+
+* Var
+replace productlist="" if productlist=="."
+splitvarmcq productlist 14
+newn productlist 1 paddy
+newn productlist 2 cotto
+newn productlist 3 sugar
+newn productlist 4 savuk
+newn productlist 5 guava
+newn productlist 6 mango
+newn productlist 7 sapot
+newn productlist 8 banan
+newn productlist 9 groun
+newn productlist 10 ragi
+newn productlist 11 mille
+newn productlist 12 cashe
+newn productlist 13 cocon
+newn productlist 14 none
+
+
+* livestock
+splitvarmcq livestocklist 6
+newn livestocklist 1 cow
+newn livestocklist 2 goa
+newn livestocklist 3 chi
+newn livestocklist 4 bul
+newn livestocklist 5 plo
+newn livestocklist 6 none
+
+* equipment
+ta equipmentborrowedlist
+replace equipmentborrowedlist="" if equipmentborrowedlist=="."
+splitvarmcq equipmentborrowedlist 5
+newn equipmentborrowedlist 1 trac
+newn equipmentborrowedlist 2 bull
+newn equipmentborrowedlist 3 harv
+newn equipmentborrowedlist 4 plow
+newn equipmentborrowedlist 5 none
+
+
+* Goods
+splitvarmcq listgoods 13
+newn listgoods 1 car
+newn listgoods 2 bik
+newn listgoods 3 fri
+newn listgoods 4 fur
+newn listgoods 5 tai
+newn listgoods 6 cel
+newn listgoods 7 lan
+newn listgoods 8 dvd
+newn listgoods 9 cam
+newn listgoods 10 coo
+newn listgoods 11 com
+newn listgoods 12 dis
+newn listgoods 13 non
+
+
+* Schemes
+foreach x in old ret wid {
+replace pensionamount_`x'=. if pensionrecipientdummy_`x'==0
+replace pensionamount_`x'=. if pensionrecipientdummy_`x'==.
+}
+
+recode dummygiftsreceived (.=0)
+
+
+
+* Label
+label define insurancepublic 0"Private" 1"Public"
+label values insurancepublic1 insurancepublic
+label values insurancepublic2 insurancepublic
+
+
+
+
 save"Last/NEEMSIS1-HH", replace
 ****************************************
 * END
@@ -2008,6 +2113,72 @@ order casteemployer_vanni casteemployer_sc casteemployer_arunt casteemployer_red
 foreach x in othercasteemployer effetdemowage salariedjobkindbonus demosalariedjob demosalariedjobother {
 replace `x'="" if `x'=="."
 }
+
+
+
+
+********** Suite au rapport stat
+
+
+
+*** demojobtype
+fre demojobtype
+label define demojobtype 1"Permanent" 2"Fixed term" 3"Daily" 4"Seasonal" 5"Occasional"
+label values demojobtype demojobtype
+ta demojobtype
+
+
+fre demowagetype
+label define demowagetype 1"Daily" 2"Weekly" 3"Monthly" 4"Piece rate" 5"Unpaid"
+label values demowagetype demowagetype
+ta demowagetype
+
+splitvarmcq effetdemowage 7
+newn effetdemowage 1 salinc
+newn effetdemowage 2 lessal
+newn effetdemowage 3 delay
+newn effetdemowage 4 advanc
+newn effetdemowage 5 more
+newn effetdemowage 6 less
+newn effetdemowage 7 noimp
+
+splitvarmcq demosalariedjob 6
+newn demosalariedjob 1 morebarg
+newn demosalariedjob 2 morediff
+newn demosalariedjob 3 moresecu
+newn demosalariedjob 4 lesssecu
+newn demosalariedjob 5 signwrit
+newn demosalariedjob 6 demand
+
+drop casteemployer_vanni casteemployer_sc casteemployer_arunt casteemployer_rediy casteemployer_grama casteemployer_naidu casteemployer_navit casteemployer_asara casteemployer_settu casteemployer_natta casteemployer_mudal casteemployer_kulal casteemployer_chett casteemployer_marwa casteemployer_musli casteemployer_paday casteemployer_na casteemployer_other
+
+ta casteemployer
+splitvarmcq casteemployer 16
+newn casteemployer 1 van
+newn casteemployer 2 sc
+newn casteemployer 3 aru
+newn casteemployer 4 red
+newn casteemployer 5 gra
+newn casteemployer 6 nai
+newn casteemployer 7 nav
+newn casteemployer 8 asa
+newn casteemployer 9 set
+newn casteemployer 10 nat
+newn casteemployer 11 mud
+newn casteemployer 12 kul
+newn casteemployer 13 che
+newn casteemployer 14 mar
+newn casteemployer 15 mus
+newn casteemployer 16 pad
+
+
+
+
+
+
+
+
+
 
 
 

@@ -18,6 +18,11 @@ cd"$directory"
 set scheme plotplain_v2
 grstyle init
 grstyle set plain, box nogrid
+********** Program
+global prgm = "C:\Users\Arnaud\Documents\GitHub\odriis\_program"
+do"$prgm\splitvarmcq.do"
+do"$prgm\newn.do"
+do"$prgm\repmi.do"
 ********** Deflate
 *https://data.worldbank.org/indicator/FP.CPI.TOTL?locations=IN
 *(100/158) if year==2016
@@ -481,6 +486,45 @@ replace `x'="" if `x'=="."
 
 
 
+********** Informal network
+gen HHID=HHID2016
+merge 1:1 HHID egoid using "C:\Users\Arnaud\Documents\MEGA\Research\Data\Data_NEEMSIS1\DATA\NEEMSIS-ego_tomerge_panel", keepusing(sntechnicalhelp snentrustbusiness snrecruitworker snfindsuppliers snlendtools snfindjob snrecommendforjob snrecojobsuccess sndemoasked_ego sndemogiven_ego) 
+drop _merge
+drop HHID
+
+destring sndemoasked_ego, replace
+label define sndemoasked_ego 1"Yes" 2"No need" 3"No one to ask" 4"Asked but was refused to help" 99"N/R"
+label values sndemoasked_ego sndemoasked_ego
+rename sndemoasked_ego sndemoasked
+
+label define yesno 0"No" 1"Yes"
+label values sndemogiven_ego yesno
+rename sndemogiven_ego sndemogiven
+
+fre sntechnicalhelp snentrustbusiness snrecruitworker snfindsuppliers snlendtools snfindjob snrecommendforjob snrecojobsuccess sndemoasked sndemogiven
+
+
+********** Other
+splitvarmcq reasondontworkmore 13
+newn reasondontworkmore 1 stu
+newn reasondontworkmore 2 hou
+newn reasondontworkmore 3 ret
+newn reasondontworkmore 4 old
+newn reasondontworkmore 5 ill
+newn reasondontworkmore 6 dis
+newn reasondontworkmore 7 mil
+newn reasondontworkmore 8 cha
+newn reasondontworkmore 9 dem
+newn reasondontworkmore 10 irr
+newn reasondontworkmore 11 fle
+newn reasondontworkmore 12 cas
+newn reasondontworkmore 13 alr
+
+
+
+
+
+
 save"Last/NEEMSIS1-ego", replace
 ****************************************
 * END
@@ -607,6 +651,15 @@ drop democounterpartasked1 democounterpartasked2
 order democounterpartasked_offe democounterpartasked_comm democounterpartasked_serv democounterpartasked_noco democounterpartasked_othe, after(democounterpartasked)
 
 drop sndemogivennber sndemoaskednber snrecommendforjobnber snfindjobnber snfindsuppliersnber sntechnicalhelpnber snrecommendassonber snrecojobsuccessnber snlendtoolsnber snrecruitworkernber snentrustbusinessnber
+
+drop dummydemonetisation villageid villageareaid householdid dummynewHH
+
+drop interviewplace submissiondate
+
+
+replace durationknown=durationknown/12 if durationknown==206
+
+
 
 save"Last/NEEMSIS1-alters", replace
 ****************************************
