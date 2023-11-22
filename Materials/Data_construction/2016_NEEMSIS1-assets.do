@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\Construction"
 cd"$directory"
 
 ********** Database names
@@ -241,6 +241,21 @@ duplicates drop
 
 merge 1:1 HHID2016 using "_temp\NEEMSIS1-ass1"
 drop _merge
+
+* Vérification
+preserve
+gen tokeep=0
+replace tokeep=1 if HHID2016=="uuid:a45717f6-15bb-4239-bda0-93fb47584519"
+replace tokeep=1 if HHID2016=="uuid:233d292c-867e-45ef-aad1-af8ee4ef3804"
+replace tokeep=1 if HHID2016=="uuid:597830d8-68a9-444c-aa7e-427e705b0f5e"
+replace tokeep=1 if HHID2016=="uuid:3f9cffe9-c7a8-4057-afd6-b2e14e4a36b8"
+replace tokeep=1 if HHID2016=="uuid:e6c82233-3043-43d5-8463-1971f3e51ffc"
+keep if tokeep==1
+bysort HHID2016: egen s_educationexpenses=sum(educationexpenses)
+replace s_educationexpenses=s_educationexpenses*(100/158)
+keep HHID2016 s_educationexpenses educationexpenses
+list HHID2016 s_educationexpenses educationexpenses, clean noobs
+restore
 
 save"outcomes\NEEMSIS1-assets", replace
 ****************************************
