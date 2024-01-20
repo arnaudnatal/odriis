@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\Construction"
 cd"$directory"
 
 ********** Database names
