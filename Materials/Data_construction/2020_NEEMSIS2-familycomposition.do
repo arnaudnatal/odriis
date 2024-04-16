@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -52,10 +52,10 @@ drop livinghome
 
 *** Corr
 tostring INDID2020, replace
-merge m:m HHID2020 using "ODRIIS-HH_wide", keepusing(HHID_panel)
+merge m:m HHID2020 using "keypanel-HH_wide", keepusing(HHID_panel)
 keep if _merge==3
 drop _merge
-merge m:m HHID_panel INDID2020 using "ODRIIS-Indiv_wide", keepusing(INDID_panel agecorr2020 sex2020 relationshiptohead2020 age2020)
+merge m:m HHID_panel INDID2020 using "keypanel-Indiv_wide", keepusing(INDID_panel agecorr2020 sex2020 relationshiptohead2020 age2020)
 keep if _merge==3
 drop _merge
 order HHID_panel INDID_panel HHID2020 INDID2020
@@ -124,6 +124,69 @@ replace female_`x'=1 if female==1 & `x'==1
 }
 
 
+*** Married and unmarried by sex and age
+fre maritalstatus
+fre sex
+
+*
+gen married=1 if maritalstatus==1
+gen unmarried=1 if maritalstatus==2
+
+*
+gen married_male=1 if maritalstatus==1 & sex==1
+gen unmarried_male=1 if maritalstatus==2 & sex==1
+gen married_female=1 if maritalstatus==1 & sex==2
+gen unmarried_female=1 if maritalstatus==2 & sex==2
+
+*
+gen married_male_1824=1 if maritalstatus==1 & sex==1 & age>=18 & age<25
+gen unmarried_male_1824=1 if maritalstatus==2 & sex==1 & age>=18 & age<25
+gen married_female_1824=1 if maritalstatus==1 & sex==2 & age>=18 & age<25
+gen unmarried_female_1824=1 if maritalstatus==2 & sex==2 & age>=18 & age<25
+
+*
+gen married_male_2530=1 if maritalstatus==1 & sex==1 & age>=25 & age<31
+gen unmarried_male_2530=1 if maritalstatus==2 & sex==1 & age>=25 & age<31
+gen married_female_2530=1 if maritalstatus==1 & sex==2 & age>=25 & age<31
+gen unmarried_female_2530=1 if maritalstatus==2 & sex==2 & age>=25 & age<31
+
+*
+gen married_male_more30=1 if maritalstatus==1 & sex==1 & age>=31
+gen unmarried_male_more30=1 if maritalstatus==2 & sex==1 & age>=31
+gen married_female_more30=1 if maritalstatus==1 & sex==2 & age>=31
+gen unmarried_female_more30=1 if maritalstatus==2 & sex==2 & age>=31
+
+*
+gen married_male_more18=1 if maritalstatus==1 & sex==1 & age>=18
+gen unmarried_male_more18=1 if maritalstatus==2 & sex==1 & age>=18
+gen married_female_more18=1 if maritalstatus==1 & sex==2 & age>=18
+gen unmarried_female_more18=1 if maritalstatus==2 & sex==2 & age>=18
+
+*
+gen married_1824=1 if maritalstatus==1 & age>=18 & age<25
+gen unmarried_1824=1 if maritalstatus==2 & age>=18 & age<25
+
+*
+gen married_2530=1 if maritalstatus==1 & age>=25 & age<31
+gen unmarried_2530=1 if maritalstatus==2 & age>=25 & age<31
+
+*
+gen married_more30=1 if maritalstatus==1 & age>=31
+gen unmarried_more30=1 if maritalstatus==2 & age>=31
+
+*
+gen married_more18=1 if maritalstatus==1 & age>=18
+gen unmarried_more18=1 if maritalstatus==2 & age>=18
+
+*
+fre relationshiptohead
+gen married_son=1 if maritalstatus==1 & relationshiptohead==5
+gen unmarried_son=1 if maritalstatus==2 & relationshiptohead==5
+gen married_daughter=1 if maritalstatus==1 & relationshiptohead==6
+gen unmarried_daughter=1 if maritalstatus==2 & relationshiptohead==6
+
+
+
 *** Relationship to head
 ta relationshiptohead
 fre relationshiptohead
@@ -148,7 +211,7 @@ rename relation_17 relation_other
 
 
 *** HH level
-global var male female age_group agegrp_0_13 agegrp_14_17 agegrp_18_24 agegrp_25_29 agegrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 male_agegrp_0_13 female_agegrp_0_13 male_agegrp_14_17 female_agegrp_14_17 male_agegrp_18_24 female_agegrp_18_24 male_agegrp_25_29 female_agegrp_25_29 male_agegrp_30_34 female_agegrp_30_34 male_agegrp_35_39 female_agegrp_35_39 male_agegrp_40_49 female_agegrp_40_49 male_agegrp_50_59 female_agegrp_50_59 male_agegrp_60_69 female_agegrp_60_69 male_agegrp_70_79 female_agegrp_70_79 male_agegrp_80_100 female_agegrp_80_100 relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_soninlaw relation_daughterinlaw relation_sister relation_brother relation_motherinlaw relation_fatherinlaw relation_grandchildren relation_grandfather relation_grandmother relation_cousin relation_other
+global var male female age_group agegrp_0_13 agegrp_14_17 agegrp_18_24 agegrp_25_29 agegrp_30_34 agegrp_35_39 agegrp_40_49 agegrp_50_59 agegrp_60_69 agegrp_70_79 agegrp_80_100 male_agegrp_0_13 female_agegrp_0_13 male_agegrp_14_17 female_agegrp_14_17 male_agegrp_18_24 female_agegrp_18_24 male_agegrp_25_29 female_agegrp_25_29 male_agegrp_30_34 female_agegrp_30_34 male_agegrp_35_39 female_agegrp_35_39 male_agegrp_40_49 female_agegrp_40_49 male_agegrp_50_59 female_agegrp_50_59 male_agegrp_60_69 female_agegrp_60_69 male_agegrp_70_79 female_agegrp_70_79 male_agegrp_80_100 female_agegrp_80_100 relation_head relation_wife relation_mother relation_father relation_son relation_daughter relation_soninlaw relation_daughterinlaw relation_sister relation_brother relation_motherinlaw relation_fatherinlaw relation_grandchildren relation_grandfather relation_grandmother relation_cousin relation_other married unmarried married_male unmarried_male married_female unmarried_female married_male_1824 unmarried_male_1824 married_female_1824 unmarried_female_1824 married_male_2530 unmarried_male_2530 married_female_2530 unmarried_female_2530 married_male_more30 unmarried_male_more30 married_female_more30 unmarried_female_more30 married_male_more18 unmarried_male_more18 married_female_more18 unmarried_female_more18 married_1824 unmarried_1824 married_2530 unmarried_2530 married_more30 unmarried_more30 married_more18 unmarried_more18 married_son unmarried_son married_daughter unmarried_daughter
 
 foreach x in $var {
 bysort HHID2020: egen _temp`x'=sum(`x')
