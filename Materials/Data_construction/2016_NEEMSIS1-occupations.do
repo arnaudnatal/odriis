@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -1159,6 +1159,8 @@ sum nonworkersratio
 
 drop INDID2016 dummyworkedpastyear working_pop nonworker worker livinghome
 duplicates drop
+
+
 save"outcomes\NEEMSIS1-occup_HH", replace
 ****************************************
 * END

@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -627,6 +627,11 @@ save "_temp\RUME-occup3", replace
 ***************************************
 use"_temp\RUME-occup3", clear
 
+fre kindofwork
+ta annualincome if kindofwork==9
+gen annualincome_old=annualincome
+replace annualincome=0 if kindofwork==9
+
 *Agri vs non agri
 fre occupation
 
@@ -641,8 +646,6 @@ replace incomenonagri=annualincome if occupation==4
 replace incomenonagri=annualincome if occupation==5
 replace incomenonagri=annualincome if occupation==6
 replace incomenonagri=annualincome if occupation==7
-replace incomenonagri=annualincome if kindofwork==9
-
 
 bysort HHID2010 INDID2010: egen incomeagri_indiv=sum(incomeagri)
 bysort HHID2010 INDID2010: egen incomenonagri_indiv=sum(incomenonagri)
@@ -657,6 +660,7 @@ gen shareincomeagri_indiv=incomeagri_indiv/annualincome_indiv
 gen shareincomenonagri_indiv=incomenonagri_indiv/annualincome_indiv
 gen shareincomeagri_HH=incomeagri_HH/annualincome_HH
 gen shareincomenonagri_HH=incomenonagri_HH/annualincome_HH
+
 
 
 *Precision
@@ -708,6 +712,7 @@ sum nonworkersratio
 
 drop INDID2010 dummyworkedpastyear working_pop nonworker worker livinghome
 duplicates drop
+
 save"outcomes\RUME-occup_HH", replace
 ****************************************
 * END

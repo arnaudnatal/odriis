@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -48,7 +48,7 @@ drop if _merge==2
 drop _merge
 
 tostring INDID2020, replace
-merge m:m HHID2020 INDID2020 using "ODRIIS-indiv_wide", keepusing(HHID_panel INDID_panel)
+merge m:m HHID2020 INDID2020 using "keypanel-indiv_wide", keepusing(HHID_panel INDID_panel)
 drop if _merge==2
 drop _merge
 
@@ -1378,6 +1378,7 @@ sum nonworkersratio
 
 drop INDID2020 dummyworkedpastyear working_pop nonworker worker livinghome dummylefthousehold
 duplicates drop
+
 save"outcomes\NEEMSIS2-occup_HH", replace
 ****************************************
 * END
