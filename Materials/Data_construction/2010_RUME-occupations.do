@@ -465,6 +465,8 @@ save"_temp\RUME-occup1", replace
 * Main occupation
 ***************************************
 use"_temp\RUME-occup1", clear
+
+drop if kindofwork==9
 /*
 Main occupation is define as the most income generating occupation.
 */
