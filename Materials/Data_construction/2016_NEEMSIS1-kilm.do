@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -140,6 +140,8 @@ replace unemployed=0 if unemployed==. & workingage==1
 
 decode kindofwork, gen(str_kindofwork)
 keep HHID2016 INDID2016 occupation kindofwork str_kindofwork profession sector occupationname educ_attainment educ_attainment2 agecat workingage youth employed unemployed
+
+
 
 save"_temp/_temp_NEEMSIS1-kilm_v2.dta", replace
 ****************************************
