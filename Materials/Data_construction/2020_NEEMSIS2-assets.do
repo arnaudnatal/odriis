@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox\RUME-NEEMSIS\Data\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -82,7 +82,7 @@ replace amountownland=sizeownland*1000000 if drywetownland=="1 2" & sizedryownla
 fre ownland
 desc sizeownland amountownlanddry amountownlandwet amountownland ownland
 foreach x in sizeownland amountownlanddry amountownlandwet amountownland {
-replace `x'=. if `x'==0 & ownland=="0"
+replace `x'=. if `x'==0 & ownland==0
 }
 
 

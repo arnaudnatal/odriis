@@ -29,186 +29,218 @@ grstyle set plain, box nogrid
 
 
 
-
 ****************************************
-* Caste for each year
-***************************************
+* Base simple
+****************************************
 
-***** 2010
-use"RUME-HH", clear
+********** NEEMSIS-2
+use"NEEMSIS2-jatis_raw", clear
 
-keep HHID2010 jatis
-duplicates drop
-merge 1:m HHID2010 using "keypanel-HH_wide", keepusing(HHID_panel)
-keep if _merge==3
-drop _merge HHID2010
-gen year=2010
-order HHID_panel year
-decode jatis, gen(jatis_HH)
+decode jatis, gen(jatis_str)
 drop jatis
-save"_temp/b1", replace
+rename jatis_str jatis
 
-
-***** 2016
-use"NEEMSIS1-HH", clear
-
-keep HHID2016 jatis
-duplicates drop
-merge 1:m HHID2016 using "keypanel-HH_wide", keepusing(HHID_panel)
-keep if _merge==3
-drop _merge HHID2016
-gen year=2016
-order HHID_panel year
-decode jatis, gen(jatis_HH)
-drop jatis
-save"_temp/b2", replace
-
-
-***** 2020
-use"NEEMSIS2-HH", clear
-
-keep HHID2020 jatis
-duplicates drop
 merge 1:m HHID2020 using "keypanel-HH_wide", keepusing(HHID_panel)
 keep if _merge==3
-drop _merge HHID2020
-gen year=2020
-order HHID_panel year
-decode jatis, gen(jatis_HH)
+drop _merge
+drop HHID2020
+rename jatis jatis2020
+order HHID_panel
+
+save "_temp\N2_c", replace
+
+
+
+
+********** NEEMSIS-2 GPS
+use"NEEMSIS2-GPS", clear
+
+keep HHID_panel jatisdetails3
+rename jatisdetails3 jatis2023
+order HHID_panel
+
+save "_temp\N2G_c", replace
+
+
+
+
+********** NEEMSIS-1
+use"NEEMSIS1-jatis_raw", clear
+
+decode jatis, gen(jatis_str)
 drop jatis
-merge 1:1 HHID_panel using "NEEMSIS2-GPS", keepusing(jatis jatisdetails)
+rename jatis_str jatis
+
+merge m:m HHID2016 using "keypanel-HH_wide", keepusing(HHID_panel)
 keep if _merge==3
 drop _merge
-decode jatis, gen(jatis_GPS)
-ta jatis_GPS
+drop HHID2016
+rename jatis jatis2016
+order HHID_panel
+drop if jatis==""
+
+save "_temp\N1_c", replace
+
+
+
+
+********** RUME
+use"RUME-jatis_raw", clear
+
+decode jatis, gen(jatis_str)
 drop jatis
-rename jatisdetails jatisdetails_GPS
-save"_temp/b3", replace
+rename jatis_str jatis
+
+merge 1:m HHID2010 using "keypanel-HH_wide", keepusing(HHID_panel)
+keep if _merge==3
+drop _merge
+drop HHID2010
+rename jatis jatis2010
+order HHID_panel
+
+save "_temp\R_c", replace
+
+****************************************
+* END
 
 
-***** Append
-use"_temp/b1", clear
-
-append using "_temp/b2"
-append using "_temp/b3"
-
-* Structure données 1
-bysort HHID_panel: gen n=_N
-order n, after(HHID_panel)
-
-gen jatis=""
-replace jatis=jatis_HH if year==2010
-replace jatis=jatis_HH if year==2016
-replace jatis=jatis_GPS if year==2020
-
-drop jatis_HH jatisdetails_GPS jatis_GPS
-
-reshape wide jatis, i(HHID_panel) j(year)
-
-* Structure données 2
-order HHID_panel n
-gen t1=.
-replace t1=1 if n==2 & jatis2010!="" & jatis2016!="" & jatis2020==""
-replace t1=2 if n==2 & jatis2010=="" & jatis2016!="" & jatis2020!=""
-replace t1=3 if n==2 & jatis2010!="" & jatis2016=="" & jatis2020!=""
-label define t1 1"2010-2016" 2"2016-2020" 3"2010-2020"
-label values t1 t1
-
-gen t2=.
-replace t2=1 if n==1 & jatis2010!="" & jatis2016=="" & jatis2020==""
-replace t2=2 if n==1 & jatis2010=="" & jatis2016!="" & jatis2020==""
-replace t2=3 if n==1 & jatis2010=="" & jatis2016=="" & jatis2020!=""
-label define t2 1"2010" 2"2016" 3"2020"
-label values t2 t2
-
-order HHID_panel n t1 t2
-sort n t1 t2 HHID_panel
 
 
-* Remplacer les jatis de 2010 et 2016 par celui du GPS 2020 si ménage panel car plus sûr
-gen jatisnew2010=jatis2010
-gen jatisnew2016=jatis2016
-gen jatisnew2020=jatis2020
-
-replace jatisnew2010=jatis2020 if n==3
-replace jatisnew2016=jatis2020 if n==3
-
-replace jatisnew2010=jatis2020 if n==2 & t1==3
-replace jatisnew2016=jatis2020 if n==2 & t1==2
-
-* Vérifier la cohérence de ceux qui restent, i.e., panel 2010, 2016, mais pas 2020
-list jatis2010 jatis2016 if n==2 & t1==1, clean noobs
-*Ils sont cohérents
-
-* Vérifier les autres
-ta jatisnew2010 // 2
-ta jatisnew2016 // 2
-ta jatisnew2020 // 2
-
-save"_temp/newjatis_wide", replace
 
 
-***** Reshape
-use"_temp/newjatis_wide", clear
-
-reshape long jatis jatisnew, i(HHID_panel) j(year)
-drop if jatis=="" & jatisnew==""
-ta year
 
 
-* Recoder les exceptions à la main :
-gen other=.
-replace other=1 if jatisnew=="Other"
-bysort HHID_panel: egen maxother=max(other)
-sort HHID_panel year
-list if maxother==1, clean noobs
+
+
+****************************************
+* Tout mettre ensemble et corriger
+****************************************
+use"_temp\N2_c", clear
+
+merge 1:1 HHID_panel using "_temp\N2G_c"
+drop _merge
+
+merge 1:1 HHID_panel using "_temp\N1_c"
+drop _merge
+
+merge 1:1 HHID_panel using "_temp\R_c"
+drop _merge
+
+order HHID_panel jatis2010 jatis2016 jatis2020 jatis2023
+sort HHID_panel
+
+
+* Replace jatis
+replace jatis2023="Muslims" if jatis2023=="Muslim"
+replace jatis2023="Rediyar" if jatis2023=="Reddiyar"
+replace jatis2010="Mudaliar" if jatis2010=="Muthaliyar"
+
+* Jatis to check
+gen tocheck=0
+replace tocheck=1 if HHID_panel=="ELA11"
+replace tocheck=1 if HHID_panel=="ELA21"
+replace tocheck=1 if HHID_panel=="ELA39"
+replace tocheck=1 if HHID_panel=="GOV13"
+replace tocheck=1 if HHID_panel=="GOV14"
+replace tocheck=1 if HHID_panel=="GOV16"
+replace tocheck=1 if HHID_panel=="GOV19"
+replace tocheck=1 if HHID_panel=="GOV38"
+replace tocheck=1 if HHID_panel=="GOV39"
+replace tocheck=1 if HHID_panel=="GOV58"
+replace tocheck=1 if HHID_panel=="GOV59"
+replace tocheck=1 if HHID_panel=="GOV61"
+replace tocheck=1 if HHID_panel=="GOV62"
+replace tocheck=1 if HHID_panel=="GOV63"
+replace tocheck=1 if HHID_panel=="KAR24"
+replace tocheck=1 if HHID_panel=="KAR48"
+replace tocheck=1 if HHID_panel=="KUV33"
+replace tocheck=1 if HHID_panel=="KUV63"
+replace tocheck=1 if HHID_panel=="MANAM11"
+replace tocheck=1 if HHID_panel=="MANAM12"
+replace tocheck=1 if HHID_panel=="NAT39"
+replace tocheck=1 if HHID_panel=="NAT45"
+replace tocheck=1 if HHID_panel=="NAT51"
+replace tocheck=1 if HHID_panel=="ORA10"
+replace tocheck=1 if HHID_panel=="ORA21"
+replace tocheck=1 if HHID_panel=="ORA51"
+replace tocheck=1 if HHID_panel=="SEM4"
 
 *
-replace jatisnew="Nattar" if HHID_panel=="ELA43"
-replace jatisnew="Vanniyar" if HHID_panel=="ORA21"
+gen jatispanel=""
+replace jatispanel="Nattar" if HHID_panel=="ELA1"
+replace jatispanel="Nattar" if HHID_panel=="ELA10"
+replace jatispanel="Nattar" if HHID_panel=="ELA13"
+replace jatispanel="Vanniyar" if HHID_panel=="ELA33"
+replace jatispanel="Nattar" if HHID_panel=="ELA42"
+replace jatispanel="Nattar" if HHID_panel=="ELA43"
+replace jatispanel="Vanniyar" if HHID_panel=="ELA49"
+replace jatispanel="Nattar" if HHID_panel=="ELA7"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV2"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV28"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV34"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV40"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV42"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV45"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV48"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV50"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV51"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV53"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV45"
+replace jatispanel="Mudaliar" if HHID_panel=="GOV6"
+replace jatispanel="Arunthathiyar" if HHID_panel=="KAR13"
+replace jatispanel="Paraiyar" if HHID_panel=="KAR9"
+replace jatispanel="Paraiyar" if HHID_panel=="KOR23"
+replace jatispanel="Naidu" if HHID_panel=="KOR33"
+replace jatispanel="Vanniyar" if HHID_panel=="KUV13"
+replace jatispanel="Vanniyar" if HHID_panel=="KUV52"
+replace jatispanel="Vanniyar" if HHID_panel=="MAN18"
+replace jatispanel="Paraiyar" if HHID_panel=="MAN22"
+replace jatispanel="Paraiyar" if HHID_panel=="MANAM18"
+replace jatispanel="Arunthathiyar" if HHID_panel=="MANAM26"
+replace jatispanel="Arunthathiyar" if HHID_panel=="MANAM28"
+replace jatispanel="Naidu" if HHID_panel=="MANAM31"
+replace jatispanel="Naidu" if HHID_panel=="MANAM50"
+replace jatispanel="Naidu" if HHID_panel=="MANAM6"
+replace jatispanel="Naidu" if HHID_panel=="MANAM64"
+replace jatispanel="Arunthathiyar" if HHID_panel=="ORA12"
+replace jatispanel="Vanniyar" if HHID_panel=="ORA37"
+replace jatispanel="Muslims" if HHID_panel=="SEM1"
+replace jatispanel="Chettiyar" if HHID_panel=="SEM10"
+replace jatispanel="Valluvar" if HHID_panel=="SEM12"
+replace jatispanel="Valluvar" if HHID_panel=="SEM14"
+replace jatispanel="Muslims" if HHID_panel=="SEM16"
+replace jatispanel="Naidu" if HHID_panel=="SEM17"
+replace jatispanel="Muslims" if HHID_panel=="SEM26"
+replace jatispanel="Muslims" if HHID_panel=="SEM28"
+replace jatispanel="Muslims" if HHID_panel=="SEM35"
+replace jatispanel="Muslims" if HHID_panel=="SEM40"
+replace jatispanel="Valluvar" if HHID_panel=="SEM42"
+replace jatispanel="Muslims" if HHID_panel=="SEM43"
+replace jatispanel="Valluvar" if HHID_panel=="SEM46"
+replace jatispanel="Chettiyar" if HHID_panel=="SEM48"
+replace jatispanel="Valluvar" if HHID_panel=="SEM5"
+replace jatispanel="Valluvar" if HHID_panel=="SEM6"
+replace jatispanel="Kulalar" if HHID_panel=="SEM7"
+replace jatispanel="Valluvar" if HHID_panel=="SEM8"
 
-save"_temp/castepanellong", replace
+* Pour le reste
+replace jatispanel=jatis2023 if tocheck==0 & jatispanel=="" & jatis2023!=""
+fre jatispanel
+ta tocheck
+replace jatispanel=jatis2016 if tocheck==0 & jatispanel=="" & jatis2023=="" & jatis2016!=""
+replace jatispanel=jatis2010 if tocheck==0 & jatispanel=="" & jatis2023=="" & jatis2016=="" & jatis2010!=""
+sort jatispanel
 
+* Les SC de 2010 et 2016 sont des paraiyars car ils ne sont pas arunthathiy a priori
+replace jatispanel="Paraiyar" if jatispanel=="SC"
+sort jatispanel HHID_panel
 
-use"_temp/castepanellong", clear
+ta jatispanel
+replace jatispanel="Paraiyar" if jatispanel=="Valluvar"
 
-replace jatisnew="Mudaliar" if jatisnew=="Muthaliyar"
-replace jatisnew="Vanniyar" if jatisnew=="Padayachi"
-replace jatisnew="Marwari" if jatisnew=="Settu"
+order tocheck, last
 
-
-keep HHID_panel year jatisnew
-
-gen castenew=.
-replace castenew=1 if jatisnew=="SC"
-replace castenew=1 if jatisnew=="Arunthathiyar"
-
-replace castenew=2 if jatisnew=="Asarai"
-replace castenew=2 if jatisnew=="Kulalar"
-replace castenew=2 if jatisnew=="Gramani"
-replace castenew=2 if jatisnew=="Vanniyar"
-replace castenew=2 if jatisnew=="Nattar"
-replace castenew=2 if jatisnew=="Navithar"
-replace castenew=2 if jatisnew=="Muslims"
-
-replace castenew=3 if jatisnew=="Rediyar"
-replace castenew=3 if jatisnew=="Marwari"
-replace castenew=3 if jatisnew=="Naidu"
-replace castenew=3 if jatisnew=="Chettiyar"
-replace castenew=3 if jatisnew=="Mudaliar"
-replace castenew=3 if jatisnew=="Yathavar"
-
-label define caste 1"Dalits" 2"Middle castes" 3"Upper castes"
-label values castenew caste
-
-rename jatisnew jatisn
-rename castenew casten
-
-ta casten year, col nofreq
-ta jatisn casten, col nofreq
-
-save"outcomes/JatisCastePanel", replace
-
+save"_temp\Panelcorr_v1", replace
 ****************************************
 * END
 
@@ -222,65 +254,52 @@ save"outcomes/JatisCastePanel", replace
 
 
 
-
-
-
-
-
-
-
 ****************************************
-* Caste panel
-***************************************
+* Charact of those to check with Venkat
+****************************************
+***
+use"NEEMSIS2-HH", clear
 
-***** 2010
-use"outcomes\RUME-caste", clear
-
-drop INDID2010
-rename HHID2010 HHID
-gen year=2010
+keep HHID2020 address village_new villagename villagearea username
 duplicates drop
 
-save "_temp\RUME-castetp", replace
+merge 1:1 HHID2020 using "outcomes/NEEMSIS2-family", keepusing(head_name head_sex head_age)
+drop _merge
+
+order HHID2020 username villagename villagearea village_new address head_name head_sex head_age 
+
+rename village_new interviewplace
+
+* Merge panel
+merge 1:m HHID2020 using "keypanel-HH_wide", keepusing(HHID_panel)
+keep if _merge==3
+drop _merge
+order HHID2020 HHID_panel
+
+save"_temp\tempHHcharact", replace
 
 
+**
+use"_temp\Panelcorr_v1", clear
 
-***** 2016-17
-use"outcomes\NEEMSIS1-caste", clear
+keep if tocheck==1
+drop tocheck jatispanel
 
-drop INDID2016
-rename HHID2016 HHID
-gen year=2016
-duplicates drop
+merge 1:1 HHID_panel using "_temp\tempHHcharact"
+keep if _merge==3
+drop _merge
+order jatis*, last
+order HHID2020 HHID_panel
+sort HHID_panel
 
-save "_temp\NEEMSIS1-castetp", replace
+save"_temp\Verif_Venkat", replace
+export excel using "_temp\Castetocheck.xlsx", firstrow(variables) replace
 
-
-
-***** 2020-21
-use"outcomes\NEEMSIS2-caste", clear
-
-drop INDID2020
-rename HHID2020 HHID
-gen year=2020
-duplicates drop
-
-save "_temp\NEEMSIS2-castetp", replace
-
-
-
-
-***** Panel
-use"_temp\RUME-castetp", clear
-
-append using "_temp\NEEMSIS1-castetp"
-append using "_temp\NEEMSIS2-castetp"
-
-reshape wide HHID jatis jatiscorr caste, i(HHID_panel) j(year)
-
-ta caste2010 caste2016
-ta caste2016 caste2020
-
-save"outcomes\Panel-Caste_HH.dta", replace
 ****************************************
 * END
+
+
+
+
+
+

@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -1376,6 +1376,7 @@ replace othlendserv_othe=1 if strpos(otherlenderservices,"77")
 
 ********** Guarantee
 ta guarantee
+/*
 gen guarantee_doc=0
 gen guarantee_chit=0
 gen guarantee_shg=0
@@ -1391,7 +1392,7 @@ replace guarantee_pers=1 if strpos(guarantee,"4")
 replace guarantee_jewe=1 if strpos(guarantee,"5")
 replace guarantee_none=1 if strpos(guarantee,"6")
 replace guarantee_othe=1 if strpos(guarantee,"77")
-
+*/
 
 
 
