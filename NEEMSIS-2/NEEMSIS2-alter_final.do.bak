@@ -98,26 +98,6 @@ drop if networkpurpose1==1 & friend==.
 
 
 *
-gen relative_network=cond( ///
-networkpurpose1==12 | ///
-networkpurpose2==12 | ///
-networkpurpose3==12 | ///
-networkpurpose4==12 | ///
-networkpurpose5==12 | ///
-networkpurpose6==12 | ///
-networkpurpose7==12 | ///
-networkpurpose8==12 | ///
-networkpurpose9==12 | ///
-networkpurpose10==12 | ///
-networkpurpose11==12 | ///
-networkpurpose12==12  ///
-,1,0)
-tab relative_network
-*
-
-ta relative_network friend
-replace friend=0 if relative_network==1
-drop relative_network
 
 
 
