@@ -58,41 +58,41 @@ replace goodsvalue`i'=100000*numbergoods`i' if listgoods`i'==1
 replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==2
 replace goodsvalue`i'=5000*numbergoods`i' if listgoods`i'==3
 replace goodsvalue`i'=5000*numbergoods`i' if listgoods`i'==4
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==5
-replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==6
+replace goodsvalue`i'=4000*numbergoods`i' if listgoods`i'==5
+replace goodsvalue`i'=3500*numbergoods`i' if listgoods`i'==6
 replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==7
 replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==8
 replace goodsvalue`i'=5000*numbergoods`i' if listgoods`i'==9
-replace goodsvalue`i'=500*numbergoods`i' if listgoods`i'==10
-replace goodsvalue`i'=10000*numbergoods`i' if listgoods`i'==11
+replace goodsvalue`i'=3000*numbergoods`i' if listgoods`i'==10
+replace goodsvalue`i'=14000*numbergoods`i' if listgoods`i'==11
 replace goodsvalue`i'=1000*numbergoods`i' if listgoods`i'==12
-replace goodsvalue`i'=3000*numbergoods`i' if listgoods`i'==13
+replace goodsvalue`i'=5000*numbergoods`i' if listgoods`i'==13
 
-gen goodsvaluebis`i'=.
-replace goodsvaluebis`i'=150000*numbergoods`i' if listgoods`i'==1
-replace goodsvaluebis`i'=30000*numbergoods`i' if listgoods`i'==2
-replace goodsvaluebis`i'=5000*numbergoods`i' if listgoods`i'==3
-replace goodsvaluebis`i'=5000*numbergoods`i' if listgoods`i'==4
-replace goodsvaluebis`i'=3000*numbergoods`i' if listgoods`i'==5
-replace goodsvaluebis`i'=2000*numbergoods`i' if listgoods`i'==6
-replace goodsvaluebis`i'=1000*numbergoods`i' if listgoods`i'==7
-replace goodsvaluebis`i'=1000*numbergoods`i' if listgoods`i'==8
-replace goodsvaluebis`i'=5000*numbergoods`i' if listgoods`i'==9
-replace goodsvaluebis`i'=2000*numbergoods`i' if listgoods`i'==10
-replace goodsvaluebis`i'=15000*numbergoods`i' if listgoods`i'==11
-replace goodsvaluebis`i'=1000*numbergoods`i' if listgoods`i'==12
-replace goodsvaluebis`i'=3000*numbergoods`i' if listgoods`i'==13
+* gen goodsvaluebis`i'=.
+* replace goodsvaluebis`i'=150000*numbergoods`i' if listgoods`i'==1
+* replace goodsvaluebis`i'=30000*numbergoods`i' if listgoods`i'==2
+* replace goodsvaluebis`i'=5000*numbergoods`i' if listgoods`i'==3
+* replace goodsvaluebis`i'=5000*numbergoods`i' if listgoods`i'==4
+* replace goodsvaluebis`i'=3000*numbergoods`i' if listgoods`i'==5
+* replace goodsvaluebis`i'=2000*numbergoods`i' if listgoods`i'==6
+* replace goodsvaluebis`i'=1000*numbergoods`i' if listgoods`i'==7
+* replace goodsvaluebis`i'=1000*numbergoods`i' if listgoods`i'==8
+* replace goodsvaluebis`i'=5000*numbergoods`i' if listgoods`i'==9
+* replace goodsvaluebis`i'=2000*numbergoods`i' if listgoods`i'==10
+* replace goodsvaluebis`i'=15000*numbergoods`i' if listgoods`i'==11
+* replace goodsvaluebis`i'=1000*numbergoods`i' if listgoods`i'==12
+* replace goodsvaluebis`i'=3000*numbergoods`i' if listgoods`i'==13
 }
 
 egen goodstotalamount=rowtotal(goodsvalue1 goodsvalue2 goodsvalue3 goodsvalue4 goodsvalue5 goodsvalue6 goodsvalue7 goodsvalue8 goodsvalue9 goodsvalue10)
 
-egen goodsbistotalamount=rowtotal(goodsvaluebis1 goodsvaluebis2 goodsvaluebis3 goodsvaluebis4 goodsvaluebis5 goodsvaluebis6 goodsvaluebis7 goodsvaluebis8 goodsvalue9 goodsvaluebis10)
+* egen goodsbistotalamount=rowtotal(goodsvaluebis1 goodsvaluebis2 goodsvaluebis3 goodsvaluebis4 goodsvaluebis5 goodsvaluebis6 goodsvaluebis7 goodsvaluebis8 goodsvalue9 goodsvaluebis10)
 
-preserve
-keep HHID2010 goodstotalamount goodsbistotalamount
-duplicates drop
-tabstat goodstotalamount goodsbistotalamount, stat(n mean q)
-restore
+* preserve
+* keep HHID2010 goodstotalamount goodsbistotalamount
+* duplicates drop
+* tabstat goodstotalamount goodsbistotalamount, stat(n mean q)
+* restore
 
 
 *** Land
@@ -115,20 +115,22 @@ egen assets_noland=rowtotal(livestockamount goodstotalamount goldamount_HH house
 egen assets_noprop=rowtotal(livestockamount goodstotalamount goldamount_HH)
 
 
-egen assetsbis=rowtotal(livestockamount goodsbistotalamount amountownland goldamount_HH housevalue)
-egen assetsbis_noland=rowtotal(livestockamount goodsbistotalamount goldamount_HH housevalue)
-egen assetsbis_noprop=rowtotal(livestockamount goodsbistotalamount goldamount_HH)
+* egen assetsbis=rowtotal(livestockamount goodsbistotalamount amountownland goldamount_HH housevalue)
+* egen assetsbis_noland=rowtotal(livestockamount goodsbistotalamount goldamount_HH housevalue)
+* egen assetsbis_noprop=rowtotal(livestockamount goodsbistotalamount goldamount_HH)
 
 gen assets1000=assets/1000
 gen assets1000_noland=assets_noland/1000
 gen assets1000_noprop=assets_noprop/1000
 
-gen assetsbis1000=assetsbis/1000
-gen assetsbis1000_noland=assetsbis_noland/1000
-gen assetsbis1000_noprop=assetsbis_noprop/1000
+* gen assetsbis1000=assetsbis/1000
+* gen assetsbis1000_noland=assetsbis_noland/1000
+* gen assetsbis1000_noprop=assetsbis_noprop/1000
 
 ***Clean
-drop livestockamount_cow livestockamount_goat goodsvalue1 goodsvalue2 goodsvalue3 goodsvalue4 goodsvalue5 goodsvalue6 goodsvalue7 goodsvalue8 goodsvalue9 goodsvalue10 goodsvaluebis1 goodsvaluebis2 goodsvaluebis3 goodsvaluebis4 goodsvaluebis5 goodsvaluebis6 goodsvaluebis7 goodsvaluebis8 goodsvaluebis9 goodsvaluebis10
+drop livestockamount_cow livestockamount_goat goodsvalue1 goodsvalue2 goodsvalue3 goodsvalue4 goodsvalue5 goodsvalue6 goodsvalue7 goodsvalue8 goodsvalue9 goodsvalue10
+
+* drop goodsvaluebis1 goodsvaluebis2 goodsvaluebis3 goodsvaluebis4 goodsvaluebis5 goodsvaluebis6 goodsvaluebis7 goodsvaluebis8 goodsvaluebis9 goodsvaluebis10
 
 
 ********** Variables
@@ -153,7 +155,8 @@ restore
 */
 
 
-keep HHID2010 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue sizeownland goodsbistotalamount
+keep HHID2010 assets* livestockamount goodstotalamount amountownland goldamount_HH housevalue sizeownland
+* goodsbistotalamount
 rename goldamount_HH goldamount
 duplicates drop
 
@@ -171,13 +174,13 @@ rename assets1000 assets_total1000
 rename assets1000_noland assets_totalnoland1000
 rename assets1000_noprop assets_totalnoprop1000
 
-rename goodsbistotalamount assets_goodsbis
-rename assetsbis_noland assets_totalnolandbis
-rename assetsbis_noprop assets_totalnopropbis
-rename assetsbis assets_totalbis
-rename assetsbis1000 assets_totalbis1000
-rename assetsbis1000_noland assets_totalnolandbis1000
-rename assetsbis1000_noprop assets_totalnopropbis1000
+* rename goodsbistotalamount assets_goodsbis
+* rename assetsbis_noland assets_totalnolandbis
+* rename assetsbis_noprop assets_totalnopropbis
+* rename assetsbis assets_totalbis
+* rename assetsbis1000 assets_totalbis1000
+* rename assetsbis1000_noland assets_totalnolandbis1000
+* rename assetsbis1000_noprop assets_totalnopropbis1000
 
 
 

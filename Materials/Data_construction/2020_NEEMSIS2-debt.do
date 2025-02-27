@@ -153,6 +153,13 @@ fre loan_database
 fre loanlender
 replace loanlender=6
 
+* Id
+bysort HHID2020 INDID2020: gen n=_n
+tostring n, replace
+gen n2="g"
+egen goldid=concat(n2 n)
+drop n2 n
+order HHID2020 INDID2020 goldid
 
 save "_temp\NEEMSIS2-gold.dta", replace
 ****************************************
@@ -177,6 +184,15 @@ append using "_temp\NEEMSIS2-gold.dta"
 
 fre loan_database
 
+*
+gen m="m" if loan_database=="MARRIAGE"
+gen m2=loanid if loan_database=="MARRIAGE"
+tostring m2, replace
+egen marriageid=concat(m m2)
+replace loanid=. if marriageid!="."
+order HHID2020 INDID2020 loan_database loanid goldid marriageid
+
+
 preserve
 keep if loan_database=="FINANCE"
 *select_one lenders
@@ -188,6 +204,10 @@ keep if loan_database=="GOLD"
 *select_one lenders
 fre loanlender
 restore
+
+order HHID2020 INDID2020 loanid goldid
+sort HHID2020 INDID2020 loanid
+
 
 preserve
 keep if loan_database=="MARRIAGE"
@@ -262,6 +282,7 @@ replace lenderrelation=2 if snmoneylenderdummyfam==1
 replace lenderrelation=10 if snmoneylenderfriend==1
 replace lenderrelation=8 if snmoneylenderwkp==1
 replace lenderrelation=1 if snmoneylenderlabourrelation==1
+ta lenderrelation
 
 *** Living
 fre snmoneylenderliving
@@ -394,13 +415,19 @@ label values lender2 lender2
 fre lender2
 
 *Including relationship to the lender
+/*
+Attention, parce que les var sn sont des dummies, l'ordre importe pour recoder lender3 car les relations WKP, relatives, labour et friends se superposent. Étant donné la facon dont ca a été demandé en 2010 et en 2016, je pense qu'il faut prioriser labour et relatives, puis WKP, puis friends.
+Avant le 25/01/2025: WKP, fam, labour, friend
+Après le 25/01/2025: Friend, WKP, Labour, Fam.
+*/
 gen lender3=lender2
-replace lender3=1 if snmoneylenderwkp==1  // WKP
-replace lender3=2 if snmoneylenderdummyfam==1  // Relatives
-replace lender3=3 if snmoneylenderlabourrelation==1  // labour
-replace lender3=7 if snmoneylenderfriend==1  // Friends
 label define lender3 1 "WKP" 2 "Relatives" 3 "Labour" 4 "Pawn broker" 5 "Shop keeper" 6 "Moneylenders" 7 "Friends" 8 "Microcredit" 9 "Bank" 10 "Thandal"
 label values lender3 lender3
+fre lender3
+replace lender3=7 if snmoneylenderfriend==1  // Friends
+replace lender3=1 if snmoneylenderwkp==1  // WKP
+replace lender3=3 if snmoneylenderlabourrelation==1  // labour
+replace lender3=2 if snmoneylenderdummyfam==1  // Relatives
 tab lender3 lender2
 
 *correction of the moneylenders category with info from the main loan variable "lendername" 
@@ -436,6 +463,9 @@ replace lender4_cat=1 if lender4==10
 ta lender4 lender4_cat
 fre lender4_cat
 ta loanlender if lender4==8
+
+ta loanlender lender4
+
 
 save "_temp\NEEMSIS2-loans_v8.dta", replace
 ****************************************

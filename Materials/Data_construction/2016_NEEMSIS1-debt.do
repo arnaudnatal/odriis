@@ -11,7 +11,7 @@ clear all
 macro drop _all
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\Dropbox (Personal)\Construction"
+global directory = "C:\Users\Arnaud\Documents\MEGA\Data\NEEMSIS-Construction"
 cd"$directory"
 
 ********** Database names
@@ -136,6 +136,14 @@ rename loanreasongivenOK loanreasongiven
 clonevar loaneffectivereason=loanreasongiven
 tostring loaneffectivereason, replace
 
+* Id
+bysort HHID2016 INDID2016: gen n=_n
+tostring n, replace
+gen n2="g"
+egen goldid=concat(n2 n)
+drop n2 n
+order HHID2016 INDID2016 goldid
+
 ** Append
 append using "_temp\NEEMSIS1-loans_v2.dta"
 mdesc
@@ -213,9 +221,20 @@ drop modmar
 clonevar loaneffectivereason=loanreasongiven
 tostring loaneffectivereason, replace
 
+* Id
+bysort HHID2016 INDID2016: gen n=_n
+tostring n, replace
+gen n2="m"
+egen marriageid=concat(n2 n)
+drop n2 n
+order HHID2016 INDID2016 marriageid
+
+
 append using "_temp\NEEMSIS1-loans_v3.dta"
 
 gen year=2016
+
+order HHID2016 INDID2016 loanid goldid marriageid
 
 
 save "_temp\NEEMSIS1-loans_v4.dta", replace
