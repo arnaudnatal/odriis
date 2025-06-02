@@ -11,14 +11,14 @@ clear all
 macro drop _all
 
 ********** Path to do
-global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
+global dofile = "C:\Users\Arnaud\Documents\GitHub\odriis\Materials\Questionnaire"
 
 ********** Path to working directory directory
-global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire\XLSform"
+global directory = "C:\Users\Arnaud\Documents\GitHub\odriis\Materials\Questionnaire\XLSform"
 cd"$directory"
 
-global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Questionnaire"
-global file "N1"
+global dodir = "C:\Users\Arnaud\Documents\GitHub\odriis\Materials\Questionnaire"
+global file "NEEMSIS3"
 *global choicelist "NEEMSIS2-datachoicelist.csv"
 
 

@@ -92,7 +92,7 @@ restore
 
 *** Str
 drop if value_num!=.
-drop value_num
+*drop value_num
 bysort list_name: gen value_num=_n
 rename value value_str
 order list_name value_num value_str 
